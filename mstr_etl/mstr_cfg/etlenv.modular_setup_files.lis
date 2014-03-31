@@ -1,0 +1,5 @@
+HADR_SETUP_FILE etlenv.hadr.setup
+PLATFORM_SETUP_FILE etlenv.${PLATFORM}.setup
+ENV_SETUP_FILE etlenv.${ETL_ENV}.setup
+AB_SETUP_FILE etlenv.ai.setup
+SERVER_SETUP_FILE etlenv.server.setup

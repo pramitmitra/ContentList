@@ -1,0 +1,91 @@
+	i=$NR_CATYS
+	DB_SUFFIX=""
+
+	while (( i > 0 ))  #-- caty1 ... caty27 will be autoloaded
+	do
+		export eval caty${i}DB=caty${i}${DB_SUFFIX}
+		((i=i-1))
+	done
+
+###  Changed by Vinay for Prod databases
+export workingDB=working
+export gdwDB=gdw_tables
+export readDB=batch_views
+export accessDB=access_views
+
+#export adnDB=working
+#export adnworkingDB=working
+#export adnreadDB=batch_views
+
+export adnDB=DDM_ADN_T
+export adnworkingDB=DDM_ADN_W
+export adnreadDB=PRS_DEV_V
+export adnaccessDB=PRS_ADN_V
+
+### Added by Aruna
+export tdlogDB=tdlog_tables
+
+### Moved to etlenv.server.setup
+
+#export DW_OLD_USER=dw_adm
+#export DW_OLD_SERVER=pascal.vip.ebay.com
+#export DW_OLD_WATCH=/export/home/$DW_OLD_USER/WatchFiles
+#export DW_ABIN_PEER_USER2=dw_adm
+#export DW_ABIN_PEER_SERVER2=liono.vip.ebay.com
+#export DW_ABIN_PEER_WATCH=/dw/etl/home/prod/watch
+
+### Added by Edward for dw_ams
+export amsDB=DDM_AMS_T
+export amsworkingDB=DDM_AMS_W
+export amsaccessDB=PRS_AMS_V
+export prsdevDB=PRS_DEV_V
+
+### Added by Kevin O. during cutover.
+### Not sure if they are needed, but they
+### were not commented  out in abinitio.setup
+
+export odsextrnlDB=ebay_extrnl_t
+export odsextrnlworkingDB=ebay_extrnl_w
+export odsextrnlreadDB=ebay_extrnl_v
+export odscatyDB=ebay_caty_t
+export odscatyworkingDB=ebay_caty_w
+export odscatyreadDB=ebay_caty_v
+
+### Added by Satish Umale for KWDM
+export kwdmDB=kwdm_tables
+### Added by Jonathan Wu for VENUE
+export esa03marketingDB=esa03_marketing # production integration database
+export wrktDB=wrk_t # working area for integration layer
+
+### Requested by Nice to match etlenv.prod.setup
+export prsDB=prs_t
+
+### Added by Weiber for Rover
+#export imDB=rover_t
+#export imworkingDB=rover_w
+
+## Change requested by Nice
+export imDB=im_t
+export imworkingDB=im_w
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all DB assignment variables above this comment 
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+	export DW_PRIMARY_DB=caracal
+	export DW_SECONDARY_DB=wildcat
+
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all workarounds below this comment 
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+### Added by Yogesh(IMDUNIX) as per request SASRV11524848 on date 20091001.
+export TOUCH_OLD=0
+export TOUCH_PEER=0

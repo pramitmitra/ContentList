@@ -1,0 +1,49 @@
+#!/bin/ksh -eux
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########      Edits to this file MUST be reviewed and approved by a member of the    ##########
+##########      Application Architecture Team. Please contact via email using          ##########
+##########      DL-eBay-IT-IMD-ApplArchTeam with ETLENV HADR BATCH Setup in the subject line.##########
+##########      Please specify Dev or Prod in your subject line.                       ##########
+##########                                                                             ##########
+##########      Failure to follow this procedure may result in code deletion without   ##########
+##########      warning.                                                               ##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+# Define HADR Settings
+export HADR_BATCH_ACTIVE=1
+
+assignHADRServerInfo ${SFT_SNODE} TEMPNODE FLR1 FLR2 HADR_BATCH_ISPROD FLR2 FLR3 REST
+
+export HADR_BATCH_ISPROD
+
+
+INST=0
+MAXINST=1
+ACTIVEINST=0
+
+while (( INST <= MAXINST ))
+do
+   export HADR_BATCH_MODE[$INST]="N"  #(P)assive, (N)one
+
+   if [[ -n ${HADR_TRGT[$INST]} && ${HADR_TRGT[$INST]} != "NA" ]]; then
+      assignHADRServerInfo ${HADR_TRGT[$INST]} TEMPNODE FLR1 NODEACTIVE NODEISPROD FLR2 FLR3 REST
+      if [[ $NODEACTIVE == "1" && $NODEISPROD != "1" ]]; then
+         HADR_BATCH_MODE[$INST]="P"
+         (( ACTIVEINST += 1 ))
+      fi 
+   fi
+  (( INST += 1 ))
+done        
+
+(( ACTIVEINST )) && HADR_BATCH_ACTIVE=1 || HADR_BATCH_ACTIVE=0
+

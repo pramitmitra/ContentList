@@ -1,0 +1,912 @@
+#!/bin/ksh
+######################################################################################
+######################################################################################
+####
+####	This file contains definitions for select standard function used
+####    throughout the common CORE ETL Infrastructure. To instantiate
+####    them for use in your code, simply dot this file into your environment.
+####
+####    Example: . $DW_MASTER_LIB/dw_etl_common_functions.lib
+####
+######################################################################################
+######################################################################################
+
+## typeset functions so they load only if needed
+typeset -fu assignTagValue
+typeset -fu dwi_assignTagValue
+typeset -fu grepCompFile
+typeset -fu mkfileifnotexist
+typeset -fu mkdirifnotexist
+typeset -fu rmdirifexist
+typeset -fu rmdirtreeifexist
+typeset -fu assignHADRServerInfo
+typeset -fu echoifverbose
+typeset -fu assignSFTSettings
+typeset -fu dwi_assignRmtDataCenterServer
+typeset -fu dwi_reportHadrSettings
+typeset -fu dwi_getServerInfo
+typeset -fu dwi_countActiveScriptInstances
+typeset -fu is_valid_ts
+typeset -fu kill_all_child
+typeset -fu print_header
+typeset -fu print_standard_env
+
+
+## Define Functions Below This Line ##################################################
+
+function assignTagValue {
+############################################################################
+# function to utilize standard ETL tag assignment using grep.
+# _tagFile is typically the $DW_CFG/$ETL_ID.cfg file and utilizes
+# a three column layout of PARAM VALUE COMMENT. The function accepts
+# _tag as input and seeks a PARAM match in the _tagFile. If found,
+# VALUE is assigned to _param and exported. Function allows for both
+# required and optional assignments as well as an optional default
+# value for optional assignments.
+#
+# Example: assignTagValue DB_INTERFACE REPL_DB_INTERFACE $CFG_FILE W A
+# (where W and A are optional)
+#
+############################################################################
+
+_param=$1
+_tag=$2
+_tagFile=$3
+_failOrWarn=${4:-"F"}
+_defaultValue=${5:-""}
+
+  set +e
+  egrep "^$_tag\>" $_tagFile | read PARAM VALUE COMMENT
+  grep_rcode=$?
+  set -e
+
+  if [ $grep_rcode != 0 ]
+  then
+    if [ $_failOrWarn != "W" ]
+    then
+      print "${0##*/}:  FATAL ERROR, No match on $_tag in $3." >&2
+      return 4
+    elif [[ -z $_defaultValue ]]
+    then
+      print -e "${0##*/}:  WARNING, No match on $_tag in $3.\nAssigning \"\" to $_param"
+    else
+      print -e "No match on $_tag. Assigning default value \"$_defaultValue\" to $_param."
+    fi
+  else
+    print -e  "$_tag matched. Assigning \"$(eval print $VALUE)\" to $_param."
+  fi
+
+  export $_param=$(eval print ${VALUE:-$_defaultValue})
+
+  return 0
+}
+
+function dwi_assignTagValue {
+############################################################################
+# function to utilize standard ETL tag assignment using grep.
+# _tagFile is typically the $DW_CFG/$ETL_ID.cfg file and utilizes
+# a three column layout of PARAM VALUE COMMENT. The function accepts
+# _tag as input and seeks a PARAM match in the _tagFile. If found,
+# VALUE is assigned to _param and exported. Function allows for both
+# required and optional assignments as well as an optional default
+# value for optional assignments.
+#
+# Example: dwi_assignTagValue -p DB_INTERFACE -t REPL_DB_INTERFACE -f $CFG_FILE -s W -d A
+# (where W and A are optional)
+#
+############################################################################
+
+_severity="F"
+_defaultValue=""
+_fname="dwi_assignTagValue"
+
+while getopts "p:t:f:s:d:" opt
+do
+case $opt in
+   p)   _param="$OPTARG";;
+   t)   _tag="$OPTARG";;
+   f)   _tagFile="$OPTARG";;
+   s)   _severity="$OPTARG";;
+   d)   _defaultValue="$OPTARG";;
+   \?)  print >&2 "Usage: $0 -p param -t lookup_tag -f lookup_file [ -s severity (F|W|N) ] [ -d default_value ]"
+   exit 1;;
+esac
+done
+shift $(($OPTIND - 1))
+
+set +e
+grep "^$_tag\>" $_tagFile | read PARAM VALUE COMMENT
+grep_rcode=$?
+set -e
+
+if [ $grep_rcode != 0 ]
+then
+  case $_severity  in
+    n|N)  ;;
+    w|W)  print "${0##*/}:  INFO, ( $_fname )  No match on $_tag in $_tagFile.\n   Assigning \"$_defaultValue\" to $_param";;
+    *)    print "${0##*/}:  ERROR, ( $_fname )  No match on $_tag in $_tagFile." >&2
+          return 4;;
+  esac
+fi
+
+export $_param=$(eval print ${VALUE:-$_defaultValue})
+
+return 0
+}
+
+function grepCompFile {
+################################################################################
+#
+# Uses grep to query a comp file to see if a particulat process is complete.
+# grep string should be the entire string that the calling process is seeking
+# to check for. Function echoes the return code of the grep for use in the
+# calling shell, and so should be called as an assignment to a status
+# that can then be properly trapped.
+#
+# Example:
+# grcode=`grepCompFile $PROCESS $COMP_FILE`
+#
+# Note that in the common ETL Infrastructure, a comp file is used to record
+# process that a handler has already completed so that those processes do
+# not re-execute when in restart mode.
+#
+################################################################################
+_grepString=$1
+_compFile=$2
+
+  set +e
+  grep -s "^$_grepString\>" $_compFile >/dev/null
+  _grCode=$?
+  set -e
+
+  print $_grCode
+  return 0
+}
+
+function mkfileifnotexist {
+############################################################################
+# function to make a file if it does not already exist.
+# single parameter $_file is the file to be made.  Function will check
+# to see if file already exists, and if it does not, will attempt to
+# create it.  If it already exists, function will print that out.
+# If creation fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory already existing is considered successful completion.
+#
+# Example: mkfileifnotexist $DW_SA_IN/myfile/
+#
+############################################################################
+_file=$1
+_verbose=${2:-"N"}
+
+  if [ ! -f $_file ]
+  then
+    set +e
+    > $_file
+    mkfile_rcode=$?
+    set -e
+
+    if [ $mkfile_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to make file $_file." >&2
+      return 4
+    elif [ _verbose = "V" ]
+    then
+      print "Successfuly made file $_file"
+    fi
+  elif [ _verbose = "V" ]
+  then
+    print "file $_file already exists"
+  fi
+
+  return 0
+}
+
+function mkdirifnotexist {
+############################################################################
+# function to make a directory if it does not already exist.
+# single parameter $_dir is the directory to be made.  Function will check
+# to see if directory already exists, and if it does not, will attempt to
+# create it.  If it already exists, function will print that out.
+# If creation fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory already existing is considered successful completion.
+#
+# Example: mkdirifnotexist $DW_SA_IN/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ ! -d $_dir ]
+  then
+    set +e
+    mkdir -p $_dir
+    mkdir_rcode=$?
+    set -e
+
+    if [ $mkdir_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to make directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly made directory $_dir"
+    fi
+  else
+    print "directory $_dir already exists"
+  fi
+  return 0
+}
+
+function rmdirifexist {
+############################################################################
+# function to remove an empty directory if it already exists.
+# single parameter $_dir is the directory to be removed. Function will check
+# to see if directory already exists, and if it does, will attempt to
+# remove it.  If it does not exist, function will print that out.
+# If remove fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory not existing is considered successful completion.
+# To remove a populated directory or directory tree, use
+# function rmdirtreeifexist
+#
+# Example: rmdirifexist $DW_SA_IN/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ -d $_dir ]
+  then
+    set +e
+    rmdir $_dir
+    rmdir_rcode=$?
+    set -e
+
+    if [ $rmdir_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to remove directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly removed directory $_dir"
+    fi
+  else
+    print "directory $_dir does not exist"
+  fi
+  return 0
+}
+
+function rmdirtreeifexist {
+############################################################################
+# function to remove a directory tree if it already exists.
+# single parameter $_dir is the directory tree to be removed. Function
+# will check to see if directory already exists, and if it does,
+# will attempt to remove it along with its contents and any subdirs.
+# If it does not exist, function will print that out.
+# If remove fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory not existing is considered successful completion.
+#
+# WARNING!!! USE WITH EXTREME CAUTION. REMOVED CONTENTS CANNOT
+# BE RECOVERED!!!
+#
+# Example: rmdirtreeifexist $DW_SA_IN/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ -d $_dir ]
+  then
+    set +e
+    rm -R $_dir
+    rmdir_rcode=$?
+    set -e
+
+    if [ $rmdir_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to remove directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly removed directory $_dir"
+    fi
+  else
+    print "directory $_dir does not exist"
+  fi
+  return 0
+}
+
+function assignHADRServerInfo {
+############################################################################
+# function to utilize standard ETL HADR server settings using grep.
+# HADR file is $DW_MASTER_CFG/servers.hadr.cfg
+# _node, _nodetype, and _nodeactive are required params.  _nodeha
+# and _nodedr are optional and will be defaulted to "" if not passed.
+# failure to find the value does not constitute an error. Caller of function
+# is responsible for how they want to evaluate this.
+#
+# Example: assignHADRServerInfo "^$SGFT_SNODE\>" SNODE SNODETYPE SNODEACTIVE ISPROD SFT_PORT HANODE DRNODE
+# (where HANODE and DRNODE are optional)
+#
+############################################################################
+_server=$1
+_node=$2
+_nodetype=$3
+_nodeactive=$4
+_nodeisprod=$5
+_nodeport=$6
+_nodeha=${7:-""}
+_nodedr=${8:-""}
+
+  set +e
+  grep "^$_server\>" $DW_MASTER_CFG/servers.hadr.$ETL_ENV.cfg | read $_node $_nodetype $_nodeactive $_nodeisprod $_nodeport $_nodeha $_nodedr
+  grep_rcode=$?
+  set -e
+
+  if [ $grep_rcode != 0 ]
+  then
+      echoifverbose "No match on $_server in $DW_MASTER_CFG/servers.hadr.$ETL_ENV.cfg"
+  fi
+
+  return 0
+}
+
+function echoifverbose {
+############################################################################
+# this function is used to output messages based on verbosity settings.
+# If DW_FUNC_VERBOSITY is > 0,  the passed message will be echoed.
+# example: echoifverbose "Tell me about it - assuming I should"
+############################################################################
+
+   _message=$1
+   _verbosity=${DW_FUNC_VERBOSITY:-0}
+
+   if [[ $_verbosity > 0 ]]
+   then
+      print "$_message"
+   fi
+   return 0
+}
+
+function assignSFTSettings {
+############################################################################
+# function to utilize standard ETL DR settings using grep based on _setting.
+# DR config file is $DW_MASTER_CFG/dr.settings.cfg
+#
+#  _compress, _bandwidth, _verbosity, _printinterval, _nways are required
+# params.   Failure to find the value will not constitute an error.
+#
+# Example: assignSFTSettings $Setting SFT_DR_COMP SFT_DR_BW SFT_DR_VL SFT_DR_PI SFT_DR_NWAYS
+#
+############################################################################
+_setting=$1
+_compress=$2
+_bandwidth=$3
+_verbosity=$4
+_printinterval=$5
+_nways=$6
+
+  set +e
+  grep "^$_setting\>" $DW_MASTER_CFG/sft.settings.cfg | read $_setting $_compress $_bandwidth $_verbosity $_printinterval $_nways
+  grep_rcode=$?
+  set -e
+
+  if [ $grep_rcode != 0 ]
+  then
+      echoifverbose "No match on $_setting in $DW_MASTER_CFG/sft.settings.cfg"
+      return 4
+  fi
+
+  return 0
+}
+
+function dwi_assignRmtDataCenterServer {
+############################################################################
+# function to get the name of the remote server to synch files (such as
+# touchfiles).  This is not used in typical HADR synching, but rather
+# to push to the remote data center.
+# function use DR server, if its active, else it will look up the local
+# server in $DW_MASTER_CFG/dw_infra.server_info.lis, get the remote data center
+# then step through the same list file for servers local to that data center, using
+# the first one set to active in $DW_MASTER_CFG/servers.hadr.cfg
+#
+# -s (_server) is the local server
+# -c (_envclass) is the server class
+# -r (_rmtserver) is the returned remote server name
+# failure to find the value does not constitute an error. Caller of function
+# is responsible for how they want to evaluate this.
+#
+# Example: dwi_assignRmtDataCenterServer -s $SFT_SNODE [-c 0] -r RMT_SERVER
+# -c is optional, if not included, type will be defaulted to 0
+#
+############################################################################
+_server=""
+_envclass=0
+_rtrn_rmtserver=""
+_verbosity=0
+
+while getopts "s:c#?r:v?" opt
+do
+case $opt in
+   s)   _server="$OPTARG";;
+   c)   _envclass="$OPTARG";;
+   r)   _rtrn_rmtserver="$OPTARG";;
+   v)   _verbosity=1;;
+   \?)  print >&2 "Usage: $0 -s server -c env_class -r return_rmt_server"
+   exit 1;;
+esac
+done
+shift $(($OPTIND - 1))
+
+_myrmtserver=""
+if (( _verbosity )); then
+  print "HADR_MODE[1] = ${HADR_MODE[1]}"
+  print "HADR_TRGT[1] = ${HADR_TRGT[1]}"
+fi
+
+case $_envclass in
+  1)  _myrmtserver="NA";;
+  *)
+        if [ "${HADR_MODE[1]}" != "N" ]
+        then
+          _myrmtserver=${HADR_TRGT[1]}
+        else
+         # get the local servers remote data center
+
+          set +e
+          grep "^$_server\>" $DW_MASTER_CFG/dw_infra.server_info.$ETL_ENV.lis | read _node _envclass _glblzone _lctn _type _vip _rmtlctn
+          grep_rcode=$?
+          set -e
+
+          if [ $grep_rcode != 0 ]
+          then
+            echoifverbose "No match on $_server in $DW_MASTER_CFG/dw_infra.server_info.$ETL_ENV.lis"
+          else
+            if [ "$_rmtlctn" != "none" ]
+            then
+              r_num=$((RANDOM%5))
+              mtch_cnts=0
+              while read _tmpnode _tmpenvclass _tmpglblzone _tmplctn _rest
+              do
+                if [[ "$_tmplctn" == "$_rmtlctn" && "$_tmpenvclass" == "$_envclass" ]]
+                then
+                   # check if the server is active - if so - use it.
+                   assignHADRServerInfo $_tmpnode _filnode _filnodetype _nodeactive _filisprod _filsftport
+                   if [[ -n $_nodeactive ]]
+                   then
+                      if [[ $_nodeactive == 1 ]]
+                      then
+                         _myrmtserver=$_tmpnode
+                         if [[ $mtch_cnts -eq $r_num ]]
+                         	then
+                         		break
+                         	else
+                         	((mtch_cnts=mtch_cnts+1))
+                         	continue
+                        fi
+                      fi
+                   fi
+                fi
+              done < $DW_MASTER_CFG/dw_infra.server_info.$ETL_ENV.lis
+            fi
+          fi
+        fi;;
+esac
+
+print $_myrmtserver | read $_rtrn_rmtserver
+
+return 0
+}
+
+function dwi_reportHadrSettings {
+############################################################################
+# function to print out the current HADR settings for the server
+############################################################################
+
+print "################################"
+print " Server: $SFT_SNODE"
+print "################################"
+case $HADR_ACTIVE in
+  1) print "HADR: Active";;
+  *) print "HADR: InActive";;
+esac
+if [[ -n $DWI_RMT_SERVER ]]; then
+print "Remote Server (alt Data Center): $DWI_RMT_SERVER"
+fi
+
+if [[ -n $HADR_ETLID_DISABLE_OVRD ]]; then
+(( HADR_ETLID_DISABLE_OVRD )) && print "ETL ID Override: Enabled for ETL_ID $ETL_ID "
+fi
+
+print ""
+print "--------------------------------"
+print " HA Settings"
+print "--------------------------------"
+print " HADR Mode: ${HADR_MODE[0]}"
+print " HADR Source: ${HADR_SRC[0]}"
+print " HADR Target: ${HADR_TRGT[0]}"
+print " HADR SFT Port: ${HADR_SFT_PORT[0]}"
+print ""
+print "--------------------------------"
+print " DR Settings"
+print "--------------------------------"
+print " HADR Mode: ${HADR_MODE[1]}"
+print " HADR Source: ${HADR_SRC[1]}"
+print " HADR Target: ${HADR_TRGT[1]}"
+print " HADR SFT Port: ${HADR_SFT_PORT[1]}"
+
+return 0
+}
+
+
+function dwi_getServerInfo {
+############################################################################
+# function to get the server settings from the ETL_ENV specific
+# Server Info file.
+#
+# Optional selection Params
+# -s (_server) is the server - defaults to local $servername if not passed.
+# -e (_etlenv) is the ETL Environment - defaults to $ETL_ENV if not passed.
+#
+# Required Return params
+# -c (_envclass) is the server class of the passed server
+# -g (_glbzone) is the Global Zone for the passed server
+# -l (_location) is the Data Center Location for the passed server
+# -t (_hadrtype) is the HADR type of hte passed server (Primary, HA, DR)
+# -v (_vip) is the vip assigned to the passed server
+# -r (_rmtlocation) is the Remote Data Center Location for the passed server)
+#
+# if the server information can not be determined (Server Info File is not found
+# or server is not found in file, a notice can be passed (if verbosity is set)
+# and the variables will not be set.
+#
+# Example:
+#
+#
+############################################################################
+# Optional selection Params
+_server=${servername:-""}
+_etlenv=${ETL_ENV:-""}
+
+#Return params
+_envclass=
+_glbzone=
+_location=
+_hadrtype=
+_vip=
+_rmtlocation=
+
+while getopts "s:e:c:g:l:t:v:r:" opt
+do
+case $opt in
+   s)   _server="$OPTARG";;
+   e)   _etlenv="$OPTARG";;
+   c)   _envclass="$OPTARG";;
+   g)   _glbzone="$OPTARG";;
+   l)   _location="$OPTARG";;
+   t)   _hadrtype="$OPTARG";;
+   v)   _vip="$OPTARG";;
+   r)   _rmtlocation="$OPTARG";;
+   \?)  print >&2 "Usage: $0 -s server -t env_type -r return_rmt_server"
+   exit 1;;
+esac
+done
+shift $(($OPTIND - 1))
+
+_infofile=$DW_MASTER_CFG/dw_infra.server_info.$_etlenv.lis
+
+set +e
+grep "^$_server\>" $_infofile | read _tmpserver _tmpenvclass _tmpglbzone _tmplocation _tmphadrtype _tmpvip _tmprmtlocation
+grep_rcode=$?
+set -e
+
+if [ $grep_rcode != 0 ]
+then
+  echoifverbose "No match on $_server in $DW_MASTER_CFG/dw_infra.server_info.$ETL_ENV.lis"
+else
+ print $_tmpenvclass $_tmpglbzone $_tmplocation $_tmphadrtype $_tmpvip $_tmprmtlocation | read $_envclass $_glbzone $_location $_hadrtype $_vip $_rmtlocation
+fi
+
+return 0
+}
+
+
+
+function dwi_countActiveScriptInstances {
+############################################################################
+# function to return the instance count of the script
+#
+# Required input Params
+# -s (_script) is the script name
+#
+# Optional input Params
+# -r (_handler) is to specify the handler name if it is used
+#
+# -m (_match) is the pattern list you want to put in match keyword, 
+#               encapsulate them with double quotes if more than one pattern,
+#               or use regular expression like a|b|c
+#
+# -x (_exclude) is the pattern list you want to put in exclude keyword
+#               encapsulate them with double quotes if more than one pattern,
+#               or use regular expression like a|b|c
+#
+# Required Return params
+# -c (_count) is the active instance count of the script.
+#
+# Example:
+#   dwi_countActiveScriptInstances -s archive_data_log_files.ksh -r shell_handler.ksh -m "a|b|c" -x "def" -c INSTN_CNT
+#
+############################################################################
+# Input Params
+_script=
+_handler=
+_match=
+_exclude=
+
+#Return params
+_count=
+
+while getopts "s:r:m:x:c:" opt
+do
+case $opt in
+   s)   _script="$OPTARG";;
+   r)   _handler="$OPTARG";;
+   m)   _match="$OPTARG";;
+   x)   _exclude="$OPTARG";;
+   c)   _count="$OPTARG";;
+   \?)  print >&2 "Usage: $0 -s script -h 1 -m match_pattern -x exclude_pattern -c count"
+   return 1;;
+esac
+done
+shift $(($OPTIND - 1))
+
+if [ X"$_script" = X"" ]
+then
+  print "Please input the script name to check!"
+  exit 1
+else
+  _grepStr="grep \"$_script\""
+fi
+
+if [ X"$_count" = X"" ]
+then
+  print "Can't determine which viriable to store the count value!"
+  exit 1
+fi
+
+if [ X"$_handler" != X"" ]
+then
+  _grepStr="$_grepStr | grep -v \"$_handler\""
+fi
+
+if [ X"$_match" != X"" ]
+then
+  _grepMStr=
+  for _mStr in `print $_match`
+  do
+    _grepMStr="$_grepMStr | egrep \"$_mStr\""
+  done
+  _grepStr="$_grepStr $_grepMStr"
+fi
+
+if [ X"$_exclude" != X"" ]
+then
+  _grepXStr=
+  for _xStr in `print $_exclude`
+  do
+    _grepXStr="$_grepXStr | egrep -v \"$_xStr\""
+  done
+  _grepStr="$_grepStr $_grepXStr"
+fi
+
+set +e
+_tmpCount=$(/usr/ucb/ps -auxwww | eval $_grepStr | grep -v "grep" | wc -l)
+grep_rcode=$?
+set -e
+
+if [ $grep_rcode != 0 ]
+then
+  echoifverbose "Can't get the instance count of $_script"
+  return 1
+else
+  print $_tmpCount | read $_count
+fi
+
+return 0
+}
+
+
+
+function is_valid_ts {
+############################################################################
+# Function validates timestamp in format 'yyyymmdd24hrmmss'
+# Usage: is_valid_ts <timestamp>
+# Returns: 0 success, or 1 failure
+# Example:
+#   is_valid_ts 20110901000000 returns 0
+#   is_valid_ts 20000229125452 returns 0
+#   is_valid_ts 20000231125452 returns 1
+############################################################################
+_ts=$1
+
+if [ $# -ne 1 ]
+then
+  print "USAGE: is_valid_ts <timestamp> (format must be 'YYYYMMDD24hrmmss')"
+  return 1
+fi
+
+if [ ${#_ts} -ne 14 ]
+then
+  print "ERROR: timestamp is not 14 characters: $_ts, length ${#_ts}" >&2
+  return 1
+fi
+
+_yr=$(print $_ts | cut -c1-4)
+_mo=$(print $_ts | cut -c5-6)
+_dy=$(print $_ts | cut -c7-8)
+_hr=$(print $_ts | cut -c9-10)
+_mm=$(print $_ts | cut -c11-12)
+_ss=$(print $_ts | cut -c13-14)
+
+if [[ $_yr -lt 1000 || $_yr -gt 9999 ]]
+then
+  print "ERROR: year is invalid: $_yr" >&2
+  return 1
+else
+  ((_mod4=_yr % 4))
+  ((_mod100=_yr % 100))
+  ((_mod400=_yr % 400))
+  if [[ (_mod4 -eq 0 && _mod100 -ne 0) || _mod400 -eq 0 ]]
+  then
+    _isleapyr=1
+  else
+    _isleapyr=0
+  fi
+fi
+
+if [[ $_mo -lt 1 || $_mo -gt 12 ]]
+then
+  print "ERROR: month is invalid: $_mo" >&2
+  return 1
+fi
+
+if [[ $_dy -lt 1 || $_dy -gt 31 ]]
+then
+  print "ERROR: day is invalid: $_dy" >&2
+  return 1
+else
+  if [ $_mo -eq 2 ]
+  then
+    if [ $_dy -gt 29 ]
+    then
+      print "ERROR: month-day is invalid: $_mo$_dy" >&2
+      return 1
+    elif [[ $_dy -eq 29 && $_isleapyr -eq 0 ]]
+    then
+      print "ERROR: year-month-day invalid: $_yr$_mo$_dy" >&2
+      return 1
+    fi
+  fi
+fi
+
+if [[ $_hr -lt 0 || $_hr -gt 23 ]]
+then
+  print "ERROR: hour is invalid: $_hr" >&2
+  return 1
+fi
+
+if [[ $_mm -lt 0 || $_mm -gt 59 ]]
+then
+  print "ERROR: minute is invalid: $_mm" >&2
+  return 1
+fi
+
+if [[ $_ss -lt 0 || $_ss -gt 59 ]]
+then
+  print "ERROR: second is invalid: $_ss" >&2
+  return 1
+fi
+
+return 0
+}
+
+
+function kill_all_child {
+##################################################################################
+# This function is in purpose to kill all child processes for a given PID
+# Usage:
+#
+#      kill_all_child PID Sig_num ( kill_all_child 12345 9 )
+##################################################################################
+
+killtree() {
+    local _pid=$1
+    local _sig=${2-TERM}
+    for _child in  $(ps -o pid,ppid -e | awk {" if ( \$2 == $_pid )  print \$1 "})
+    do
+        killtree ${_child} ${_sig}
+    done
+    kill -${_sig} ${_pid}
+}
+
+if [ $# -eq 0 -o $# -gt 2 ]; then
+    print "Usage: $(basename $0) <pid> [signal]"
+    exit 1
+fi
+
+killtree $@
+}
+
+
+
+function print_header {
+############################################################################
+# Function prints out header variables
+# Usage: print_header
+# Returns: 0 success, or 1 failure
+# Cannot be passed any parameters
+############################################################################
+
+if [ $# -ne 0 ]
+then
+  print "USAGE: print_header takes no parameters"
+  return 1
+fi
+
+cat << EOF
+############################################################################
+# Standard Header Variables
+# DWI_CALLED=$DWI_CALLED
+# DWI_CALLED_ARGS=$DWI_CALLED_ARGS
+# DWI_WHOAMI=$DWI_WHOAMI
+# DWI_START_DATETIME=$DWI_START_DATETIME
+# servername=$servername
+############################################################################"
+EOF
+
+return 0
+}
+
+
+
+function print_standard_env {
+############################################################################
+# Function prints out standard environment variables
+# Usage: print_standard_env
+# Returns: 0 success, or 1 failure
+# Cannot be passed any parameters
+############################################################################
+
+if [ $# -ne 0 ]
+then
+  print "USAGE: print_standard_env takes no parameters"
+  return 1
+fi
+
+cat << EOF
+############################################################################
+# Standard Environment Variables
+$DWI_INFRA_IND DWI_CALLED=$DWI_CALLED
+$DWI_INFRA_IND DWI_CALLED_ARGS=$DWI_CALLED_ARGS
+$DWI_INFRA_IND DWI_WHOAMI=$DWI_WHOAMI
+$DWI_INFRA_IND DWI_START_DATETIME=$DWI_START_DATETIME
+$DWI_INFRA_IND servername=$servername
+$DWI_INFRA_IND TABLE_ID=$TABLE_ID
+$DWI_INFRA_IND ETL_ID=$ETL_ID
+$DWI_INFRA_IND SUBJECT_AREA=$SUBJECT_AREA
+$DWI_INFRA_IND BATCH_SEQ_NUM=$BATCH_SEQ_NUM
+$DWI_INFRA_IND UOW_FROM=$UOW_FROM
+$DWI_INFRA_IND UOW_TO=$UOW_TO
+$DWI_INFRA_IND UC4_JOB_NAME=$UC4_JOB_NAME
+$DWI_INFRA_IND UC4_PRNT_CNTR_NAME=$UC4_PRNT_CNTR_NAME
+$DWI_INFRA_IND UC4_TOP_LVL_CNTR_NAME=$UC4_TOP_LVL_CNTR_NAME
+$DWI_INFRA_IND UC4_JOB_RUN_ID=$UC4_JOB_RUN_ID
+$DWI_INFRA_IND CURR_DATETIME=$CURR_DATETIME
+|INFRA_LINE| $DWI_CALLED|$DWI_CALLED_ARGS|$DWI_WHOAMI|$DWI_START_DATETIME|$servername|$TABLE_ID|$ETL_ID|$SUBJECT_AREA|$BATCH_SEQ_NUM|$UOW_FROM|$UOW_TO|$UC4_JOB_NAME|$UC4_PRNT_CNTR_NAME|$UC4_TOP_LVL_CNTR_NAME|$UC4_JOB_RUN_ID|$CURR_DATETIME 
+############################################################################
+EOF
+
+return 0
+}
+

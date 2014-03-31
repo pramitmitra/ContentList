@@ -1,0 +1,9 @@
+export DW_TD1_DB=gatoloco
+export DW_TD2_DB=gatoloco
+export DW_TD3_DB=fermat
+export DW_TD4_DB=fermat
+export DW_TD5_DB=fermat
+export DW_TD6_DB=gatoloco
+export DW_HD1_DB=ares
+export DW_HD2_DB=apollo
+export DW_HD3_DB=artemis

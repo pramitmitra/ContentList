@@ -1,0 +1,4 @@
+/dw/etl/home/infra/bin $DW_BIN	single_table_load_handler.ksh
+/dw/etl/mstr_bin $DW_MASTER_BIN sg_file_xfr_server.*.ksh
+/dw/etl/mstr_cfg $DW_MASTER_CFG etlenv.hadr.setup
+/dw/etl/mstr_cfg $DW_MASTER_CFG servers.hadr.cfg

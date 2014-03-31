@@ -1,0 +1,4 @@
+       export PGDATABASE=prod_v1
+       export STTDB=st_t
+       export VULCANDB=vulcan_t
+	   export SG_LOAD_DB=fermat

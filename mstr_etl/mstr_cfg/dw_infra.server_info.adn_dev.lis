@@ -1,0 +1,2 @@
+Zone              ENV_CLASS GlobalZone   Location   Type   Vip            RemoteLocation
+zimddevdc01       0        srwimddev03  srw     primary   zimddevdc01    none

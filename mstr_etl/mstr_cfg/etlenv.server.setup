@@ -1,0 +1,111 @@
+case $servername in
+
+
+	srwimdetl10|sjcimdetl01|denimdetl01|zodwetl01)
+		case $ETL_ENV in
+			prod|odw_prod)
+				export DW_OLD_USER=dw_adm
+				export DW_OLD_SERVER=pascal.vip.ebay.com
+				export DW_ABIN_PEER_USER2=dw_adm
+				export DW_ABIN_PEER_SERVER2=srwimdetl11.smf.ebay.com
+				export SCRATCH0_SRC=$(scratch0)
+				export SCRATCH1_SRC=$(scratch1)
+				export SCRATCH2_SRC=$(scratch2)
+				export SCRATCH3_SRC=$(scratch3);;
+
+			*)
+				print
+				print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/etlenv.server.setup." >&2 
+				print
+				;;
+		esac;;
+
+	srwimdetl11)
+		case $ETL_ENV in
+			prod)
+				export DW_OLD_USER=dw_adm
+				export DW_OLD_SERVER=pascal.vip.ebay.com
+				export DW_ABIN_PEER_USER2=dw_adm
+				export DW_ABIN_PEER_SERVER2=srwimdetl10.smf.ebay.com
+				export SCRATCH0_SRC=$(scratch0)
+				export SCRATCH1_SRC=$(scratch1)
+				export SCRATCH2_SRC=$(scratch2)
+				export SCRATCH3_SRC=$(scratch3);;
+
+			*)
+				print
+				print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/etlenv.server.setup." >&2 
+				print
+				;;
+		esac;;
+
+	srwimddcetl01|srwimddcetl02|phximddcetl01)
+                case $ETL_ENV in
+			adn_prod)
+				export DW_OLD_USER=dw_adm
+				export DW_OLD_SERVER=pascal.vip.ebay.com
+				export DW_ABIN_PEER_USER2=dw_adm
+				export DW_ABIN_PEER_SERVER2=liono.vip.ebay.com
+				export DW_ABIN_PEER_WATCH=/dw/etl/home/prod/watch
+				export ORACLE_HOME=/export/home/oracle/app/oracle/product/12.1.0/client_1;;
+			*)
+				print
+				print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/etlenv.server.setup." >&2
+				print
+				;;
+		esac;;
+		
+		
+        srwimdsging0*|phximdsging0*|lvsaising0*)
+                case $ETL_ENV in
+                        prod)
+                                export SGDBTYPE=td
+				export DW_OLD_USER=dw_adm
+                                export DW_OLD_SERVER=panther.sjc.ebay.com
+            			export DW_ABIN_PEER_USER2=dw_adm
+            			export DW_ABIN_PEER_SERVER2=panther.sjc.ebay.com
+            			export TPT_HOME=/opt/teradata/client/default/tbuild
+            			export SSH_PATH="/bin/ssh"
+            			export KSH_PATH="/usr/bin/ksh";;            			
+
+
+                        *)
+                                print
+                                print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/etlenv.server.setup." >&2 
+                esac;;		
+		
+		
+        weber00*)
+                case $ETL_ENV in
+                        dev)
+                                export SGDBTYPE=td
+			        export DW_OLD_USER=dw_adm
+                                export DW_OLD_SERVER=panther.sjc.ebay.com
+            			export DW_ABIN_PEER_USER2=dw_adm
+            			export DW_ABIN_PEER_SERVER2=panther.sjc.ebay.com
+            			export TPT_HOME=/opt/teradata/client/default/tbuild
+						export TPT_NODE_LIST="weber001.smf.ebay.com weber002.smf.ebay.com weber003.smf.ebay.com"
+            			export SSH_PATH="/bin/ssh"
+            			export KSH_PATH="/usr/bin/ksh";;
+
+
+                        *)
+                                print
+                                print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/etlenv.server.setup." >&2 
+                esac;;
+
+
+        tobenamed)
+                case $ETL_ENV in
+                        blah)
+                                export SGDBTYPE=td;;
+                        *)
+                                print
+                                print "Warning: Server specific variables for environment \"$ETL_ENV\" not configured on server $servername. Check the file $SG_MASTER_CFG/etlenv.server.setup." >&2
+                                print
+				;;
+                esac;;
+
+        *)
+
+esac

@@ -1,0 +1,567 @@
+	export agent_no=1
+	export gdwDB=gdw_tables
+	export apiDB=api_tables
+	export stdrptDB=std_rpt_tables
+	export workingDB=working
+	export readDB=batch_views
+	export accessDB=access_views
+	export tdlogDB=tdlog_tables
+	export kwdmDB=kwdm_tables
+	export adDB=ad_tables
+	export adworkDB=ad_working
+	export prsdevDB=PRS_DEV_V
+        export DW_MAXDATE=2099-12-31
+	i=$NR_CATYS
+	DB_SUFFIX=$ETL_ENV
+	while (( i > 0 ))  #-- caty1 ... caty21 will be autoloaded
+	do
+		export eval caty${i}DB=caty${i}
+		((i=i-1))
+	done
+
+	export tnsDB=tns_tables
+	export tnsworkingDB=tns_working
+	export tnsreadDB=tns_batch_views
+	export tnsaccessDB=tns_access_views
+	export rmdDB=rmd_dev
+	export mdmDB=mdm_tables
+	export adDB=ad_tables
+	export oebtDB=AD_TABLES
+	export oebtworkDB=AD_WORKING
+	export DDM_UM_WRK_DB=DDM_UM_W
+	export DDM_UM_TGT_DB=DDM_UM_T
+	export DDM_UM_PRL_DB=DDM_UM_V
+	export umworkDB=ddm_um_w
+	export umDB=ddm_um_t
+	export umreadDB=ddm_um_v
+	export fndngDB=fndng_tables
+	export fndngwrkDB=fndng_working
+	export fndngreadDB=fndng_views
+	export tdsDB=tds_tables
+	export tdsreadDB=tds_views
+
+	export clsfdDB=clsfd_tables
+	export clsfdworkingDB=clsfd_working
+	export clsfdreadDB=clsfd_batch_views
+	export clsfdaccessDB=clsfd_access_views
+
+	export odsaccessDB=ods_access_views
+	export odsreadDB=ods_batch_views
+	export odsDB=ods_tables
+	export odsworkingDB=ods_working_tables
+
+	export gem2DB=GEM2_Tables
+	export gem2workDB=GEM2_Working
+	export gem2readDB=GEM2_views
+
+	export reconDB=mth_recon_tables
+	export reconReadDB=mth_recon_views
+
+	export odsadminworkingDB=ebay_admin_w
+	export odsadminDB=ebay_admin_t
+	export odsadminreadDB=ebay_admin_v
+
+	export odstradingworkingDB=ebay_trading_w
+	export odstradingDB=ebay_trading_t
+	export odstradingreadDB=ebay_trading_v
+
+	export odstsworkingDB=ebay_ts_w
+	export odstsDB=ebay_ts_t
+	export odstsreadDB=ebay_ts_v
+	export odstsl3readDB=miwrk01
+	export odsuserDB=ebay_user_t
+	export odsuserworkingDB=ebay_user_w
+	export odsuserreadDB=ebay_user_v
+
+
+	export prsglblvwDB=prs_global_v
+	export odscsDB=ebay_cs_t
+	export odscsworkingDB=ebay_cs_w
+	export odscsreadDB=ebay_cs_v
+
+	export odsextrnlDB=ebay_extrnl_t
+	export odsextrnlworkingDB=ebay_extrnl_w
+	export odsextrnlreadDB=ebay_extrnl_v
+
+	export odscatyDB=ebay_caty_t
+	export odscatyworkingDB=ebay_caty_w
+	export odscatyreadDB=ebay_caty_v
+
+	export cdmreadDB=cdm_views
+	export wrktDB=wrk_t
+
+	export idmmiworkingDB=IDM_MI_W
+	export idmmiDB=IDM_MI_T
+	export idmmiaccessDB=IDM_MI_V
+
+	#export idmmiworkingDB=eBay_Shade_W
+	#export idmmiDB=eBay_Shade_T
+	#export idmmiaccessDB=eBay_Shade_V
+
+	export midwDB=MIDW_TABLES
+
+	export odscalDB=odw_cal_t
+	export odscalworkingDB=odw_cal_w
+	export odscalaccessDB=odw_cal_v
+
+	export odsitmDB=odw_itm_t
+	export odsitmworkingDB=odw_itm_w
+	export odsitmaccessDB=odw_itm_v
+
+	export odsodbDB=odw_odb_t
+	export odsodbworkingDB=odw_odb_w
+	export odsodbaccessDB=odw_odb_v
+
+	export odsspiDB=odw_spi_t
+	export odsspiworkingDB=odw_spi_w
+	export odsspiaccessDB=odw_spi_v
+
+	export odsothDB=odw_other_t
+	export odsothworkingDB=odw_other_w
+	export odsothaccessDB=odw_other_v
+
+	export odsgmzDB=odw_gomez_t
+	export odsgmzworkingDB=odw_gomez_w
+	export odsgmzaccessDB=odw_gomez_v
+
+	export odstivDB=odw_tivoli_t
+	export odstivworkingDB=odw_tivoli_w
+	export odstivaccessDB=odw_tivoletup
+	export odssbeDB=odw_sbe_t
+	export odssbeworkingDB=odw_sbe_w
+	export odssbeaccessDB=odw_sbe_v
+
+	export odsprstrDB=prstr_t
+	export odsprstrworkingDB=prstr_w
+	export odsprstrreadDB=prstr_v
+
+	export amestgDB=ame_dev_stage
+
+	export odsacxiomworkingDB=acxiom_w
+	export odsacxiomDB=acxiom_t
+	export odsacxiomreadDB=acxiom_v
+
+	export esa00refDB=esa00_reference
+	export esa01partyDB=esa01_party
+	export esa02locationDB=esa02_location
+
+	export wrk00refDB=wrk00_reference
+	export wrk01partyDB=wrk01_party
+	export wrk02locationDB=wrk02_location
+
+	export amestgDB=ame_dev_stage
+
+	export aproposworkingDB=Apropos_W
+	export aproposDB=Apropos_T
+	export aproposaccessDB=Apropos_V
+
+
+	export avayaworkingDB=Avaya_OperationalAnalyst_W
+	export avayaDB=Avaya_OperationalAnalyst_T
+	export avayaaccessDB=Avaya_OperationalAnalyst_V
+
+
+	export bmpworkingDB=BenchMarkPortal_W
+	export bmpDB=BenchMarkPortal_T
+	export bmpaccessDB=BenchMarkPortal_V
+
+
+	export cw2ahabworkingDB=eBay_CW2AHAB_W
+	export cw2ahabDB=eBay_CW2AHAB_T
+	export cw2ahabaccessDB=eBay_CW2AHAB_V
+
+
+	export mdmsworkingDB=eBay_MDMS_W
+	export mdmsDB=eBay_MDMS_T
+	export mdmsaccessDB=eBay_MDMS_V
+
+
+	export qaasworkingDB=eBay_QAAS_W
+	export qaasDB=eBay_QAAS_T
+	export qaasaccessDB=eBay_QAAS_V
+
+
+	export kanaworkingDB=Kana_Response_W
+	export kanaDB=Kana_Response_T
+	export kanaaccessDB=Kana_Response_V
+
+	export ppkanaworkingDB=Kana_Response_PayPal_W
+	export ppkanaDB=Kana_Response_PayPal_T
+	export ppkanaaccessDB=Kana_Response_PayPal_V
+
+
+	export kronosworkingDB=Kronos_WorkforceTimeKeeper_W
+	export kronosDB=Kronos_WorkforceTimeKeeper_T
+	export kronosaccessDB=Kronos_WorkforceTimeKeeper_V
+
+
+	export talismaworkingDB=Talisma_NetAgent_W
+	export talismaDB=Talisma_NetAgent_T
+	export talismaaccessDB=Talisma_NetAgent_V
+
+
+	export witnessworkingDB=Witness_eQuality_W
+	export witnessDB=Witness_eQuality_T
+	export witnessaccessDB=Witness_eQuality_V
+
+	export feralworkingDB=eBay_Feral_W
+	export feralDB=eBay_Feral_T
+	export feralaccessDB=eBay_Feral_V
+
+	export shadeworkingDB=eBay_Shade_W
+	export shadeDB=eBay_Shade_T
+	export shadeaccessDB=eBay_Shade_V
+
+	export midwmiesa01DB=MIESA01
+	export midwDB=MIDW_TABLES
+	export midwreadDB=MIDW_BATCH_VIEWS
+	export midwaccessDB=MIDW_ACCESS_VIEWS
+
+	export adtworkingDB=eBay_AgentDesktop_W
+	export adtDB=eBay_AgentDesktop_T
+	export adtaccessDB=eBay_AgentDesktop_V
+
+	export amsDB=DDM_AMS_T
+	export amsworkingDB=DDM_AMS_W
+	export amsaccessDB=PRS_AMS_V
+
+	export traderaDB=IDM_TRADERA_T
+	export traderaworkingDB=IDM_TRADERA_W
+	export traderaaccessDB=PRS_TRADERA_V
+
+	export adnDB=DDM_ADN_T
+	export adnworkingDB=DDM_ADN_W
+	export adnreadDB=PRS_DEV_V
+	export adnaccessDB=PRS_ADN_V
+
+	export prsDB=prs_t
+	export prsworkingDB=prs_w
+	export prsrstrctdvwDB=prs_restricted_v
+
+	export midwmiwrk01DB=MIWRK01
+	export midwprswrkDB=midw_prs_working
+
+	export midwmiprsDB=MIDW_PRS_WORKING
+
+	export shademetaDB=META
+	export shademetaworkingDB=MI_BATCH
+	export unitymetaDB=META
+	export unitymetaworkingDB=MI_BATCH
+
+	export odsrtmDB=ebay_rtm_t
+	export odsrtmreadDB=ebay_rtm_v
+	export odsrtmworkingDB=ebay_rtm_w
+
+        export odswebfDB=ebay_webf_t
+        export odswebfreadDB=ebay_webf_v
+        export odswebfworkingDB=ebay_webf_w
+
+	export IDM_NPS_V_DB=IDM_NPS_V
+	export IDM_NPS_T_DB=IDM_NPS_T
+	export IDM_NPS_W_DB=IDM_NPS_W
+
+	export esa03marketingDB=ESA03_Marketing
+	export wrk03workingDB=WRK03_Marketing
+
+	export esa05contactDB=ESA05_CONTACT_T
+
+	 export ddmtnsDB=DDM_TNS_T
+	export ddmtnsworkingDB=DDM_TNS_W
+	export ddmtnsreadDB=PRS_TNS_V
+
+	export odspaypalsourceDB=paypal_source_t
+	export odspaypalsourceworkingDB=paypal_source_w
+	export odspaypalsourceaccessDB=paypal_source_v
+
+	export odsebayincentiveDB=ebay_incentive_t
+	export odsebayincentiveworkingDB=ebay_incentive_w
+	export odsebayincentiveaccessDB=ebay_incentive_v
+	export dcDB=dc_tables
+
+	export roleHistDB=DSEC_TABLES
+
+	export ppDB=pp_tables
+	export ppaccessDB=pp_access_views
+	export ppreadDB=pp_batch_views
+	export odscorpworkingDB=corp_hr_w
+	export odscorpDB=corp_hr_t
+	export odscorpreadDB=corp_hr_v
+
+	export odsadDB=EBAY_AGENTDESKTOP_T
+	export prssecurevwDB=prs_secure_v
+	export readuudDB=WORKING
+
+	export ddmmotorsDB=DDM_MOTORS_T
+	export ddmmotorsworkingDB=DDM_MOTORS_W
+	export ddmmotorsreadDB=DDM_MOTORS_V
+	export prsmotorsaccessDB=PRS_MOTORS_V
+
+	export odsebayextrnlDB=EBAY_EXTRNL_T
+	export odsebayextrnlworkingDB=EBAY_EXTRNL_W
+	export odsebayextrnlreadDB=EBAY_EXTRNL_V
+	export odsapiDB=ebay_api_t
+	export odsapiworkingDB=ebay_api_w
+	export odsapireadDB=ebay_api_v
+
+	export esa04inventoryDB=esa04_inventory_t
+
+	export externalfeedworkingDB=EXTERNAL_FEED_W
+	export externalfeedDB=EXTERNAL_FEED_T
+	export externalfeedaccessDB=EXTERNAL_FEED_V
+
+	export iceDB=DDM_ICE_T
+	export icewrkDB=DDM_ICE_W
+
+	export prdmaccessDB=PRS_RESTRICTED_V
+	export prdmreadDB=PRS_BATCH_VIEWS_V
+	export prdmDB=DDM_PRDM_T
+
+	export dmsworkingDB=dms_working
+
+   export ddmcitrstDB=DDM_CITRST_T
+   export ddmcitrstworkingDB=DDM_CITRST_W
+   export ddmcitrstreadDB=PRS_CITRST_L2_V
+
+   export idmmiradDB=idm_mi_rad_t
+   export idmmiradworkingDB=idm_mi_rad_w
+
+   export odsadvtDB=EBAY_AD_T
+   export odsadvtworkingDB=EBAY_AD_W
+   export odsadvtreadDB=EBAY_AD_V
+
+### added for Marketplace reporting group
+
+export apanalyticsDB=ESA06_ANALYTICS_T
+
+export odsfindserviceDB=EBAY_FINDSERVICES_T
+export odsfindservicewrkDB=EBAY_FINDSERVICES_w
+export odsfindservicereadDB=EBAY_FINDSERVICES_V
+
+export odssitedatatoolDB=EBAY_SITEDATATOOL_T
+export odssitedatatoolwrkDB=EBAY_SITEDATATOOL_W
+export odssitedatatoolreadDB=EBAY_SITEDATATOOL_V
+
+export prsl3readDB=PRS_L3_REF_V
+export prsl2readDB=PRS_L2_V
+export odsclvDB=ebay_clv_t
+export odsclvworkingDB=ebay_clv_w
+export odsclvaccessDB=ebay_clv_v
+
+export idmunifyDB=IDM_UNIFY_T
+export idmunifyworkingDB=IDM_UNIFY_W
+
+export odsquDB=ebay_qu_t
+export odsquworkingDB=ebay_qu_w
+export odsqureadDB=ebay_qu_v
+
+###
+
+export rsltnDB=sp_rsltn_ci_t
+
+###
+### Created for CLV
+export clvDB=ddm_clv_t
+export clv_workingDB=ddm_clv_w
+
+export pp_nonpii_DB=pp_non_pii_views
+
+## Added for Asim PETDB support
+export petapDB=P_BIS_AP_T
+export petapwrkDB=P_BIS_AP_W
+
+export ubiDB=ubi_t
+
+## Created for odw
+export odscalDB=odw_cal_t
+export odscalworkingDB=odw_cal_w
+export odscalaccessDB=odw_cal_v
+export odsitmDB=odw_itm_t
+export odsitmworkingDB=odw_itm_w
+export odsitmaccessDB=odw_itm_v
+export odsmemscdDB=odw_memscd_t
+export odsmemscdworkingDB=odw_memscd_w
+export odsmemscdaccessDB=odw_memscd_v
+export odsodbDB=odw_odb_t
+export odsodbworkingDB=odw_odb_w
+export odsodbaccessDB=odw_odb_v
+export odsspiDB=odw_spi_t
+export odsspiworkingDB=odw_spi_w
+export odsspiaccessDB=odw_spi_v
+export odsothDB=odw_other_t
+export odsothworkingDB=odw_other_w
+export odsothaccessDB=odw_other_v
+export odsgmzDB=odw_gomez_t
+export odsgmzworkingDB=odw_gomez_w
+export odsgmzaccessDB=odw_gomez_v
+export odstivDB=odw_tivoli_t
+export odstivworkingDB=odw_tivoli_w
+export odstivaccessDB=odw_tivoli_v
+export odscmdbDB=odw_cmdb_t
+export odscmdbworkingDB=odw_cmdb_w
+export odscmdbaccessDB=odw_cmdb_v
+export odssbeDB=odw_sbe_t
+export odssbeworkingDB=odw_sbe_w
+export odssbeaccessDB=odw_sbe_v
+export odwprsworkingDB=odw_prs_working
+export odwDB=odw_tables
+export odwreadDB=odw_batch_views
+export odwaccessDB=odw_access_views
+export osa10DB=OSA10_Performance_Measure_T
+export wsaworkingDB=WSA_T
+export osa01DB=OSA01_Asset_T
+export osa02DB=OSA02_Location_T
+export osa03DB=OSA03_Pool_T
+export osa08DB=OSA08_Application_Tier_T
+export osa09DB=OSA09_Network_T
+export osa11DB=OSA11_Project_T
+export osa12DB=OSA12_Reference_T
+export wsareadDB=WSA_V
+export odwprsworkDB=ODW_PRS_W
+export odwprsDB=ODW_PRS_T
+export odwprsworkreadDB=ODW_PRS_WORK_V
+export odwprsaccessDB=ODW_PRS_V
+export prsDB=prs_t
+export prsworkingDB=prs_w
+export osa13DB=OSA13_Misc_T
+export odsessDB=odw_ess_t
+export odsessworkingDB=odw_ess_w
+export odsessaccessDB=odw_ess_v
+export odsvikingDB=odw_viking_t
+export odsvikingworkingDB=odw_viking_w
+export odsvikingaccessDB=odw_viking_v
+export ddmramDB=ddm_ram_t
+export corphrDB=corp_hr_t
+export daaccessDB=da_views
+export prsramaccessDB=prs_ram_v
+export dwmonaccessDB=dw_monitor_views
+export ddmramworkingDB=ddm_ram_w
+export dbcaccessDB=dbc
+
+# Added for Meena, DC team
+export imDB=IM_T
+export imworkingDB=IM_W
+
+# Added for Harmony as per Mei 2011-03-03
+
+export ddmbsnshlthDB=DDM_BSNS_HLTH_T
+export ddmbsnshlthwrkDB=DDM_BSNS_HLTH_W
+export prsbsnshlthreadDB=PRS_BSNS_HLTH_L2_V
+
+export osa04DB=OSA04_STORAGE_T
+export osa07DB=OSA07_DATABASE_TIER_T
+
+
+### SASRV13279660 -- By Yogesh - 17 Feb 2011
+export osa14DB=OSA14_BATCH_SCHEDULER_T
+export odsbatchschedulerDB=ODW_BATCH_SCHEDULER_T
+#### SASRV13301986 ####
+export odsbatchschedulerworkingDB=ODW_BATCH_SCHEDULER_W
+
+#### Added for Traffic PD 20110518 #####
+export trfc_et_tDB=trfc_et_t
+export trfc_et_wDB=trfc_et_w
+
+komartworkingDB=KOMART_W
+komartDB=KOMART_T
+komartaccessDB=KOMART_V
+
+# Added for UBI team 20110921
+export ubi_soj_reportDB=UBI_REPORT_T
+
+# Added for Wenhong 20111013
+export ubiaccessDB=ubi_v
+
+# Added for Anne Schwerin 20121004
+export ubiworkingDB=ubi_w
+
+# Added for EXL team as per Padma 20120206
+export exl_sas_db=app_exl_sas_t
+export exl_sas_workdb=app_exl_sas_w
+
+# Added from mobile scrum
+export ddmMblWorkDB=working
+export ddmMblDB=gdw_tables
+
+# Added for Wenhong - Shopping.com project ebay,inc 20120309
+export idmsdcDB=IDM_SDC_T 
+export idmsdcworkingDB=IDM_SDC_W 
+export idmsdcaccessDB=PRS_SDC_L2_V
+# Added for Trading
+export nebulaDB=triton
+export tepDB=tep_dev
+
+# ODW Project as per Kartik Sayee 2012-04-05
+export odskeyworkingDB=ODW_KEYNOTE_W                 
+export odskeyDB=ODW_KEYNOTE_T                 
+
+export seo_DB=ddm_seo_t
+export seo_workingDB=ddm_seo_w
+
+# Added by Hackley to support partitioned work tables, 20121218
+export partnworkingDB=working_uow
+export partnwrktDB=wrk_uow_t
+export partnwrk00refDB=wrk_uow00_reference
+export partnwrk01partyDB=wrk_uow01_party
+export partnwrk02locationDB=wrk_uow02_location
+export partnwrk03workingDB=WRK_uow03_Marketing
+
+# Added by Hackley, per request from Fang, Johnny, 20130129
+export gcamDB=IDM_CBT_AM_T
+export gcamWorkingDB=IDM_CBT_AM_W
+
+# Added by Hackley, per request from Schwerin, Anne, 20130215
+export ubiewaDB=ubi_ewa_t
+export ubiewaworkingDB=ubi_ewa_w
+export ubierrorDB=ubi_e
+
+# Requested by Singaravelu, Nithy 
+export appubiDB=APP_UBI_T 
+export appubiworkingDB=APP_UBI_W
+
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all DB assignment variables above this comment
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+    . $DW_MASTER_CFG/etlenv.$ENV_TYPE.teradata_target_variables.lis
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all workarounds below this comment
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+	export DW_MI_EXTRACT_DB=sandcat2
+
+#######################################################################
+
+if [[ $SUBJECT_AREA == dw_pg && $ETL_ID == @(dw_pg.jac_utf_test) ]]
+then
+  export DW_PRIMARY_DB=sandcat2_utf8
+fi
+
+# Added for Wenhong, 20120316
+# if [[ $SUBJECT_AREA == dw_sdc ]]
+# then
+#   export DW_TD5_DB=fermat
+# fi
+
+# Remove for Dilip Laksmikanth Rajgor 20120222
+#if [[ $SUBJECT_AREA == app_vertical ]]
+#then
+#  export DW_TD2_DB=oscar
+#fi
+
+# Added for Wenhong, 20120316
+if [[ $SUBJECT_AREA == dw_sdc ]]
+then
+  export DW_TD5_DB=fermat
+fi
+
+if [[ $SUBJECT_AREA == app_compass ]]
+then
+  export DW_TD5_DB=vivaldi
+fi

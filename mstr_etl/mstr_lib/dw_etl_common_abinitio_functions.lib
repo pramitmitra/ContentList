@@ -1,0 +1,132 @@
+######################################################################################
+######################################################################################
+####
+####	This file contains definitions for select Abinitio based functions used
+####    throughout the common CORE ETL Infrastructure. To instantiate
+####    them for use in your code, simply dot this file into your environment.
+####
+####    Example: . $DW_MASTER_LIB/dw_etl_common_abinitio_functions.lib
+####
+######################################################################################
+######################################################################################
+
+## typeset functions so they load only if needed
+typeset -fu m_mkdirifnotexist
+typeset -fu m_rmdirifexist
+typeset -fu m_rmdirtreeifexist
+
+## Define Functions Below This Line ##################################################
+
+function m_mkdirifnotexist {
+############################################################################
+# function to make a multifile directory if it does not already exist.
+# single parameter $_dir is the directory to be made.  Function will check
+# to see if directory already exists, and if it does not, will attempt to
+# create it.  If it already exists, function will print that out.
+# If creation fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory already existing is considered successful completion.
+#
+# Example: mkdirifnotexist $DW_SA_IN/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ ! -d $_dir ]
+  then
+    set +e
+    m_mkdir $_dir
+    m_mkdir_rcode=$?
+    set -e
+
+    if [ $m_mkdir_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to make directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly made directory $_dir"
+    fi
+  else
+    print "directory $_dir already exists"
+  fi
+  return 0
+}
+
+function m_rmdirifexist {
+############################################################################
+# function to remove an empty directory if it already exists.
+# single parameter $_dir is the directory to be removed. Function will check
+# to see if directory already exists, and if it does, will attempt to
+# remove it.  If it does not exist, function will print that out.
+# If remove fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory not existing is considered successful completion.
+# To remove a populated directory or directory tree, use
+# function rmdirtreeifexist
+#
+# Example: rmdirifexist $DW_SA_IN/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ -d $_dir ]
+  then
+    set +e
+    m_rmdir $_dir
+    m_rmdir_rcode=$?
+    set -e
+
+    if [ $m_rmdir_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to remove directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly removed directory $_dir"
+    fi
+  else
+    print "directory $_dir does not exist"
+  fi
+  return 0
+}
+
+function m_rmdirtreeifexist {
+############################################################################
+# function to remove a multifile directory tree if it already exists.
+# single parameter $_dir is the multifile directory tree to be removed.
+# Function will check to see if mfs directory already exists, and if it does,
+# will attempt to remove it along with its contents and any subdirs.
+# If it does not exist, function will print that out.
+# If remove fails, function will return error, and message the failure,
+# else it will message success, and return 0
+#
+# Directory not existing is considered successful completion.
+#
+# WARNING!!! USE WITH EXTREME CAUTION. REMOVED CONTENTS CANNOT
+# BE RECOVERED!!!
+#
+# Example: m_rmdirtreeifexist $DW_SA_IN08/mynewdir/
+#
+############################################################################
+_dir=$1
+
+  if [ -d $_dir ]
+  then
+    set +e
+    m_rm -R $_dir
+    m_rm_rcode=$?
+    set -e
+
+    if [ $m_rm_rcode != 0 ]
+    then
+      print "${0##*/}:  FATAL ERROR, Unable to remove directory $_dir." >&2
+      return 4
+    else
+      print "Successfuly removed directory $_dir"
+    fi
+  else
+    print "directory $_dir does not exist"
+  fi
+  return 0
+}

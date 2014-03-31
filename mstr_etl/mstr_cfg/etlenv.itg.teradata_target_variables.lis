@@ -1,0 +1,8 @@
+export DW_TD1_DB=crazy
+export DW_TD2_DB=wacko
+export DW_TD3_DB=fermat
+export DW_TD4_DB=fermat
+export DW_TD5_DB=fermat
+export DW_TD6_DB=wacko
+export DW_PRIMARY_DB=$DW_TD1_DB
+export DW_SECONDARY_DB=$DW_TD2_DB
