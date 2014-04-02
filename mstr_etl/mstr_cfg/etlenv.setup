@@ -1,0 +1,429 @@
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########      Edits to this file MUST be reviewed and approved by a member of the    ##########
+##########      Application Architecture Team. Please contact via email using          ##########
+##########      DL-eBay-IT-IMD-ApplArchTeam with ETLENV Setup in the subject line.     ########## 
+##########      Please specify Dev or Prod in your subject line.                       ##########
+##########                                                                             ##########
+##########      Failure to follow this procedure may result in code deletion wthout    ##########
+##########      warning.                                                               ##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+# Define initial PATH
+# export PATH=/usr/bin:/usr/sbin:/usr/ccs/bin:/usr/local/bin:/opt/sfw/bin:.
+export PATH=${PATH}:/opt/teradata/client/14.00/tbuild/bin:/usr/local/rvm/gems/ruby-1.9.3-p392@legato/bin:/usr/local/rvm/gems/ruby-1.9.3-p392@global/bin:/usr/local/rvm/rubies/ruby-1.9.3-p392/bin:/usr/local/rvm/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/bin
+
+# Setup SUBJECT_AREA and TABLE_ID if ETL_ID is defined
+export ETL_ID=${ETL_ID:-""}
+export SUBJECT_AREA=${ETL_ID%%.*}
+export TABLE_ID=${ETL_ID##*.}
+
+# Define servername and PLATFORM
+export servername=$(uname -n | awk -F \. '{print $1}')
+export PLATFORM=$(uname -p)
+
+# Define the etl hierarchy root and etl environment base
+HROOT=/dw/etl
+BASE=$HROOT/home
+
+
+#  read the environment value from the $HOME/.etlenv file.
+if [ -f $HOME/.etlenv ]
+then
+	read ETL_ENV < $HOME/.etlenv
+else
+	print
+	print "FATAL ERROR: $HOME/.etlenv file not found.  Could not set up environment." >&2
+	print
+	return 4
+fi
+
+# Export the etl environment
+export ETL_ENV
+
+# set ENV_TYPE based on ETL_ENV
+export ENV_TYPE=${ETL_ENV##*_}
+
+# $DW_HOME is set from the value in $HOME/.etlenv
+if [ -d $BASE/$ETL_ENV ]
+then
+	DW_HOME=$BASE/$ETL_ENV
+else
+	print
+	print "FATAL ERROR: Environment \"$ETL_ENV\" is not a valid environment.  Check the file $HOME/.etlenv." >&2
+	print
+	return 4
+fi
+
+# Define and export master level etl dirs 
+export DW_MASTER_BIN=$HROOT/mstr_bin
+export DW_MASTER_EXE=$HROOT/mstr_bin
+export DW_MASTER_CFG=$HROOT/mstr_cfg
+export DW_MASTER_DAT=$HROOT/mstr_dat
+export DW_MASTER_LIB=$HROOT/mstr_lib
+export DW_MASTER_SRC=$HROOT/mstr_src
+export DW_MASTER_TMP=$HROOT/mstr_tmp
+export DW_MASTER_LOG=$HROOT/mstr_log
+
+# Define and export environment specific etl dirs
+export DW_HOME
+export DW_ARC=$DW_HOME/arc
+export DW_DAT=$DW_HOME/dat
+export DW_DBC=$DW_HOME/dbc
+export DW_IN=$DW_HOME/in
+export DW_LIB=$DW_HOME/lib
+export DW_LOG=$DW_HOME/log
+export DW_CMP=$DW_HOME/cmp
+export DW_CMS=$DW_HOME/cms
+export DW_LOGINS=$DW_HOME/.logins
+export DW_MFS=$DW_HOME/mfs
+export DW_MP=$DW_HOME/mp
+export DW_OUT=$DW_HOME/out
+export DW_SRC=$DW_HOME/src
+export DW_TMP=$DW_HOME/tmp
+export DW_WATCH=$DW_HOME/watch
+
+export DW_IN02=$DW_MFS/fs02/in
+export DW_IN04=$DW_MFS/fs04/in
+export DW_IN08=$DW_MFS/fs08/in
+export DW_IN12=$DW_MFS/fs12/in
+export DW_IN16=$DW_MFS/fs16/in
+export DW_IN20=$DW_MFS/fs20/in
+export DW_IN24=$DW_MFS/fs24/in
+export DW_TMP02=$DW_MFS/fs02/tmp
+export DW_TMP04=$DW_MFS/fs04/tmp
+export DW_TMP08=$DW_MFS/fs08/tmp
+export DW_TMP12=$DW_MFS/fs12/tmp
+export DW_TMP16=$DW_MFS/fs16/tmp
+export DW_TMP20=$DW_MFS/fs20/tmp
+export DW_TMP24=$DW_MFS/fs24/tmp
+export DW_LAND=$DW_HOME/land
+export DW_ONETIME_IN=$DW_HOME/onetime_in
+export DW_ONETIME_OUT=$DW_HOME/onetime_out
+
+if [[ -n $ETL_ID ]]
+then
+  	export DW_BIN=$DW_HOME/bin 
+	export DW_CFG=$DW_HOME/cfg/$SUBJECT_AREA
+	export DW_SQL=$DW_HOME/sql/$SUBJECT_AREA
+	export DW_XFR=$DW_HOME/xfr/$SUBJECT_AREA
+	export DW_DML=$DW_HOME/dml/$SUBJECT_AREA
+	export DW_EXE=$DW_HOME/bin 
+ 
+ 	# Append PATH and Function PATH
+	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_BIN/$SUBJECT_AREA:$DW_EXE:$DW_BIN:$PATH
+else
+  	export DW_BIN=$DW_HOME/bin
+	export DW_CFG=$DW_HOME/cfg
+	export DW_SQL=$DW_HOME/sql
+	export DW_XFR=$DW_HOME/xfr
+	export DW_DML=$DW_HOME/dml
+	export DW_EXE=$DW_HOME/bin
+	
+	# Append PATH and Function PATH
+	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_EXE:$DW_BIN:$PATH
+
+fi
+
+
+
+
+
+
+export FPATH=$DW_LOGINS:$DW_MASTER_LIB:$DW_LIB
+
+# Export Infra indicator for logs
+export DWI_INFRA_IND="|INFRA|"
+
+#include master library functions
+. $DW_MASTER_LIB/dw_etl_common_functions.lib
+
+# Define miscellaneous
+export NR_CATYS=27 #-- number of caty hosts
+
+# Define modular setup file list and force exit variables
+# FORCE_EXIT is needed because a non-zero return within a loop causes the calling shell
+# to shut down rather than simply exiting setup with an error. 
+MODULAR_SETUP_FILES_LIST=$DW_MASTER_CFG/etlenv.modular_setup_files.lis
+FORCE_EXIT=0
+
+
+# Read through modular setup files list and call each one
+# Fail with appropriate error message upon encountering an entry in the list that doesn't exist 
+while read MODULAR_FILE_TYPE MODULAR_FILENAME
+do
+	DW_MODULAR_FILENAME_PATH=$(eval print $DW_MASTER_CFG/$MODULAR_FILENAME)
+	if [ -f $DW_MODULAR_FILENAME_PATH ]
+	then
+		. $DW_MODULAR_FILENAME_PATH 
+	else
+		print
+		print "FATAL ERROR: $MODULAR_FILE_TYPE $DW_MODULAR_FILENAME_PATH does not exist on $servername." >&2
+		print
+		FORCE_EXIT=1
+		break
+	fi
+done < $MODULAR_SETUP_FILES_LIST
+
+if [ $FORCE_EXIT != 0 ]
+then
+	return 4
+fi
+
+# DW_OLD_* variables set for creating watch files on the current gen system while still needed
+export DW_OLD_WATCH=/export/home/${DW_OLD_USER:-dw_adm}/WatchFiles
+
+
+# parseTDLogonString will parse a Teradata logon file returning the username and password
+function parseTDLogonString
+{
+	LOGINFO=$1
+
+	typeset -LR TPASS TUSER
+
+	TPASS=${LOGINFO##*,*([ 	])}
+	TPASS=${TPASS%%*([ 	])\;}
+	TUSER=${LOGINFO%%*([ 	]),*}
+	TUSER=${TUSER##*([ 	])}
+	TUSER=${TUSER##*+([ 	])}
+	TUSER=${TUSER##*/}
+	export TD_USERNAME=${TUSER%%*([ 	])}
+	export TD_PASSWORD=${TPASS%%*([ 	])}
+
+}
+
+
+# parseLogonFile function will read the contents of a Teradata logonfile and pass it to 
+# parseTDLogonString function
+function parseLogonFile
+{
+	LOGONFILE=$1
+
+	typeset -LR LOGINFO
+
+	if [ -f $LOGONFILE ]
+	then
+		LOGINFO=$(<$LOGONFILE)
+		parseTDLogonString "$LOGINFO"
+	fi
+}
+
+###################################
+###################################
+# Verify SA Level OS batch ID 
+####################################
+if [[ -n $ETL_ID ]]
+then
+ 
+  myName=$(whoami)
+  OS_BATCH_SA_FILE=$DW_LOGINS/$myName.sa.logon
+
+
+  dwi_assignTagValue -p ALL_LEVEL -t all -f $OS_BATCH_SA_FILE -s N -d 0
+  if [[ $ALL_LEVEL != 1  ]]
+  then 
+     dwi_assignTagValue -p SA_LEVEL -t $SUBJECT_AREA -f $OS_BATCH_SA_FILE -s N -d 0
+     if [[ $SA_LEVEL != 1 ]]
+     then 
+        dwi_assignTagValue -p ETL_LEVEL -t $ETL_ID -f $OS_BATCH_SA_FILE -s N -d 0
+        if [[ $ETL_LEVEL != 1  ]]
+        then 
+                echo "This ETL job not permitted to run via OS batch account: $myName"
+                return 4
+        fi
+     fi         
+  fi
+
+fi 
+  
+  
+
+# Define Teradata logon info location. This provides an override when running jobs outside of
+# batch or the scheduling tool. The existence of $HOME/.tdlogon will trigger the contents
+# of that to be used rather than the subject area defined logon file found in $DW_LOGINS
+if [[ -n $ETL_ID ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p TD_LOGON_FILE_ID -t TD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+
+  if [[ -n ${TD_LOGON_FILE_OVERRIDE:-""} ]]
+  then
+    TD_LOGON_FILE_ID=$TD_LOGON_FILE_OVERRIDE
+  fi
+else
+  TD_LOGON_FILE_ID=0
+fi
+
+if [ -f $HOME/.tdlogon ]
+then
+        export TD_LOGONFILE=$HOME/.tdlogon
+        parseLogonFile $TD_LOGONFILE
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon ]
+then
+        read TD_USERNAME TD_PASSWORD FILLER <  $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.td.logon ]
+then
+        read TD_USERNAME TD_PASSWORD FILLER <  $DW_LOGINS/$SUBJECT_AREA.0.td.logon
+else
+        if [ -f $DW_LOGINS/${SUBJECT_AREA} ]
+        then
+                LOGINFO=$(<$DW_LOGINS/${SUBJECT_AREA})
+                parseTDLogonString "$LOGINFO"
+        fi
+fi
+export TD_USERNAME TD_PASSWORD
+
+# Parse hadoop batch account
+if [[ -n $ETL_ID ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p HD_LOGON_FILE_ID -t HD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+else
+  HD_LOGON_FILE_ID=0
+fi
+
+if [ -f $DW_LOGINS/$SUBJECT_AREA.$HD_LOGON_FILE_ID.hd.logon ]
+then
+        read HD_USERNAME HD_QUEUE <  $DW_LOGINS/$SUBJECT_AREA.$HD_LOGON_FILE_ID.hd.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.hd.logon ]
+then
+        read HD_USERNAME HD_QUEUE <  $DW_LOGINS/$SUBJECT_AREA.0.hd.logon
+fi   
+
+export HD_USERNAME HD_QUEUE
+
+
+# Provides TNSNAMES style resolution for Teradata systems. Not yet widely used.
+if [ -f $DW_CFG/tnsnames.td ]
+then
+	grep "^[^#]" $DW_CFG/tnsnames.td |while read TNS_NAME_TMP TD_NAME_TMP
+	do
+		if [ -n $TD_NAME_TMP ]
+		then
+		export $TNS_NAME_TMP=$TD_NAME_TMP
+		fi
+	done
+fi
+
+
+# Define MySQL logon info location.
+
+if [[ -n $ETL_ID ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p MYSQL_LOGON_FILE_ID -t MYSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+else
+  MYSQL_LOGON_FILE_ID=0
+fi
+
+if [ -f $HOME/.mysqllogon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $HOME/.mysqllogon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon
+fi
+export MYSQL_USERNAME MYSQL_PASSWORD
+
+
+# database configuration environment
+export ODBCINI=$DW_MASTER_CFG/odbc.ini
+export TNS_ADMIN=$DW_CFG
+export ORATAB=$TNS_ADMIN
+export LIBCURL_PATH=/var/opt/curl/lib:/usr/local/lib
+export TPT_HOME=$TERADATA_HOME/tbuild
+export PATH=$ORACLE_HOME/bin:$TPT_HOME/bin:$TERADATA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$ORACLE_HOME:$ORACLE_HOME/lib:$ORACLE_HOME/lib32:$LIBCURL_PATH:$TPT_HOME/lib:$TERADATA_HOME/lib:${TPT_LD_LIBRARY_PATH:-}
+export NLSPATH=$TPT_NLSPATH
+export MIDW_AD_FLOAD_RECORD_COUNT=5000
+
+# min and max date variables for teradata sql
+export DW_MINDATE=1900-01-01
+export DW_MAXDATE=2099-12-31
+
+# Allow for override of DW_PRIMARY_DB at personal user level. Dev only.
+if [ -f $HOME/.tdprim ]
+then
+   export DW_PRIMARY_DB=$(<$HOME/.tdprim)
+fi
+
+# remarking out for 2.15 testing with standard dbc files
+# Special workaround for version 2.14. Should be removed when we go to abinitio 2.15
+#if [[ X$SUBJECT_AREA == @(Xdw_mi_esa01|Xdw_midw_prs|Xdw_idm_mi|Xo_avaya|Xo_bmp|Xo_ad|Xo_cw2ahab|Xo_feral|Xo_qaas|Xo_kana|Xo_kana_pp|Xo_kronos|Xo_talisma|Xo_witness)  && ${0##*/} == single_table_load.ksh ]]
+#then
+#   export DW_PRIMARY_DB=${DW_PRIMARY_DB}_array
+#   export DW_SECONDARY_DB=${DW_SECONDARY_DB}_array
+#fi
+
+# Single TD Unload has been deprecated. See if we can remove this
+if [[ X$SUBJECT_AREA == Xdw_uap && ${0##*/} == single_td_unload.ksh ]]
+then
+	export DW_PRIMARY_DB=${DW_PRIMARY_DB}_extract
+	export DW_SECONDARY_DB=${DW_SECONDARY_DB}_extract
+        export DW_TD1_DB=${DW_TD1_DB}_extract
+	export DW_TD2_DB=${DW_TD2_DB}_extract
+	export DW_TD3_DB=${DW_TD3_DB}_extract	
+fi
+
+
+if [[ X$SUBJECT_AREA == Xdw_clsfd ]]
+then
+        export DW_SECONDARY_DB=jinxy
+fi
+
+# Singularity Specific Updates
+#export TPT_LD_LIBRARY_PATH="/opt/teradata/client/14.10/tbuild/lib64:/opt/teradata/client/14.10/lib64"
+#export TPT_NLSPATH="/opt/teradata/client/14.10/tbuild/msg64/%N"
+
+# Hadoop Specific Updates
+export HADOOP_CLASSPATH=""
+export DW_HD1_DB=ares
+export DW_HD2_DB=apollo
+export DW_HD3_DB=artemis
+
+export HD1_NN_URL="hdfs://ares-nn.vip.ebay.com:8020"
+export HD2_NN_URL="hdfs://apollo-phx-nn.vip.ebay.com:8020"
+export HD3_NN_URL="hdfs://lvsdpehdc25en0001.lvs.ebay.com:8020"
+
+svr_loc=$(nslookup $servername | grep "^Name:" | cut -f2 | cut -d'.' -f2)
+set +eu
+if [[ $svr_loc == "phx" ]]
+then
+  . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
+else
+  . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
+fi
+
+if [[ -n ${JOB_ENV:-""} ]]
+then
+  if [[ $JOB_ENV == "hd1" ]]
+  then
+    . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
+  elif [[ $JOB_ENV == "hd2" ]]
+  then
+    . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
+  elif [[ $JOB_ENV == "hd3" ]]
+  then
+    . $DW_MASTER_CFG/.${DW_HD3_DB}_env.sh
+  fi
+fi
+#set -eu
+
+# Specify which job environment, if any, where automatic deletion from partitioned Work tables should be skipped
+# If disabled on more than one instance, specify pipe-delimited list, e.g., export DISABLE_PARTITION_TABLE_CLEANUP="td2|td3"
+export DISABLE_PARTITION_TABLE_CLEANUP=""
+
+# Specify the default retention period (in days) for partitioned Work tables
+export PARTITION_TABLE_RETENTION="7"
+
+export PS1="[\$(date +%H:%M)]:[${USER}@${HOSTNAME}:\${PWD##*/}]\$ "

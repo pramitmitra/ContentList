@@ -1,0 +1,26 @@
+case $servername in
+
+        weber001)
+                case $APP_ENV in
+                        dev)
+                                export SGDBTYPE=td;;
+
+                        *)
+                                print
+                                echo "$0: Warning: Server specific variables for environment \"$APP_ENV\" not configured on server $servername. Check the file $DW_MASTER_CFG/appenv.server.setup." >&2 
+                esac;;
+
+
+        tobenamed)
+                case $APP_ENV in
+                        blah)
+                                export SGDBTYPE=td;;
+                        *)
+                                print
+                                echo "$0: Warning: Server specific variables for environment \"$APP_ENV\" not configured on server $servername. Check the file $SG_MASTER_CFG/appenv.server.setup." >&2
+                                print;;
+                esac;;
+
+        *)
+
+esac

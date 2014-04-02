@@ -1,0 +1,244 @@
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########      Edits to this file MUST be reviewed and approved by a member of the    ##########
+##########      Application Architecture Team. Please contact via email using          ##########
+##########      DL-eBay-IT-IMD-ApplArchTeam with APPENV Setup in the subject line.     ########## 
+##########                                                                             ##########
+##########      Failure to follow this procedure may result in code deletion wthout    ##########
+##########      warning.                                                               ##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+# Define initial PATH
+export PATH=/usr/sbin:$PATH:/opt/sfw/bin:/usr/ucb:/etc:/usr/ccs/bin:.
+
+# Postgres
+#PATH=$PATH:/usr/local/pgsql/bin
+LD_LIBRARY_PATH=/usr/local/lib
+
+# Greenplum
+PATH=$PATH:/usr/local/greenplum-db/bin
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/greenplum-db/lib
+
+# Vim
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/sfw/lib
+
+# Oracle
+ORACLE_HOME=/export/home/oracle/app/oracle/product/default
+PATH=$PATH:$ORACLE_HOME
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME
+export DYLD_LIBRARY_PATH=$ORACLE_HOME
+
+export TPT_LD_LIBRARY_PATH=/opt/teradata/client/default/tbuild/lib64:/opt/teradata/client/default/lib64
+export TPT_NLSPATH="/opt/teradata/client/default/tbuild/msg64/%N"
+export SSH_PATH="/bin/ssh"
+export KSH_PATH="/usr/bin/ksh"
+
+
+export ORACLE_HOME
+export PATH
+export LD_LIBRARY_PATH
+
+APP_AREA=${APP_AREA:-dummy}
+
+# Define servername and PLATFORM
+export servername=$(uname -n | awk -F \. '{print $1}')
+export PLATFORM=$(uname -p)
+
+
+# Define the app hierarchy root and app environment base
+DROOT=/sg
+HROOT=/sg/etl
+BASE=$HROOT/home
+
+
+#  read the environment value from the $HOME/.appenv file.
+if [ -f $HOME/.appenv ]
+then
+        read APP_ENV < $HOME/.appenv
+else
+        print
+        print "FATAL ERROR: $HOME/.appenv file not found.  Could not set up environment." >&2
+        print 
+        return 4
+fi
+
+# Export the app environment
+export APP_ENV
+
+
+# $SG_HOME is set from the value in $HOME/.appenv
+if [ -d $BASE/$APP_ENV ]
+then
+        SG_HOME=$BASE/$APP_ENV
+else
+        print 
+        print "FATAL ERROR: Environment \"$APP_ENV\" is not a valid environment.  Check the file $HOME/.appenv." >&2
+        print
+        return 4
+fi
+
+
+# Define and export master level app dirs 
+export SG_MASTER_BIN=$DROOT/mstr_bin
+export SG_MASTER_EXE=$DROOT/mstr_bin
+export SG_MASTER_CFG=$DROOT/mstr_cfg
+export SG_MASTER_DAT=$DROOT/mstr_dat
+export SG_MASTER_LIB=$DROOT/mstr_lib
+export SG_MASTER_SRC=$DROOT/mstr_src
+export SG_MASTER_TMP=$DROOT/mstr_tmp
+
+
+# Define and export environment specific app dirs
+export SG_HOME
+export SG_ARC=$SG_HOME/arc
+export SG_BIN=$SG_HOME/bin
+export SG_EXE=$SG_HOME/bin
+export SG_CFG=$SG_HOME/cfg
+export SG_DAT=$SG_HOME/dat
+export SG_DBC=$SG_HOME/dbc
+export SG_DML=$SG_HOME/dml
+export SG_IN=$SG_HOME/in
+export SG_LIB=$SG_HOME/lib
+export SG_LOG=$SG_HOME/log
+export SG_LOGINS=$SG_HOME/.logins
+export SG_OUT=$SG_HOME/out
+export SG_SQL=$SG_HOME/sql
+export SG_SRC=$SG_HOME/src
+export SG_TMP=$SG_HOME/tmp
+export SG_WATCH=$SG_HOME/watch
+export SG_XFR=$SG_HOME/xfr
+export SG_XML=$SG_HOME/xml
+export SG_QUEUES=$SG_HOME/queues
+
+# Append PATH and Function PATH
+export PATH=$SG_MASTER_EXE:$SG_EXE:$PATH
+export FPATH=$SG_LOGINS:$SG_MASTER_LIB:$SG_LIB
+
+
+# Define miscellaneous
+export NR_CATYS=27 #-- number of caty hosts
+
+# Define modular setup file list and force exit variables
+# FORCE_EXIT is needed because a non-zero return within a loop causes the calling shell
+# to shut down rather than simply exiting setup with an error. 
+MODULAR_SETUP_FILES_LIST=$SG_MASTER_CFG/appenv.modular_setup_files.lis
+FORCE_EXIT=0
+
+
+# Read through modular setup files list and call each one
+# Fail with appropriate error message upon encountering an entry in the list that doesn't exist 
+while read MODULAR_FILE_TYPE MODULAR_FILENAME
+do
+        SG_MODULAR_FILENAME_PATH=$(eval print $SG_MASTER_CFG/$MODULAR_FILENAME)
+        if [ -f $SG_MODULAR_FILENAME_PATH ]
+        then
+                . $SG_MODULAR_FILENAME_PATH 
+        else
+                print
+                print "FATAL ERROR: $MODULAR_FILE_TYPE $SG_MODULAR_FILENAME_PATH does not exist on $servername." >&2
+                print
+                FORCE_EXIT=1
+                break
+        fi
+done < $MODULAR_SETUP_FILES_LIST
+
+if [ $FORCE_EXIT != 0 ]
+then
+        return 4
+fi
+
+function parseTDLogonFile
+{
+        LOGINFO=$1
+
+
+        TPASS=${LOGINFO##*,*([  ])}
+        TPASS=${TPASS%%*([      ])\;}
+        TUSER=${LOGINFO%%*([     ]),*}
+        TUSER=${TUSER##*([      ])}
+        TUSER1=${TUSER##*+([     ])}
+        TUSER=${TUSER1##*/}
+	    export TD_DBNAME=${TUSER1%%/*}
+        export TD_USERNAME=${TUSER%%*([         ])}
+        export TD_PASSWORD=${TPASS%%*([         ])}
+}
+
+# parseLogonFile function will read the contents of a Postgres logonfile and pass it to
+# parsePGLogonString function
+function parsePGLogonFile
+{
+        LOGONFILE=$1
+
+        if [ -f $LOGONFILE ]
+        then
+		export PGUSERNAME=$(grep "^USERNAME:\>" $LOGONFILE | tr [:upper:] [:lower:] | read TAG1 USERNAME; print ${USERNAME:-0})
+		export PGPASSWORD=$(grep "^PASSWORD:\>" $LOGONFILE | tr [:upper:] [:lower:] | read TAG1 PASSWORD; print ${PASSWORD:-0})
+
+	else
+		print "Error parsing PGUSERNAME and PGPASSWORD from $LOGONFILE"
+        fi
+}
+
+# Define Teradata or Postgres logon info location. This provides an override when running jobs outside of
+# batch or the scheduling tool. The existence of $HOME/.tdlogon or $HOME/.pglogon will trigger the contents
+# of that to be used rather than the application area defined logon file found in $SG_LOGINS
+if [ $SGDBTYPE == 'pg' ]
+then
+	if [ -f $HOME/.pglogon ]
+	then
+        	export PG_LOGONFILE=${PG_LOGONFILE:-$HOME/.pglogon}
+        	parsePGLogonFile $PG_LOGONFILE
+	else
+
+		export PG_LOGONFILE=$SG_LOGINS/$APP_AREA
+		parsePGLogonFile $PG_LOGONFILE
+	fi
+		
+elif [ $SGDBTYPE == 'td' ]
+then
+
+	if [ -f $HOME/.tdlogon ]
+	then
+        	export TD_LOGONFILE=${TD_LOGONFILE:-$HOME/.tdlogon}
+        	parseTDLogonFile $TD_LOGONFILE
+	else
+       
+                export TD_LOGONINFO=$(<$SG_LOGINS/$APP_AREA)
+                parseTDLogonFile "$TD_LOGONINFO"
+
+        fi
+
+else
+        print "No login found for $SGDBTYPE application area $APP_AREA"  >&2
+fi
+
+# Provides TNSNAMES style resolution for Teradata systems. Not yet widely used.
+if [ -f $SG_CFG/tnsnames.td ]
+then
+        grep "^[^#]" $SG_CFG/tnsnames.td |while read TNS_NAME_TMP TD_NAME_TMP
+        do
+                if [ -n $TD_NAME_TMP ]
+                then
+                export $TNS_NAME_TMP=$TD_NAME_TMP
+                fi
+        done
+fi
+
+
+# database configuration environment
+export ODBCINI=$SG_MASTER_CFG/odbc.ini
+export TNS_ADMIN=$SG_CFG
+export ORATAB=$TNS_ADMIN
+export PATH=$ORACLE_HOME/bin:$PATH
+export LIBCURL_PATH=/var/opt/curl/lib:/usr/local/lib
+export TPT_HOME=""
+export PATH=$TPT_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib:$ORACLE_HOME/lib32:$LIBCURL_PATH:$TPT_HOME/lib:/usr/local/gp/greenplum-db/lib
+export PGPORT=1025

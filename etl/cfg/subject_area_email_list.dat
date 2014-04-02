@@ -1,0 +1,305 @@
+#-----------------------------------------------------------------------------------------------------------
+# Please add in sorted order. Use this format for SAE Distribution Lists: dl-ebay-mpt-imd-<SUBJECT AREA>-SAE
+# OnCall: Adding/removing subject area email recipients should be done by SAE Distribution Lists.
+#         If any SAE's do not have a DL, please ask them to create one using Exchange or 
+#         http://dlmanager.corp.ebay.com/SSME, and to update this file with the new DL.
+#-----------------------------------------------------------------------------------------------------------
+app_compass     dl-eBay-APD-Compass-SAE@corp.ebay.com 
+trfc_seo       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-TRFC-SEO-DEV@corp.ebay.com
+dw_cps         dl-eBay-mpt-imd-CPS-SAE
+a_ebay_webf    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-A_EBAY_WEBF-SAE@ebay.com     
+ddm_tns        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DDM_TNS-SAE@ebay.com     
+dw_ab          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-AcctBalSAE@ebay.com    13636645778@shmobile.com 
+dw_abtm        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ABTM-SAE@ebay.com     
+dw_acblns      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ACBLNS-SAE@ebay.com     
+dw_ngdf        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-MPT-IMD-NGDF-SAE@ebay.com
+dw_acct        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ACCT-SAE@ebay.com    13636645778@shmobile.com 
+dw_acct_link   dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ACCT_LINK-SAE@ebay.com     
+dw_adj         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ADJ-SAE@ebay.com     
+dw_adn         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ADN-SAE@ebay.com     
+dw_ame         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-AME-SAE@ebay.com     
+dw_ams         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-AMS-SAE@ebay.com     
+dw_api         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-API-SAE@ebay.com    13636645778@shmobile.com 
+dw_apib        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-APIB-SAE@ebay.com     
+dw_apt         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-APT-SAE@ebay.com     
+dw_ase         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ASE-SAE@ebay.com     
+dw_attr        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ATTR-SAE@ebay.com    13636645778@shmobile.com 
+dw_attr_priority   dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ATTR-SAE@ebay.com    13636645778@shmobile.com
+dw_bid         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-BID-SAE@ebay.com    13636645778@shmobile.com 
+dw_bids        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-BID-SAE@ebay.com    13636645778@shmobile.com 
+dw_bip         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-BIP-SAE@ebay.com    13636645778@shmobile.com 
+dw_bw          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ADMteam@ebay.com
+dw_cal         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CAL-SAE@ebay.com    13636645778@shmobile.com 
+dw_cart        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-CART-SAE@ebay.com    13636645778@shmobile.com 
+dw_cbt         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CBT-SAE@ebay.com     
+dw_cdl         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     yunwang1@ebay.com feile.wang@ebay.com uppili.sundaram@ebay.com
+dw_chko        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CHKO-SAE@ebay.com    13636645778@shmobile.com 
+dw_ck          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CK-SAE@ebay.com     
+dw_clsfd       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CLSFD-SAE@ebay.com    13636645778@shmobile.com 
+dw_cmc         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CMC-SAE@ebay.com     
+dw_cofala      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-COFALA-SAE@ebay.com     
+dw_comm        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-COMM-SAE@ebay.com    13636645778@shmobile.com 
+dw_corean      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-COREAN-SAE@ebay.com
+dw_coreimk     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-COREIMK-SAE@ebay.com   
+dw_cpp         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CPP-SAE@ebay.com
+dw_cs          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CS-SAE@ebay.com     
+dw_cte         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CTE-SAE@ebay.com     
+dw_ctlg        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CTLG-SAE@ebay.com     
+dw_cu          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CS-SAE@ebay.com
+dw_da          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DA-SAE@ebay.com     
+dw_dc          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DC-SAE@ebay.com     
+dw_ddg         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DDG-SAE@ebay.com    13636645778@shmobile.com 
+dw_dim         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DIM-SAE@ebay.com    13636645778@shmobile.com 
+dw_dlp         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DLP-SAE@ebay.com     
+dw_dp          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DP-SAE@ebay.com    13636645778@shmobile.com 
+dw_dqrc        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DQRC-SAE@ebay.com     
+dw_dsec        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DSEC-SAE@ebay.com     
+dw_ebx         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EBX-SAE@ebay.com    13636645778@shmobile.com 
+dw_eip         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EIP-SAE@ebay.com     
+dw_ems         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EMS-SAE@ebay.com     
+dw_eps         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EPS-SAE@ebay.com     
+dw_ere         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-ERE-SAE@ebay.com     
+dw_esa00       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ESA00-SAE@ebay.com     
+dw_esa01       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ESA01-SAE@ebay.com     
+dw_esa02       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ESA02-SAE@ebay.com     
+dw_esm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ESM-SAE@ebay.com     
+dw_eucrm       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EUCRM-SAE@ebay.com iwang@ebay.com deliang@ebay.com  13636645778@shmobile.com 
+dw_event       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EVENT-SAE@ebay.com     
+dw_fam         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FAM-SAE@ebay.com     
+dw_fast_load   dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FAST_LOAD-SAE@ebay.com     
+dw_fdbk        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FDBK-SAE@ebay.com     
+dw_fdbkcfs     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FDBK-SAE@ebay.com
+dw_fetr        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FETR-SAE@ebay.com     
+dw_ffu         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FFU-SAE@ebay.com     
+dw_find        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FIND-SAE@ebay.com  dl-ebay-mpt-imd-batchsupport@ebay.com  
+dw_fndng       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FNDNG-SAE@ebay.com     
+dw_gb          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-GB-SAE@ebay.com    13636645778@shmobile.com 
+dw_gem         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-GEM-SAE@ebay.com     
+dw_gem2        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-GEM2-SAE@ebay.com     
+dw_halfi       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-HALFI-SAE@ebay.com     
+dw_idm_mi      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com 
+dw_imk         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-IMK-SAE@ebay.com    13636645778@shmobile.com 
+dw_ims         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-IMS-SAE@ebay.com    13636645778@shmobile.com 
+dw_inctv       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-INCTV-SAE@ebay.com     
+dw_infra       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-MPT-APD-AnalyticsApplArch@ebay.com    13636645778@shmobile.com 
+dw_items       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ITEMS-SAE@ebay.com    13636645778@shmobile.com 
+dw_itrpt       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ITRPT-SAE@ebay.com     
+dw_kwdm        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-APD-KWDM-SAE@ebay.com    DL-eBay-Traffic-COE-DX-PS@corp.ebay.com  dl-ebay-mpt-apd-tep-sae@ebay.com
+dw_le          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LE-SAE@ebay.com    13636645778@shmobile.com 
+dw_lkp         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LKP-SAE@ebay.com    13636645778@shmobile.com 
+dw_lstg        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LSTG-SAE@ebay.com    dl-ebay-mpt-imd-GEM2-SAE@ebay.com   13636645778@shmobile.com 
+dw_lstg_m      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LSTG_M-SAE@ebay.com     
+dw_lstg_nonsla dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LSTG_NONSLA-SAE@ebay.com    13636645778@shmobile.com 
+dw_lstg_s      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-LSTG_S-SAE@ebay.com     
+dw_mao         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MAO-SAE@ebay.com     
+dw_mc          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MC-SAE@ebay.com     
+dw_mdm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-MPT-IMD-MDM-SAE@ebay.com
+dw_merch       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MERCH-SAE@ebay.com     
+dw_mi          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+dw_mi_esa01    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+dw_midw_prs    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+dw_midw_prs_ji dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com  
+dw_mip         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MIP-SAE@ebay.com    13636645778@shmobile.com 
+dw_motors      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-DW_MOTORS-SAE@ebay.com  
+dw_mre      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MRE-SAE@ebay.com  
+dw_myebay      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MYEBAY-SAE@ebay.com     
+dw_nhbr        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-NHBR-SAE@ebay.com     
+dw_npo         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-NPO-SAE@ebay.com    13636645778@shmobile.com 
+dw_nps         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-NPS-SAE@ebay.com     
+dw_nss         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-NSS-SAE@ebay.com     
+dw_odr         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ODR-SAE@ebay.com    13636645778@shmobile.com 
+dw_page        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PAGE-SAE@ebay.com     
+dw_pb          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PB-SAE@ebay.com     
+dw_pcp         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PCP-SAE@ebay.com     
+dw_pg          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PG-SAE@ebay.com     
+dw_po          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PO-SAE@ebay.com     
+dw_pp          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PP-SAE@ebay.com     
+dw_prs         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PRS-SAE@ebay.com     
+dw_ps          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PS-SAE@ebay.com     
+dw_pv          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PV-SAE@ebay.com    13636645778@shmobile.com 
+dw_pymt        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PYMT-SAE@ebay.com     
+dw_raf         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-RAF-SAE@ebay.com     
+dw_recon       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-MRECON-SAE@ebay.com 
+dw_reg         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-REG-SAE@ebay.com     
+dw_rfm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-RFM-SAE@ebay.com     
+dw_rtm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-EBAY-IT-IMD-RTM-SAE@ebay.com
+dw_rtm_prs     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-RTM_PRS-SAE@ebay.com     
+dw_rtp         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-RTP-SAE@ebay.com    13636645778@shmobile.com 
+dw_sa          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SA-SAE@ebay.com     
+dw_sar         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SAR-SAE@ebay.com     
+dw_sbscr       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SBSCR-SAE@ebay.com    13636645778@shmobile.com 
+dw_sc          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SC-SAE@ebay.com     
+dw_se          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SE-SAE@ebay.com    DL-eBay-Traffic-Email-SE-SAE@ebay.com 
+dw_sem         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SEM-SAE@ebay.com     
+dw_sf          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SF-SAE@ebay.com    13636645778@shmobile.com 
+dw_sh          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SH-SAE@ebay.com     
+dw_shop        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SHOP-SAE@ebay.com     
+dw_shpmt       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SHPMT-SAE@ebay.com    13636645778@shmobile.com DL-eBay-CCOE-DDI-SHPMT-SAE@ebay.com
+dw_sil         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   kicurtis@ebay.com wcao@ebay.com
+dw_smpl        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SMPL-SAE@ebay.com     
+dw_soj         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SOJ-SAE@ebay.com    13636645778@shmobile.com 
+dw_soj_sla     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SOJ-SAE@ebay.com    13636645778@shmobile.com
+dw_soj_el      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SOJ_EL-SAE@ebay.com     
+dw_soj_hist    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SOJ_HIST-SAE@ebay.com    13636645778@shmobile.com 
+dw_sr          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SR-SAE@ebay.com     
+dw_srchcst     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SRCHCST-SAE@ebay.com     
+dw_ss          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SS-SAE@ebay.com     
+dw_stor        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-STOR-SAE@ebay.com    13636645778@shmobile.com 
+dw_subs        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SUBS-SAE@ebay.com     
+dw_surv        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SURV-SAE@ebay.com     
+dw_sv          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SV-SAE@ebay.com     
+dw_syi         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SYI-SAE@ebay.com    13636645778@shmobile.com 
+dw_tbar        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TBAR-SAE@ebay.com     
+dw_tm          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TM-SAE@ebay.com     
+dw_tns         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TNS-SAE@ebay.com    13636645778@shmobile.com 
+dw_tns_lbr     dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TNS_LBR-SAE@ebay.com     
+dw_trtn        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-KWDM-SAE@ebay.com 
+dw_tss         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TSS-SAE@ebay.com     
+dw_tuv         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-TUV-SAE@ebay.com     
+dw_uap         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-UAP-SAE@ebay.com     
+dw_uas         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-UAS-SAE@ebay.com     
+dw_uc          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-UC-SAE@ebay.com     
+dw_ue          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-UE-SAE@ebay.com     
+dw_uhs         lejin@ebay.com                             dl-ebay-mpt-imd-UHS-SAE@ebay.com     
+dw_um          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-GA-Solutions-ExL@corp.ebay.com     
+dw_uscore      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-USCORE-SAE@ebay.com     
+dw_usegm       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-USEGM-SAE@ebay.com     
+dw_usegm_cs    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-USEGM_CS-SAE@ebay.com     
+dw_usegm_sla       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-USEGM-SAE@ebay.com
+dw_user        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-USER-SAE@ebay.com    13636645778@shmobile.com 
+dw_user_anlytc dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-USER_ANLYTC-SAE@ebay.com     
+dw_userd       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-USER-SAE@ebay.com    13636645778@shmobile.com 
+dw_valve       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-VALVE-SAE@ebay.com     
+dw_vcru        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-VCRU-SAE@ebay.com     
+dw_weban       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-WEBAN-SAE@ebay.com     
+dw_webf        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-WEBF-SAE@ebay.com     
+dw_wfm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-ebay-MPT-IMD-ADMteam@ebay.com
+dw_win         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-WIN-SAE@ebay.com     
+midw_prs       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+miesa99_admin  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+ice            dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-ESP-ICE-ENGR@corp.ebay.com dl-ebay-mpt-imd-ice-SAE@ebay.com
+o_acxiom       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ACXIOM-SAE@ebay.com     
+o_ad           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_advt         weli@ebay.com                              hozhao@ebay.com
+dw_advt        weli@ebay.com                              hozhao@ebay.com
+o_billing                                                 yge@ebay.com
+o_api          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-API-SAE@ebay.com    13636645778@shmobile.com
+o_apropos      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_avaya        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_bid          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-BID-SAE@ebay.com     
+o_bmp          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com      
+o_ck           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CK-SAE@ebay.com     
+o_corp_hr      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CORP_HR-SAE@ebay.com     
+o_coupon       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-COUPON-SAE@ebay.com     
+o_cs           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-CS-SAE@ebay.com     
+o_cw2ahab      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com      DL-Ebay-MPT-CS-GRS-NA-RRT@ebay.com
+o_ems          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-EMS-SAE@ebay.com     
+o_fdbk         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FDBK-SAE@ebay.com     
+o_feral        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_find         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FIND-SAE@ebay.com  dl-ebay-mpt-imd-batchsupport@ebay.com DL-eBay-mpt-APD-FIND-SAE@ebay.com  
+o_find_test    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-FIND-SAE@ebay.com     
+o_idm_tradera  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-IDM_TRADERA-SAE@ebay.com     
+o_kana         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com      
+o_kana_pp      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-KANA_PP-SAE@ebay.com     
+o_kronos       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_lstg         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LSTG-SAE@ebay.com     
+o_lstg_m       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-LSTG_M-SAE@ebay.com  
+o_motors       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-O_MOTORS-SAE@ebay.com   
+o_odr          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ODR-SAE@ebay.com      13636645778@shmobile.com
+o_pg           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PG-SAE@ebay.com     
+o_pp           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PP-SAE@ebay.com     
+o_prstr        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-PRSTR-SAE@ebay.com     
+o_qaas         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com     
+o_srch         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-SRCH-SAE@ebay.com     
+o_talisma      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com    
+o_tns          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-TNS-SAE@ebay.com    13636645778@shmobile.com 
+o_tuv          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-TUV-SAE@ebay.com     
+o_user         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-USER-SAE@ebay.com    13636645778@shmobile.com 
+o_webf         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-WEBF-SAE@ebay.com     
+o_witness      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com    
+ods_unica      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ODS_UNICA-SAE@ebay.com     
+ods_user       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-it-imd-USER-SAE@ebay.com    13636645778@shmobile.com 
+odw_rstr       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ODW_RSTR-SAE@ebay.com   
+o_mi_feed  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com
+dw_sasmdl    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-LYLTY-SASMDL@ebay.com
+o_rtm       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-EBAY-IT-IMD-RTM-SAE@ebay.com
+ddm_citrst  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com  guanwang@ebay.com  cfang@ebay.com
+mi_trust                dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@corp.ebay.com
+prdm        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-ATS-Feeds-ETL@corp.ebay.com
+o_acct dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-ACCT-SAE@ebay.com
+dw_ap  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-MPT-IMD-AP-SAE@ebay.com
+dw_sps   DL-eBay-MPT-IMD-SPS-SAE@ebay.com dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+dw_ap_stspd dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-MPT-APD-AP-STSPD-SAE@ebay.com 
+dw_clv       dl-ebay-mpt-clv-sae@ebay.com
+mi_sua  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com  DL-eBay-CSTS-DW-Support@corp.ebay.com 
+dw_mgc   rofu@ebay.com  xywang@ebay.com jquach@ebay.com 
+o_qu           dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   weli@ebay.com hozhao@ebay.com
+o_ebay_clv dl-ebay-mpt-o_ebay_clv-sae@ebay.com
+dw_cgi  hozhao@ebay.com weli@ebay.com
+cbt_mv    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com rofu@ebay.com
+dw_api_itgn   Dl-eBay-MPT-APD-DPD-API-ITGN@ebay.com dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+app_exl  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-GA-Solutions-ExL@corp.ebay.com  
+dw_qu   dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   weli@ebay.com hozhao@ebay.com
+o_odw_other  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_cal          dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_sbe        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_memscd       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_gomez        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_tiv        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_odb        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_itm        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_spi        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_net        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa04        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa07        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa03        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa01        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_gxt        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_prsn        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com        DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa09       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com 
+odw_osa10        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa02        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa11        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa12        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa13        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_batch_scheduler  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa14  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_wsa        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_prs        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_ram        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com         DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_cmdb        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+odw_osa08       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_ess       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+o_odw_viking   dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+dw_cs_unify    DL-eBay-CSTS-OBI-L1Support@ebay.com            DL-eBay-CSTS-OBI-L2Support@ebay.com
+dw_im_ddm      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com       DL-eBAY-ATS-DEA-DDM@ebay.com
+dw_imk_rpt         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-ebay-mpt-imd-imk-sae@ebay.com    13636645778@shmobile.com  dl-ebay-ims-reporting@ebay.com
+dw_dfe    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com     DL-eBay-ATS-Feeds-ETL@corp.ebay.com
+dw_ubi_rpt        dl-ebay-sha-imd-dima-cdc-oncall@ebay.com    DL-eBay-UBI-report-alert@corp.ebay.com
+dw_mrktng_hlth    DL-eBay-MPT-APD-MRKTNG_HLTH-SAE@corp.ebay.com dl-ebay-sha-imd-dima-cdc-oncall@ebay.com 
+dw_et    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com usundaram@ebay.com  DL-eBay-Traffic-Email-ET-SAE@ebay.com
+dw_selling     DL-eBay-MPT-APD-SLNG-SAE@ebay.com  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+app_vertical   DL-eBay-APD-Product-Insights-Customer@ebay.com
+o_komart       dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   kasun@ebay.com  jinxu2@ebay.com 
+ice_hist            dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-ESP-ICE-ENGR@corp.ebay.com dl-ebay-mpt-imd-ice-SAE@ebay.com
+dw_cs_finance         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW-Support@ebay.com
+dw_rover dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-ATS-DEA-IMK-DEV@ebay.com
+app_exl_sas  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-GA-Solutions-ExL@corp.ebay.com
+dw_sdc         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-MPT-APD-SDC-SAE@corp.ebay.com
+vdm_stats      jhackley@ebay.com biyang@ebay.com
+o_odw_keynote      DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
+dw_vertical  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-ebay-mpt-apd-app-vrtcl-sae@ebay.com
+ddm_mbl DL-eBay-APD-MBL-PRDCT-SAE@ebay.com xinhan@ebay.com guanwang@ebay.com  DL-eBay-APD-COE-DX-Oncall@ebay.com
+dw_tep    dl-ebay-sha-imd-dima-cdc-oncall@ebay.com  dl-ebay-mpt-apd-tep-sae@ebay.com yuzhang2@ebay.com	zhelin@ebay.com
+dw_venue dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-IMS-KWDM-Dev@corp.ebay.com
+dw_im_seo      dl-ebay-ims-triton-ns-dev@ebay.com dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+app_mrktng dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-MPT-APD-MRKTNG_HLTH-SAE@ebay.com
+app_seller DL-eBay-APD-Seller-Insights-Prod-PD@ebay.com
+app_harmony  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-MPT-IMD-APP_HARMONY-SAE@ebay.com
+dw_bsns_hlth dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-APD-BSNS-HLTH-SAE@ebay.com
+app_ebayinc  DL-eBay-MPT-EBAYINC-SAE@ebay.com
+app_buyer	DL-eBay-APD-COE-DX-Oncall@corp.ebay.com  DL-eBay-APD-Buyer-Insights-RR@ebay.com  haoyuan@ebay.com 
+dw_modm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-APD-MODM-SAE@ebay.com
+dw_te       bxing@ebay.com,jeffzhang@ebay.com,lmeng@ebay.com
+dw_ecc  xiaoding@ebay.com
+dw_inc_milo DL-ebay-incdata-support@ebay.com

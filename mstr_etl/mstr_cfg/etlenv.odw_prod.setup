@@ -1,0 +1,167 @@
+	export gdwDB=gdw_tables
+	export apiDB=api_tables
+	export workingDB=working
+	export readDB=batch_views
+	export accessDB=access_views
+	export osa04DB=OSA04_Storage_T
+	export osa07DB=OSA07_Database_Tier_T
+
+
+	export tnsDB=tns_tables
+	export tnsworkingDB=tns_working
+	export tnsreadDB=tns_batch_views
+	export tnsaccessDB=tns_access_views
+
+	export mdmDB=mdm_tables
+	export adDB=ad_tables
+
+	export DW_OLD_USER=dw_adm
+	export DW_OLD_SERVER=pascal.vip.ebay.com
+
+	export DW_ABIN_PEER_USER2=dw_adm
+	export DW_ABIN_PEER_SERVER2=sqwitetl03.smf.ebay.com
+
+	export clsfdDB=clsfd_tables
+	export clsfdworkingDB=clsfd_working
+	export clsfdreadDB=clsfd_batch_views
+	export clsfdaccessDB=clsfd_access_views
+
+	export tdsDB=tds_tables 
+	export tdsreadDB=tds_views 
+	export stdrptDB=std_rpt_tables
+	export dcDB=dc_tables
+	export reconDB=mth_recon_tables
+	export reconReadDB=mth_recon_views
+	export gem2DB=GEM2_tables
+	export gem2workDB=GEM2_working
+
+	export cdmreadDB=cdm_views
+
+	export kwdmDB=kwdm_tables
+
+	export tdlogDB=tdlog_tables
+
+	export odsaccessDB=ods_access_views
+	export odsreadDB=ods_batch_views
+	export odsDB=ods_tables
+	export odsworkingDB=ods_working_tables
+	
+	export odsadminworkingDB=ebay_admin_w
+	export odsadminDB=ebay_admin_t
+	export odsadminreadDB=ebay_admin_v
+
+	export odstsworkingDB=ebay_ts_w
+	export odstsDB=ebay_ts_t
+	export odstsreadDB=ebay_ts_v
+
+	export odscalDB=odw_cal_t
+	export odscalworkingDB=odw_cal_w
+	export odscalaccessDB=odw_cal_v
+
+	export odsitmDB=odw_itm_t
+	export odsitmworkingDB=odw_itm_w
+	export odsitmaccessDB=odw_itm_v
+
+	export odsmemscdDB=odw_memscd_t
+	export odsmemscdworkingDB=odw_memscd_w
+	export odsmemscdaccessDB=odw_memscd_v
+
+	export odsodbDB=odw_odb_t
+	export odsodbworkingDB=odw_odb_w
+	export odsodbaccessDB=odw_odb_v
+
+	export odsspiDB=odw_spi_t
+	export odsspiworkingDB=odw_spi_w
+	export odsspiaccessDB=odw_spi_v
+
+	export odsothDB=odw_other_t
+	export odsothworkingDB=odw_other_w
+	export odsothaccessDB=odw_other_v
+
+	export odsgmzDB=odw_gomez_t
+	export odsgmzworkingDB=odw_gomez_w
+	export odsgmzaccessDB=odw_gomez_v
+
+	export odstivDB=odw_tivoli_t
+	export odstivworkingDB=odw_tivoli_w
+	export odstivaccessDB=odw_tivoli_v
+
+	export odscmdbDB=odw_cmdb_t
+	export odscmdbworkingDB=odw_cmdb_w
+	export odscmdbaccessDB=odw_cmdb_v
+
+	export odssbeDB=odw_sbe_t
+	export odssbeworkingDB=odw_sbe_w
+	export odssbeaccessDB=odw_sbe_v
+
+	export odwprsworkingDB=odw_prs_working
+
+	export odwDB=odw_tables
+	export odwreadDB=odw_batch_views
+	export odwaccessDB=odw_access_views
+
+	export osa10DB=OSA10_Performance_Measure_T
+	#export osa01DB=osa01_asset
+	#export osa03DB=osa03_pool
+
+	#export odwprsDB=odw_prsn_t
+	#export odwprsaccessDB=odw_prsn_v
+	export wsaworkingDB=WSA_T
+	export osa01DB=OSA01_Asset_T
+	export osa02DB=OSA02_Location_T
+	export osa03DB=OSA03_Pool_T
+	export osa08DB=OSA08_Application_Tier_T
+	export osa09DB=OSA09_Network_T
+	export osa11DB=OSA11_Project_T
+	export osa12DB=OSA12_Reference_T
+	export wsareadDB=WSA_V
+	export odwprsworkDB=ODW_PRS_W
+	export odwprsDB=ODW_PRS_T
+	export odwprsworkreadDB=ODW_PRS_WORK_V
+	export odwprsaccessDB=ODW_PRS_V
+
+# EHF 20090126 SASRV10772246
+	export prsDB=prs_t
+	export prsworkingDB=prs_w
+
+# Added for Ramona to replace variables inadvertantly added via SASRV
+	export osa13DB=OSA13_Misc_T
+	export odsessDB=odw_ess_t
+	export odsessworkingDB=odw_ess_w
+	export odsessaccessDB=odw_ess_v
+	export odsvikingDB=odw_viking_t
+	export odsvikingworkingDB=odw_viking_w
+	export odsvikingaccessDB=odw_viking_v
+
+# Added for SGV2 RAM
+        export ddmramDB=ddm_ram_t
+        export corphrDB=corp_hr_t
+        export daaccessDB=da_views
+        export prsramaccessDB=prs_ram_v
+        export dwmonaccessDB=dw_monitor_views
+        export ddmramworkingDB=ddm_ram_w
+        export dbcaccessDB=dbc
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all DB assignment variables above this comment 
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+    . $DW_MASTER_CFG/etlenv.$ENV_TYPE.teradata_target_variables.lis
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+#
+# Please place all workarounds below this comment 
+#
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+if [[ $SUBJECT_AREA == odw_ram && $ETL_ID == @(odw_ram.dw_ram_cb_user_batch_hr_usg_sg|odw_ram.dw_ram_cb_batch_storage_sg) ]]
+then
+	export DW_PRIMARY_DB=fermat
+	export DW_SECONDARY_DB=fermat
+fi
+
+export TOUCH_OLD=0
+export TOUCH_PEER=0

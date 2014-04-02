@@ -1,0 +1,1 @@
+dw_infra.metricspub_push.ksh $DW_SA_OUT/$TABLE_ID/$UOW_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS/metricspub_01.csv

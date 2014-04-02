@@ -1,0 +1,9 @@
+export ORACLE_HOME=${ORACLE_HOME:-/export/home/oracle/app/oracle/product/default}
+export LD_LIBRARY_PATH=$ORACLE_HOME:${LD_LIBRARY_PATH:-}
+export MYSQL_HOME=/opt/mysql/mysql/bin
+export PATH=$ORACLE_HOME:${PATH:-}
+export SQLPATH=$ORACLE_HOME:${SQLPATH:-}
+export TERADATA_HOME=${TERADATA_HOME:-/opt/teradata/client/default}
+export TPT_LD_LIBRARY_PATH="$TERADATA_HOME/tbuild/lib64:$TERADATA_HOME/lib64"
+export TPT_NLSPATH="$TERADATA_HOME/tbuild/msg/%N"
+export TERADATA_ODBC_LIB=$TERADATA_HOME/odbc_64

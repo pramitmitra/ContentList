@@ -1,0 +1,17 @@
+# system-wide config var settings
+AB_WORK_DIR: /var/abinitio-V2-16-1
+AB_COOPERATING_SYSTEMS : abinst-V3-0-4-0
+AB_DISPLAY_NAME @ abinst-V3-0-4-0 : V3-0-4-0
+AB_DESCRIPTION @ abinst-V3-0-4-0 : Use AppHub installation as Co>Operating System
+AB_HOME @ abinst-V3-0-4-0 : /usr/local/abinitio-V3-0-4/n32
+
+AB_NODES      @ winhost_all : RHV-SHAWS-001.CORP.EBAY.COM 10.112.47.132
+AB_HOME       @ winhost_all : C:/AbInitio
+AB_WORK_DIR   @ winhost_all : C:/AbInitioWork
+AB_USERNAME   @ winhost_all : dw_adm
+AB_CONNECTION @ winhost_all : ssh
+AB_SSH_NEEDS_PASSWORD @ winhost_all : false
+
+AB_KEYSERVER_GROUPS : eBayBUDW02
+AB_KEYSERVER_URLS @ eBayBUDW02 : abks://zaisetldev01.smf.ebay.com:6150 abks://zaisetldevha01.smf.ebay.com:6150
+AB_KEYSERVER_ADMIN_EMAIL @ eBayBUDW02 : koaks@ebay.com,bwenner@ebay.com

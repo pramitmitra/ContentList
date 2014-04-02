@@ -1,0 +1,17 @@
+SERVERLIST=${1:-ab_serverlist}
+
+while read SN ABH
+do
+   LFILE=/dw/etl/mstr_bin/infra/log/$SN.check_key.$ABH.log
+   echo "checking $SN with AB_HOME of /usr/local/$ABH"
+   if [ $ABH == 'abinitio-V2-16-1' ]
+   then
+      ssh -n $SN 'export AB_HOME=/usr/local/abinitio-V2-16-1;PATH=$AB_HOME/bin:$PATH:;ab-key show' > $LFILE 2>&1
+   elif [ $ABH == 'abinitio-V2-16-2' ]
+   then
+      ssh -n $SN 'export AB_HOME=/usr/local/abinitio-V2-16-2;PATH=$AB_HOME/bin:$PATH:;ab-key show' > $LFILE 2>&1
+   else
+      ssh -n $SN 'export AB_HOME=/usr/local/abinitio;PATH=$AB_HOME/bin:$PATH:;ab-key show' > $LFILE 2>&1
+  fi
+done < ab_serverlist
+

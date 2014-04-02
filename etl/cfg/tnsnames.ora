@@ -1,0 +1,5017 @@
+nss0=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = nss.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=NSS)))
+nss1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = nss1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=NSS)))
+nss2=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = nss2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=NSS)))
+
+tep_db =
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = psoep.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=PSOEP)))
+
+
+halfcatylgstby=
+
+        (DESCRIPTION=
+
+        (ADDRESS=
+
+        (PROTOCOL=TCP)
+
+        (HOST=halfcatyphx.vip.ebay.com)
+
+        (PORT=1521))
+
+        (CONNECT_DATA=(SID=halfcaty)))
+ams=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=ams.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=AMS)))
+
+AMEDB =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = ame.vip.ebay.com )(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = AME)
+    )
+  )
+
+caty26=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty26.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty26)))
+
+  
+caty26clob=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty26.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty26)))
+
+
+caty26stby=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty26stby.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty26)))
+
+ 
+
+caty27=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty27.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty27)))
+
+  
+
+caty27stby=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = caty27stby.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=caty27)))   
+
+        
+
+caty28=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty28.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty28)))
+
+  
+
+caty28stby=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = caty28stby.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=caty28)))  
+
+ 
+
+caty29=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty29.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty29)))
+
+  
+
+caty29stby=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = caty29stby.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=caty29)))  
+
+ 
+
+caty30=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty30.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty30)))
+
+  
+
+caty30stby=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = caty30stby.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=caty30)))  
+
+        
+
+user25=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user25.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user25)))
+
+ 
+
+user25stby=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user25stby.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user25)))
+
+ 
+
+user26=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user26.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user26)))
+
+ 
+
+user26stby=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user26stby.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user26)))
+apidb=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=apidb.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=APIDB)))
+rtms3=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=rtms3.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=RTMS3)))
+
+horus =
+  (DESCRIPTION =
+    (ADDRESS_LIST = (ADDRESS =
+          (COMMUNITY = tcp.world) (PROTOCOL = TCP) (Host = horus.vip.ebay.com) (Port = 1521)))
+    (CONNECT_DATA = (SID =horus))
+  )
+readlookup=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = read-lookup.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=LOOKUP)))
+retry_user =
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+          (ADDRESS_LIST =
+              (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = smfdb05.smf.ebay.com)
+                (Port = 1521)
+              )
+              (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = smfdb05.smf.ebay.com)
+                (Port = 1522)
+              )
+             (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = smfdb05.smf.ebay.com)
+                (Port = 1526)
+              )
+          )
+          (CONNECT_DATA = (SID = USER)
+          )
+        )
+
+fdbk1stby =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=fdbk1stby.vip.smf.ebay.com)
+        (PORT=1524))
+        (CONNECT_DATA=(SID=FDBK1)))
+fdbk2stby =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=fdbk2stby.vip.smf.ebay.com)
+        (PORT=1524))
+        (CONNECT_DATA=(SID=FDBK2)))
+fdbk1 =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=fdbk1.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=FDBK1)))
+fdbk2 =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=fdbk2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=FDBK2)))
+
+caty1 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty1.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty1.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty1)
+    )
+  )
+
+caty2 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty2.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty2.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty2)
+    )
+  )
+caty3 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty3.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty3.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty3)
+    )
+  )
+caty4 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty4.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty4.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty4)
+    )
+  )
+caty5 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty5.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty5.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty5)
+    )
+  )
+caty6 =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty6.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = caty6.vip.ebay.com)
+          (Port = 1522)
+        )
+    )
+    (CONNECT_DATA = (SID = caty6)
+    )
+  )
+
+
+caty7=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty7.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty7)))
+
+caty8=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty8.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty8)))
+
+caty9=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty9.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=CATY9)))
+
+caty10=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty10.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY10)))
+
+caty11=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty11.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty11)))
+
+caty12=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty12.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty12)))
+
+caty13=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty13.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty13)))
+
+caty14=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty14.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty14)))
+
+caty15=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty15.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty15)))
+
+caty16=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty16.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty16)))
+
+caty17=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty17.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty17)))
+
+caty18=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty18.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty18)))
+
+caty19=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty19.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty19)))
+
+caty20=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty20.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty20)))
+
+caty21=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty21.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty21)))
+
+halfcaty=
+         (DESCRIPTION=
+         (ADDRESS=
+         (PROTOCOL=TCP)
+         (HOST=halfcaty.vip.ebay.com)
+         (PORT=1521))
+         (CONNECT_DATA=(SID=HALFCATY)))
+
+caty1stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty1stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY1)))
+caty2stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty2stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY2)))
+caty3stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty3stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY3)))
+caty4stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty4.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY4)))
+caty5stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty5stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY5)))
+caty6stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty6stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY6)))
+caty7stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty7stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY7)))
+caty8stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty8stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY8)))
+caty9stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty9stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY9)))
+caty10stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty10stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY10)(server=dedicated)))
+caty11stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty11stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY11)))
+caty12stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty12stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY12)))
+caty13stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty13stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY13)))
+caty14stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty14stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY14)))
+caty15stby= 
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty15stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty15)))
+caty16stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty16stby.vip.ebay.com) 
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty16)))
+caty17stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty17.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty17)))
+caty18stby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty18stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=caty18)))
+caty19stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty19stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty19)))
+caty20stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty20stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty20)))
+caty21stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty21.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty21)))
+
+ebay=
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(PORT = 1521)(HOST = db.sc-law.ebay.com))
+    )
+    (CONNECT_DATA = (SID = ebay)
+    )
+  )
+
+csm=    
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT)))
+
+denrlookup1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = read-lookup.vip.smf.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=LOOKUP)))
+
+misc2=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC2)))
+
+misc3=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc3.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC3)))
+
+misc4=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc4.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC4)))
+
+retry-user =
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+          (ADDRESS_LIST =
+              (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = retry-user.vip.ebay.com)
+                (Port = 1521)
+              )
+              (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = retry-user.vip.ebay.com)
+                (Port = 1522)
+              )
+             (ADDRESS =
+                (COMMUNITY = tcp.world)
+                (PROTOCOL = TCP)
+                (Host = retry-user.vip.ebay.com)
+                (Port = 1526)
+              )
+          )
+          (CONNECT_DATA = (SID = USER)
+          )
+        )
+user10=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user10.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER10)))
+user10stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user10stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER10)))
+user11=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user11.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER11)))
+user11stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user11stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER11)))
+user12=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user12.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER12)))
+user12stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user12stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER12)))
+user13=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user13.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER13)))
+user13stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user13stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER13)))
+user14=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user14.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER14)))
+user14stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user14stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER14)))
+user15=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user15.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER15)))
+user15stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user15stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER15)))
+read-attr=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=read-attr.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ATTR)))
+merch=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = merch.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = MERCH)))
+tns=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=tns.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=TNS)))
+
+tran=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=tran.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=tran)))
+
+retry-user2-new= 
+        (DESCRIPTION= 
+        (ADDRESS= 
+        (PROTOCOL=TCP) 
+        (HOST=sjcdb169.sjc.ebay.com) 
+        (PORT=1521)) 
+        (CONNECT_DATA=(SID=USER)))
+user16=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user16.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER16)))
+user16stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user16stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER16)))
+user17=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user17.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER17)))
+user17stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user17stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER17)(SERVER=DEDICATED)))
+user18=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user18.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER18)))
+user18stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user18stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER18)))
+user19=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user19.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER19)))
+user19stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = user19stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=USER19)(SERVER=DEDICATED)))
+read-ulookup= 
+        (DESCRIPTION = 
+        (ADDRESS = 
+        (PROTOCOL = TCP) 
+        (Host = read-ulookup.vip.sjc.ebay.com) 
+        (Port = 1521)) 
+        (CONNECT_DATA = (SID=ULOOKUP)))   
+chard = 
+  (DESCRIPTION = 
+    (ADDRESS = (PROTOCOL= TCP)(HOST = db-acc.sc-law.ebay.com)(PORT = 1525)) 
+    (CONNECT_DATA = (SID = acc)) 
+  )
+upref= 
+  (DESCRIPTION = 
+  (SDU=8192) 
+  (TDU=8192) 
+  (ADDRESS= 
+  (PROTOCOL=TCP) 
+  (HOST=upref.vip.ebay.com) 
+  (PORT=1521)) 
+  (CONNECT_DATA=(SID=UPREF)))
+supt=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=SUPT)))
+
+supt2=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+
+supt3=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))        
+
+scratch0=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = scratch.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = SCRATCH)))
+        
+scratch1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = scratch1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = SCRATCH)))
+        
+scratch2=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = scratch2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = SCRATCH)))
+
+scratch3= 
+        (DESCRIPTION = 
+        (ADDRESS = 
+        (PROTOCOL = TCP) 
+        (Host = scratch3.vip.ebay.com) 
+        (Port = 1521)) 
+        (CONNECT_DATA = (SID = SCRATCH)))
+
+cfdb03 =                                                                       
+  (DESCRIPTION =                                                               
+    (ADDRESS_LIST =                                                            
+        (ADDRESS = (PROTOCOL = TCP)(Host = cfdb03.vip.ebay.com)(Port = 1521))  
+    )                                                                          
+    (CONNECT_DATA =                                                            
+      (SERVICE_NAME = cfdb03)                                                  
+    )                                                                          
+  )                                                                            
+
+fade =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = fadedb.vip.ebay.com)
+          (Port = 1521)
+        )
+    )
+    (CONNECT_DATA = (SID = FADE)
+    )
+  )
+tcash= 
+        (DESCRIPTION = 
+        (ADDRESS = 
+        (PROTOCOL = TCP) 
+        (Host = tcash.vip.ebay.com) 
+        (Port = 1521)) 
+        (CONNECT_DATA = (SID=TCASH))) 
+
+tcash2= 
+        (DESCRIPTION = 
+        (ADDRESS = 
+        (PROTOCOL = TCP) 
+        (Host = tcash2.vip.ebay.com) 
+        (Port = 1521)) 
+        (CONNECT_DATA = (SID=TCASH2))) 
+
+tcash3= 
+        (DESCRIPTION = 
+        (ADDRESS = 
+        (PROTOCOL = TCP) 
+        (Host = tcash3.vip.ebay.com) 
+        (Port = 1521)) 
+        (CONNECT_DATA = (SID=TCASH3)))
+
+UCONT10=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt10.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT10)))
+UCONT11=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt11.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT11)))
+UCONT12=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt12.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT12)))
+UCONT13=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt13.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT13)))
+UCONT14=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt14.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT14)))
+UCONT15=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt15.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT15)))
+UCONT16=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt16.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT16)))
+UCONT17=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt17.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT17)))
+UCONT18=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt18.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT18)))
+
+UCONT19=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt19.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT19)))
+
+gbcust1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust1.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST1)))
+
+gbcust2=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust2.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST2)))
+
+gbcust3=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust3.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST3)))
+
+gbcust4=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust4.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST4)))
+
+gbcust5=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust5.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST5)))
+
+gbcust6=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gbcust6.vip.ebay.com)
+        (PORT=1522))
+        (CONNECT_DATA=(SID=GBCUST6)))
+
+gbcust7=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gbcust7.vip.ebay.com)
+        (PORT=1522))
+        (CONNECT_DATA=(SID=GBCUST7)))
+
+gbcust8=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust8.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST8)))
+
+gbcust9=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust9.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST9)))
+        
+gbcust10=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbcust10.vip.ebay.com)
+        (Port = 1522))
+        (CONNECT_DATA = (SID=GBCUST10)))        
+        
+classusr_prod =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1589))
+    )
+    (CONNECT_DATA =
+      (SID = classusr)
+    )
+  )
+rtms2=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST= rtms2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID= RTMS2)))
+tns2=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=tns2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=TNS2)))
+
+utns18=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns18.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS18)))
+
+utns19=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns19.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS19)))
+
+media =
+  (DESCRIPTION=
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=peps.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=PEPS)))
+
+wcash=
+   (DESCRIPTION=
+   (ADDRESS=
+   (PROTOCOL=TCP)
+   (Host=wcash.vip.ebay.com)
+   (Port=1521))
+   (CONNECT_DATA=(SID=WCASH)))
+
+utc19=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc19.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC19)))
+misc1=
+
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC1)))
+
+ 
+
+ 
+
+read-user-sac =
+
+
+    	(SDU=8192)
+    	(TDU=8192)
+    	(ADDRESS_LIST =
+        (ADDRESS = (COMMUNITY = tcp.world)(PROTOCOL = TCP)(Host = read-user.vip.smf.ebay.com)(Port = 1521))
+        (ADDRESS = (COMMUNITY = tcp.world)(PROTOCOL = TCP)(Host = read-user.vip.smf.ebay.com)(Port = 1522))
+        (ADDRESS = (COMMUNITY = tcp.world)(PROTOCOL = TCP)(Host = read-user.vip.smf.ebay.com)(Port = 1523))
+        (ADDRESS = (COMMUNITY = tcp.world)(PROTOCOL = TCP)(Host = read-user.vip.smf.ebay.com)(Port = 1526))
+    	)
+    	(CONNECT_DATA = (SID = USER))
+  	)
+
+rfc=
+
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rfc.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RFC)))
+
+tuv=
+
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (HOST = tuv.vip.ebay.com)
+  (PORT = 1521))
+  (CONNECT_DATA = (SID=TUV)))
+
+srch4 = 
+(DESCRIPTION = (SDU=8192) (TDU=8192) (ADDRESS = (PROTOCOL = TCP) (Host = srch4.vip.ebay.com) (Port = 1521)) (CONNECT_DATA = (SID = SRCH4)))
+
+srch5 =
+(DESCRIPTION = (SDU=8192) (TDU=8192) (ADDRESS = (PROTOCOL = TCP) (Host = srch5.vip.ebay.com) (Port = 1521)) (CONNECT_DATA = (SID = SRCH5)))
+
+
+msgalert=
+
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = msgalert.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MSGALERT)))
+
+tbar=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = tbar.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=TBAR)))
+
+
+store=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=phxreadstore01.vip.phx.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=STORE)))
+       
+read-user =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=smfdb66.smf.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=USER)))
+
+splexreadattr01=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=splexreadattr01.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ATTR)))
+
+splexreadattr02=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=read-attr.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ATTR)))
+
+splexreadattr03=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=splexreadattr01.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ATTR)))
+ 
+fdbk =
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+    (ADDRESS_LIST =
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = tran.vip.ebay.com)
+          (Port = 1521)
+        )
+        (ADDRESS =
+          (COMMUNITY = tcp.world)
+          (PROTOCOL = TCP)
+          (Host = tran.vip.ebay.com)
+          (Port = 1526)
+        )
+    )
+    (CONNECT_DATA = (SID = tran)
+    )
+  )
+sold2=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=sold2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SOLD2)))
+gbpgwrpt=
+  (DESCRIPTION=
+    (ADDRESS=
+      (PROTOCOL=TCP)
+      (HOST=gbpgwrpt.vip.ebay.com)
+      (PORT=1521))
+      (CONNECT_DATA=(SID=GBPGW)))
+
+sold =
+      (DESCRIPTION =
+       (ADDRESS_LIST =
+	    (ADDRESS =
+	        (COMMUNITY = tcp.world)
+	          (PROTOCOL = TCP)
+	          (Host = sold.vip.ebay.com)
+	          (Port = 1521)
+		        )
+		    )
+    (CONNECT_DATA = (SID = sold)
+	    )
+  )
+
+ucnt19=
+  			(DESCRIPTION =
+  				(SDU=8192)
+  					(TDU=8192)
+  						(ADDRESS=
+  							(PROTOCOL=TCP)
+  							(HOST=ucnt19.vip.ebay.com)
+  							(PORT=1521)
+  						)
+  				(CONNECT_DATA=(SID=UCNT19)
+  				)
+  			)
+
+met=
+          (DESCRIPTION=
+          (ADDRESS=
+          (PROTOCOL=TCP)
+          (HOST=met.vip.ebay.com)
+          (PORT=1521))
+          (CONNECT_DATA=(SID=MET)))
+
+portal =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=myworld.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=MYWORLD)))
+
+elvisrep=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = elvisrep.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=ELVISREP)))
+
+lookuputf8=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = read-attr.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=ATTR)))
+
+gbpgwshpx=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST= gbpgwstby.vip.ebay.com)
+        (PORT=1600))
+        (CONNECT_DATA=(SID=GBPGW))
+
+KANARESPONSE_USGS_V =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (HOST = Kanausgs.vip.ebay.com)
+           (PORT = 1521)
+           )
+           (CONNECT_DATA = (SID = kanausgs))
+           )
+
+tintin=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=tintin.vip.ebay.com)
+           (PORT=1521))
+        (CONNECT_DATA=(SID=TINTIN)))
+
+repo =
+
+  (DESCRIPTION =
+
+    (ADDRESS_LIST =
+
+        (ADDRESS =
+
+          (COMMUNITY = tcp.world)
+
+          (PROTOCOL = TCP)
+
+          (Host = phxitetl01.phx.ebay.com)
+
+          (Port = 1525)
+
+        )
+
+    )
+
+    (CONNECT_DATA = (SID = repo)
+
+    )
+
+  )
+
+rtms1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS1)))
+
+ctlgu=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ctlgu.vip.ebay.com)
+        (PORT=1526))
+        (CONNECT_DATA=(SERVER=DEDICATED)(SID=CTLGU)))
+
+gbcat=
+	(DESCRIPTION=
+	(ADDRESS=
+	(PROTOCOL=TCP)
+	(HOST=gbcat.vip.ebay.com)
+	(PORT=1521))
+	(CONNECT_DATA=(SID=GBCAT)))
+
+seti =
+	(description =
+	(address_list =
+	(address =
+	(community = tcp.world)
+	(protocol = tcp)
+	(host = cupcake.sjc.ebay.com)
+	(port = 1521)
+	)
+	)
+	(connect_data = (sid = seti)
+	)
+	)
+
+beti =
+	(description =
+	(address_list =
+	(address =
+	(protocol = tcp)
+	(host = beti.vip.ebay.com)
+	(port = 1521)
+	)
+	)
+	(connect_data = (sid = beti)
+	)
+	)
+
+meti =
+	(description =
+	(address_list =
+	(address =
+	(protocol = tcp)
+	(host = scooby.smf.ebay.com)
+	(port = 1521)
+	)
+	)
+	(connect_data = (sid = meti)
+	)
+	)
+
+affdb =
+	(DESCRIPTION =
+	(ADDRESS_LIST =
+	(ADDRESS =
+	(COMMUNITY = tcp.world)
+	(PROTOCOL = TCP)
+	(Host = phxaffdb.vip.ebay.com)
+	(Port = 1521)
+	)
+	)
+	(CONNECT_DATA = (SID = affdb)
+	)
+	)
+
+SERAPH =
+  (DESCRIPTION=
+    (ADDRESS = (PROTOCOL=TCP)(HOST=seraph.vip.ebay.com)(PORT=1526))
+    (CONNECT_DATA = 
+      (SID=SERAPH)
+    )
+  )
+
+PARADOX =
+  (DESCRIPTION=
+    (ADDRESS = (PROTOCOL=TCP)(HOST=paradox.vip.ebay.com)(PORT=1526))
+    (CONNECT_DATA = 
+      (SID=PARADOX)
+    )
+  )
+clom =
+     (DESCRIPTION =
+       (ADDRESS_LIST =
+         (ADDRESS = (PROTOCOL = TCP)(PORT = 1521)(HOST = db.sc-law.ebay.com))
+       )
+       (CONNECT_DATA = (SID = ebay)
+       )
+  )
+promosales0=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales2=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales3=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales4=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales5=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales6=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales7=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales8=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+promosales9=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = cig.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = CIG)))
+
+srpt=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = srpt.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=SRPT)))
+
+srch6=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = srch6.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = SRCH6)))
+
+srch7=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = srch7.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = SRCH7)))
+
+supt2=
+   (DESCRIPTION=
+   (ADDRESS=
+   (PROTOCOL=TCP)
+   (Host=supt2.vip.ebay.com)
+   (Port=1521))
+   (CONNECT_DATA=(SID=SUPT2)))
+
+supt3=
+   (DESCRIPTION=
+   (ADDRESS=
+   (PROTOCOL=TCP)
+   (Host=supt3.vip.ebay.com)
+   (Port=1521))
+   (CONNECT_DATA=(SID=SUPT3)))
+
+KANARESPONSE_USGS =
+	(DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = kanausgs.vip.ebay.com)
+        (PORT = 1521)
+        )
+        (CONNECT_DATA = (SID = kanausgs))
+	)
+
+
+    
+KANARESPONSE_USTS_V =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = kanausts.vip.ebay.com)
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = kanausts))
+           )
+
+KANARESPONSE_USGS_V =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (HOST = Kanausgs.vip.ebay.com)
+           (PORT = 1521)
+           )
+           (CONNECT_DATA = (SID = kanausgs))
+           )
+
+KANARESPONSE_INTL_V =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = Kanaint.vip.ebay.com)
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = kanaint))
+           )
+
+KANARESPONSE_INTL2_V =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = Kanaint2.vip.ebay.com)
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = kanaint2))
+           )
+
+KANARESPONSE_KINT75_V1 =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = kint75.vip.ebay.com )
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = KINT75))
+)
+  
+  
+KANARESPONSE_KINT75_V2 =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = kint75.vip.ebay.com )
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = KINT75))
+)
+  
+  
+KANARESPONSE_KINT75_V3 =
+           (DESCRIPTION =
+           (ADDRESS =
+           (PROTOCOL = TCP)
+           (Host = kint75.vip.ebay.com )
+           (Port = 1521)
+           )
+           (CONNECT_DATA = (SID = KINT75))
+)
+    
+  
+kanaint4 =
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = kanaint4.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=kanaint4)))
+
+kanaint5 =
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = kanaint5.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=kanaint5)))
+
+
+kanamac=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=kanamac.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=KANAMAC)))
+
+tcash4=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = tcash4.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=TCASH4)))
+
+tcash6=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = tcash6.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=TCASH6)))
+
+tcash5=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = tcash5.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=TCASH5)))
+
+kanaint3=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = KANAINT3.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=KANAINT3)))
+
+wcash2=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=wcash2.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=WCASH2)))
+
+kanausts =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanausts.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = kanausts)
+    )
+  )
+
+KANA_USGS =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanausgs.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = kanausgs)
+    )
+  )
+
+KANA_INTL =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanaint.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = kanaint)
+    )
+  )
+ 
+KANA_INTL2 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanaint2.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = kanaint2)
+    )
+  )
+
+KANA_INTL3 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanaint3.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KANAINT3)
+    )
+  ) 
+ 
+KANA_INTL4 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanaint4.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KANAINT4)
+    )
+  )
+ 
+ 
+KANA_INTL5 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanaint5.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KANAINT5)
+    )
+  )
+ 
+ 
+kanamac =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kanamac.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = kanamac)
+    )
+  )
+ 
+
+KINT75_L =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kint75.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KINT75)
+    )
+  ) 
+
+KINT75_T =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kint75.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KINT75)
+    )
+  ) 
+
+KINT75_S =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = kint75.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = KINT75)
+    )
+  ) 
+
+GWA_PROD = 
+ (DESCRIPTION =
+   (ADDRESS = (PROTOCOL= TCP)(Host= gwa.vip.ebay.com)(Port= 1521))
+   (CONNECT_DATA = 
+     (SID = GWA)
+   )
+ )
+
+KRONOS = 
+ (DESCRIPTION =
+   (ADDRESS = (PROTOCOL = TCP)(Host = kronos.vip.den.ebay.com)(Port = 1521))
+   (CONNECT_DATA = (SID = KRONOS)))
+
+
+casper=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = casper.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=casper)))
+
+
+apropos_prod =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=livechat.vip.den.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=LIVECHAT)))
+
+SUPT=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=SUPT)))
+
+write-store=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=phxreadstore01.vip.phx.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=STORE)))
+
+read-store1=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=sjcstore01.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=STORE))) 
+
+read-store2=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=sjcstore02.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=STORE))) 
+
+read-store3=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=sjcstore03.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=STORE))) 
+
+read-store4=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=sjcstore04.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=STORE)))
+
+read-store=                              
+           (DESCRIPTION=                 
+           (ADDRESS=                     
+           (PROTOCOL=TCP)                
+           (HOST=phxreadstore01.vip.phx.ebay.com)
+           (PORT=1521))                  
+           (CONNECT_DATA=(SID=STORE)))   
+
+iptr=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=iptr.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IPTR)))        
+
+iptr2=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=iptr2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IPTR2)))
+user20=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user20.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER20)))
+
+user20stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user20stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=USER20)))
+
+utc15=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc15.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC15)))
+user21=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user21.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user21)))
+ 
+user21stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user21stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user21)))
+
+user22=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user22.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user22)))
+ 
+user22stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user22stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user22)))
+
+user23=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user23.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user23)))
+ 
+user23stby=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=user23stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=user23)))
+
+utc18=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc18.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC18)))
+csadmin_0=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csadmin_1=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csadmin_2=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csadmin_3=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csadmin_4=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csadmin_5=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+csadmin_6=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+csadmin_7=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+csadmin_8=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+csadmin_9=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT2)))
+cshost=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=SUPT)))
+csmetrics=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=SUPT3)))
+csauthen=
+     (DESCRIPTION =
+     (SDU=8192)
+     (TDU=8192)
+     (ADDRESS=
+     (PROTOCOL=TCP)
+     (HOST=asac.vip.ebay.com)
+     (PORT=1521))
+     (CONNECT_DATA=(SID=ASAC)))
+utc10=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc10.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC10)))
+utc11=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc11.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC11)))
+utc12=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc12.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC12)))    
+utc13=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc13.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC13)))
+utc14=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc14.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC14)))
+utc16=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc16.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC16))) 
+utc17=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utc17.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTC17)))
+caty22=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty22.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty22)))
+caty22stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty22.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty22)))
+caty23=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty23.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty23)))
+caty23stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty23.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty23)))
+caty24=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = caty24.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = caty24)))
+caty24stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty24stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty24)))
+
+ora_adn =           
+    (DESCRIPTION=   
+    (SDU=8192)      
+    (TDU=8192)      
+    (ADDRESS=       
+    (PROTOCOL=TCP)  
+    (HOST=imaff.vip.ebay.com)    
+    (PORT=1521))                 
+    (CONNECT_DATA=(SID=IMAFF)))  
+
+IMAFF=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = imaff.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA = (SID = IMAFF)))
+rpthost0 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost1 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost2 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost3 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost4 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost5 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost6 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost7 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost8 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+rpthost9 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=imaff.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=IMAFF)))
+UserIntelAnalysis00Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis01Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis02Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis03Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis04Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis05Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis06Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis07Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis08Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis09Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis10Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))
+UserIntelAnalysis11Host=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rover.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=rover)))   
+RMDPROD =
+  (DESCRIPTION =
+      (ADDRESS_LIST =
+         (ADDRESS = (PROTOCOL = TCP)(HOST = ame.vip.ebay.com )(PORT = 1521))
+      )
+
+       (CONNECT_DATA =
+          (SID = AME)
+          )
+      )
+arc=
+        (DESCRIPTION=
+          (SDU=8192)
+          (TDU=8192)
+          (ADDRESS=
+            (PROTOCOL=TCP)
+            (HOST=arc.vip.ebay.com)
+            (PORT=1526))                
+          (CONNECT_DATA=(sid=ARC)))
+roarc=
+        (DESCRIPTION=
+          (SDU=8192)
+          (TDU=8192)
+          (ADDRESS=
+            (PROTOCOL=TCP)
+            (HOST=roarc.vip.ebay.com)
+            (PORT=1521))                  
+          (CONNECT_DATA=(sid=ROARC)))
+
+ucnt18=
+                        (DESCRIPTION =
+                                (SDU=8192)
+                                       (TDU=8192)
+                                                (ADDRESS=
+                                                        (PROTOCOL=TCP)
+                                                        (HOST=ucnt18.vip.ebay.com)
+                                                        (PORT=1521)
+                                                )
+                                (CONNECT_DATA=(SID=UCNT18)
+                                )
+                        )
+ucnt10=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ucnt10.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=UCNT10)))
+ucnt11=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ucnt11.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=UCNT11)))
+ucnt12=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ucnt12.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=UCNT12)))
+ucnt13=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt13.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT13)))
+ucnt14=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt14.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT14)))
+ucnt15=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt15.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT15)))
+ucnt16=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt16.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT16)))
+ucnt17=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt17.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT17)))                        
+
+find301=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find301.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find301)))
+ 
+ 
+find302=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find302.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find302)))
+ 
+find303=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find303.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find303)))
+ 
+find304=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find304.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find304)))
+ 
+find305=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find305.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find305)))
+ 
+find306=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find306.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find306)))
+ 
+find307=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find307.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find307)))
+ 
+find308=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find308.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find308)))
+
+
+RTAM3=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=rtam3.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=RTAM3)))
+ 
+RTAM1=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=rtam1.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=RTAM1)))
+ 
+rtam2=
+        (DESCRIPTION=
+                  (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=rtam2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SERVICE_NAME=RTAM2)))
+
+ 
+RTAM4=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=rtam4.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=RTAM4)))
+ 
+RTAM5=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=rtam5.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=RTAM5)))
+
+
+gbpgw=
+
+      (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = gbpgw.vip.ebay.com)
+        (PORT = 1521))
+        (CONNECT_DATA = (SID=GBPGW)))
+
+
+gbpgwrpt2=
+  (DESCRIPTION=
+    (ADDRESS=
+      (PROTOCOL=TCP)
+      (HOST=gbpgwrpt2.vip.ebay.com)
+      (PORT=1521))
+      (CONNECT_DATA=(SID=GBPGW)))
+
+caty25=
+
+  (DESCRIPTION =
+
+  (ADDRESS =
+
+  (PROTOCOL = TCP)
+
+  (Host = caty25.vip.ebay.com)
+
+  (Port = 1521))
+
+  (CONNECT_DATA = (SID = caty25)))
+
+  
+
+caty25stby=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = caty25stby.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=caty25)))
+
+        
+
+        
+
+user24=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user24.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user24)))
+
+ 
+
+user24stby=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=user24stby.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=user24)))
+
+ 
+
+rtms4=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = rtms4.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=RTMS4)))
+
+
+utrade19=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utrade19.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTRADE19)))
+
+cqprod =
+
+  (DESCRIPTION =
+
+    (ADDRESS_LIST =
+
+        (ADDRESS = (PROTOCOL = TCP)(HOST=pdtools-db.corp.ebay.com)(PORT=1525))
+
+    )
+
+    (CONNECT_DATA =
+
+      (SERVICE_NAME = cqprod)
+
+    )
+
+  )
+
+dlpdb=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host =  dlpdb.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=DLPDB)))
+
+dlpdb1=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host =  srwimddb06.smf.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=DLPDB)))
+
+utns10=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns10.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS10)))
+
+utns11=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns11.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS11)))
+
+utns12=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns12.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS12)))
+
+utns13=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns13.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS13)))
+
+utns14=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns14.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS14)))
+
+utns15=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns15.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS15)))
+
+utns16=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns16.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS16)))
+
+utns17=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=utns17.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UTNS17)))
+
+UNITY =
+  (DESCRIPTION =
+  (ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = unity.vip.ebay.com)(PORT = 1525))
+  )
+  (CONNECT_DATA =
+  (SERVICE_NAME = unity)
+  )
+  )
+
+UNITY_MI =
+  (DESCRIPTION =
+  (ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = unity.vip.ebay.com)(PORT = 1525))
+  )
+  (CONNECT_DATA =
+  (SERVICE_NAME = unity)
+  )
+  )
+ 
+rtms5=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms5.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS5)))
+
+
+utrade10=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade10.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE10)))
+
+  
+
+  
+
+utrade11=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade11.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE11)))
+
+  
+
+ 
+
+utrade12=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade12.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE12)))
+
+ 
+
+ 
+
+utrade13=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade13.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE13)))
+
+ 
+
+ 
+
+utrade14=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade14.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE14)))
+
+ 
+
+ 
+
+utrade15=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade15.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE15)))
+
+ 
+
+ 
+
+utrade16=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade16.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE16)))
+
+ 
+
+ 
+
+utrade17=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade17.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE17)))
+
+ 
+
+ 
+
+utrade18=
+
+  (DESCRIPTION =
+
+  (SDU=8192)
+
+  (TDU=8192)
+
+  (ADDRESS=
+
+  (PROTOCOL=TCP)
+
+  (HOST=utrade18.vip.ebay.com)
+
+  (PORT=1521))
+
+  (CONNECT_DATA=(SID=UTRADE18)))
+
+ 
+
+rtms7=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms7.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS7)))
+
+rtms8=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms8.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS8)))
+
+acc1=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=acc1.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ACC1)))
+
+acc2=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=acc2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ACC2)))
+
+halfcatystby=
+	(DESCRIPTION =
+	(ADDRESS =
+	(PROTOCOL = TCP)
+	(Host = halfcaty.vip.ebay.com)
+	(Port = 1600))
+	(CONNECT_DATA=(SID=HALFCATY)))
+
+rtms6=
+        (DESCRIPTION =
+    (SDU=8192)
+    (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms6.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS6)))
+
+rtms9=
+        (DESCRIPTION =
+    (SDU=8192)
+    (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms9.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS9)))
+
+rtms10=
+        (DESCRIPTION =
+    (SDU=8192)
+    (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = rtms10.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=RTMS10)))
+
+supt2stby=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = supt2stby.vip.smf.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA=(SID=SUPT2))) 
+
+supt3stby=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = supt3stby.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA=(SID=SUPT3))) 
+
+utns19stby=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = utns19stby.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA=(SID=UTNS19))) 
+
+radar=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = radar.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA=(SID=RADAR)))
+
+log=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC2)))
+tnsp=
+  (DESCRIPTION =
+  (ADDRESS =
+  (PROTOCOL = TCP)
+  (Host = tnsprfl.vip.ebay.com)
+  (Port = 1521))
+  (CONNECT_DATA=(SID=TNSPRFL)))
+
+halfcatylogstby=
+         (DESCRIPTION=(SDU=8192)(TDU=8192)
+         (ADDRESS=
+         (PROTOCOL=TCP)
+         (HOST=srwdb19.smf.ebay.com)
+         (PORT=1523))
+         (CONNECT_DATA=(SID=HALFCATY)))
+
+classusr_prod2 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1591))
+    )
+    (CONNECT_DATA =
+      (SID = classdb2)
+    )
+  )
+
+fndmtx=
+        (DESCRIPTION =
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = fndmtx.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = FNDMTX)))
+
+caty12primarystby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=phxdb076.phx.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=CATY12)))
+
+stkanar1=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = stkanar1.vip.its.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=STKANAR1)))
+
+ 
+stkanar2=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = stkanar2.vip.its.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=STKANAR2)))
+
+stkana3=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = stkana3.vip.its.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=STKANA3)))
+
+STKANA1=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = stkana1.vip.its.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=STKANA1)))
+
+caldb=
+
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caldb.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=CALDB)))
+
+
+image00host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1))) 
+
+image01host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1)))
+
+image02host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1)))
+
+image03host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1)))
+
+image04host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1)))
+
+image05host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL1)))
+
+image06host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+image07host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+image08host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+image09host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+image10host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+image11host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gall2.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= GALL2)))
+
+gem=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gem.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=GEM)))
+
+gem2=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gem2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=GEM2)))
+
+gem3=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gem3.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=GEM3)))
+
+gem4=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gem4.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=GEM4)))
+
+adlocal=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = adlocal.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=ADLOCAL)))
+
+UCONT10STBY=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt10stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT10)))
+
+UCONT11STBY=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt11stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT11)))
+
+UCONT12STBY=
+  (DESCRIPTION =
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ucnt12stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=UCNT12)))
+
+UCONT13STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt13stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT13)))
+
+UCONT14STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt14stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT14)))
+
+UCONT15STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt15stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT15)))
+
+UCONT16STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt16stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT16)))
+
+UCONT17STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt17stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT17)))
+
+UCONT18STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt18stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT18)))
+
+UCONT19STBY=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = ucnt19stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UCNT19)))
+
+product_p =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)
+        (HOST = prod.halfvip.ebay.com)
+        (PORT = 1521)))
+        (CONNECT_DATA =
+        (SID = PROD)
+        (SERVER = DEDICATED)))
+
+
+qudb=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = qudb.vip.arch.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID = qudb)))
+
+appwxstby =
+  (DESCRIPTION =
+  (ADDRESS_LIST =
+  (ADDRESS = (PROTOCOL = TCP)(Host = appwx.vip.ebay.com)(Port = 1521)))
+  (CONNECT_DATA = (SID = appwx)))
+
+
+TRACE =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = tracedb.vip.ebay.com)
+        (PORT = 1521)))
+        (CONNECT_DATA =
+        (SERVICE_NAME = trace)))
+
+cap=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=viking2.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=BBQ)))
+
+viking2=
+           (DESCRIPTION=
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=viking2.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=viking2)))
+
+viking3=
+           (DESCRIPTION=
+           (SDU=8192)
+           (TDU=8192)
+           (ADDRESS=
+           (PROTOCOL=TCP)
+           (HOST=viking2.vip.ebay.com)
+           (PORT=1521))
+           (CONNECT_DATA=(SID=VIKING3)))
+
+tec=
+    (DESCRIPTION=
+    (SDU=8192)
+    (TDU=8192)
+    (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=tec.vip.ebay.com)
+    (PORT=1521))
+    (CONNECT_DATA=(SID=TEC)))
+
+ORA11U9 =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ora07u10.vip.arch.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ora07u10)))
+
+caldb2=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caldb2.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=CALDB2)))
+
+odb=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=odb.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ODB)))
+
+ORA07U10 =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ora07.arch.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ORA07U10)))
+
+troller =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = troller.vip.ebay.com)
+        (PORT = 1521)))
+        (CONNECT_DATA =(SERVICE_NAME = TROLLER)))
+
+ora08u9 =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ora08u9.vip.arch.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ORA08U9)))
+
+ora08u9_slice =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ora08u9.vip.arch.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ORA08U9)))
+
+scmdb =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = scmdb.vip.corp.ebay.com)
+        (PORT = 1521)))
+        (CONNECT_DATA =(SERVICE_NAME = SCM)))
+
+cqprod_odw =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (HOST = pdtools-db.corp.ebay.com)
+        (PORT = 1521)))
+        (CONNECT_DATA =(SERVICE_NAME = cqprod)))
+
+cfdb01 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = cfdb01.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = cfdb01)
+    )
+  )
+
+cfdb03_odw =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(Host = cfdb03.vip.ebay.com)(Port = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = cfdb03)
+    )
+  )
+
+caldb_odw=
+
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caldb.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=CALDB)))
+
+find1001=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1001.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1001)))
+
+find1002=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1002.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1002)))
+
+find1003=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1003.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1003)))
+
+find1004=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1004.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1004)))
+
+find1005=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1005.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1005)))
+
+
+find1006=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1006.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1006)))
+
+find1007=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1007.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1007)))
+
+find1008=
+
+        (DESCRIPTION =
+
+        (ADDRESS =
+
+        (PROTOCOL = TCP)
+
+        (Host = find1008.vip.ebay.com)
+
+        (Port = 1521))
+
+        (CONNECT_DATA = (SID=find1008)))
+
+halfcaty01=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty09=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty17=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty25=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty33=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty41=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty49=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty57=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+halfcaty02=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty03=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty04=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty05=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty06=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty07=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty08=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty10=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty11=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty12=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty13=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty14=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty15=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty16=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty18=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty19=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty20=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty21=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty22=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty23=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty24=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty26=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty27=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty28=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty29=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty30=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty31=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty32=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty34=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty35=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty36=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty37=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty38=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty39=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty40=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty42=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty43=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty44=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty45=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty46=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty47=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty48=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty50=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty51=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty52=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty53=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty54=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty55=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty56=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+ 
+                                                        
+halfcaty58=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty59=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty60=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty61=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+halfcaty62=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty63=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+                                                        
+                                                        
+halfcaty64=                                             
+        (DESCRIPTION=                                   
+        (ADDRESS=                                       
+        (PROTOCOL=TCP)                                  
+        (HOST=halfcaty.vip.ebay.com)                    
+        (PORT=1521))                                    
+        (CONNECT_DATA=(SID=halfcaty)(SERVER=DEDICATED)))
+
+stkana4=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = stkana3.vip.its.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=STKANA3)))
+
+UC4BIASLC =
+  (DESCRIPTION =
+   (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = uc4bia.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = UC4BIA)
+    )
+  )
+
+        
+
+triton_dev =
+(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = triton.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = triton)
+      (SERVER = dedicated)
+    )
+  )
+triton_dev2 =
+(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = triton.vip.ebay.com)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = triton)
+      (SERVER = dedicated)
+    )
+  )
+
+triton_stg =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=srwaisttdb03.smf.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA = (SERVICE_NAME=tritonst)))
+triton_stg2 =
+(DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=srwaisttdb03.smf.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA = (SERVICE_NAME=tritonst)))
+
+gbadm=
+        (DESCRIPTION=
+                  (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=gbadm.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=GBADM)))
+
+affdb8=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=phxaffdbdr.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=affdb)))
+
+ctlgu_split_2=
+  (DESCRIPTION=
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ctlgu2.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=CTLGU2)))
+
+invhub=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = invhubslc.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=INVHUB)))
+
+SIEBEL=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=siebel.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID= SIEBEL)))
+
+caty12stbyhdp=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=caty12stby.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=CATY12)))
+mobile=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = mobiledb.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID= MOBILE)))
+
+
+
+apdtools_prod=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=sjditdb01.sjc.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SERVICE_NAME=repo.world))) 
+        
+
+find5001=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find5001.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find5001)))
+
+find6001=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find6001.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find6001)))
+
+siebeletl=
+       (DESCRIPTION=
+       (ADDRESS=
+       (PROTOCOL=TCP)
+       (HOST=siebeletl.vip.ebay.com)
+       (PORT=1521))
+       (CONNECT_DATA=(SID=SIEBEL)))
+
+
+evacmps=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = evacmps.vip.eva.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=EVACMPS)))
+
+uc4dw =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=phxuc4db-imd.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=UC4)))
+
+
+uc4mp  =
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=uc4db.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=UC4DB)))
+
+atlas_app=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=atlas.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=ATLAS)))
+
+mpkronos=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = mpkronos.vip.its.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MPKRONOS)))
+
+
+hermes=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = hermesslc.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=hermes)))
+
+find1101=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1101.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1101)))
+
+find1102=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1102.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1102)))
+        
+find1103=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1103.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1103)))
+        
+find1104=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1104.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1104)))
+        
+find1105=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1105.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1105)))
+        
+find1106=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1106.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1106)))
+        
+find1107=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1107.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1107)))    
+        
+find1108=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = find1108.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=find1108)))  
+
+lookup_app=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=write-lookup.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(SID=LOOKUP)))
+
+tnsuident=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = phxreadattr04.vip.phx.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=ATTR)))
+
+bopis1 = 
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = bopis1.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=BOPIS1)))
+
+bopis2 =
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = bopis2.vip.ebay.com)                
+        (Port = 1521))
+        (CONNECT_DATA = (SID=BOPIS2))) 

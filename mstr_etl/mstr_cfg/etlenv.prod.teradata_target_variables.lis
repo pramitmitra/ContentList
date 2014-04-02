@@ -1,0 +1,23 @@
+if [[ ${DWI_LCL_DATACENTER:-""} == phx && ${servername:-""} != @(phximddcetl01|phximddcetl02) ]] 
+then
+  DW_TD1_DB=martinibe
+  DW_TD2_DB=mozartbe
+  DW_TD3_DB=davincibe
+  DW_TD4_DB=fermat
+  DW_TD5_DB=vivaldibe
+  DW_TD6_DB=mozartbe
+else
+  DW_TD1_DB=mrtbatch
+  DW_TD2_DB=mz2batch
+  DW_TD3_DB=davinci
+  DW_TD4_DB=fermat 
+  DW_TD5_DB=ace
+  DW_TD6_DB=mz2batch
+fi
+
+export DW_TD1_DB
+export DW_TD2_DB
+export DW_TD3_DB
+export DW_TD4_DB
+export DW_TD5_DB
+export DW_TD6_DB

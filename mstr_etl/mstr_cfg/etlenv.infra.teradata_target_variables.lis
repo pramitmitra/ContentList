@@ -1,0 +1,11 @@
+export DW_TD1_DB=sandcat2
+export DW_TD2_DB=sandcat2
+export DW_TD3_DB=oscar
+export DW_TD4_DB=crazy
+export DW_TD5_DB=fermat
+export DW_TD6_DB=ming
+export DW_TD7_DB=bach
+export DW_TD8_DB=10.102.20.56
+export DW_HD1_DB=ares
+export DW_HD2_DB=apollo
+export DW_HD3_DB=artemis

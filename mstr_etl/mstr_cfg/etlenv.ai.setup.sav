@@ -1,0 +1,33 @@
+# read the AB_HOME value from the $HOME/.ab_home file if it exists.
+if [ -f $HOME/.ab_home ]
+then
+	read AB_HOME < $HOME/.ab_home
+elif [[ $ETL_ID == @(dw_lstg_m.stg_item_desc_w_1_clob|dw_lstg_m.stg_item_desc_w_2_clob|dw_lstg_m.stg_item_desc_w_3_clob|dw_lstg_m.stg_item_desc_w_4_clob|dw_lstg_m.stg_item_desc_w_5_clob|dw_lstg_m.stg_item_desc_arc_w_clob|dw_lstg_m.stg_item_desc_blocked_w_clob|dw_lstg_m.stg_item_desc_revisions_w_clob|dw_advt.dw_advt_admin_log|o_advt.adv_admin_log) ]] 
+then
+        AB_HOME=/usr/local/abinitio-V2-15
+else
+	AB_HOME=/usr/local/abinitio
+fi
+
+export AB_HOME
+export PATH=$AB_HOME/bin:$PATH
+
+export AB_IDB_CONFIG_PATH=$DW_DBC
+export AB_IDB_ORACLE_USE_LOB_LOCATORS=false
+export AB_IDB_MAX_ORACLE_LOB_SIZE=280000
+export AB_MAX_RECORD_BUFFER=50000000
+export AB_TER_FMLOAD_SYNC_RETRIES=200
+export AB_AGENT_ERROR_DELAY=60
+export AB_EXPORT=${AB_AGENT_ERROR_DELAY:-$AB_EXPORT}
+
+# Get Abinitio Version
+m_env -v | read a b c AI_VERSION e
+TRUNC_AI_VERSION=${AI_VERSION%%.*} 
+
+if [ $TRUNC_AI_VERSION == 2 ]
+then
+   export AB_LIB_PATH=$DW_MASTER_LIB
+elif [ ${AB_LIB_PATH:-""} != "" ]
+then
+   unset AB_LIB_PATH
+fi

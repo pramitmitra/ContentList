@@ -1,0 +1,153 @@
+#!/bin/ksh -eu
+
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########      Edits to this file MUST be reviewed and approved by a member of the    ##########
+##########      Application Architecture Team. Please contact via email using          ##########
+##########      DL-eBay-IT-IMD-ApplArchTeam with ETLENV HADR Setup in the subject line.##########
+##########      Please specify Dev or Prod in your subject line.                       ##########
+##########                                                                             ##########
+##########      Failure to follow this procedure may result in code deletion wthout    ##########
+##########      warning.                                                               ##########
+##########                                                                             ##########
+##########                                                                             ##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
+
+
+# Define HADR Settings
+export SFT_SUSER=dw_adm
+export SFT_SNODE=$(uname -n | awk -F \. '{print $1}')
+export SFT_COMPRESS=0
+export SFT_BW=64
+export SFT_VERBOSE_LEVEL=1
+export SFT_PRINT_INTERVAL=0
+export SFT_NWAYS=1
+export SFT_DFLT_PORT=6250
+
+export HADR_ACTIVE=1
+
+#settings are set for no synching by default.
+export HADR_SRC[0]=""
+export HADR_SRC[1]=""
+export HADR_TRGT[0]=""
+export HADR_TRGT[1]=""
+export HADR_SFT_PORT[0]=$SFT_DFLT_PORT
+export HADR_SFT_PORT[1]=$SFT_DFLT_PORT
+export HADR_MODE[0]="N"  #(A)ctive, (P)assive, (N)one
+export HADR_MODE[1]="N"
+HADR_ETLID_DISABLE_OVRD=0  
+
+# before we do anything, check to see if HADR is turn off for this ETL_ID (if its defined)
+if [[ -n $ETL_ID && -n ${JOB_ENV:-""} ]]; then
+   . $DW_MASTER_CFG/dw_etl_common_defs.cfg
+   dwi_assignTagValue -p HADR_ETLID_DISABLE_OVRD -t HADR_ETLID_DISABLE_OVRD -f $ETL_CFG_FILE -s N -d 0
+fi
+
+#if disable is not set to 1, then go ahead and determine HADR_MODE and other settings
+if [ $HADR_ETLID_DISABLE_OVRD != 1 ]; then
+   
+   # get master level HADR nodes and active status information
+   if [ -f $DW_MASTER_CFG/servers.hadr.$ETL_ENV.cfg ]; then
+      assignHADRServerInfo $SFT_SNODE SNODE SNODETYPE SNODEACTIVE SNODEISPROD SFT_LCLPORT HANODE DRNODE
+      if [[ -n $SNODE ]]
+      then
+         #export SNODE SNODETYPE SNODEACTIVE SNODEISPROD SFT_LCLPORT HANODE DRNODE
+         HADR_SRC[0]=$SNODE
+         if [[ "$SNODETYPE" = "PR" && $SNODEISPROD == 1 && $SNODEACTIVE == 1 ]]; then
+            assignHADRServerInfo $HANODE TEMPNODE HANODETYPE HAACTIVE FILLER SFT_HA_PORT REST
+            if [[ -n $TEMPNODE ]]; then
+               HADR_TRGT[0]=$TEMPNODE 
+               HADR_SFT_PORT[0]=$SFT_HA_PORT
+               case $HAACTIVE in 
+                  1 ) HADR_MODE[0]="A"
+                      HADR_SRC[1]=${HADR_TRGT[0]};;
+                  0 ) HADR_MODE[0]="P"
+                      HADR_SRC[1]=${HADR_TRGT[0]};;
+                 -1 ) HADR_SRC[1]=${HADR_SRC[0]};;
+                  * ) print "error: Active flag for HA Node $TEMPNODE set to ( $HAACTIVE ).  Must be 1, 0 or -1)."
+                      exit 4;;
+               esac
+            fi
+
+            assignHADRServerInfo $DRNODE TEMPDRNODE DRNODETYPE DRACTIVE FILLER SFT_DR_PORT REST
+            if [[ -n $TEMPDRNODE ]]; then
+               HADR_TRGT[1]=$TEMPDRNODE 
+               HADR_SFT_PORT[1]=$SFT_DR_PORT
+               case $DRACTIVE in 
+                  1 ) HADR_MODE[1]="P";;
+                  0 ) HADR_MODE[1]="P";;
+                 -1 ) ;;
+                  * ) print "error: Active flag for DR Node $TEMPDRNODE set to ( $DRACTIVE ).  Must be 1, 0 or -1)."
+                      exit 4;;
+               esac
+            fi
+         elif [[ "$SNODETYPE" = "PR" && $SNODEACTIVE == 1 ]]; then
+            #node is primary, active, but not production - just set up potential targets.
+            assignHADRServerInfo $HANODE TEMPNODE HANODETYPE HAACTIVE FILLER SFT_HA_PORT REST
+            if [[ -n $TEMPNODE ]]; then
+               HADR_TRGT[0]=$TEMPNODE 
+               HADR_SFT_PORT[0]=$SFT_HA_PORT
+               case $HAACTIVE in 
+                  1 ) HADR_SRC[1]=${HADR_TRGT[0]};;
+                  0 ) HADR_SRC[1]=${HADR_TRGT[0]};;
+                 -1 ) HADR_SRC[1]=${HADR_SRC[0]};;
+                  * ) print "error: Active flag for HA Node $TEMPNODE set to ( $HAACTIVE ).  Must be 1, 0 or -1)."
+                      exit 4;;
+               esac
+            fi
+         elif [[ "$SNODETYPE" = "HA" && $SNODEACTIVE == 1 ]]; then
+            #node is HA, active, but not production - just populate targets.
+            assignHADRServerInfo $DRNODE TEMPDRNODE DRNODETYPE DRACTIVE FILLER SFT_DR_PORT REST
+            if [[ -n $TEMPDRNODE ]]; then
+               HADR_SRC[1]=${HADR_SRC[0]}
+               HADR_TRGT[1]=$TEMPDRNODE 
+               HADR_SFT_PORT[1]=$SFT_DR_PORT
+            fi
+         elif [[ "$SNODETYPE" = "HA" && $SNODEISPROD == 1 && $SNODEACTIVE == 1 ]]; then
+            assignHADRServerInfo $DRNODE TEMPDRNODE DRNODETYPE DRACTIVE FILLER SFT_DR_PORT REST
+            if [[ -n $TEMPDRNODE ]]; then
+               HADR_SRC[1]=${HADR_SRC[0]}
+               HADR_TRGT[1]=$TEMPDRNODE 
+               HADR_SFT_PORT[1]=$SFT_DR_PORT
+               case $DRACTIVE in 
+                  1 ) HADR_MODE[1]="P";;
+                  0 ) HADR_MODE[1]="P";;
+                 -1 ) ;;
+                  * ) print "error: Active flag for DR Node $TEMPDRNODE set to ( $DRACTIVE ).  Must be 1, 0 or -1)."
+                      exit 4;;
+               esac
+            fi
+         fi
+         
+         if [[ "${HADR_MODE[0]}" = "N" && "${HADR_MODE[1]}" = "N" ]]; then
+            echoifverbose "Both HA and DR are Set to (N)one"
+            echoifverbose "No HA/DR processing will occur"
+            HADR_ACTIVE=0
+         fi
+      else
+         echoifverbose "Server $SFT_SNODE was not found in $DW_MASTER_CFG/servers.hadr.cfg"
+         echoifverbose "No HA/DR processing will occur"
+         HADR_ACTIVE=0
+      fi
+   else
+      echoifverbose "File $DW_MASTER_CFG/servers.hadr.cfg was not found"
+      echoifverbose "No HA/DR processing will occur"
+      HADR_ACTIVE=0
+   fi
+else
+   echoifverbose "${0##*/}:  INFO, HADR_ETLID_DISABLE_OVRD is set to 1, HA/DR process is disabled foe ETL_ID : $ETL_ID"
+   HADR_ACTIVE=0
+fi
+
+if [ -f $DW_MASTER_CFG/dw_infra.server_info.$ETL_ENV.lis ]; then
+dwi_getServerInfo -s $servername -e $ETL_ENV -c DWI_ENVCLASS -g DWI_GLBZONE -l DWI_LCL_DATACENTER -t DWI_SRVR_HADR_TYPE -v DWI_SRVR_VIP -r DWI_RMT_DATACENTER
+fi
+export DWI_ENVCLASS DWI_GLBZONE DWI_LCL_DATACENTER DWI_SRVR_HADR_TYPE DWI_SRVR_VIP DWI_RMT_DATACENTER
+
+dwi_assignRmtDataCenterServer -s $servername -c $DWI_ENVCLASS -r DWI_RMT_SERVER
+export DWI_RMT_SERVER

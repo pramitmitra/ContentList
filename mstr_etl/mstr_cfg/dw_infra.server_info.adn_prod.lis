@@ -1,0 +1,3 @@
+Zone              ENV_CLASS GlobalZone   Location   Type   Vip            RemoteLocation
+phximddcetl01     0         phximddcetl01 phx       primary adn-ctrl.vip.ebay.com none
+phximddcetl02     0         phximddcetl02 phx       primary adn-ctrl.vip.ebay.com none
