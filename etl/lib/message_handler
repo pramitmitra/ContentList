@@ -1,0 +1,31 @@
+# Send errors to the error file.  The trap will include the contents of the error file in the email.
+# The error file PARENT_ERROR_FILE variable needs to be created in the script that calls mesasge_handler.
+# add test for $PARENT_ERROR_FILE
+
+exec 2> $PARENT_ERROR_FILE
+
+set +e
+grep "^$SUBJECT_AREA\>" $DW_CFG/subject_area_email_list.dat | read PARAM EMAIL_ERR_GROUP
+rcode=$?
+set -e
+
+if [ $rcode != 0 ]
+then
+	echo "${0##*/}:  ERROR, failure determining value for EMAIL_ERR_GROUP parameter from $DW_CFG/subject_area_email_list.dat"
+	exit 4
+fi
+
+export EMAIL_ERR_GROUP
+
+ETL_SERVER=$(uname -n)
+
+if [ $# -gt 0 ]
+then
+	email_subject="$ETL_SERVER:  Failure running ${0##*/} with parameter(s):  $*"
+else
+	email_subject="$ETL_SERVER:  Failure running ${0##*/}"
+fi
+
+# email notifications of errors
+tcode=4
+trap 'if [ $tcode = 4 ]; then cat $PARENT_ERROR_FILE; cat $PARENT_ERROR_FILE | mailx -s "$email_subject" $EMAIL_ERR_GROUP; fi' 0

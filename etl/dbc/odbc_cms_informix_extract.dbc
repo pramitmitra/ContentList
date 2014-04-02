@@ -1,0 +1,257 @@
+############################################
+## odbc Database Configuration Information
+## 
+## You need to edit this file once, after you create
+## it. This file contains the information that tells
+## the Ab Initio (tm) IDB database components
+## how to connect to your odbc database.
+##
+## This file must always be named with the extension .dbc and
+## should be saved in the host directory where the graph
+## runs or in the $AB_HOME/config/db directory.
+##
+## Each line of this file must have the following form:
+## <tag>:  <value>
+##
+## Each tag must be at the start of a line and be
+## immediately followed by a colon (:). All white space
+## characters, such as blanks and tabs, are ignored.
+##
+## This file also contains information about assigning
+## and editing the values of tags.
+##
+## Pound signs at the beginning of a line denote
+## comments. The IDB database components ignore these
+## lines.
+############################################
+
+dbms: odbc
+## REQUIRED. Do not change the value of this tag from odbc.
+
+db_version: 4.20
+## REQUIRED. Enter the odbc version number. Versions 2.0
+## and later are supported.
+
+odbc_data_source_name: cms_informix_extract
+## The data source name when using ODBC connection.  This
+## should be the name of a data source that you have configured
+## via the ODBC Data Sources from the Control Panel on Microsoft
+## Windows.  If the name includes spaces, enclose the name in
+## double quotes.
+
+db_name: cms
+## If needed, enter the name of the default database
+## to which you want to connect, for example 'master'.
+## Formerly, when using ODBC connections, this tag
+## specified the ODBC DSN.  You should now use the
+## odbc_data_source_name tag to specify the ODBC DSN, and
+## either leave the db_name tag commented or use it
+## to specify the name of the database to connect to
+## (just as with oledb connections).
+## The older usage of db_name to specify the ODBC DSN is
+## now deprecated, though it will still work if the
+## odbc_data_source_name tag is not used.
+
+##odbc_init_file: 
+## OPTIONAL.  When running on a Unix system, this tag
+## can be used to set the location and name
+## of the odbc initialization file which is used by the
+## ODBC driver manager.  By default the file is named
+## .odbc.ini and is located in the user's home directory.
+
+## odbc_libdir: ${DW_LIB}/myodbc
+## OPTIONAL.  When running on a Unix system, use this tag
+## to indicate the location of the ODBC driver manager
+## library (e.g. libodbc.so)
+
+db_nodes: ${servername} 
+## REQUIRED. Enter the name of the Windows NT machine
+## where the ODBC data source you are connecting to
+## is located.
+
+
+user: ${ODBC_USERNAME}
+password: ${ODBC_PASSWORD}
+## encrypted_password:
+## If your database connection requires a username and
+## password, then uncomment the preceding tags and enter
+## the appropriate values.  If a password is to be specified, 
+## it should be encrypted with the "m_password" utility and 
+## the resulting string should be given as the value to the
+## "encrypted_password" tag.  Alternatively, the password
+## can be specified in plain text with the "password" tag.
+## If both "encrypted_password" and "password" tags are 
+## specified, "encrypted_password" is ignored.  You can use
+## environment variables instead of values. Use ${} to surround
+## each environment variable. For example:
+## user:      ${MY_USERNAME}
+## encrypted_password:  ${MY_ENCRYPTED_PASSWORD}
+
+case: lower
+## The default value lower causes the database package to
+## generate DML in lower case. If you want the database
+## package to generate DML in upper case, change the value to
+## upper. For example:
+## case: upper
+## If you want the database package to preserve the case
+## as it is returned from the database system, change the
+## value to mixed.  For example:
+## case: mixed
+
+## column_delimiter: \a
+## The default value is .  If you want to change
+## the value, then uncomment the preceding tag and
+## set column_delimiter to the default value you want.
+
+## default_date_format:
+## Use this default date format when generating DML for database types
+## which are equivalent to the Ab Initio DATE type. For example:
+## default_date_format: YYYYMMDD
+
+## default_datetime_format:
+## Use this default datetime format when generating DML for database types
+## which are equivalent to the Ab Initio DATETIME type. For example:
+## default_datetime_format: YYYYMMDD HH24:MI:SS
+## 
+## For Oracle:
+##   Your settings of default_datetime_format will be used for
+##   Oracle TIMESTAMP columns and default_date_format for Oracle DATE columns.
+##   If you set both tags (and AB_COMPATIBILITY is 2.14 or later) then
+##   dml for DATE columns will be based on default_date_format unless
+##   you also include this line in the dbc file:
+##      environment: AB_IDB_DATE_FORMAT_PREFERRED=false
+
+generate_dml_with_nulls: true
+## If the value is true, the database automatically
+## generates DML that has an Ab Initio NULL()
+## specifications for database columns which allow NULL.
+
+## default_null_value:
+## When delimited DML is generated, fields which can be NULL 
+## are given a default value of the empty string ("").
+## Databases which distinguish between NULL and the empty 
+## string may require a specifc NULL default value other than the
+## empty string when using utility loaders or unloaders.
+
+field_type_preference: variable
+## Identifies the rules used when generating dml for the
+## database components.  For most of the supported databases
+## only 'delimited' is supported for the utility loaders.
+## The supported values for this tag are delimited, variable and fixed.
+
+## fixed_size_dml: false
+## If the value is false, the database generates delimited
+## types whenever possible. We recommend that this value
+## remain false and that you use delimited DML for database
+## interaction, in order to represent NULLs as zero-length
+## data.
+## This tag is deprecated - please use the field_type_preference tag instead.
+
+treat_blanks_as_null: true
+## If the value is true, the itable component unloads NULLs
+## as blanks for fixed size fields when possible, and,
+## similarly, the otable component treats input with
+## all blanks as NULL when possible. Because not all databases
+## allow this type of interface, we recommend that you use
+## delimited fields instead of fixed size fields.
+
+oldstyle_emptystring_as_null: false
+## Set to true for the behavior used in older releases.
+## If the value is true when writing delimited data to a table and
+## the dml definition of the field does not include a NULL value,
+## then zero-length strings will be written to the table as NULL as
+## if the dml field definition had included '= NULL("")'.
+## This tag is ignored if AB_COMPATIBILITY is set to a value earlier 
+## than 2.12.
+## It is recommended that oldstyle_emptystring_as_null be set
+## to false when the generate_dml_with_nulls tag is set to true.
+
+fully_qualify_dml: false
+## If the value is true record formats will be generated with fully
+## qualified dml.  I.e. all fields will have an explicit character set
+## and all integer fields will have an explicit endianness.
+
+dml_with_maximum_length: true
+## If the value is true, variable-length fields in record formats will be
+## generated with explicit maximum_length qualifiers based on size 
+## information obtained from the database for the corresponding
+## columns.
+
+interface: default
+##   WARNING: The 'interface' tag is only used with database
+##            components generated by GUI releases earlier
+##            than 1.8.25.  Beginning with GUI 1.8.25,
+##            use the interface parameter on each database
+##            component to choose an interface.
+## Each database usually provides multiple interfaces to perform
+## any one task.  For example, databases usually allow two ways
+## to load data: via a load utility, or transactional APIs.
+## The setting of this tag affects which interface will be used for all
+## IDB database components.  The default setting will typically
+## use the best performing interface for this database on a
+## component-by-component basis.
+## If you wish to have all components use the API interface
+## then set this value to api.  For example:
+## interface: api
+
+## client_version:
+## If the version of the local client software used to
+## connect to the database is different from the
+## version of the database server version to which
+## you are connecting, then uncomment this tag and
+## enter the version of the local client software.
+
+## environment: 
+## Uncomment this tag to set or propagate environment variables
+## to all database components. Use the following form:
+## environment:  <env-var>=<value>
+
+## max_data_size:
+## Uncomment this tag to specify the maximum expected size of the data per field.
+## This can be used for varying length fields (like VARCHAR) which
+## need an internal maximum size to allocate (defaults to 100000).
+
+## rowset_size:
+## Uncomment this tag to specify the maximum number of rows to process
+## for each database API call.  This field should rarely be set, and only when
+## requested by Ab Initio support.
+
+## rows_per_commit:
+## Uncomment this tag to specify a default for the commit size
+## of appropriate components.
+## We recommend leaving this commented out for most cases and
+## supplying the commit size via the component parameter.
+
+## commit_table: 
+## Uncomment this tag to set the name of the commit table to be used. This is 
+## required if rows_per_commit is non-zero.
+
+## array_interface_buffer_size: 
+## Uncomment this tag to set the maximum size of the arrays used in the array 
+## interface. The default size is 4096. Be careful to assign a reasonable value 
+## as too large a value can actually decrease performance. The optimum size is 
+## a function of the amount of data in a given record and the connection to the 
+## database as well as other factors. Currently the array interface is used for 
+## loading data into databases in api mode. Check the release notes for 
+## specific databases that can use this feature.
+
+## session_startup_sql: 
+## When uncommented and set, the specified sql statement will be executed
+## at the time that connection is made to the database. 
+## The expected use for this tag is to execute statements
+## which set the session environment.
+## Use multiple instances of this tag to execute multiple sql statements
+##
+## This is generally only useful for api mode operations.
+
+basic_odbc: true
+## Set to true to skip calling certain "advanced" ODBC functions. This is
+## useful for data sources that only provide basic ODBC support. Setting
+## basic_odbc to true will also set use_sqlfetch (below) to true, though you
+## can explicitly set use_sqlfetch to override this behavior. The default is
+## false.
+
+## use_sqlfetch: 
+## Set to true to use SQLFetch instead of SQLExtendedFetch/SQLFetchScroll. The
+## default is false.
+

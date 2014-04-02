@@ -1,0 +1,7 @@
+#!/usr/bin/ksh -eu
+
+R4A_DIR=$1
+shift 1
+mv $* $R4A_DIR
+
+exit

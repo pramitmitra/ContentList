@@ -1,0 +1,10 @@
+record
+  string(",") start_date = NULL("") /*CHAR(10) CHARACTER SET LATIN*/;
+  string(",") freq_ind /*CHAR(1) CHARACTER SET UNICODE NOT NULL*/;
+  decimal(",") prd_id /*SMALLINT NOT NULL*/;
+  string(",") met_nm /*VARCHAR(60) CHARACTER SET UNICODE NOT NULL*/;
+  decimal(",") job_count /*INTEGER NOT NULL*/;
+  string(",") dim_nm = NULL("") /*CHAR(1) CHARACTER SET UNICODE NOT NULL*/;
+  string("\a") dim_val = NULL("") /*CHAR(1) CHARACTER SET UNICODE NOT NULL*/;
+  string(1) newline = "\n";
+end

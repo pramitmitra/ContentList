@@ -1,0 +1,10 @@
+<mpcfile>
+label: "Ebay Item Desc URL Parser"
+image: "dw_lstg.ebay_item_desc_url_parser"
+author: "Kevin Oaks"
+version: "1.0"
+comment: "Parse URL's from EBAY_ITEM_DESC description field."
+port: npipe in in
+port: npipe out out
+argument: flow in
+argument: flow out
