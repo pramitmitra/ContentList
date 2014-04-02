@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Wednesday, February 26, 2014 12:25:02 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_extract", compiled at Tuesday, April 01, 2014 14:57:58 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -1676,6 +1676,14 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
    fi
    print -rn move_FEXP_LOGFILE__commandline= >>${_AB_PROXY_DIR}/GDE-Parameters
    __AB_QUOTEIT "${commandline}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   condition=$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 0 ]]; then print "1"; else print "0"; fi)
+   mpjret=$?
+   if [ 0 -ne $mpjret ] ; then
+      print -- Error evaluating: 'parameter condition of move_FEXP_LOGFILE', interpretation 'shell'
+      exit $mpjret
+   fi
+   print -rn move_FEXP_LOGFILE__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
+   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1930,7 +1938,7 @@ AB_HAS_DATA_Flow_12=1
 AB_USERCOND_Last_Extract_Value_File="$CNDTL_LAST_EXTRACT_VARIABLE"
 AB_USERCOND_Last_Extract_Value_File=$(__AB_COND "${AB_USERCOND_Last_Extract_Value_File}")
 AB_IS_LIVE_Last_Extract_Value_File=1
-AB_USERCOND_move_FEXP_LOGFILE='$( if [[ '"$EXTRACT_TYPE"' = "T" && '"$TD_USE_API"' = 0 ]]; then print "1"; else print "0"; fi)'
+AB_USERCOND_move_FEXP_LOGFILE="$move_FEXP_LOGFILE__condition"
 AB_USERCOND_move_FEXP_LOGFILE=$(__AB_COND "${AB_USERCOND_move_FEXP_LOGFILE}")
 AB_IS_LIVE_move_FEXP_LOGFILE=1
 # 
@@ -2537,7 +2545,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=4629475
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=8946882
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
