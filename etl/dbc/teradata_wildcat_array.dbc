@@ -1,0 +1,337 @@
+############################################
+## NCR Teradata Database Configuration Information
+## 
+## You need to edit this file once, after you create
+## it. This file contains the information that tells
+## the Ab Initio (tm) IDB database components
+## how to connect to your NCR Teradata database.
+##
+## This file must always be named with the extension .dbc and
+## should be saved in the host directory where the graph
+## runs or in the $AB_HOME/config/db directory.
+##
+## Each line of this file must have the following form:
+## <tag>:  <value>
+##
+## Each tag must be at the start of a line and be
+## immediately followed by a colon (:). All white space
+## characters, such as blanks and tabs, are ignored.
+##
+## This file also contains information about assigning
+## and editing the values of tags.
+##
+## Pound signs at the beginning of a line denote
+## comments. The IDB database components ignore these
+## lines.
+############################################
+
+dbms: teradata
+## REQUIRED. Do not change the value of this tag from teradata.
+
+db_home: 
+## OPTIONAL. The parent directory of the directory in which
+## the database utilities are installed.  Usually, the 
+## Teradata utilities and libraries are installed in system 
+## directories (e.g., /usr/bin & /usr/lib) and there is no
+## need to explicitly set this. (In this example, if you
+## set this tag, it would be set to /usr -- not /usr/bin.)
+## On a Windows system, this may be something like
+## "c:\Program Files\NCR\Teradata Client".
+## If the directory path includes spaces, enclose the path
+## in double quotes.
+
+## wb_bin:
+## OPTIONAL. The directory in which the Teradata Warehouse
+## Builder programs are installed.  You should only need to
+## set this if you did not install Warehouse Builder in its
+## default location.   (On most Unix systems, this tag
+## defaults to /etc/pipc/bin.)
+## If the directory path includes spaces, enclose the path
+## in double quotes.
+##
+## NOTE:  Warehouse Builder generally needs LANG & NLSPATH
+##   environment variables set to specific values.
+##   If these environment variables are NOT set, Ab Initio
+##   will set them to default values as defined by the
+##   Warehouse Builder documentation.  Only if one of the
+##   following situations occur will you need to explicitly
+##   set these values in this dbc file:
+##     1) You ran a job and the Warehouse Builder messages
+##        extracted by Ab Initio are missing, and/or you
+##        see the text 'No catalog or message found.',  OR
+##     2) LANG and NLSPATH are already defined in your
+##        environment, but with values that differ from
+##        what Warehouse Builder is expecting
+##   To explicitly set the variables in this file, add
+##   lines similar to the following (the exact contents
+##   vary by Operating System -- see the Warehouse Builder
+##   documentation for recommended settings needed
+##   for your operating system).  For example, on Solaris:
+##
+##       environment:  LANG=C
+##       environment:  NLSPATH=/usr/lib/locale/%L/LC_MESSAGES/%N
+
+## odbc_init_file:
+## OPTIONAL.  This can be used to set the location and name
+## of the odbc initialization file which is used by the
+## Teradata ODBC driver on Unix.  By default the file is named
+## .odbc.ini and is located in the user's home directory.
+## Use this tag if the file is located elsewhere or has
+## a different name.
+
+odbc_data_source_name: dw_src_dr
+## REQUIRED data source name for the ODBC connection.
+## This should be the name of a data source that you have 
+## configured in your .odbc.ini file on UNIX, or via the
+## ODBC Data Sources from the Control Panel on Microsoft Windows.
+## If the name includes spaces, enclose the name
+## in double quotes.
+## For more information on configuring an ODBC connection,
+## consult the NCR Teradata ODBC documentation.
+
+db_name: wildcat
+## REQUIRED name of the Teradata database to which
+## you want to connect.  This value should be the
+## Teradata tdpid used by Teradata utilities to connect
+## to the database.  (On Unix systems, try the value 'dbc'
+## [without quotes] if you are unsure what your tdpid is.)
+
+db_nodes: ${servername}
+## REQUIRED. This must be the name (or IP address) of a node
+## where the Teradata utilities (bteq,multiload et al) run
+## AND on which the Ab Initio Co>Operating System(tm) is installed.
+## The value of db_nodes must contain at least one node. 
+## If db_nodes contains multiple nodes, the value(s) for 
+## db_home, wb_bin, db_name, odbc_init_file, and odbc_data_source_name
+## may be specified once if the value is identical for every node, or
+## should be a space-separated list with values for each node.
+##
+
+## default_database: 
+## OPTIONAL.  Specifies the database within Teradata that
+## should be used as the default database after you log on.
+##
+## This tag's value is used with the Teradata "DATABASE"
+## command.  This value is also assigned to the ODBC Data
+## Source "DefaultDatabase" attribute.
+##
+## The result of setting this tag is that any unqualified
+## table reference will be assumed to reside in this
+## database.  However, only the logtable_database tag will
+## modify an unqualified logtable reference in a utility script.
+
+logtable_database:  ${tdlogDB}
+worktable_database:  ${tdlogDB}
+errortables_database:  ${tdlogDB}
+## OPTIONAL.  Specifies the 'database' within Teradata
+## that should be used when generating the log tables,
+## work tables, and/or error tables that the Teradata
+## utilties create while loading or unload tables.
+## If these tags are not specified, the work/error tables
+## will be created either in the database specified by the
+## default_database tag (see above) if defined, or otherwise
+## in your default logon database.  Note that if
+## logtable_database is not defined, your default logon
+## database is used -- the default_database tag does not
+## apply to logtables.
+
+## teradata_character_set: 
+## OPTIONAL.  Specifies the character set name used for
+## Teradata utilities (Multiload, Tpump, et al)
+## and Warehouse Builder operators.
+## If you specify "CharacterSet=" line in your .odbc.ini
+## file, you should use the same value here.
+## For UNICODE, teradata_character_set: UTF8
+## For Shift-JIS, teradata_character_set: KANJISJIS_0S
+## For EUC-jp, teradata_character_set: KANJIEUC_0U
+## For other encodings, please consult Teradata documentation.
+
+scan_for_odbc_escapes: false
+## OPTIONAL. If true, the ODBC layer will scan your SQL
+## statements for ODBC escape sequences.
+
+user:  ${TD_USERNAME}
+password:  ${TD_PASSWORD}
+## encrypted_password:
+## If your database connection requires a username and
+## password, then uncomment the preceding tags and enter
+## the appropriate values.  If a password is to be specified, 
+## it should be encrypted with the "m_password" utility and 
+## the resulting string should be given as the value to the
+## "encrypted_password" tag.  Alternatively, the password
+## can be specified in plain text with the "password" tag.
+## If both "encrypted_password" and "password" tags are 
+## specified, "encrypted_password" is ignored.  You can use
+## environment variables instead of values. Use ${} to surround
+## each environment variable. For example:
+## user:      ${MY_USERNAME}
+## encrypted_password:  ${MY_ENCRYPTED_PASSWORD}
+
+## db_acctid:
+## If needed, enter the Teradata account identifier
+## for .LOGON information.
+
+case: lower
+## The default value lower causes the database package to
+## generate DML in lower case. If you want the database
+## package to generate DML in upper case, change the value to
+## upper. For example:
+## case: upper
+## If you want the database package to preserve the case
+## as it is returned from the database system, change the
+## value to mixed.  For example:
+## case: mixed
+
+## column_delimiter:
+## The default value is .  If you want to change
+## the value, then uncomment the preceding tag and
+## set column_delimiter to the default value you want.
+
+## default_date_format:
+## Use this default date format when generating DML for database types
+## which are equivalent to the Ab Initio DATE type. For example:
+## default_date_format: YYYYMMDD
+## 
+## For Teradata:  The optimum dml will be generated
+##   automatically for DATE columns when this tag is NOT specified. 
+
+## default_datetime_format:
+## Use this default datetime format when generating DML for database types
+## which are equivalent to the Ab Initio DATETIME type. For example:
+## default_datetime_format: YYYYMMDD HH24:MI:SS
+## 
+## For Oracle:
+##   If you wish to generate datetime DML for Oracle date types then specify
+##   a value for this tag.  Otherwise Ab Initio date types will be generated
+##   for Oracle date columns.  For Oracle, at most ONE of the tags
+##   default_date_format and default_datetime_format may be
+##   uncommented.
+## 
+## For Teradata:  The optimum dml will be generated
+##   automatically for TIMESTAMP columns when this tag is NOT specified.
+##   For Teradata, either, neither, or both of the tags
+##   default_date_format and default_datetime_format may
+##   be uncommented.
+
+generate_dml_with_nulls: true
+## If the value is true, the database automatically
+## generates DML that has an Ab Initio NULL()
+## specifications for database columns which allow NULL.
+
+## default_null_value:
+## When delimited DML is generated, fields which can be NULL 
+## are given a default value of the empty string ("").
+## Databases which distinguish between NULL and the empty 
+## string may require a specifc NULL default value other than the
+## empty string when using utility loaders or unloaders.
+## For instance, the Netezza loader expects the word "NULL" as the.
+## default NULL value
+## To specify a value other than the empty string, use a quoted string as the
+## value for this tag, e.g.
+## default_null_value: "NULL"
+## which will cause dml such as the following to be generated:
+##   string("\001") f1 = NULL("NULL");
+## In this case, any record which contains the text "NULL" in field f1 will
+## cause a NULL to be loaded into the corresponding column in the database.
+
+field_type_preference: variable
+## Identifies the rules used when generating dml for the
+## database components.  For most of the supported databases
+## only 'delimited' is supported for the utility loaders.
+## The supported values for this tag are delimited, variable and fixed.
+
+## fixed_size_dml: false
+## If the value is false, the database generates delimited
+## types whenever possible. We recommend that this value
+## remain false and that you use delimited DML for database
+## interaction, in order to represent NULLs as zero-length
+## data.
+## This tag is deprecated - please use the field_type_preference tag instead.
+
+treat_blanks_as_null: true
+## If the value is true, the itable component unloads NULLs
+## as blanks for fixed size fields when possible, and,
+## similarly, the otable component treats input with
+## all blanks as NULL when possible. Because not all databases
+## allow this type of interface, we recommend that you use
+## delimited fields instead of fixed size fields.
+
+oldstyle_emptystring_as_null: false
+## Set to true for the behavior used in older releases.
+## If the value is true when writing delimited data to a table and
+## the dml definition of the field does not include a NULL value,
+## then zero-length strings will be written to the table as NULL as
+## if the dml field definition had included '= NULL("")'.
+## This tag is ignored if AB_COMPATIBILITY is set to a value earlier 
+## than 2.12.
+## It is recommended that oldstyle_emptystring_as_null be set
+## to false when the generate_dml_with_nulls tag is set to true.
+
+fully_qualify_dml: false
+## If the value is true record formats will be generated with fully
+## qualified dml.  Ie all fields will have an explicit character set.
+
+delimited_dml_with_maximum_size: true
+## If the value is true record formats for delimited data will be
+## generated with explicit maximum_size qualifiers based on size 
+## information obtained from the database for the corresponding
+## columns.
+
+interface: default
+##   WARNING: The 'interface' tag is only used with database
+##            components generated by GUI releases earlier
+##            than 1.8.25.  Beginning with GUI 1.8.25,
+##            use the interface parameter on each database
+##            component to choose an interface.
+## Each database usually provides multiple interfaces to perform
+## any one task.  For example, databases usually allow two ways
+## to load data: via a load utility, or transactional APIs.
+## The setting of this tag affects which interface will be used for all
+## IDB database components.  The default setting will typically
+## use the best performing interface for this database on a
+## component-by-component basis.
+## If you wish to have all components use the API interface
+## then set this value to api.  For example:
+## interface: api
+
+## client_version:
+## If the version of the local client software used to connect to the database
+## is different from the version of the database server version to which
+## you are connecting, then uncomment this tag and enter the
+## version of the local client software.
+
+environment: AB_AXSMOD=true
+## Uncomment this tag to set or propagate environment variables
+## to all database components. Use the following form:
+## environment:  <env-var>=<value>
+
+## max_data_size:
+## Uncomment this tag to specify the maximum expected size of the data per field.
+## This can be used for varying length fields (like VARCHAR) which
+## need an internal maximum size to allocate (defaults to 100000).
+
+## rowset_size:
+## Uncomment this tag to specify the maximum number of rows to process
+## for each database API call.  This field should rarely be set, and only when
+## requested by Ab Initio support.
+
+## rows_per_commit:
+## Uncomment this tag to specify a default for the commit size
+## of appropriate components.
+## We recommend leaving this commented out for most cases and
+## supplying the commit size via the component parameter.
+
+## commit_table: 
+## Uncomment this tag to set the name of the commit table to be used. This is 
+## required if rows_per_commit is non-zero.
+
+environment: AB_TER_ENAPIAR=true
+
+array_interface_buffer_size: 500
+## Uncomment this tag to set the maximum size of the arrays used in the array 
+## interface. The default size is 4096. Be careful to assign a reasonable value 
+## as too large a value can actually decrease performance. The optimum size is 
+## a function of the amount of data in a given record and the connection to the 
+## database as well as other factors. Currently the array interface is used for 
+## loading data into databases in api mode. Check the release notes for 
+## specific databases that can use this feature.

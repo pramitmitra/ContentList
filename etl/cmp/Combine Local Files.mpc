@@ -1,0 +1,13 @@
+<mpcfile>
+label: "Combine Local Files"
+image: "combinelocalfiles.ksh"
+author: "Darren Bruntz"
+version: "1.0"
+comment: "Combined local files into layout flow"
+port: npipe out out 1 1
+parameter: positional Master_File_List string "" "Master File List" required
+parameter: positional Record_Terminator string "" "Specify record terminator only if prepending filename" optional
+argument: flow out
+argument: literal $1
+argument: literal $2
+argument: literal $3
