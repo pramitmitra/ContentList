@@ -185,6 +185,7 @@ export odsuserworkingDB=ebay_user_w
 export odswebfDB=ebay_webf_t
 export odswebfreadDB=ebay_webf_v
 export odswebfworkingDB=ebay_webf_w
+export odsworkingDB=ods_working_tables
 export odwDB=odw_tables
 export odwaccessDB=odw_access_views
 export odwprsDB=ODW_PRS_T
@@ -234,6 +235,7 @@ export reconDB=mth_recon_tables
 export reconReadDB=mth_recon_views
 export rmdDB=rmd_app
 export roleHistDB=DSEC_TABLES
+export stdrptDB=std_rpt_tables
 export shadeDB=eBay_Shade_T
 export shadeaccessDB=eBay_Shade_V
 export shadeworkingDB=eBay_Shade_W
@@ -365,6 +367,9 @@ export imworkingDB=im_w
 export imDB=IM_T
 export imworkingDB=IM_W
 
+# Added on 2011/03/29
+export ubi_soj_reportDB=UBI_REPORT_T
+
 
 # Added on 2011/04/01 to recovery SASRV13279660 & SASRV13301986
 export osa14DB=OSA14_BATCH_SCHEDULER_T
@@ -425,6 +430,78 @@ export seo_DB=ddm_seo_t
 export appshpmtDB=app_shpmt_t
 export appshpmtworkingDB=app_shpmt_w
 
+# Requested by Zhang, Tom 20131125
+export ddmlocalDB=DDM_LOCAL_T     
+export ddmlocalworkDB=DDM_LOCAL_W 
+
+# Requested by Li, Zhong 20131202
+export ddmmblDB=DDM_MBL_T 
+export ddmmblworkingDB=DDM_MBL_W
+
+# Requested by Shankar Venugopal 20131203
+export ddmubisojworkDB=DDM_UBI_SOJ_W
+export ddmubisojDB=DDM_UBI_SOJ_T
+
+# Requested by Myron Juan for eBay, Inc 20140215
+
+export incEbayAqsnDB=INC_EBAY_AQSN_T
+export wrkEbayAqsnDB=INC_EBAY_AQSN_W
+export viewEbayAqsnDB=INC_EBAY_AQSN_V
+export incPaypalAqsnDB=INC_PAYPAL_AQSN_T
+export wrkPaypalAqsnDB=INC_PAYPAL_AQSN_W
+export viewPaypalAqsnDB=INC_PAYPAL_AQSN_V
+export incStubhubAqsnDB=INC_STUBHUB_AQSN_T
+export wrkStubhubAqsnDB=INC_STUBHUB_AQSN_W
+export viewStubhubAqsnDB=INC_STUBHUB_AQSN_V
+export incMiloAqsnDB=INC_MILO_AQSN_T
+export wrkMiloAqsnDB=INC_MILO_AQSN_W
+export viewMiloAqsnDB=INC_MILO_AQSN_V
+export incHunchAqsnDB=INC_HUNCH_AQSN_T
+export wrkHunchAqsnDB=INC_HUNCH_AQSN_W
+export viewHunchAqsnDB=INC_HUNCH_AQSN_V
+export incRedlaserAqsnDB=INC_REDLASER_AQSN_T
+export wrkRedlaserAqsnDB=INC_REDLASER_AQSN_W
+export viewRedlaserAqsnDB=INC_REDLASER_AQSN_V
+export inc3rdPrtyAqsnDB=INC_3RDPARTY_AQSN_T
+export wrk3rdPrtyAqsnDB=INC_3RDPARTY_AQSN_W
+export view3rdPrtyAqsnDB=INC_3RDPARTY_AQSN_V
+export incEbayAdvAqsnDB=INC_EBAYADV_AQSN_T
+export wrkEbayAdvAqsnDB=INC_EBAYADV_AQSN_W
+export viewEbayAdvAqsnDB=INC_EBAYADV_AQSN_V
+export incPaypalAdvAqsnDB=INC_PPALADV_AQSN_T
+export wrkPaypalAdvAqsnDB=INC_PPALADV_AQSN_W
+export viewPaypalAdvAqsnDB=INC_PPALADV_AQSN_V
+export incPrsRstrctdDB=PRS_INC_RESTRICTED_V
+export incPrsSecureDB=PRS_INC_SECURE_V
+export incMatchItgnDB=INC_MATCH_ITGN_T
+export wrkMatchItgnDB=INC_MATCH_ITGN_W
+export incPrsCustDB=PRS_INC_CUSTOMERS_V
+export incPrsProdDB=PRS_INC_PRODUCTS_V
+export incPrsLocDB=PRS_INC_LOCATIONS_V
+export incPrsSocialDB=PRS_INC_SOCIAL_V
+export incPrsMrktngDB=PRS_INC_MARKETING_V
+export incPrsInvntryDB=PRS_INC_INVENTORY_V
+export incPrsEventsDB=PRS_INC_EVENTS_V
+export incPrsTxnsDB=PRS_INC_TXNS_V
+export incPrsFraudDB=PRS_INC_FRAUDRISK_V
+export incPrsMiloDB=PRS_INC_MILO_V
+export incPrsRedlaserDB=PRS_INC_REDLASER_V
+export incPrsEbayAdvDB=PRS_INC_EBAYADV_V
+export incPrsPaypalAdvDB=PRS_INC_PPALADV_V
+export incProtoEbayDB=PT_INC_EBAY
+export incProtoPaypalDB=PT_INC_PAYPAL
+export incProtoEbayAdvDB=PT_INC_EBAYADV
+export incProtoPaypalAdvDB=PT_INC_PPALADV
+export incProtoIncdataDB=PT_INC_INCDATA
+
+# Added for Selling Team as per Jay Sun on 20140410
+export ddmslngDB=DDM_SELLING_T
+export ddmslngworkDB=DDM_SELLING_W
+
+# Added for CSTMR Team as per Shankar Venugopal on 20140410
+export ddmcstmrworkDB=DDM_CSTMR_W
+export ddmcstmrDB=DDM_CSTMR_T
+
 
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
@@ -445,6 +522,12 @@ export DW_MI_EXTRACT_DB=mzbatch
 
 #### Added for ATS Team 20110525
 export ADN_SANDBOX_ROOT=/kwdm/etl/data01/dw_kwdm_adm/sandbox
+
+########## Added for Inc Data 20140328 ##############
+if [[ $SUBJECT_AREA == @(inc_itgn|o_inc_3rdparty|o_inc_b4f|o_inc_ebay|o_inc_ebayadv|o_inc_hunch|o_inc_milo|o_inc_paypal|o_inc_ppaladv|o_inc_redlaser|o_inc_stubhub) ]]
+then
+  export tdlogDB=TDLOG2_TABLES
+fi
 
 export DW_INFRA_LOAD_DB=sandcat2
 ## Override for Infra Testing

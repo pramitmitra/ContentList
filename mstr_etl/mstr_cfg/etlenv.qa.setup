@@ -369,8 +369,6 @@ export pp_nonpii_DB=pp_non_pii_views
 export petapDB=P_BIS_AP_T
 export petapwrkDB=P_BIS_AP_W
 
-export ubiDB=ubi_t
-
 ## Created for odw
 export odscalDB=odw_cal_t
 export odscalworkingDB=odw_cal_w
@@ -471,8 +469,10 @@ export ubi_soj_reportDB=UBI_REPORT_T
 # Added for Wenhong 20111013
 export ubiaccessDB=ubi_v
 
-# Added for Anne Schwerin 20121004
-export ubiworkingDB=ubi_w
+# Updated for Anne Schwerin 20140409
+export ubiDB=ubi_qa_t
+export ubiworkingDB=ubi_qa_w
+export ubireadDB=ubi_qa_v
 
 # Added for EXL team as per Padma 20120206
 export exl_sas_db=app_exl_sas_t
