@@ -303,3 +303,14 @@ dw_modm         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-APD-MODM-SAE@
 dw_te       bxing@ebay.com,jeffzhang@ebay.com,lmeng@ebay.com
 dw_ecc  xiaoding@ebay.com
 dw_inc_milo DL-ebay-incdata-support@ebay.com
+app_nps  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-NPS-Development-Team@ebay.com
+app_shpmt      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   dl-eBay-Data-Shipping-SAE@corp.ebay.com
+app_cstmr      dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-Data-Customer-SAE@ebay.com
+dw_local DL-eBay-DDI-LOCAL-SAE@ebay.com dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+ubi_soj dl-ebay-sha-imd-dima-cdc-oncall@ebay.com  DL-eBay-bis-alerts@corp.ebay.com
+sg_ubi_bi mjayaraman@ebay.com wenliu2@ebay.com yangzhou@ebay.com zeqshen@ebay.com
+dw_prsnlztn   DL-eBay-ESP-Personalization-SHA@corp.ebay.com   DL-eBay-APD-Prod-Oncall@ebay.com
+dw_dss_cseg dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-CSTS-DW-Support@corp.ebay.com DL-eBay-GSS-DSS-CSeg-Exadata-Notification@ebay.com
+o_inc_stubhub umohan@ebay.com
+o_inc_b4f umohan@ebay.com
+app_trust  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com navsingh@ebay.com
