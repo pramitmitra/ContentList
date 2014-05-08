@@ -14,10 +14,10 @@
 #---------    -----  ---------------------------  ------------------------------
 # 2012-10-30   1.0    Ryan Wong                     Initial
 # 2013-10-04   1.1    Ryan Wong                     Redhat changes
-#
+# 2014-05-07   1.2    Kevin Oaks                    Changed check for WORKING_DB to TPT_LOAD_WORKING_DB
 #############################################################################################################
 
-WORKING_DB=${WORKING_DB:-TDLOG_TABLES}
+WORKING_DB=${TPT_LOAD_WORKING_DB:-TDLOG_TABLES}
 LOG_TABLE=L_${STAGE_TABLE}
 ERROR_TABLE1=E_${STAGE_TABLE}
 ERROR_TABLE2=U_${STAGE_TABLE}
