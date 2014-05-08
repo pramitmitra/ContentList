@@ -9,6 +9,8 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
+# Ryan Wong        05/02/2014      Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB
+#                                    Apply only to PARAM_LIST
 #
 #------------------------------------------------------------------------------------------------
 
@@ -50,11 +52,24 @@ DATAPLATFORM_ETL_INFO="ETL_ID=${ETL_ID};UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CN
 # if there is too much parameters need to be passed to hadoop jar, using a parameters.lis
 dwi_assignTagValue -p USE_JAR_PARAM_LIS -t USE_JAR_PARAM_LIS -f $ETL_CFG_FILE -s N -d 0
 
+# Option to turn off braceexpand and turn off glob
+dwi_assignTagValue -p NO_BRACEEXPAND_NO_GLOB -t NO_BRACEEXPAND_NO_GLOB -f $ETL_CFG_FILE -s N -d 0
+
 if [[ $USE_JAR_PARAM_LIS -eq 1 ]]
+then
+  if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
   then
-    PARAM_LIS_TMP=`eval print $(<$DW_CFG/$ETL_ID.param.lis)`
-    PARAM_LIST="$PARAM_LIST $PARAM_LIS_TMP"
+    set +o braceexpand
+    set +o glob
   fi
+  PARAM_LIS_TMP=`eval print -- $(<$DW_CFG/$ETL_ID.param.lis)`
+  PARAM_LIST="$PARAM_LIST $PARAM_LIS_TMP"
+  if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+  then
+    set -o braceexpand
+    set -o glob
+  fi
+fi
 
 CURR_USER=`whoami`
 
@@ -102,6 +117,7 @@ then
       done
     CLASSPATH=$CLASSPATH:/apache/hive/conf
     HIVE_CLI_JAR=`ls /apache/hive/lib/hive-cli-*.jar`
+
     exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                  $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
@@ -121,32 +137,48 @@ else
 
   if [[ $CURR_USER == $HD_USERNAME ]]
   then
-
+    if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+    then
+      set +o braceexpand
+      set +o glob
+    fi
     $HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                                 -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                                 -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                                 $PARAM_LIST
-
+    if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+    then
+      set -o braceexpand
+      set -o glob
+    fi
 
   else
   
     CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
-    
     CLASSPATH=${CLASSPATH}:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
 
+    if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+    then
+      set +o braceexpand
+      set +o glob
+    fi
     print "exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                  $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                  -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                  -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                  $PARAM_LIST"
-
     exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar dw_adm ~sg_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                  $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                  -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                  -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                  $PARAM_LIST
+    if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+    then
+      set -o braceexpand
+      set -o glob
+    fi
   fi
 fi
 
