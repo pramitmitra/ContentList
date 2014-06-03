@@ -286,7 +286,7 @@ dw_cs_finance         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-CSTS-DW
 dw_rover dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-ATS-DEA-IMK-DEV@ebay.com
 app_exl_sas  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-eBay-GA-Solutions-ExL@corp.ebay.com
 dw_sdc         dl-ebay-sha-imd-dima-cdc-oncall@ebay.com   DL-eBay-MPT-APD-SDC-SAE@corp.ebay.com
-vdm_stats      jhackley@ebay.com biyang@ebay.com
+vdm_stats      epembert@ebay.com jhackley@ebay.com biyang@ebay.com
 o_odw_keynote      DL-eBay-MPT-IMD-ODW-Support@corp.ebay.com
 dw_vertical  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com DL-ebay-mpt-apd-app-vrtcl-sae@ebay.com
 ddm_mbl DL-eBay-APD-MBL-PRDCT-SAE@ebay.com xinhan@ebay.com guanwang@ebay.com  DL-eBay-APD-COE-DX-Oncall@ebay.com
