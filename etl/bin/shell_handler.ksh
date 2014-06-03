@@ -28,6 +28,9 @@
 # Jacky Shen       03/25/2013      Add a check to Infra_Run complete file to fail job if the complete file still exists
 # Ryan Wong        07/16/2013      Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
 # Ryan Wong        10/04/2013      Redhat changes
+# John Hackley     06/02/2014      Included $servername as part of log file name, since logs
+#                                  are on shared storage and this job runs concurrently on many
+#                                  hosts
 #------------------------------------------------------------------------------------------------
 
 typeset -fu usage
@@ -166,8 +169,8 @@ then
    exit 1
 fi
 
-export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.err
-export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.shell_run.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.err
+export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.shell_run.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
 
 # Comp File Handler
 export UC4_JOB_NAME=${UC4_JOB_NAME:-""}

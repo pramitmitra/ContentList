@@ -14,6 +14,9 @@
 # ----------    -----  ---------------------------  ----------------------------------------------------------
 # 2011-10-12     1.0   Ryan Wong                    Initial Version
 # 2013-10-04     1.1   Ryan Wong                    Redhat changes
+# 2014-06-02     1.2   John Hackley                 Included $servername as part of log file name, since logs
+#                                                   are on shared storage and this job runs concurrently on many
+#                                                   hosts
 #
 ###################################################################################################################
 
@@ -39,8 +42,8 @@ export JOB_TYPE=td1
 
 export DWI_START_DATE=${DWI_START_DATETIME%-*}
 mkdirifnotexist $DW_SA_LOG/$DWI_START_DATE
-export PARENT_ERROR_FILE=$DW_SA_LOG/$DWI_START_DATE/$TABLE_ID.${BASENAME}.$CURR_DATETIME.err
-export PARENT_LOG_FILE=$DW_SA_LOG/$DWI_START_DATE/$TABLE_ID.sft_check_restart_run.$CURR_DATETIME.log
+export PARENT_ERROR_FILE=$DW_SA_LOG/$DWI_START_DATE/$TABLE_ID.$servername.${BASENAME}.$CURR_DATETIME.err
+export PARENT_LOG_FILE=$DW_SA_LOG/$DWI_START_DATE/$TABLE_ID.$servername.sft_check_restart_run.$CURR_DATETIME.log
 
 # Comp File Handler
 HANDLER_COMP_FILE=$DW_SA_TMP/$TABLE_ID.${BASENAME}.handler.complete
