@@ -31,16 +31,24 @@
 # John Hackley     06/02/2014      Included $servername as part of log file name, since logs
 #                                  are on shared storage and this job runs concurrently on many
 #                                  hosts
+# John Hackley     07/03/2014      Added optional input arguments to avoid file collisions on Tempo hosts:
+#                                     -ul (unique logfile name) - include the host name as part of the log file name
+#                                     -ut (unique touchfile name) - include the host name as part of the touch file name
+#                                     -st (suppress touchfile) - skip creation of touchfile at end of job
 #------------------------------------------------------------------------------------------------
 
 typeset -fu usage
 
 function usage {
-   print "Usage:  $0 <ETL_ID> <JOB_ENV> [ -f <UOW_FROM> -t <UOW_TO> ] <SHELL_EXE> <Param1> <Param2> <Param3> ... <ParamX>
-	ETL_ID = <SUBJECT_AREA.TABLE_ID>
-	JOB_ENV = <extract|primary|secondary>
-	SHELL_EXE = <shell executable>
-	Param[1-X] = <parameters for shell executable>"
+   print "Usage:  $0 <ETL_ID> <JOB_ENV> [ -f <UOW_FROM> -t <UOW_TO> ] [ -ul ] [ -ut ] [ -st ] <SHELL_EXE> <Param1> <Param2> <Param3> ... <ParamX>
+	ETL_ID =                   <SUBJECT_AREA.TABLE_ID>
+	JOB_ENV =                  <extract|primary|secondary>
+       -f and -t =                specify Unit of Work From and To dates, in YYYYMMDDHHMMSS format
+       -ul (unique logfile) =     include ETL host name as part of log file name
+       -ut (unique touchfile) =   include ETL host name as part of touch file name
+       -st (suppress touchfile) = don't create touchfile at end of job
+	SHELL_EXE =                <shell executable>
+	Param[1-X] =               <parameters for shell executable>"
 }
 
 . /dw/etl/mstr_cfg/etlenv.setup
@@ -117,6 +125,33 @@ else
    shift 3
 fi
 
+# Check for optional -ul (unique log file name)
+export SH_UNIQUE_LOG_FILE=0
+if [[ $SHELL_EXE = "-ul" ]]
+then
+   export SH_UNIQUE_LOG_FILE=1
+   export SHELL_EXE=$1
+   shift 1
+fi
+
+# Check for optional -ut (unique touch file name)
+export SH_UNIQUE_TOUCH_FILE=0
+if [[ $SHELL_EXE = "-ut" ]]
+then
+   export SH_UNIQUE_TOUCH_FILE=1
+   export SHELL_EXE=$1
+   shift 1
+fi
+
+# Check for optional -st (suppress touch file)
+export SH_SKIP_TOUCH_FILE=0
+if [[ $SHELL_EXE = "-st" ]]
+then
+   export SH_SKIP_TOUCH_FILE=1
+   export SHELL_EXE=$1
+   shift 1
+fi
+
 export PARAMS=""
 if [ $# -gt 0 ]
 then
@@ -169,8 +204,14 @@ then
    exit 1
 fi
 
-export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.err
-export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.shell_run.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+if [[ $SH_UNIQUE_LOG_FILE -eq 1 ]]
+then
+  export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.err
+  export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.shell_run.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+else
+  export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.err
+  export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.shell_run.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+fi
 
 # Comp File Handler
 export UC4_JOB_NAME=${UC4_JOB_NAME:-""}
