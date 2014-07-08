@@ -11,6 +11,9 @@
 # John Hackley     06/02/2014      Included $servername as part of log file name, since logs
 #                                  are on shared storage and this job runs concurrently on many
 #                                  hosts
+# John Hackley     07/03/2014      Added options to include host name as part of log file name (for 
+#                                  uniqueness), include host name as part of touch file name (for
+#                                  uniqueness) and skip creation of touch file altogether
 #
 #------------------------------------------------------------------------------------------------
 
@@ -48,7 +51,12 @@ then
    # Need to run the clean up process since this is the first run for the current processing period.
 
    #print "Running dw_infra.loader_cleanup.ksh for JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
-   #LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.dw_infra.loader_cleanup.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+   #if [[ $SH_UNIQUE_LOG_FILE -eq 1 ]]
+   #then
+   #   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.dw_infra.loader_cleanup.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+   #else
+   #   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.loader_cleanup.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+   #fi
    #
    #set +e
    #$DW_MASTER_BIN/dw_infra.loader_cleanup.ksh $JOB_ENV $JOB_TYPE_ID > $LOG_FILE 2>&1
@@ -80,7 +88,12 @@ then
    ####################################################################################################################
    "
    print "Processing shell script SHELL_EXE: $SHELL_EXE  `date`"
-   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.${SHELL_EXE_NAME%.ksh}.$CURR_DATETIME.log
+   if [[ $SH_UNIQUE_LOG_FILE -eq 1 ]]
+   then
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.${SHELL_EXE_NAME%.ksh}.$CURR_DATETIME.log
+   else
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}.$CURR_DATETIME.log
+   fi
    
    set +e
    $SHELL_EXE $PARAMS > $LOG_FILE 2>&1
@@ -108,23 +121,43 @@ RCODE=`grepCompFile $PROCESS $COMP_FILE`
 if [ $RCODE -eq 1 ]
 then
 
-   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.$PROCESS.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
-   TFILE_NAME=$ETL_ID.$JOB_TYPE.${SHELL_EXE_NAME%.ksh}.done
-
-   print "Touching Watchfile $TFILE_NAME$UOW_APPEND"
-
-   set +e
-   $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $TFILE_NAME $UOW_PARAM_LIST > $LOG_FILE 2>&1
-   rcode=$?
-   set -e
-
-   if [ $rcode -ne 0 ]
+   if [[ $SH_UNIQUE_LOG_FILE -eq 1 ]]
    then
-      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-      exit 4
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$servername.$PROCESS.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
+   else
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$PROCESS.${SHELL_EXE_NAME%.ksh}${UOW_APPEND}.$CURR_DATETIME.log
    fi
 
-   print $PROCESS >> $COMP_FILE
+   if [[ $SH_UNIQUE_TOUCH_FILE -eq 1 ]]
+   then
+     TFILE_NAME=$ETL_ID.$JOB_TYPE.$servername.${SHELL_EXE_NAME%.ksh}.done
+   else
+     TFILE_NAME=$ETL_ID.$JOB_TYPE.${SHELL_EXE_NAME%.ksh}.done
+   fi
+
+   if [[ $SH_SKIP_TOUCH_FILE -ne 1 ]]
+   then
+
+      print "Touching Watchfile $TFILE_NAME$UOW_APPEND"
+
+      set +e
+      $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $TFILE_NAME $UOW_PARAM_LIST > $LOG_FILE 2>&1
+      rcode=$?
+      set -e
+
+      if [ $rcode -ne 0 ]
+      then
+         print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+         exit 4
+      fi
+
+      print $PROCESS >> $COMP_FILE
+
+   else
+
+      print "Skipped touching Watchfile $TFILE_NAME$UOW_APPEND"
+
+   fi
 
 elif [ $RCODE -eq 0 ]
 then
