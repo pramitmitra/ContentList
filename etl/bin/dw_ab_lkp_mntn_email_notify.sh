@@ -66,7 +66,7 @@ then
 fi
 
 
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 #------------------------------------------------
 #------------ input params ----------------------

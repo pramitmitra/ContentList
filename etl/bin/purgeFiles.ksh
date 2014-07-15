@@ -85,7 +85,7 @@ VERSION="DW_ELF_3.0"
 # Commented for NGC
 #. /.dwProfile
 #Added for NGC
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 #------------------------------------------
 #-- Functions

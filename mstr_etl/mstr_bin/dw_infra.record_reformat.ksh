@@ -791,7 +791,7 @@ export XX_CATALOG;XX_CATALOG="${SAVED_CATALOG}"
 export AB_CATALOG;AB_CATALOG="${SAVED_CATALOG}"
 
 #+Script End+  ==================== Edits in this section are preserved.
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 
 
