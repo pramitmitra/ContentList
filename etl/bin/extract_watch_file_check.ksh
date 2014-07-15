@@ -32,7 +32,8 @@ else
   export JOB_TYPE_ID=ld
 fi
 
-. /export/home/abinitio/cfg/abinitio.setup
+#. /export/home/abinitio/cfg/abinitio.setup
+.  /dw/etl/mstr_cfg/etlenv.setup
 
 CURR_DATETIME=$(date '+%Y%m%d-%H%M%S')
 export DW_SA_DAT=$DW_DAT/$JOB_ENV/$SUBJECT_AREA

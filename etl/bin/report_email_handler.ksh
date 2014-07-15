@@ -27,7 +27,8 @@ TABLE_ID=${ETL_ID##*.}
 SQL_FILENAME=${SQL_FILE##*/}
 SUBJECT_AREA=${ETL_ID%%.*}
 
-. /export/home/abinitio/cfg/abinitio.setup
+#. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 DW_SA_LOG=$DW_LOG/$JOB_ENV/$SUBJECT_AREA
 DW_SA_TMP=$DW_TMP/$JOB_ENV/$SUBJECT_AREA

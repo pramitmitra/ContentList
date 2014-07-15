@@ -15,7 +15,7 @@ LKP_TBL_DESC=$7
 shift 7
 PARAM_LIST=$*
 
-echo "$*" > $DW_TMP/lkp.log
+echo "$*" > $DW_TMP/$JOB_ENV/$SUBJECT_AREA/lkp.log
 
 for p in $PARAM_LIST;do
   eq=`echo $p|grep = >/dev/null 2>&1;echo $?`
