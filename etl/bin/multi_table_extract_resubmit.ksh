@@ -34,7 +34,7 @@ SUBJECT_AREA=${ETL_ID%%.*}
 TABLE_ID=${ETL_ID##*.}
 JOB_TYPE_ID=ex
 
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 DW_SA_TMP=$DW_TMP/$JOB_ENV/$SUBJECT_AREA
 DW_SA_LOG=$DW_LOG/$JOB_ENV/$SUBJECT_AREA

@@ -37,7 +37,7 @@ then
         exit 4
 fi
 
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 export ETL_ID=$1
 export SUBJECT_AREA=${ETL_ID%%.*}
