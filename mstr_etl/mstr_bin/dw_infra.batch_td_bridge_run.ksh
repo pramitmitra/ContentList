@@ -92,7 +92,17 @@ then
          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SCRIPT%.*}${UOW_APPEND}.$CURR_DATETIME.log
 
          set +e
-         eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+         #eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+	 if [ -f $DW_EXE/$SUBJECT_AREA/$SCRIPT ]
+	 then
+	    eval $DW_EXE/$SUBJECT_AREA/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+	 else    
+	    eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+         fi     
+
+         
+         
+         
          rcode=$?
          set -e
 
@@ -329,9 +339,18 @@ then
          print "Running $SCRIPT  $PARAMS `date`"
          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SCRIPT%.*}${UOW_APPEND}.$CURR_DATETIME.log
 
+         
          set +e
-         eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+         #eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+	 if [ -f $DW_EXE/$SUBJECT_AREA/$SCRIPT ]
+	 then
+	    eval $DW_EXE/$SUBJECT_AREA/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+	 else    
+	    eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+         fi  
+         
          rcode=$?
+         
          set -e
 
          if [ $rcode != 0 ]

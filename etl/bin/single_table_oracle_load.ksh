@@ -173,7 +173,7 @@ fi
 export AB_GRAPH_NAME;AB_GRAPH_NAME=single_table_oracle_load
 
 # Host Setup Commands:
-. /home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 _AB_PROXY_DIR=single_table_oracle_load-ProxyDir-$$
 rm -rf "${_AB_PROXY_DIR}"
 mkdir "${_AB_PROXY_DIR}"

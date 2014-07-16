@@ -31,6 +31,7 @@
 # 2013-05-30   1.13   Ryan Wong                     Adding UOW cleanup using UNIT_OF_WORK_FILE
 # 2013-08-20   1.14   George Xiong                  export DBC_FILE_NAME to resolve wildcard character issue on redhad
 # 2013-10-04   1.15   Ryan Wong                     Redhat changes
+# 2013-08-20   1.16   George Xiong                  $DW_EXE/$SUBJECT_AREA scirpt support of pre/post jobs
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -332,7 +333,12 @@ then
          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SCRIPT%.*}${UOW_APPEND}.$CURR_DATETIME.log
 
          set +e
-         eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 if [ -f $DW_EXE/$SUBJECT_AREA/$SCRIPT ]
+                 then
+                    eval $DW_EXE/$SUBJECT_AREA/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 else    
+                    eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 fi 
          rcode=$?
          set -e
 
@@ -942,7 +948,12 @@ then
          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SCRIPT%.*}${UOW_APPEND}.$CURR_DATETIME.log
 
          set +e
-         eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 if [ -f $DW_EXE/$SUBJECT_AREA/$SCRIPT ]
+                 then
+                    eval $DW_EXE/$SUBJECT_AREA/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 else    
+                    eval $DW_EXE/$SCRIPT $PARAMS > $LOG_FILE 2>&1
+                 fi 
          rcode=$?
          set -e
 

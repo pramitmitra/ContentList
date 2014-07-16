@@ -32,7 +32,7 @@ export JOB_TYPE_ID=ex
 export SUBJECT_AREA=${ETL_ID%%.*}
 export TABLE_ID=${ETL_ID##*.}
 
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 export DW_SA_DAT=$DW_DAT/$JOB_ENV/$SUBJECT_AREA
 export DW_SA_IN=$DW_IN/$JOB_ENV/$SUBJECT_AREA
