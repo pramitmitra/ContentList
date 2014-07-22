@@ -23,6 +23,8 @@
 #                                      JOB_TYPE = [extract|load|scp_push|sft_push|datamove]
 # 2013-03-26    George Xiong           set remote user for remote touch file process
 # 2013-10-04    Ryan Wong              Redhat changes
+# 2014-07-17    John Hackley           Added new step to copy touch file to Ingest if
+#                                      specified in new <ETL_ID>.cfg tag
 ###########################################################################################
 
 USAGE_touchw () {
@@ -343,6 +345,67 @@ else
    print "${0##*/}:  ERROR, Unable to grep for $PROCESS in $COMP_FILE"
    exit $RCODE
 fi
+
+
+#-------------------------------------------------------------------------------------
+print "creating remote ingest touchfile"
+#-------------------------------------------------------------------------------------
+PROCESS=process_remote_ing_touchfile
+RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+typeset -l COPY_WATCHFILES_TO_INGEST
+typeset -l RMTDC
+
+if [ $RCODE = 1 ]
+then
+
+   assignTagValue COPY_WATCHFILES_TO_INGEST COPY_WATCHFILES_TO_INGEST $ETL_CFG_FILE W "n/a"
+
+   if [ -f $DW_MASTER_CFG/ingest_watchfile.$ETL_ENV.lis ]
+   then
+
+      REMOTE_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE.$WATCH_FILE.remoteingwatch.complete
+      mkfileifnotexist $REMOTE_COMP_FILE
+
+      while read RMTSERVER RMTDC
+      do
+
+#        see if the tag in <ETL_ID>.cfg contains the datacenter in ingest_watchfile.lis
+         if test "${COPY_WATCHFILES_TO_INGEST#*""$RMTDC""}" != "$COPY_WATCHFILES_TO_INGEST"
+         then
+
+            RCODE=`grepCompFile $RMTSERVER $REMOTE_COMP_FILE`
+
+            if [ $RCODE = 1 ]
+            then
+               ssh -n sg_adm@$RMTSERVER "touch $DW_SA_WATCHFILE"
+               print "touchfile processed to server: $RMTSERVER"
+               print "$RMTSERVER" >> $REMOTE_COMP_FILE
+            elif [ $RCODE = 0 ]
+            then
+               print "touchfile already processed to server: $RMTSERVER"
+            else
+               print "${0##*/}:  ERROR, Unable to grep for $RMTSERVER in $REMOTE_COMP_FILE"
+               exit $RCODE
+            fi
+         fi
+
+      done < $DW_MASTER_CFG/ingest_watchfile.$ETL_ENV.lis
+      rm -f $REMOTE_COMP_FILE
+   fi
+
+   print "$PROCESS COMPLETED"
+   print "$PROCESS" >> $COMP_FILE
+
+
+elif [ $RCODE = 0 ]
+then
+   print "$PROCESS already completed"
+else
+   print "${0##*/}:  ERROR, Unable to grep for $PROCESS in $COMP_FILE"
+   exit $RCODE
+fi
+
 
 print "Removing the complete file  `date`"
 rm -f $COMP_FILE
