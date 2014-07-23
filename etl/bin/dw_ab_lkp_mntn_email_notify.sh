@@ -66,12 +66,12 @@ then
 fi
 
 
-. /export/home/abinitio/cfg/abinitio.setup
+. /dw/etl/mstr_cfg/etlenv.setup
 
 #------------------------------------------------
 #------------ input params ----------------------
 #------------------------------------------------
-print "$*" > $DW_TMP/lkp.log
+# print "$*" > $DW_TMP/$SUBJECT_AREA/lkp.log
 params="$*"
 for p in $params;do
   eq=`print $p|grep = >/dev/null 2>&1;print $?`
