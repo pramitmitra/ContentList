@@ -57,7 +57,14 @@ do
 		mv $DATA_FILE.$BATCH_SEQ_NUM $DATA_FILE.notparse.$BATCH_SEQ_NUM
 	fi
 
-	$DW_EXE/$PARSER $DATA_FILE.notparse.$BATCH_SEQ_NUM $DATA_FILE.$BATCH_SEQ_NUM
+	
+	if [ -f $DW_EXE/$SUBJECT_AREA/$PARSER ]
+        then
+           $DW_EXE/$SUBJECT_AREA/$PARSER $DATA_FILE.notparse.$BATCH_SEQ_NUM $DATA_FILE.$BATCH_SEQ_NUM
+        else    
+           $DW_EXE/$PARSER $DATA_FILE.notparse.$BATCH_SEQ_NUM $DATA_FILE.$BATCH_SEQ_NUM
+        fi 
+        
 done < $TABLE_LIS_FILE
 
 integer TOTAL_REC_CNT=0
