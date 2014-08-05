@@ -104,7 +104,7 @@ else
   exit 4
 fi
 
-MTN_SQL_FILE=$DW_SQL/${MAIN_DB}.${MTN_TB}.${LKP_DB}.${LKP_TB}.mntn.sql
+MTN_SQL_FILE=$DW_SQL/${MAIN_DB}.${MTN_TB}.${MTN_COL}.${LKP_DB}.${LKP_TB}.mntn.sql
 rm -f $MTN_SQL_FILE
 
 echo "Set variables with input params completed"
@@ -227,10 +227,10 @@ typeset -ft send_report
 # ------------------------------------------------------------------------------
 # -------------- Beginning of Notify Script ------------------------------------
 # ------------------------------------------------------------------------------
-RPTFILE="$DW_LOG/$JOB_ENV/$SUBJECT_AREA/${LKP_TB}_by_${MTN_TB}_notify.report.txt"
+RPTFILE="$DW_LOG/$JOB_ENV/$SUBJECT_AREA/${LKP_TB}_by_${MTN_TB}_${MTN_COL}_notify.report.txt"
 rm -f $RPTFILE
 
-NOTIFY_SQL_FILE=$DW_SQL/${MTN_TB}_${LKP_TB}_notify.sql
+NOTIFY_SQL_FILE=$DW_SQL/${MTN_TB}_${LKP_TB}_${MTN_COL}_notify.sql
 
 
 # Alert: Do not remove this, this is required to keep the lines
