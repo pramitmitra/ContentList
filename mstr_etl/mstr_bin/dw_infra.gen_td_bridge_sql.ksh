@@ -12,8 +12,10 @@
 # 2013-05-23  1.1    George Xiong                    Initial
 # 2013-09-08  1.2    George Xiong                    add env for artemis
 # 2013-10-04  1.3    Ryan Wong                       Redhat changes
+# 2013-05-30  1.4    George Xiong                    Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB(default=1)
 #
 ####################################################################################################
+
 
 ETL_ID=$1
 JOB_ENV=$2
@@ -24,13 +26,24 @@ TABLE_ID=${ETL_ID##*.}
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 
+# Option to turn off braceexpand and turn off glob
+dwi_assignTagValue -p NO_BRACEEXPAND_NO_GLOB -t NO_BRACEEXPAND_NO_GLOB -f $ETL_CFG_FILE -s N -d 1
+
+if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+  then
+    set +o braceexpand
+    set +o glob
+fi
+
 
 assignTagValue DATABASE_NAME DM_BRIDGE_TD_DATABASE  $ETL_CFG_FILE    > /dev/null 2>&1
 assignTagValue TABLE_NAME DM_BRIDGE_TD_TABLE  $ETL_CFG_FILE      > /dev/null 2>&1
 
 set +e
+
 grep DW_BRIDGE_HD_DATAPATH $ETL_CFG_FILE|read A DATAPATH_CFG
 eval print $DATAPATH_CFG |read DATAPATH_CFG
+
 set -e
 
 DATAPATH=${DATAPATH:-$DATAPATH_CFG}
@@ -227,6 +240,12 @@ set +e
 	  print "SQL for TD-Bridge generated successfully"  
 	fi
   fi
+
+if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
+  then
+    set -o braceexpand
+    set -o glob
+fi
 
 #eval  java -jar $DW_MASTER_EXE/sqlBridge.jar   "$BRIDGE_ARG" " -sq \"${SELECTSQL}\""
 #print  java -jar $DW_MASTER_EXE/sqlBridge.jar   "$BRIDGE_ARG" " -sq \"${SELECTSQL}\""

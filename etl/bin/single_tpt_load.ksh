@@ -18,6 +18,7 @@
 # 2013-08-21   1.3    George Xiong                  Netstat on Redhat 
 # 2013-10-08   1.4    Ryan Wong                     Redhat changes
 # 2013-10-29   1.5    Ryan Wong                     Add TPT_LOAD_ERROR_LIMIT option
+# 2014-08-07   1.6    Ryan Wong                     Fix data file search by calling dw_infra.single_tpt_load_find_files.ksh
 #############################################################################################################
 
 ETL_ID=$1
@@ -143,7 +144,7 @@ else
   FILE_EXTN=""
 fi
 
-DATA_FILE_PATTERN="$IN_DIR/$TABLE_ID.*.dat*"
+DATA_FILE_PATTERN="$TABLE_ID.*.dat*"
 if [[ "X$UOW_TO" != "X" ]]
 then
   DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
@@ -151,6 +152,7 @@ else
   DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
 fi
 
+print "IN_DIR is $IN_DIR"
 print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
 
 assignTagValue STAGE_DB STAGE_DB $ETL_CFG_FILE
@@ -265,8 +267,8 @@ do
   host_name=${TPT_HOSTS[${instance_idx}]}
   set +e
   ssh -nq $host_name "mkdir -p $DW_SA_LOG" > /dev/null
-  ssh -nq $host_name "ls $DATA_FILE_PATTERN|grep -v record_count > $MASTER_LISTFILE.$instance_idx"
   set -e
+  ssh -nq $host_name "$DW_MASTER_BIN/dw_infra.single_tpt_load_find_files.ksh -ETL_ID $ETL_ID -DATA_FILE_PATTERN $DATA_FILE_PATTERN -IN_DIR $IN_DIR -UOW_FROM $UOW_FROM -UOW_TO $UOW_TO > $MASTER_LISTFILE.$instance_idx"
   ((instance_idx+=1))
 done
 
