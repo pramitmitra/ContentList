@@ -484,7 +484,7 @@ fi)|3|6|Rk||{0|}}
     cat $IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
   fi)|3|6|REk||{0|}}
 {30001002|XXparameter|FORCE_FLOAD|$(grep "^FORCE_FLOAD\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|REKk||{0|}}
-{30001002|XXparameter|FLOAD_RECORD_COUNT_TMP|$(grep "^FLOAD_RECORD_COUNT\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $VALUE)|3|6|REk||{0|}}
+{30001002|XXparameter|FLOAD_RECORD_COUNT_TMP|$(grep "^FLOAD_RECORD_COUNT\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print -- $VALUE)|3|6|REk||{0|}}
 {30001002|XXparameter|FLOAD_RECORD_COUNT|$(if [[ $FORCE_FLOAD -ne 1 ]]
      then
          if [[ $FLOAD_RECORD_COUNT_TMP -ge 20000 ]]
@@ -494,7 +494,7 @@ fi)|3|6|Rk||{0|}}
              print 20000
          fi
      else
-         print -1
+         print -- -1
   fi)|3|6|REKk||{0|}}
 {30001002|XXparameter|CNDTL_FLOAD|$(($RECORD_COUNT>=$FLOAD_RECORD_COUNT))|3|6|REk||{0|}}
 {30001002|XXparameter|IS_PARALLEL_LOAD|$(grep "^USE_PARALLEL_LOAD\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $VALUE)|3|6|REk||{0|}}
@@ -554,7 +554,7 @@ fi)|3|6|REk||{0|}}
          print 0
   fi)|3|6|REk||{0|}}
 {30001002|XXparameter|PT_INSTANCES|$(grep "^PT_INSTANCES\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-1\})|3|6|Rk||{0|}}
-{30001002|XXparameter|LOAD_LOGFILE|$DW_SA_LOG/$TABLE_ID.ld.utility_load$UOW_APPEND.$FILE_DATETIME.log|3|2|RE$|Name of file to store load utility log information (optional)|{0|}}
+{30001002|XXparameter|LOAD_LOGFILE|$DW_SA_TMP/$TABLE_ID.ld.utility_load$UOW_APPEND.$FILE_DATETIME.log|3|2|RE$|Name of file to store load utility log information (optional)|{0|}}
 {30001002|XXparameter|LOAD_REJFILE|$DW_SA_TMP/$TABLE_ID.ld.utility_load.rej|3|2|RE$||{0|}}
 {30001002|XXparameter|LOAD_ERRFILE|$DW_SA_TMP/$TABLE_ID.ld.utility_load.err|3|2|RE$||{0|}}
 {30001002|XXparameter|XFORM_REJLIMIT|$(grep "^XFORM_REJLIMIT\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|REk||{0|}}
@@ -595,10 +595,10 @@ fi
 {30001002|XXparameter|_parameters_of_Output_Table_Mysql_Truncate_Load|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_check_LOAD_LOGFILE_for_abnormal_exits|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@10590|52250|0|0|2300000|1505000|0|single_table_load|Craig Werre|Created 04/20/05 17:21:44|1|10|-1||6||34817|{0|}0|0|{0|}{0|}{0|}{0|}1.0|2300000|1505556|3|}}
+}}@0|@10590|52250|0|0|2269000|1503000|0|single_table_load|Craig Werre|Created 04/20/05 17:21:44|1|10|-1||6||34817|{0|}0|0|{0|}{0|}{0|}{0|}1.0|2269492|1503390|3|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|0|1|1|}Job 'single_table_load' Execution Status Report
 
-Compilation of graph "single_table_load" started at Tuesday, June 18, 2013 18:50:49
+Compilation of graph "single_table_load" started at Thursday, August 07, 2014 17:08:13
 No compilation errors
 ||m_env -v
 
@@ -664,7 +664,7 @@ fi
 
 
 |@|31634943|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@lvsdpelega003.lvs.ebay.com||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@lvsdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Courier New|16711680|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@chmod $LOAD_LOGFILE will change the permissions on the $LOAD_LOGFILE to 664 once the file is found.|17235|933622|37000|954000|792000|16000|521|}}
 {2010242002|XXGface|6|0|11|0|{@{}@Courier New|16711680|100|0|}}
@@ -725,7 +725,7 @@ dropped and recreated.  Phase 0 is not checkpointed.  It will run everytime this
 {2010243001|XXGwatcher|49|0|97|0|{@{}@1|10|0||0|}}
 {2010210004|XXGflow|50|0|99|0|{@{}@384|.5|1.0|{12|1228000|898000|1228000|928000|1758000|928000|1758000|487000|1758000|487000|1858000|487000|}3177|531|}}
 {2010210004|XXGflow|51|0|101|0|{@{}@384|.5|1.0|{12|1229000|1054000|1229000|1084000|1728000|1084000|1728000|457000|1728000|457000|1858000|457000|}3174|531|}}
-{2010210004|XXGflow|52|0|103|0|{@{}@384|.5|.7032257914543152|{12|104000|381000|130000|381000|198000|381000|198000|390000|228000|390000|248000|390000|}3141|2065|}}
+{2010210004|XXGflow|52|0|103|0|{@{}@384|.5|.7032257914543152|{12|104000|381000|124000|381000|197000|381000|197000|390000|228000|390000|248000|390000|}3141|2065|}}
 {2010210004|XXGflow|53|0|105|0|{@{}@384|.5|.5|{12|1058000|378000|1128000|378000|1131000|378000|1131000|650000|1134000|650000|1154000|650000|}3148|529|}}
 {2010210004|XXGflow|54|0|107|0|{@{}@384|.5|.9466666579246521|{10|1199000|293000|1199000|333000|1199000|346000|1828000|346000|1858000|346000|}3196|531|}}
 {2010210004|XXGflow|55|0|109|0|{@{}@384|.5|.5|{12|1198000|432000|1198000|472000|1423000|472000|1423000|356000|1648000|356000|1858000|356000|}3166|531|}}
@@ -5692,7 +5692,7 @@ once $LOAD_LOGFILE exists.  Sleeps for 10 seconds in between looking for this fi
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|242|0|662|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|243|0|665|0|{@{}@{1|1090078|}}}
+{2010110002|XXGconstant|243|0|665|0|{@{}@{1|1533405|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}

@@ -19,7 +19,7 @@
 # 2011-12-20     1.1   Ryan Wong                    Change loader_cleanup to use dw_infra.loader_cleanup.ksh
 # 2013-07-29     1.2   Jacky Shen                   Add support for hadoop jar job
 # 2013-10-04     1.3   Ryan Wong                    Redhat changes
-#
+# 2014-08-11     1.4   Ryan Wong                    Fix grep issue for Redhat for DB_TYPE
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -209,7 +209,7 @@ then
 fi
 
 set +e
-DB_TYPE=$(grep "^dbms:\>" $DW_DBC/${DB_NAME}.dbc | tr [:lower:] [:upper:] | read PARAM VALUE PARAM_COMMENT; print ${VALUE:-0})
+DB_TYPE=$(grep "^dbms\>" $DW_DBC/${DB_NAME}.dbc | tr [:lower:] [:upper:] | read PARAM VALUE PARAM_COMMENT; print ${VALUE:-0})
 rcode=$?
 set -e
 

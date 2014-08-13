@@ -16,6 +16,7 @@
 # ---------------  --------------  --------------------------------------------------------------
 # John Hackley     Dec 7, 2012     Initial Creation
 # Ryan Wong        Oct 4, 2013     Redhat changes
+# Ryan Wong        Aug 11, 2014    Fix grep issue for Redhat for DB_TYPE
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -46,7 +47,7 @@ then
 fi
 
 set +e
-DB_TYPE=$(grep "^dbms:\>" $DW_DBC/${DB_NAME}.dbc | tr [:lower:] [:upper:] | read PARAM VALUE PARAM_COMMENT; print ${VALUE:-0})
+DB_TYPE=$(grep "^dbms\>" $DW_DBC/${DB_NAME}.dbc | tr [:lower:] [:upper:] | read PARAM VALUE PARAM_COMMENT; print ${VALUE:-0})
 rcode=$?
 set -e
 

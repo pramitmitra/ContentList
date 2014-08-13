@@ -11,7 +11,7 @@
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
 # Ryan Wong        05/02/2014      Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB
 #                                    Apply only to PARAM_LIST
-#
+# Ryan Wong        08/12/2014      Set NO_BRACEEXPAND_NO_GLOB default=1 for consistency
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -53,7 +53,7 @@ DATAPLATFORM_ETL_INFO="ETL_ID=${ETL_ID};UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CN
 dwi_assignTagValue -p USE_JAR_PARAM_LIS -t USE_JAR_PARAM_LIS -f $ETL_CFG_FILE -s N -d 0
 
 # Option to turn off braceexpand and turn off glob
-dwi_assignTagValue -p NO_BRACEEXPAND_NO_GLOB -t NO_BRACEEXPAND_NO_GLOB -f $ETL_CFG_FILE -s N -d 0
+dwi_assignTagValue -p NO_BRACEEXPAND_NO_GLOB -t NO_BRACEEXPAND_NO_GLOB -f $ETL_CFG_FILE -s N -d 1
 
 if [[ $USE_JAR_PARAM_LIS -eq 1 ]]
 then
