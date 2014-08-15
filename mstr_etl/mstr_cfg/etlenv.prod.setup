@@ -503,6 +503,17 @@ export ddmcstmrworkDB=DDM_CSTMR_W
 export ddmcstmrDB=DDM_CSTMR_T
 
 
+
+# Added per steven on 20140506
+export ddmdataassetsDB=ddm_data_assets_t        
+export ddmdataassetsworkDB=ddm_data_assets_w    
+
+
+
+export ppcsDB=pp_cs_tables
+export ppcsaccessDB=pp_cs_access_views
+
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment
