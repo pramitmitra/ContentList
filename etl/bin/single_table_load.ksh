@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_load", compiled at Saturday, August 09, 2014 13:15:43 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_load", compiled at Tuesday, August 26, 2014 12:25:58 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_load
 # Begin Ab Initio shell utility functions
 
@@ -290,6 +290,48 @@ function _AB_PARSE_ARGUMENTS {
       let _ab_index_var=_ab_index_var+1
       shift
       ;;
+     -AB_IDB_MSSQL_CONFIG )
+      AB_IDB_MSSQL_CONFIG="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MSSQL_ODBC_NAME )
+      export MSSQL_ODBC_NAME;      MSSQL_ODBC_NAME="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MSSQL_USERNAME )
+      export MSSQL_USERNAME;      MSSQL_USERNAME="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MSSQL_PASSWORD )
+      export MSSQL_PASSWORD;      MSSQL_PASSWORD="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -DEFAULT_DB )
+      export DEFAULT_DB;      DEFAULT_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -DB_SCHEMA )
+      export DB_SCHEMA;      DB_SCHEMA="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
      -EXTRACT_PROCESS_TYPE )
       export EXTRACT_PROCESS_TYPE;      EXTRACT_PROCESS_TYPE="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
@@ -362,6 +404,20 @@ function _AB_PARSE_ARGUMENTS {
       ;;
      -AB_IDB_COMMIT_TABLE_CLEANUP_DAYS )
       export AB_IDB_COMMIT_TABLE_CLEANUP_DAYS;      AB_IDB_COMMIT_TABLE_CLEANUP_DAYS="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -USE_MSSQL_TRUNC_LOAD )
+      export USE_MSSQL_TRUNC_LOAD;      USE_MSSQL_TRUNC_LOAD="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -USE_MSSQL_BULK_APPEND )
+      export USE_MSSQL_BULK_APPEND;      USE_MSSQL_BULK_APPEND="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
       _AB_USED_ARGUMENTS[_ab_index_var+1]=1
       let _ab_index_var=_ab_index_var+1
@@ -484,11 +540,11 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter DB_TYPE of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-AB_IDB_ORACLE_CONFIG=$( if [[ $DB_TYPE == 'TERADATA' ]] 
+AB_IDB_ORACLE_CONFIG=$( if [[ $DB_TYPE != 'ORACLE' ]] 
 then 
     print oracle_sample.dbc 
 else 
-    print $AB_IDB_CONFIG 
+    print $AB_IDB_CONFIG
 fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
@@ -544,6 +600,36 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_PASSWORD of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
+AB_IDB_MSSQL_CONFIG=$( if [[ $DB_TYPE != 'MSSQL' ]]
+then
+    print mssql_sample.dbc
+else 
+    print $AB_IDB_CONFIG
+fi)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter AB_IDB_MSSQL_CONFIG of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
+export MSSQL_ODBC_NAME;MSSQL_ODBC_NAME=$(grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_MSSQL_CONFIG | read A ODBC_NAME_TMP
+  print ${ODBC_NAME_TMP})
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MSSQL_ODBC_NAME of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
+export MSSQL_USERNAME;MSSQL_USERNAME=$(grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MSSQL_USERNAME of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MSSQL_PASSWORD of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
 export DW_SA_ARC;DW_SA_ARC="$DW_ARC"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export DW_SA_DAT;DW_SA_DAT="$DW_DAT"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export DW_SA_IN;DW_SA_IN="$DW_IN"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
@@ -582,6 +668,18 @@ export STAGE_TABLE27;STAGE_TABLE27=${STAGE_TABLE%${STAGE_TABLE#?????????????????
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter STAGE_TABLE27 of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
+export DEFAULT_DB;DEFAULT_DB="$STAGE_DB"
+export DB_SCHEMA;DB_SCHEMA=$(if [[ $DB_TYPE == "MSSQL" ]]
+  then
+    print -- $(grep "^LOAD_DB_SCHEMA\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print $VALUE)
+  else
+    print -- ""
+  fi)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter DB_SCHEMA of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
 export LOG_TABLE;LOG_TABLE=${STAGE_TABLE27:-${STAGE_TABLE}}_L
@@ -1307,6 +1405,28 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter USE_MYSQL_TRUNC_LOAD of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
+export USE_MSSQL_TRUNC_LOAD;USE_MSSQL_TRUNC_LOAD=$(if [[ $DB_TYPE == 'MSSQL' && $LOAD_OPER == 'TRUNC_INSERT' ]]
+     then
+         print 1
+     else
+         print 0
+  fi)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter USE_MSSQL_TRUNC_LOAD of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
+export USE_MSSQL_BULK_APPEND;USE_MSSQL_BULK_APPEND=$(if [[ $DB_TYPE == 'MSSQL' && $LOAD_OPER == 'BULK_APPEND' ]]
+     then
+         print 1
+     else
+         print 0
+  fi)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter USE_MSSQL_BULK_APPEND of single_table_load', interpretation 'shell'
+   exit $mpjret
+fi
 PT_INSTANCES=$(grep "^PT_INSTANCES\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print ${VALUE:-1})
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
@@ -1499,6 +1619,8 @@ AB_HAS_DATA_Flow_14=1
 AB_HAS_DATA_Flow_12=1
 AB_HAS_DATA_Flow_34=1
 AB_HAS_DATA_Flow_26=1
+AB_HAS_DATA_Flow_30=1
+AB_HAS_DATA_Flow_43=1
 AB_USERCOND_Output_Table_API__table_="$USE_API"
 AB_USERCOND_Output_Table_API__table_=$(__AB_COND "${AB_USERCOND_Output_Table_API__table_}")
 AB_IS_LIVE_Output_Table_API__table_=1
@@ -1511,6 +1633,16 @@ AB_IS_LIVE_Output_Table_Fastload__table_=1
 AB_HAS_DATA_Flow_7=1
 AB_HAS_DATA_Flow_25=1
 AB_HAS_DATA_Flow_2=1
+AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_="$USE_MSSQL_BULK_APPEND"
+AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_=$(__AB_COND "${AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_}")
+AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_=1
+AB_HAS_DATA_Flow_45=1
+AB_HAS_DATA_Flow_44=1
+AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_="$USE_MSSQL_TRUNC_LOAD"
+AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_=$(__AB_COND "${AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_}")
+AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_=1
+AB_HAS_DATA_Flow_39=1
+AB_HAS_DATA_Flow_41=1
 AB_USERCOND_Output_Table_Mysql_Truncate_Load__table_="$USE_MYSQL_TRUNC_LOAD"
 AB_USERCOND_Output_Table_Mysql_Truncate_Load__table_=$(__AB_COND "${AB_USERCOND_Output_Table_Mysql_Truncate_Load__table_}")
 AB_IS_LIVE_Output_Table_Mysql_Truncate_Load__table_=1
@@ -1624,7 +1756,7 @@ while [ $done = false ] ; do
       done=false
    fi
    Temp="${AB_HAS_DATA_Flow_1}"
-   let AB_HAS_DATA_Flow_1="((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_17)) && ((AB_IS_LIVE_Replicate) || ((((((((AB_HAS_DATA_Flow_29) || (AB_HAS_DATA_Flow_24)) || (AB_HAS_DATA_Flow_6)) || (AB_HAS_DATA_Flow_15)) || (AB_HAS_DATA_Flow_14)) || (AB_HAS_DATA_Flow_12)) || (AB_HAS_DATA_Flow_34)) || (AB_HAS_DATA_Flow_26)))"
+   let AB_HAS_DATA_Flow_1="((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_17)) && ((AB_IS_LIVE_Replicate) || ((((((((((AB_HAS_DATA_Flow_29) || (AB_HAS_DATA_Flow_24)) || (AB_HAS_DATA_Flow_6)) || (AB_HAS_DATA_Flow_15)) || (AB_HAS_DATA_Flow_14)) || (AB_HAS_DATA_Flow_12)) || (AB_HAS_DATA_Flow_34)) || (AB_HAS_DATA_Flow_26)) || (AB_HAS_DATA_Flow_30)) || (AB_HAS_DATA_Flow_43)))"
    if [ X"${AB_HAS_DATA_Flow_1}" != X"$Temp" ]; then
       done=false
    fi
@@ -1639,7 +1771,7 @@ while [ $done = false ] ; do
       done=false
    fi
    Temp="${AB_IS_LIVE_Replicate}"
-   let AB_IS_LIVE_Replicate="(AB_HAS_DATA_Flow_1) && ((((AB_HAS_DATA_Flow_1) > 1)) || (((AB_HAS_DATA_Flow_29+AB_HAS_DATA_Flow_24+AB_HAS_DATA_Flow_6+AB_HAS_DATA_Flow_15+AB_HAS_DATA_Flow_14+AB_HAS_DATA_Flow_12+AB_HAS_DATA_Flow_34+AB_HAS_DATA_Flow_26) > 1)))"
+   let AB_IS_LIVE_Replicate="(AB_HAS_DATA_Flow_1) && ((((AB_HAS_DATA_Flow_1) > 1)) || (((AB_HAS_DATA_Flow_29+AB_HAS_DATA_Flow_24+AB_HAS_DATA_Flow_6+AB_HAS_DATA_Flow_15+AB_HAS_DATA_Flow_14+AB_HAS_DATA_Flow_12+AB_HAS_DATA_Flow_34+AB_HAS_DATA_Flow_26+AB_HAS_DATA_Flow_30+AB_HAS_DATA_Flow_43) > 1)))"
    if [ X"${AB_IS_LIVE_Replicate}" != X"$Temp" ]; then
       done=false
    fi
@@ -1683,6 +1815,16 @@ while [ $done = false ] ; do
    if [ X"${AB_HAS_DATA_Flow_26}" != X"$Temp" ]; then
       done=false
    fi
+   Temp="${AB_HAS_DATA_Flow_30}"
+   let AB_HAS_DATA_Flow_30="((AB_IS_LIVE_Replicate) || (AB_HAS_DATA_Flow_1)) && (AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_)"
+   if [ X"${AB_HAS_DATA_Flow_30}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_43}"
+   let AB_HAS_DATA_Flow_43="((AB_IS_LIVE_Replicate) || (AB_HAS_DATA_Flow_1)) && (AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_)"
+   if [ X"${AB_HAS_DATA_Flow_43}" != X"$Temp" ]; then
+      done=false
+   fi
    Temp="${AB_IS_LIVE_Output_Table_API__table_}"
    let AB_IS_LIVE_Output_Table_API__table_="(AB_HAS_DATA_Flow_15) && (AB_USERCOND_Output_Table_API__table_)"
    if [ X"${AB_IS_LIVE_Output_Table_API__table_}" != X"$Temp" ]; then
@@ -1721,6 +1863,36 @@ while [ $done = false ] ; do
    Temp="${AB_HAS_DATA_Flow_2}"
    let AB_HAS_DATA_Flow_2="(AB_IS_LIVE_Output_Table_Fastload__table_) && (AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs)"
    if [ X"${AB_HAS_DATA_Flow_2}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_}"
+   let AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_="(AB_HAS_DATA_Flow_43) && (AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_)"
+   if [ X"${AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_45}"
+   let AB_HAS_DATA_Flow_45="(AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_) && (AB_IS_LIVE_Reject_Error_Log_Files_Error_File)"
+   if [ X"${AB_HAS_DATA_Flow_45}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_44}"
+   let AB_HAS_DATA_Flow_44="(AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_) && (AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs)"
+   if [ X"${AB_HAS_DATA_Flow_44}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_}"
+   let AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_="(AB_HAS_DATA_Flow_30) && (AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_)"
+   if [ X"${AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_39}"
+   let AB_HAS_DATA_Flow_39="(AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_) && (AB_IS_LIVE_Reject_Error_Log_Files_Error_File)"
+   if [ X"${AB_HAS_DATA_Flow_39}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_41}"
+   let AB_HAS_DATA_Flow_41="(AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_) && (AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs)"
+   if [ X"${AB_HAS_DATA_Flow_41}" != X"$Temp" ]; then
       done=false
    fi
    Temp="${AB_IS_LIVE_Output_Table_Mysql_Truncate_Load__table_}"
@@ -1839,12 +2011,12 @@ while [ $done = false ] ; do
       done=false
    fi
    Temp="${AB_IS_LIVE_Reject_Error_Log_Files_Error_File}"
-   let AB_IS_LIVE_Reject_Error_Log_Files_Error_File="((((((AB_HAS_DATA_Flow_11) || (AB_HAS_DATA_Flow_25)) || (AB_HAS_DATA_Flow_31)) || (AB_HAS_DATA_Flow_42)) || (AB_HAS_DATA_Flow_36)) || (AB_HAS_DATA_Flow_32)) || (AB_HAS_DATA_Flow_40)"
+   let AB_IS_LIVE_Reject_Error_Log_Files_Error_File="((((((((AB_HAS_DATA_Flow_11) || (AB_HAS_DATA_Flow_25)) || (AB_HAS_DATA_Flow_31)) || (AB_HAS_DATA_Flow_42)) || (AB_HAS_DATA_Flow_36)) || (AB_HAS_DATA_Flow_32)) || (AB_HAS_DATA_Flow_40)) || (AB_HAS_DATA_Flow_39)) || (AB_HAS_DATA_Flow_45)"
    if [ X"${AB_IS_LIVE_Reject_Error_Log_Files_Error_File}" != X"$Temp" ]; then
       done=false
    fi
    Temp="${AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs}"
-   let AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs="(((((((AB_HAS_DATA_Flow_9) || (AB_HAS_DATA_Flow_2)) || (AB_HAS_DATA_Flow_4)) || (AB_HAS_DATA_Flow_37)) || (AB_HAS_DATA_Flow_19)) || (AB_HAS_DATA_Flow_20)) || (AB_HAS_DATA_Flow_28)) || (AB_HAS_DATA_Flow_23)"
+   let AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs="(((((((((AB_HAS_DATA_Flow_9) || (AB_HAS_DATA_Flow_2)) || (AB_HAS_DATA_Flow_4)) || (AB_HAS_DATA_Flow_37)) || (AB_HAS_DATA_Flow_19)) || (AB_HAS_DATA_Flow_20)) || (AB_HAS_DATA_Flow_28)) || (AB_HAS_DATA_Flow_23)) || (AB_HAS_DATA_Flow_41)) || (AB_HAS_DATA_Flow_44)"
    if [ X"${AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs}" != X"$Temp" ]; then
       done=false
    fi
@@ -1918,6 +2090,8 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    print -r -- 'AB_HAS_DATA_Flow_12='"${AB_HAS_DATA_Flow_12}"
    print -r -- 'AB_HAS_DATA_Flow_34='"${AB_HAS_DATA_Flow_34}"
    print -r -- 'AB_HAS_DATA_Flow_26='"${AB_HAS_DATA_Flow_26}"
+   print -r -- 'AB_HAS_DATA_Flow_30='"${AB_HAS_DATA_Flow_30}"
+   print -r -- 'AB_HAS_DATA_Flow_43='"${AB_HAS_DATA_Flow_43}"
    print -r -- 'AB_USERCOND_Output_Table_API__table_='"${AB_USERCOND_Output_Table_API__table_}"
    print -r -- 'AB_IS_LIVE_Output_Table_API__table_='"${AB_IS_LIVE_Output_Table_API__table_}"
    print -r -- 'AB_HAS_DATA_Flow_8='"${AB_HAS_DATA_Flow_8}"
@@ -1928,6 +2102,14 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    print -r -- 'AB_HAS_DATA_Flow_7='"${AB_HAS_DATA_Flow_7}"
    print -r -- 'AB_HAS_DATA_Flow_25='"${AB_HAS_DATA_Flow_25}"
    print -r -- 'AB_HAS_DATA_Flow_2='"${AB_HAS_DATA_Flow_2}"
+   print -r -- 'AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_='"${AB_USERCOND_Output_Table_MSSQL_Bulk_Append_Load__table_}"
+   print -r -- 'AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_='"${AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_}"
+   print -r -- 'AB_HAS_DATA_Flow_45='"${AB_HAS_DATA_Flow_45}"
+   print -r -- 'AB_HAS_DATA_Flow_44='"${AB_HAS_DATA_Flow_44}"
+   print -r -- 'AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_='"${AB_USERCOND_Output_Table_MSSQL_Truncate_Load__table_}"
+   print -r -- 'AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_='"${AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_}"
+   print -r -- 'AB_HAS_DATA_Flow_39='"${AB_HAS_DATA_Flow_39}"
+   print -r -- 'AB_HAS_DATA_Flow_41='"${AB_HAS_DATA_Flow_41}"
    print -r -- 'AB_USERCOND_Output_Table_Mysql_Truncate_Load__table_='"${AB_USERCOND_Output_Table_Mysql_Truncate_Load__table_}"
    print -r -- 'AB_IS_LIVE_Output_Table_Mysql_Truncate_Load__table_='"${AB_IS_LIVE_Output_Table_Mysql_Truncate_Load__table_}"
    print -r -- 'AB_HAS_DATA_Flow_35='"${AB_HAS_DATA_Flow_35}"
@@ -2082,6 +2264,24 @@ if [ X"${AB_IS_LIVE_Output_Table_Fastload__table_}" != X0 ]; then
 else
    :
 fi
+if [ X"${AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_}" != X0 ]; then
+   mp otable Output_Table_MSSQL_Bulk_Append_Load__table_ "$AB_IDB_MSSQL_CONFIG" -flags wronly,append -table "${DB_SCHEMA}"'.'"${STAGE_TABLE}" -interface utility -field_type_preference variable -num_errors "$LOAD_ERRLIMIT" -limit 0 -ramp 0.0 -layout layout3
+   AB_PORT_Output_Table_MSSQL_Bulk_Append_Load__table__error=Output_Table_MSSQL_Bulk_Append_Load__table_.error
+   AB_METADATA_Output_Table_MSSQL_Bulk_Append_Load__table__error=' -metadata metadata3'
+   AB_PORT_Output_Table_MSSQL_Bulk_Append_Load__table__log=Output_Table_MSSQL_Bulk_Append_Load__table_.log
+   AB_METADATA_Output_Table_MSSQL_Bulk_Append_Load__table__log=' -metadata metadata4'
+else
+   :
+fi
+if [ X"${AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_}" != X0 ]; then
+   mp otable Output_Table_MSSQL_Truncate_Load__table_ "$AB_IDB_MSSQL_CONFIG" -flags wronly,trunc -table "${DB_SCHEMA}"'.'"${STAGE_TABLE}" -interface utility -field_type_preference variable -num_errors "$LOAD_ERRLIMIT" -limit 0 -ramp 0.0 -layout layout3
+   AB_PORT_Output_Table_MSSQL_Truncate_Load__table__error=Output_Table_MSSQL_Truncate_Load__table_.error
+   AB_METADATA_Output_Table_MSSQL_Truncate_Load__table__error=' -metadata metadata3'
+   AB_PORT_Output_Table_MSSQL_Truncate_Load__table__log=Output_Table_MSSQL_Truncate_Load__table_.log
+   AB_METADATA_Output_Table_MSSQL_Truncate_Load__table__log=' -metadata metadata4'
+else
+   :
+fi
 if [ X"${AB_IS_LIVE_Output_Table_Mysql_Truncate_Load__table_}" != X0 ]; then
    mp otable Output_Table_Mysql_Truncate_Load__table_ "$AB_IDB_MYSQL_CONFIG" -flags wronly,trunc -table "${STAGE_DB}"'.'"${STAGE_TABLE}" -interface utility -field_type_preference delimited -ss_duplicate_rows_handling ignore -limit 0 -ramp 0.0 -layout layout3
    AB_PORT_Output_Table_Mysql_Truncate_Load__table__reject=Output_Table_Mysql_Truncate_Load__table_.reject
@@ -2215,6 +2415,14 @@ let AB_FLOW_CONDITION="(AB_IS_LIVE_Replicate) && (AB_HAS_DATA_Flow_1)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
    mp straight-flow Flow_1 "${AB_PORT_Load_Reformat_out_out0}" Replicate.in${AB_METADATA_Load_Reformat_out_out0} -compressed
 fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Output_Table_MSSQL_Bulk_Append_Load__table_) && (AB_HAS_DATA_Flow_43)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp straight-flow Flow_43 "${AB_PORT_Replicate_out}" Output_Table_MSSQL_Bulk_Append_Load__table_.write${AB_METADATA_Replicate_out}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Output_Table_MSSQL_Truncate_Load__table_) && (AB_HAS_DATA_Flow_30)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp straight-flow Flow_30 "${AB_PORT_Replicate_out}" Output_Table_MSSQL_Truncate_Load__table_.write${AB_METADATA_Replicate_out}
+fi
 let AB_FLOW_CONDITION="(AB_IS_LIVE_Update_Oracle_Table) && (AB_HAS_DATA_Flow_26)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
    mp straight-flow Flow_26 "${AB_PORT_Replicate_out}" Update_Oracle_Table.in${AB_METADATA_Replicate_out} -compressed
@@ -2274,6 +2482,14 @@ fi
 let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Error_File) && (AB_HAS_DATA_Flow_40)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
    mp fan-in-flow Flow_40 "${AB_PORT_Output_Table_Oracle_Truncate_Load__table__error}" Reject_Error_Log_Files.Error_File.in${AB_METADATA_Output_Table_Oracle_Truncate_Load__table__error}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Error_File) && (AB_HAS_DATA_Flow_39)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp fan-in-flow Flow_39 "${AB_PORT_Output_Table_MSSQL_Truncate_Load__table__error}" Reject_Error_Log_Files.Error_File.in${AB_METADATA_Output_Table_MSSQL_Truncate_Load__table__error}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Error_File) && (AB_HAS_DATA_Flow_45)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp fan-in-flow Flow_45 "${AB_PORT_Output_Table_MSSQL_Bulk_Append_Load__table__error}" Reject_Error_Log_Files.Error_File.in${AB_METADATA_Output_Table_MSSQL_Bulk_Append_Load__table__error}
 fi
 let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Reject_File) && (AB_HAS_DATA_Flow_10)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
@@ -2335,6 +2551,14 @@ let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs) && (AB_HA
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
    mp fan-in-flow Flow_23 "${AB_PORT_Update_Oracle_Table_log}" Reject_Error_Log_Files.Gather_Logs.in${AB_METADATA_Update_Oracle_Table_log}
 fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs) && (AB_HAS_DATA_Flow_41)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp fan-in-flow Flow_41 "${AB_PORT_Output_Table_MSSQL_Truncate_Load__table__log}" Reject_Error_Log_Files.Gather_Logs.in${AB_METADATA_Output_Table_MSSQL_Truncate_Load__table__log}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Reject_Error_Log_Files_Gather_Logs) && (AB_HAS_DATA_Flow_44)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp fan-in-flow Flow_44 "${AB_PORT_Output_Table_MSSQL_Bulk_Append_Load__table__log}" Reject_Error_Log_Files.Gather_Logs.in${AB_METADATA_Output_Table_MSSQL_Bulk_Append_Load__table__log}
+fi
 # mp fan-in-flow Flow_22 "${AB_PORT_Update_Oracle_Table_reject}" Reject_File_5.in${AB_METADATA_Update_Oracle_Table_reject}
 
 if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
@@ -2342,7 +2566,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1533405
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=8115017
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
