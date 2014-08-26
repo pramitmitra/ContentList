@@ -18,6 +18,7 @@
 # 2012-11-26   1.4    Ryan Wong                     Add UOW_[FROM/TO]_TIME, DM_UOW_[FROM/TO]_DATE_RFMT_CODE
 # 2013-07-16   1.5    Ryan Wong                     Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
 # 2013-10-04   1.6    Ryan Wong                     Redhat changes
+# 2014-08-20   1.7    Ryan Wong                     Update statement if DM_UTILITY_TYPE = tdbridge to use double brackets
 ###################################################################################################################
 ###################################################################################################################
 ####
@@ -244,7 +245,7 @@ then
    
    
    set +e
-   if [ ${DM_UTILITY_TYPE} = "tdbridge" ]
+   if [[ ${DM_UTILITY_TYPE} = "tdbridge" ]]
    then
     (time $DW_MASTER_BIN/dw_infra.batch_td_bridge_run.ksh) > $PARENT_LOG_FILE 2>&1	
     RUN_RCODE=$?
