@@ -19,6 +19,7 @@
 # 2013-10-08   1.4    Ryan Wong                     Redhat changes
 # 2013-10-29   1.5    Ryan Wong                     Add TPT_LOAD_ERROR_LIMIT option
 # 2014-08-07   1.6    Ryan Wong                     Fix data file search by calling dw_infra.single_tpt_load_find_files.ksh
+# 2014-09-03   1.7    Ryan Wong                     Fixing dw_infra.single_tpt_load_find_files.ksh to handle NON-UOW files
 #############################################################################################################
 
 ETL_ID=$1
@@ -145,11 +146,14 @@ else
 fi
 
 DATA_FILE_PATTERN="$TABLE_ID.*.dat*"
+UOW_PARAM_LIST_FIND=""
 if [[ "X$UOW_TO" != "X" ]]
 then
   DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
+  UOW_PARAM_LIST_FIND="-UOW_FROM $UOW_FROM -UOW_TO $UOW_TO"
 else
   DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
+  UOW_PARAM_LIST_FIND=""
 fi
 
 print "IN_DIR is $IN_DIR"
@@ -268,7 +272,7 @@ do
   set +e
   ssh -nq $host_name "mkdir -p $DW_SA_LOG" > /dev/null
   set -e
-  ssh -nq $host_name "$DW_MASTER_BIN/dw_infra.single_tpt_load_find_files.ksh -ETL_ID $ETL_ID -DATA_FILE_PATTERN $DATA_FILE_PATTERN -IN_DIR $IN_DIR -UOW_FROM $UOW_FROM -UOW_TO $UOW_TO > $MASTER_LISTFILE.$instance_idx"
+  ssh -nq $host_name "$DW_MASTER_BIN/dw_infra.single_tpt_load_find_files.ksh -ETL_ID $ETL_ID -DATA_FILE_PATTERN $DATA_FILE_PATTERN -IN_DIR $IN_DIR $UOW_PARAM_LIST_FIND > $MASTER_LISTFILE.$instance_idx"
   ((instance_idx+=1))
 done
 
