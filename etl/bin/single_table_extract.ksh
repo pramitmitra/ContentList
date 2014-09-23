@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Tuesday, April 01, 2014 14:57:58 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_extract", compiled at Thursday, September 11, 2014 10:09:53 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -480,7 +480,7 @@ then
 elif [[ ${AB_IDB_CONFIG%%_*} = "oracle" ]]
 then
    print O
-elif [[ ${AB_IDB_CONFIG%%_*} = "sqlserver" ]]
+elif [[ ${AB_IDB_CONFIG%%_*} = @("sqlserver"|"mssql") ]]
 then
    print S
 elif [[ ${AB_IDB_CONFIG%%_*} = "mysql" ]]
@@ -509,6 +509,7 @@ then
    TNS_NAME_VARA_TMP2=${TNS_NAME_VARA_TMP#*\{}
    TD_TNS_NAME_TMP=${TNS_NAME_VARA_TMP2%\}*}
    grep "^$TD_TNS_NAME_TMP\>" $DW_CFG/tnsnames.td | read TD_TNS_NAME_TMP TD_TNS_NAME_TMP2
+
    if [[ $? = 0 ]]
    then
      print ${TD_TNS_NAME_TMP}
@@ -1816,9 +1817,8 @@ mp job ${AB_JOB}
 # Layouts:
 mp layout layout1 "$CNDTL_EXTRACT_PARTITION_LAYOUT"
 mp layout layout2 file:.
-mp layout layout3 -hosts ${MSSQL_HOST}
-mp layout layout4 "$DW_TMP"
-mp layout layout5 'file:'"$LAST_EXTRACT_VALUE_FILE"
+mp layout layout3 "$DW_TMP"
+mp layout layout4 'file:'"$LAST_EXTRACT_VALUE_FILE"
 
 # Record Formats (Metadata):
 mp metadata metadata1 -file "$INPUT_DML"
@@ -2291,7 +2291,7 @@ else
    :
 fi
 if [ X"${AB_IS_LIVE_Input_Table_Sqlserver__table_}" != X0 ]; then
-   mp itable Input_Table_Sqlserver__table_ "$AB_IDB_CONFIG" -select "${INPUT_TABLE_SEL}" -interface api -field_type_preference variable -limit 0 -ramp 0.0 -layout layout3
+   mp itable Input_Table_Sqlserver__table_ "$AB_IDB_CONFIG" -select "${INPUT_TABLE_SEL}" -interface api -field_type_preference variable -limit 0 -ramp 0.0 -layout layout1
    AB_PORT_Input_Table_Sqlserver__table__read=Input_Table_Sqlserver__table_.read
    AB_METADATA_Input_Table_Sqlserver__table__read=' -metadata metadata1'
    AB_PORT_Input_Table_Sqlserver__table__log=Input_Table_Sqlserver__table_.log
@@ -2429,7 +2429,7 @@ mp hash-rollup Rollup_Record_Counts '{}' "${_AB_PROXY_DIR}"'/Rollup_Record_Count
 AB_PORT_Rollup_Record_Counts_out=Rollup_Record_Counts.out
 AB_METADATA_Rollup_Record_Counts_out=' -metadata metadata8'
 if [ X"${AB_IS_LIVE_move_FEXP_LOGFILE}" != X0 ]; then
-   mp filter move_FEXP_LOGFILE $move_FEXP_LOGFILE__commandline -layout layout4
+   mp filter move_FEXP_LOGFILE $move_FEXP_LOGFILE__commandline -layout layout3
 else
    :
 fi
@@ -2437,14 +2437,14 @@ mp checkpoint 1
 
 # Components in phase 2:
 if [ X"${AB_IS_LIVE_Send_Primer_Row_to_Reformat}" != X0 ]; then
-   mp generate Send_Primer_Row_to_Reformat 1 -layout layout5
+   mp generate Send_Primer_Row_to_Reformat 1 -layout layout4
    AB_PORT_Send_Primer_Row_to_Reformat_out=Send_Primer_Row_to_Reformat.out
    AB_METADATA_Send_Primer_Row_to_Reformat_out=' -metadata metadata9'
 else
    :
 fi
 if [ X"${AB_IS_LIVE_Update_Last_Extract_Value_File}" != X0 ]; then
-   mp reformat-transform Update_Last_Extract_Value_File -limit 0 -ramp 0.0 -layout layout5
+   mp reformat-transform Update_Last_Extract_Value_File -limit 0 -ramp 0.0 -layout layout4
    let AB_DO_ADD_PORT="AB_HAS_DATA_Flow_12"
    if [ X"${AB_DO_ADD_PORT}" != X0 ]; then
       mp add-port Update_Last_Extract_Value_File.out.out0 ${_AB_PROXY_DIR:+"$_AB_PROXY_DIR"}'/Update_Last_Extract_Value_File-15.xfr'
@@ -2545,7 +2545,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=8946882
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7551897
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
