@@ -1,11 +1,11 @@
 #!/bin/ksh -eu
 #------------------------------------------------------------------------------------------------
 # Title:        hadoop file extract
-# File Name:    hadoop_extract_file.ksh
+# File Name:    dw_infra.ingest_hadoop_extract_file.ksh
 # Description:  This script is to run one instance of extract at a specified host.
 # Developer:
 # Created on:
-# Location:     $DW_BIN
+# Location:     $DW_MASTER_EXE
 # Logic:
 #
 #
@@ -16,6 +16,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
+# George Xiong     09/30/2014      Modifications by George
 #
 #------------------------------------------------------------------------------------------------
 
@@ -29,9 +30,21 @@ export SRC_HOST_CNT=$7
 export CURR_DATETIME_TMP=$8
 export UOW_TO=${9:-""}
 
+
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
+
+
+set +e 
+myName=$(whoami)
+if [[ $myName == @(sg_adm|dw_adm) ]]
+then
+  myName=sg_adm
+  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+fi
+set -e
+
 
 export JOB_TYPE_ID="ex"
 
@@ -93,68 +106,56 @@ if [[ -z $HD_USERNAME ]]
     exit 4
 fi
 
-set +e
-myName=$(whoami)
-if [[ $myName == @(sg_adm|dw_adm) ]]
-then
-  kinit -k -t /export/home/$myName/.keytabs/apd.sg_adm.keytab sg_adm@APD.EBAY.COM
-fi
-set -e
-
-# Initialize HADOOP_HOME and Kerberos keytab
-function switchApollo {
-        print "set target to Apollo"
-        HADOOP_HOME=$HD2_HADOOP_HOME
-        HADOOP_CONF_DIR="$HADOOP_HOME/conf"
-        export HADOOP_HOME
-        export HADOOP_CONF_DIR
-        PATH="$HADOOP_HOME/bin:$PATH"
-}
-
-function switchAres {
-        print "set target to Ares"
-        HADOOP_HOME=$HD1_HADOOP_HOME
-        HADOOP_CONF_DIR="$HADOOP_HOME/conf"
-        export HADOOP_HOME
-        export HADOOP_CONF_DIR
-        PATH="$HADOOP_HOME/bin:$PATH"
-}
-
-#assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W ""
-
 if [[ "X"$HDFS_URL != "X" ]]
 then
   set +e
-  print $HDFS_URL | grep -i $DW_HD2_BD
+  print $HDFS_URL | grep -i $DW_HD1_DB
   isAres=$?
+  print $HDFS_URL | grep -i $DW_HD2_DB
+  isApollo=$?
+  print $HDFS_URL | grep -i $DW_HD3_DB
+  isArtemis=$?
   set -e
-  
-  if [ $isAres != 0 ]
+
+  if [ $isAres == 0 ]
   then
-    switchAres
-  else
-    switchApollo
+   . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
+  elif [ $isApollo == 0 ]
+  then
+   . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
+  elif [ $isArtemis == 0 ]
+  then
+   . $DW_MASTER_CFG/.${DW_HD3_DB}_env.sh
   fi
 else
   set +e
-  print $HADOOP_HOME | grep $DW_HD2_DB
+  print $HADOOP_HOME | grep -i $DW_HD1_DB
   isAres=$?
+  print $HADOOP_HOME | grep -i $DW_HD2_DB
+  isApollo=$?
+  print $HADOOP_HOME | grep -i $DW_HD3_DB
+  isArtemis=$?
   set -e
-  if [ $isAres != 0 ]
+
+  if [ $isAres == 0 ]
   then
     export HDFS_URL=$HD1_NN_URL
-  else
+  elif [ $isApollo == 0 ]
+  then
     export HDFS_URL=$HD2_NN_URL
+  elif [ $isArtemis == 0 ]
+  then
+    export HDFS_URL=$HD3_NN_URL
   fi
 fi
 
 export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin
 CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
 CLASSPATH=$CLASSPATH:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-HADOOP_CORE_JAR=`ls $HADOOP_HOME/hadoop-core-*.jar`
 Dataplatform_SEQ_FILE_JAR=$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-export HADOOP_COMMAND="$JAVA_HOME/bin/java -cp $CLASSPATH DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME"
+export HADOOP_COMMAND="$JAVA_HOME/bin/java -cp $CLASSPATH DataplatformRunJar sg_adm ~sg_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME"
 dwi_assignTagValue -p HD_SEQUENCE_FILE -t HD_SEQUENCE_FILE -f $ETL_CFG_FILE -s N -d 0
+dwi_assignTagValue -p HD_FILE_FORMAT -t HD_FILE_FORMAT -f $ETL_CFG_FILE -s N -d "F"
 
 set +e
 grep "^CNDTL_COMPRESSION\>" $DW_CFG/$ETL_ID.cfg | read PARAM VALUE COMMENT;  IS_COMPRESS=${VALUE:-0}
@@ -195,7 +196,16 @@ export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdp_ex_file_list.$RECORD_
 FILE_ID=0
 > $DATA_LIS_FILE
 
-for data_file_entry in `$HADOOP_HOME/bin/hadoop fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`
+
+if [[ $myName != $HD_USERNAME ]]
+    then
+        export HADOOP_PROXY_USER=$HD_USERNAME
+        print "Running ex job via user $HD_USERNAME"
+fi
+
+$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE    > /dev/null
+
+for data_file_entry in `$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`
 do
   MOD_NUM=$(( $FILE_ID % $SRC_HOST_CNT ))
   if [ $MOD_NUM -eq $HOST_ID ]
@@ -239,22 +249,23 @@ do
     then
     	rm -f $IN_DIR/`print $(eval print $TARGET_FILE_TMP)`
     fi
-    if [[ $myName == $HD_USERNAME ]]
-    then  
-      if [[ $HD_SEQUENCE_FILE = 0 ]]
+    if [[ $HD_FILE_FORMAT == "A" ]]
       then
-        COMMAND="$HADOOP_HOME/bin/hadoop fs -copyToLocal $HDFS_URL$SOURCE_FILE_TMP $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)` >> $LOG_FILE"
+        dwi_assignTagValue -p PARSE_JSON_VALUE -t PARSE_JSON_VALUE -f $ETL_CFG_FILE -s N -d ""
+        if [[ X"$PARSE_JSON_VALUE" != X ]]
+        then
+          COMMAND="$HADOOP_HOME/bin/hadoop jar $DW_HOME/jar/DSSEtlUtils.jar com.ebay.dss.etl.AvroToText -D parse.json.value=$PARSE_JSON_VALUE $SOURCE_FILE_TMP | gzip > $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)`"
+        else
+          COMMAND="$HADOOP_HOME/bin/hadoop jar $DW_HOME/jar/DSSEtlUtils.jar com.ebay.dss.etl.AvroToText $SOURCE_FILE_TMP | gzip > $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)`"
+        fi
       else
-        COMMAND="$HADOOP_HOME/bin/hadoop jar $Dataplatform_SEQ_FILE_JAR DataplatformReadSeqFile $HDFS_URL$SOURCE_FILE_TMP > $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)` >> $LOG_FILE"
+        if [[ $HD_SEQUENCE_FILE = 0 ]]
+        then
+          COMMAND="$HADOOP_HOME/bin/hadoop fs -copyToLocal $SOURCE_FILE_TMP $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)`"
+        else
+          COMMAND="$HADOOP_HOME/bin/hadoop jar $Dataplatform_SEQ_FILE_JAR DataplatformReadSeqFile $SOURCE_FILE_TMP > $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)`"
+        fi
       fi        
-    else  
-      if [[ $HD_SEQUENCE_FILE = 0 ]]
-      then
-        COMMAND="${HADOOP_COMMAND} $HADOOP_CORE_JAR org.apache.hadoop.fs.FsShell -copyToLocal $HDFS_URL$SOURCE_FILE_TMP $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)` >> $LOG_FILE"
-      else
-        COMMAND="${HADOOP_COMMAND} $Dataplatform_SEQ_FILE_JAR DataplatformReadSeqFile $HDFS_URL$SOURCE_FILE_TMP > $IN_DIR/`print $(eval print $TARGET_FILE_TMP$COMPRESS_SFX)` >> $LOG_FILE"
-      fi
-    fi
     set +e
     eval $COMMAND && (print "Extract completion of FILE: $SOURCE_FILE_NAME."; print "$SOURCE_FILE_NAME" >> $MULTI_HDP_COMP_FILE) || (print "INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_NAME, HDFS: $HDFS_URL") &
     set -e
