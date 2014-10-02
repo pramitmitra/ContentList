@@ -14,6 +14,7 @@
 #---------    -----  ---------------------------  ------------------------------
 # 2014-08-07   1.0    Ryan Wong                     Initial
 # 2014-09-03   1.1    Ryan Wong                     Fix to handle NON-UOW files
+# 2014-10-02   1.2    Ryan Wong                     Add special case for UOW_FROM equals UOW_TO
 #############################################################################################################
 
 while [ $# -gt 0 ]
@@ -83,30 +84,35 @@ then
    UOW_ITER_DATEHH=$UOW_ITER_DATE$UOW_FROM_HH
    UOW_IN_DIR=${IN_DIR%/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS}
 
-   while [[ $UOW_ITER_DATEHH -le $UOW_TO_DATEHH ]]
-   do
-      if [[ $UOW_ITER_DATE -lt $UOW_TO_DATE ]]
-      then
-         UOW_ITER_HH_TO=23
-      else
-         UOW_ITER_HH_TO=$UOW_TO_HH
-      fi
-
-      while [[ $UOW_ITER_HH -le $UOW_ITER_HH_TO ]]
+   if [[ $UOW_FROM -eq $UOW_TO ]]
+   then
+      ls $UOW_IN_DIR/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS/$DATA_FILE_PATTERN | grep -v record_count
+   else
+      while [[ $UOW_ITER_DATEHH -le $UOW_TO_DATEHH ]]
       do
-         for IN_DIR_TMP in $(find $UOW_IN_DIR/$UOW_ITER_DATE/$UOW_ITER_HH/[0-5][0-9]/[0-5][0-9] -type d -prune 2>/dev/null)
+         if [[ $UOW_ITER_DATE -lt $UOW_TO_DATE ]]
+         then
+            UOW_ITER_HH_TO=23
+         else
+            UOW_ITER_HH_TO=$UOW_TO_HH
+         fi
+
+         while [[ $UOW_ITER_HH -le $UOW_ITER_HH_TO ]]
          do
-            if [[ "$IN_DIR_TMP" != "$UOW_IN_DIR/$UOW_FROM_DATE/$UOW_FROM_HH/$UOW_FROM_MI/$UOW_FROM_SS" ]]
-            then
-               ls $IN_DIR_TMP/$DATA_FILE_PATTERN | grep -v record_count
-            fi
+            for IN_DIR_TMP in $(find $UOW_IN_DIR/$UOW_ITER_DATE/$UOW_ITER_HH/[0-5][0-9]/[0-5][0-9] -type d -prune 2>/dev/null)
+            do
+               if [[ "$IN_DIR_TMP" != "$UOW_IN_DIR/$UOW_FROM_DATE/$UOW_FROM_HH/$UOW_FROM_MI/$UOW_FROM_SS" ]]
+               then
+                  ls $IN_DIR_TMP/$DATA_FILE_PATTERN | grep -v record_count
+               fi
+            done
+            ((UOW_ITER_HH=UOW_ITER_HH+1))
          done
-         ((UOW_ITER_HH=UOW_ITER_HH+1))
+         UOW_ITER_DATE=$($DW_BIN/add_days $UOW_ITER_DATE 1)
+         UOW_ITER_HH=00
+         UOW_ITER_DATEHH=$UOW_ITER_DATE$UOW_ITER_HH
       done
-      UOW_ITER_DATE=$($DW_BIN/add_days $UOW_ITER_DATE 1)
-      UOW_ITER_HH=00
-      UOW_ITER_DATEHH=$UOW_ITER_DATE$UOW_ITER_HH
-   done
+   fi
 else
   ls $IN_DIR/$DATA_FILE_PATTERN | grep -v record_count
 fi
