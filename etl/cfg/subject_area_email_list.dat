@@ -316,3 +316,10 @@ o_inc_b4f umohan@ebay.com
 app_trust  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com navsingh@ebay.com
 app_mdo xioding@ebay.com
 app_bsns_hlth dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+sg_ubi_data dl-ebay-sojourner-alert@ebay.com  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+sg_ubi dl-ebay-apd-sojourner@ebay.com
+sg_ubi_bf dl-ebay-behavior_data@ebay.com
+sg_ubi_freq dl-ebay-sojourner-alert@ebay.com  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+sg_ubi_dqrc dl-ebay-behavior-data@ebay.com
+sg_ubi_flt dl-ebay-behavior-data@ebay.com  dl-ebay-sha-imd-dima-cdc-oncall@ebay.com
+app_ubi dl-ebay-behavior-data@ebay.com
