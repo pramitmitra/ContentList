@@ -1,12 +1,11 @@
 #!/bin/ksh -eu
 #------------------------------------------------------------------------------------------------
-
 # Title:        hadoop file load
-# File Name:    hadoop_load_file.ksh
+# File Name:    dw_infra.ingest_hadoop_load_file.ksh
 # Description:  This script is to run one instance of load at a specified host.
 # Developer:
 # Created on:
-# Location:     $DW_BIN
+# Location:     $DW_MASTER_EXE
 # Logic:
 #
 #
@@ -17,6 +16,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
+# George Xiong     09/30/2014      Modifications by George
 #
 #------------------------------------------------------------------------------------------------
 
@@ -71,41 +71,21 @@ export JOB_TYPE_ID="ld"
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-# Initialize HADOOP_HOME and Kerberos keytab
-function switchApollo {
-        print "set target to Apollo"
-        HADOOP_HOME=$HD2_HADOOP_HOME
-        HADOOP_CONF_DIR="$HADOOP_HOME/conf"
-        export HADOOP_HOME
-        export HADOOP_CONF_DIR
-        PATH="$HADOOP_HOME/bin:$PATH"
-}
 
-function switchAres {
-        print "set target to Ares"
-        HADOOP_HOME=$HD1_HADOOP_HOME
-        HADOOP_CONF_DIR="$HADOOP_HOME/conf"
-        export HADOOP_HOME
-        export HADOOP_CONF_DIR
-        PATH="$HADOOP_HOME/bin:$PATH"
-}
+set +e
+myName=$(whoami)
+if [[ $myName == @(sg_adm|dw_adm) ]]
+then
+  myName=sg_adm
+  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+fi
+set -e
+
 
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W ""
 
-if [[ "X"$HDFS_URL != "X" ]]
-then
-  set +e
-  print $HDFS_URL | grep -i $DW_HD2_DB
-  isAres=$?
-  set -e
-  
-  if [ $isAres != 0 ]
-  then
-    switchAres
-  else
-    switchApollo
-  fi
-else
+if [[ "X"$HDFS_URL == "X" ]]
+ then
   set +e
   print $HADOOP_HOME | grep $DW_HD2_DB
   isAres=$?
@@ -159,14 +139,6 @@ if [[ -z $HD_USERNAME ]]
     exit 4
 fi
 
-set +e
-myName=$(whoami)
-if [[ $myName == @(sg_adm|dw_adm) ]]
-then
-  kinit -k -t /export/home/$myName/.keytabs/apd.sg_adm.keytab sg_adm@APD.EBAY.COM
-fi
-set -e
-
 export MULTI_HDP_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.multi_hdp_ld.$HOST_ID$UOW_APPEND.complete
 if [ ! -f $MULTI_HDP_COMP_FILE ]
 then
@@ -196,14 +168,20 @@ LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_hdfs_load.$HOST_ID.$CURR_DATET
 
 CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
 CLASSPATH=$CLASSPATH:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-HADOOP_CORE_JAR=`ls $HADOOP_HOME/hadoop*core*.jar`
-HADOOP_FS_CMD="$HADOOP_CORE_JAR org.apache.hadoop.fs.FsShell"
 
 assignTagValue USE_DATACONVERTER_JAR USE_DATACONVERTER_JAR $ETL_CFG_FILE W 0 
 
-if [[ $myName == $HD_USERNAME ]]
+
+if [[ $myName != $HD_USERNAME ]]
 then
-  if [ $USE_DATACONVERTER_JAR = 0 ]
+    export HADOOP_PROXY_USER=$HD_USERNAME
+    print "Running load job via $HD_USERNAME "
+fi
+
+
+
+
+if [ $USE_DATACONVERTER_JAR = 0 ]
   then
     FILE_ID=0
     while read SOURCE_FILE_TMP 
@@ -218,7 +196,7 @@ then
          continue
        done
    
-      COMMAND="${HADOOP_COMMAND} fs -copyFromLocal $SOURCE_FILE_TMP $HDFS_URL/${HDFS_PATH}${SOURCE_FILE_NAME}.$HOST_ID.$FILE_ID$UOW_APPEND >> $LOG_FILE"
+      COMMAND="${HADOOP_COMMAND} fs -mkdir -p $HDFS_URL/${HDFS_PATH}; ${HADOOP_COMMAND} fs -copyFromLocal $SOURCE_FILE_TMP $HDFS_URL/${HDFS_PATH}${SOURCE_FILE_NAME}.$HOST_ID.$FILE_ID$UOW_APPEND >> $LOG_FILE"
       set +e
       eval $COMMAND && (print "Load completion of FILE: $SOURCE_FILE_NAME."; print "$SOURCE_FILE_NAME" >> $MULTI_HDP_COMP_FILE) || (print "INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_NAME, HDFS: $HDFS_URL") &
       set -e
@@ -237,46 +215,8 @@ then
                                       -numberOfThread $N_WAY_PER_HOST
   fi
 
-else
 
-  if [ $USE_DATACONVERTER_JAR = 0 ]
-  then
-    FILE_ID=0
-    while read SOURCE_FILE_TMP 
-    do
-      SOURCE_FILE_NAME=${SOURCE_FILE_TMP##*/}
-      RCODE=`grepCompFile "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE`
-      if [ $RCODE = 1 ]
-      then
-        while [ $(jobs -p | wc -l) -ge $N_WAY_PER_HOST ]
-        do
-         sleep 30
-         continue
-       done
 
-      ################################################################################
-      # API: DataplatformRunJar <realUser> <keytabFilePath> <effectiveUser> <jarFile> [mainClass] [args...]
-      ################################################################################
-      COMMAND="exec $JAVA_HOME/bin/java -classpath "$CLASSPATH" DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME $HADOOP_FS_CMD -copyFromLocal $SOURCE_FILE_TMP $HDFS_URL/${HDFS_PATH}${SOURCE_FILE_NAME}.$HOST_ID.$FILE_ID$UOW_APPEND >> $LOG_FILE"
-      set +e
-      eval $COMMAND && (print "Load completion of FILE: $SOURCE_FILE_NAME."; print "$SOURCE_FILE_NAME" >> $MULTI_HDP_COMP_FILE) || (print "INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_NAME, HDFS: $HDFS_URL") &
-      set -e
-      elif [ $RCODE = 0 ]
-      then
-        print "Loading of FILE: $SOURCE_FILE_NAME is already complete"
-      fi
-  	FILE_ID=$(( FILE_ID + 1 ))
-    done < $DATA_LIS_FILE
-  else
-    exec $JAVA_HOME/bin/java -classpath "$CLASSPATH" DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
-                                      $DW_LIB/DataConverter.jar sojbinaryconverter.SOJBinaryConverterToHDFSThreaded \
-                                      -inputDir $IN_DIR/ \
-                                      -inputFileList $DATA_LIS_FILE \
-                                                                          -outputDir $HDFS_PATH \
-                                      -ignoreEmptyFile true \
-                                      -numberOfThread $N_WAY_PER_HOST
-  fi
-fi
 
 if [ $? != 0 ]
 then

@@ -128,156 +128,129 @@ then
    UOW_ITER_DATEHH=$UOW_ITER_DATE$UOW_FROM_HH
    UOW_IN_DIR=$\{IN_DIR%/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS\}
 
-   while [[ $UOW_ITER_DATEHH -le $UOW_TO_DATEHH ]]
-   do
-      if [[ $UOW_ITER_DATE -lt $UOW_TO_DATE ]]
+   if [[ $UOW_FROM -eq $UOW_TO ]]
+   then
+      IN_DIR_TMP=$UOW_IN_DIR/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+
+      if [ $EXTRACT_PROCESS_TYPE = 'L' ]
       then
-         UOW_ITER_HH_TO=23
-      else
-         UOW_ITER_HH_TO=$UOW_TO_HH
-      fi
-      while [[ $UOW_ITER_HH -le $UOW_ITER_HH_TO ]]
-      do
-         if [ $EXTRACT_PROCESS_TYPE = 'L' ]
-         then
-            for SRC_LIS_TMP in $(find $DW_DAT/extract/$SUBJECT_AREA/$ETL_ID.sources.lis.$UOW_ITER_DATE$UOW_ITER_HH[0-5][0-9][0-5][0-9] -type f -prune 2>/dev/null)
-            do
-               UOW_TMP=$\{SRC_LIS_TMP##*.\}
-               if [[ $UOW_TMP != $UOW_FROM ]]
+         while read FILE_ID DATA_FILENAME OLD_FILENAME DONE_FILENAME
+         do
+            if [ $PARALLEL_FILE_LOAD = 1 ]
+            then
+               if [ $FIRST_FILE = 1 ]
                then
-                  UOW_TMP_MI=$(print $UOW_TMP \| cut -c11-12)
-                  UOW_TMP_SS=$(print $UOW_TMP \| cut -c13-14)
-                  IN_DIR_TMP=$UOW_IN_DIR/$UOW_ITER_DATE/$UOW_ITER_HH/$UOW_TMP_MI/$UOW_TMP_SS
-                  while read FILE_ID DATA_FILENAME OLD_FILENAME DONE_FILENAME
-                  do
-                     if [ $PARALLEL_FILE_LOAD = 1 ]
-                     then
-                        if [ $FIRST_FILE = 1 ]
-                        then
-                           eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $OLD_FILENAME > $INPUT_FILE_FILE
-                           FIRST_FILE=0
-                        else
-                           eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $OLD_FILENAME >> $INPUT_FILE_FILE
-                        fi
-                     else
-                        INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
-                     fi
-                  done < $SRC_LIS_TMP
+                  eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $OLD_FILENAME > $INPUT_FILE_FILE
+                  FIRST_FILE=0
+               else
+                  eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $OLD_FILENAME >> $INPUT_FILE_FILE
                fi
-            done
-         else
-            for IN_DIR_TMP in $(find $UOW_IN_DIR/$UOW_ITER_DATE/$UOW_ITER_HH/[0-5][0-9]/[0-5][0-9] -type d -prune 2>/dev/null)
+            else
+               INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
+            fi
+         done < $SRC_LIS_TMP
+      else
+         if [ $USE_DISTR_TABLE = 1 ]
+         then
+            read TABLE_NAME DATA_FILENAME PARAM < $DW_CFG/$ETL_ID.sources.lis
+            while read FILE_ID DBC_FILE
             do
-               if [[ "$IN_DIR_TMP" != "$UOW_IN_DIR/$UOW_FROM_DATE/$UOW_FROM_HH/$UOW_FROM_MI/$UOW_FROM_SS" ]]
+               if [ $PARALLEL_FILE_LOAD = 1 ]
                then
-                  if [ $USE_DISTR_TABLE = 1 ]
+                  if [ $FIRST_FILE = 1 ]
                   then
-                     read TABLE_NAME DATA_FILENAME PARAM < $DW_CFG/$ETL_ID.sources.lis
-                     while read FILE_ID DBC_FILE
-                     do
-                        if [ $PARALLEL_FILE_LOAD = 1 ]
-                        then
-                           if [ $FIRST_FILE = 1 ]
+                     if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                     then
+                        eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
+                        FIRST_PASS=1
+                        while read EXPANDED_FILENAME
+                        do
+                           if [ $FIRST_PASS = 1 ]
                            then
-                              if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                              then
-                                 eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
-                                 FIRST_PASS=1
-                                 while read EXPANDED_FILENAME
-                                 do
-                                    if [ $FIRST_PASS = 1 ]
-                                    then
-                                        eval print $EXPANDED_FILENAME $DATA_FILENAME > $INPUT_FILE_FILE
-                                        FIRST_PASS=0
-                                    else
-                                        eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
-                                    fi
-                                 done <  $EXPANDED_MULTIFILE_FILE
-                                 rm $EXPANDED_MULTIFILE_FILE
-                              else
-                                 eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME > $INPUT_FILE_FILE
-                              fi
-                              FIRST_FILE=0
+                               eval print $EXPANDED_FILENAME $DATA_FILENAME > $INPUT_FILE_FILE
+                               FIRST_PASS=0
                            else
-                              if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                              then
-                                 eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
-                                 while read EXPANDED_FILENAME
-                                 do
-                                    eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
-                                 done <  $EXPANDED_MULTIFILE_FILE
-                                 rm $EXPANDED_MULTIFILE_FILE
-                              else
-                                 eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME >> $INPUT_FILE_FILE
-                              fi
+                               eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
                            fi
-                        else
-                           if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                           then
-                              INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $(m_expand $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX))"
-                           else
-                              INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
-                           fi
-                        fi
-                     done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
+                        done <  $EXPANDED_MULTIFILE_FILE
+                        rm $EXPANDED_MULTIFILE_FILE
+                     else
+                        eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME > $INPUT_FILE_FILE
+                     fi
+                     FIRST_FILE=0
                   else
-                     while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM
-                     do
-                        if [ $PARALLEL_FILE_LOAD = 1 ]
-                        then
-                           if [ $FIRST_FILE = 1 ]
-                           then
-                              if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                              then
-                                 eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
-                                 FIRST_PASS=1
-                                 while read EXPANDED_FILENAME
-                                 do
-                                    if [ $FIRST_PASS = 1 ]
-                                    then
-                                       eval print $EXPANDED_FILENAME $DATA_FILENAME > $INPUT_FILE_FILE
-                                       FIRST_PASS=0
-                                    else
-                                       eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
-                                    fi
-                                 done <  $EXPANDED_MULTIFILE_FILE
-                                 rm $EXPANDED_MULTIFILE_FILE
-                              else
-                                 eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME > $INPUT_FILE_FILE
-                              fi
-                              FIRST_FILE=0
-                           else
-                              if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                              then
-                                 eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
-                                 while read EXPANDED_FILENAME
-                                 do
-                                    eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
-                                 done <  $EXPANDED_MULTIFILE_FILE
-                                 rm $EXPANDED_MULTIFILE_FILE
-                              else
-                                 eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME >> $INPUT_FILE_FILE
-                              fi
-                           fi
-                        else
-                           if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
-                           then
-                              INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $(m_expand $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX))"
-                           else
-                              INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
-                           fi
-                        fi
-                     done < $DW_CFG/$ETL_ID.sources.lis
+                     if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                     then
+                        eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
+                        while read EXPANDED_FILENAME
+                        do
+                           eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
+                        done <  $EXPANDED_MULTIFILE_FILE
+                        rm $EXPANDED_MULTIFILE_FILE
+                     else
+                        eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME >> $INPUT_FILE_FILE
+                     fi
+                  fi
+               else
+                  if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                  then
+                     INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $(m_expand $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX))"
+                  else
+                     INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
                   fi
                fi
-            done
+            done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
+         else
+            while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM
+            do
+               if [ $PARALLEL_FILE_LOAD = 1 ]
+               then
+                  if [ $FIRST_FILE = 1 ]
+                  then
+                     if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                     then
+                        eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
+                        FIRST_PASS=1
+                        while read EXPANDED_FILENAME
+                        do
+                           if [ $FIRST_PASS = 1 ]
+                           then
+                              eval print $EXPANDED_FILENAME $DATA_FILENAME > $INPUT_FILE_FILE
+                              FIRST_PASS=0
+                           else
+                              eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
+                           fi
+                        done <  $EXPANDED_MULTIFILE_FILE
+                        rm $EXPANDED_MULTIFILE_FILE
+                     else
+                        eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME > $INPUT_FILE_FILE
+                     fi
+                     FIRST_FILE=0
+                  else
+                     if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                     then
+                        eval print $(m_expand -native $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX) \| tr ' ' '\\012' > $EXPANDED_MULTIFILE_FILE
+                        while read EXPANDED_FILENAME
+                        do
+                           eval print $EXPANDED_FILENAME $DATA_FILENAME >> $INPUT_FILE_FILE
+                        done <  $EXPANDED_MULTIFILE_FILE
+                        rm $EXPANDED_MULTIFILE_FILE
+                     else
+                        eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX $DATA_FILENAME >> $INPUT_FILE_FILE
+                     fi
+                  fi
+               else
+                  if [ -f $(eval print $\{IN_DIR_TMP\}/.$\{DATA_FILENAME\}$\{CNDTL_COMPRESSION_SFX\}.mfctl) ]
+                  then
+                     INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $(m_expand $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX))"
+                  else
+                     INPUT_FILE_TMP="$INPUT_FILE_TMP $(eval print $IN_DIR_TMP/$DATA_FILENAME$CNDTL_COMPRESSION_SFX)"
+                  fi
+               fi
+            done < $DW_CFG/$ETL_ID.sources.lis
          fi
-         ((UOW_ITER_HH=UOW_ITER_HH+1))
-      done
-      UOW_ITER_DATE=$($DW_BIN/add_days $UOW_ITER_DATE 1)
-      UOW_ITER_HH=00
-      UOW_ITER_DATEHH=$UOW_ITER_DATE$UOW_ITER_HH
-   done
+      fi
+   fi
 
 else
 
@@ -626,7 +599,7 @@ fi
 {30001002|XXparameter|_parameters_of_Output_Table_MSSQL_Truncate_Load|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Output_Table_MSSQL_Bulk_Append_Load|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@10590|52250|0|0|2314000|1861000|0|single_table_load|Craig Werre|Created 04/20/05 17:21:44|1|10|-1||6||34817|{0|}0|0|{0|}{0|}{0|}{0|}1.0|2314706|1861765|3|}}
+}}@0|@10590|52250|0|0|2302000|1865000|0|single_table_load|Craig Werre|Created 04/20/05 17:21:44|1|10|-1||6||34817|{0|}0|0|{0|}{0|}{0|}{0|}1.0|2302632|1865789|3|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|0|1|1|}Job 'single_table_load' Execution Status Report
 
 Compilation of graph "single_table_load" started at Tuesday, August 26, 2014 12:19:14
@@ -695,7 +668,7 @@ fi
 
 
 |@|31634943|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Lega 001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@lvsdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Courier New|16711680|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@chmod $LOAD_LOGFILE will change the permissions on the $LOAD_LOGFILE to 664 once the file is found.|17235|933622|37000|954000|792000|16000|521|}}
 {2010242002|XXGface|6|0|11|0|{@{}@Courier New|16711680|100|0|}}
@@ -2209,7 +2182,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010203004|XXGoport|117|0|279|0|{@{}@1241000|1859000|11000|11000|error|0.0|@@@1176|0|}}
 {2010203004|XXGoport|118|0|282|0|{@{}@1282000|1859000|11000|11000|log|0.0|@@@1176|0|}}
 {2010202004|XXGiport|119|0|285|0|{@{}@1175000|1824000|11000|11000|write|0.0|@@@1936|0|}}
-{2010110002|XXGconstant|120|0|288|0|{@{}@{1|$\{STAGE_DB\}.$\{STAGE_TABLE\}|}}}
+{2010110002|XXGconstant|120|0|288|0|{@{}@{1|$\{DB_SCHEMA\}.$\{STAGE_TABLE\}|}}}
 {2010110002|XXGconstant|121|0|290|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|122|0|292|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
@@ -2811,7 +2784,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010203004|XXGoport|129|0|313|0|{@{}@1236000|1669000|11000|11000|error|0.0|@@@1176|0|}}
 {2010203004|XXGoport|130|0|316|0|{@{}@1277000|1669000|11000|11000|log|0.0|@@@1176|0|}}
 {2010202004|XXGiport|131|0|319|0|{@{}@1170000|1634000|11000|11000|write|0.0|@@@1936|0|}}
-{2010110002|XXGconstant|132|0|322|0|{@{}@{1|$\{STAGE_DB\}.$\{STAGE_TABLE\}|}}}
+{2010110002|XXGconstant|132|0|322|0|{@{}@{1|$\{DB_SCHEMA\}.$\{STAGE_TABLE\}|}}}
 {2010110002|XXGconstant|133|0|324|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|134|0|326|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
@@ -6932,7 +6905,7 @@ once $LOAD_LOGFILE exists.  Sleeps for 10 seconds in between looking for this fi
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|272|0|748|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|273|0|751|0|{@{}@{1|8115017|}}}
+{2010110002|XXGconstant|273|0|751|0|{@{}@{1|7410893|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
