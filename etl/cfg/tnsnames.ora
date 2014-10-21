@@ -5015,3 +5015,14 @@ bopis2 =
         (Host = bopis2.vip.ebay.com)                
         (Port = 1521))
         (CONNECT_DATA = (SID=BOPIS2))) 
+
+PHXCSSTG=
+    (DESCRIPTION=
+    (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=phxcsstg.vip.its.ebay.com)
+    (PORT=1521))
+    (CONNECT_DATA=
+    (SERVICE_NAME=CSSTGPHX))
+)
+
