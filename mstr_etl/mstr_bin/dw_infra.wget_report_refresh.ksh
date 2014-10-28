@@ -8,6 +8,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# Ryan Wong        10/23/2014      Changed wget command to not reference full path to binary
 #
 #------------------------------------------------------------------------------------------------
  
@@ -102,7 +103,7 @@ print "Wget command is being executed from $ETL_ENV, see log $MSTR_REFRESH_LOG "
 
   
 set +e
-	/usr/local/bin/wget ${WGET_CMD} > $MSTR_REFRESH_LOG 2>&1;  
+	wget ${WGET_CMD} > $MSTR_REFRESH_LOG 2>&1;  
 	RCODE=$?
 set -e
  
