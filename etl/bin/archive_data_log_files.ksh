@@ -33,6 +33,12 @@
 # Ryan Wong        08/02/2013      Update UOW archive.  Cannot use zip since it has a 2GB size limit.
 #                                    Instead, move directory to DW_ARC into a directory w/ext .dir
 # Ryan Wong        10/04/2013      Redhat changes
+# Jiankang Liu     11/03/2014      To adapt archive jobs to new ETL servers Tempo, make such changes:
+#										1. Add archive type parameter, local type runs on each nodes of Tempo cluster, shared type runs on random node. 
+#										2. Split code blocks into different functions base on functionality and directory. 
+#										3. Group the functions with $DW_LOG, $DW_WATCH into deal_shared_files function, while the functions with $DW_ARC 
+#										$DW_IN, $DW_MFS into deal_local_files function. 
+#										4. Call deal_shared_files if archive type is shared, else call deal_local_files. 
 #------------------------------------------------------------------------------------------------
 typeset -fu usage
 
