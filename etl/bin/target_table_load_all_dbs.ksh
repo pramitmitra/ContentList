@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "target_table_load_all_dbs", compiled at Wednesday, August 13, 2014 13:44:21 using GDE version 3.0.3.1
+# Deployed execution script for graph "target_table_load_all_dbs", compiled at Friday, October 31, 2014 09:38:27 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}target_table_load_all_dbs
 # Begin Ab Initio shell utility functions
 
@@ -239,6 +239,48 @@ function _AB_PARSE_ARGUMENTS {
    let _ab_index_var=_ab_index_var+1
    shift
    case ${_ab_kwd} in
+     -TRGT_DB )
+      export TRGT_DB;      TRGT_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -TRGT_DB_SCHEMA )
+      export TRGT_DB_SCHEMA;      TRGT_DB_SCHEMA="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -DEFAULT_DB )
+      export DEFAULT_DB;      DEFAULT_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -ODBC_DATA_SOURCE_NAME )
+      export ODBC_DATA_SOURCE_NAME;      ODBC_DATA_SOURCE_NAME="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MSSQL_USERNAME )
+      export MSSQL_USERNAME;      MSSQL_USERNAME="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MSSQL_PASSWORD )
+      export MSSQL_PASSWORD;      MSSQL_PASSWORD="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
    * )
       if [ X"${_AB_USED_ARGUMENTS[_ab_index_var]}" != X1 ]; then
          print -r -- 'Unexpected command line argument found: '"${_ab_kwd}"
@@ -327,6 +369,25 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter DB_TYPE of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
+export TRGT_DB;TRGT_DB=$(case $DB_TYPE in
+    "MSSQL" ) print $(grep "^MSSQL_TRGT_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+          * ) print -- "dummy";;
+esac)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter TRGT_DB of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export TRGT_DB_SCHEMA;TRGT_DB_SCHEMA=$(case $DB_TYPE in
+    "MSSQL" ) print $(grep "^MSSQL_TRGT_DB_SCHEMA\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+          * ) print -- "";;
+esac)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter TRGT_DB_SCHEMA of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export DEFAULT_DB;DEFAULT_DB="$TRGT_DB"
 export TNS_NAME;TNS_NAME=$(grep "^db_name\>" $DW_DBC/$AB_IDB_CONFIG | read A TNS_NAME_TMP
   print ${TNS_NAME_TMP#@})
 mpjret=$?
@@ -346,7 +407,25 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
-export DW_SA_LOG;DW_SA_LOG="$DW_LOG"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
+export ODBC_DATA_SOURCE_NAME;ODBC_DATA_SOURCE_NAME=$(grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_CONFIG | read A ODSN_TMP; print ${ODSN_TMP:-""})
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter ODBC_DATA_SOURCE_NAME of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export MSSQL_USERNAME;MSSQL_USERNAME=$(grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MSSQL_USERNAME of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MSSQL_PASSWORD of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export DW_SA_LOG;DW_SA_LOG="$DW_LOG"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"'/'"$TABLE_ID"'/'"$CURR_DATE"
 export DW_SA_TMP;DW_SA_TMP="$DW_TMP"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export FILE_DATETIME;FILE_DATETIME=$(date '+%Y%m%d-%H%M%S')
 mpjret=$?
@@ -501,7 +580,7 @@ mp straight-flow Flow_2 Run_SQL_Log_File.read Reformat.in -metadata metadata1
 mp straight-flow Flow_3 Reformat.out.out0 Run_SQL_Log_File_Tmp.write -metadata metadata2
 
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=6265062
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7349039
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

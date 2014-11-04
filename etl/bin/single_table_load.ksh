@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_load", compiled at Wednesday, October 08, 2014 14:45:08 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_load", compiled at Tuesday, October 28, 2014 13:37:52 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_load
 # Begin Ab Initio shell utility functions
 
@@ -652,13 +652,21 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter DISTR_TABLE_LIS_FILE of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export STAGE_DB;STAGE_DB=$(grep "^STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE)
+export STAGE_DB;STAGE_DB=$(case $DB_TYPE in
+    "TERADATA" ) print $(grep "^STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+       "MSSQL" ) print $(grep "^MSSQL_STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+             * ) print $(grep "^STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+esac)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter STAGE_DB of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export STAGE_TABLE;STAGE_TABLE=$(grep "^STAGE_TABLE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print $VALUE)
+export STAGE_TABLE;STAGE_TABLE=$(case $DB_TYPE in
+    "TERADATA" ) print $(grep "^STAGE_TABLE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+       "MSSQL" ) print $(grep "^MSSQL_STAGE_TABLE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+             * ) print $(grep "^STAGE_TABLE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+esac)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter STAGE_TABLE of single_table_load', interpretation 'shell'
@@ -671,12 +679,10 @@ if [ 0 -ne $mpjret ] ; then
    exit $mpjret
 fi
 export DEFAULT_DB;DEFAULT_DB="$STAGE_DB"
-export DB_SCHEMA;DB_SCHEMA=$(if [[ $DB_TYPE == "MSSQL" ]]
-  then
-    print -- $(grep "^LOAD_DB_SCHEMA\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print $VALUE)
-  else
-    print -- ""
-  fi)
+export DB_SCHEMA;DB_SCHEMA=$(case $DB_TYPE in
+    "MSSQL" ) print -- $(grep "^MSSQL_STAGE_DB_SCHEMA\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+          * ) print -- "";;
+esac)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter DB_SCHEMA of single_table_load', interpretation 'shell'
@@ -2697,7 +2703,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=470092
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=2860699
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

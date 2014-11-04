@@ -16,6 +16,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # George Xiong     10/10/2011      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# Ryan Wong        10/15/2014      Update ps command
 #------------------------------------------------------------------------------------------------
 
  
@@ -51,8 +52,8 @@ LOG_COLUMNS="DWI_CALLED  DWI_CALLED_ARGS  DWI_WHOAMI  DWI_START_DATETIME  server
 #--------------------------------------------------------------------------------------
 # Determine if there is already an job track process running
 #-------------------------------------------------------------------------------------- 
- 
-while [ $(/usr/ucb/ps -auxwwwl | grep "$SHELL_EXE_NAME" | grep -v "shell_handler.ksh"|  grep -v "grep $SHELL_EXE_NAME"| wc -l) -ge 2 ]
+
+while [ $(ps -fu$USER | grep "$SHELL_EXE_NAME" | grep -v "shell_handler.ksh" | grep -v "grep $SHELL_EXE_NAME" | wc -l) -ge 2 ]
 do
    print "There is already a job track process running. Sleeping for 30 seconds"
    sleep 30
