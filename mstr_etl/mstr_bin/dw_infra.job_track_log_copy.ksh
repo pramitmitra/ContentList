@@ -16,6 +16,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # George Xiong     11/20/2011      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# Ryan Wong        10/15/2014      Update ps command
 #------------------------------------------------------------------------------------------------
 
  
@@ -35,7 +36,7 @@ LOG_R4CP=$LOG_BASE/r4cp
 # Determine if there is already a jobtrack logs copy  process running
 #-------------------------------------------------------------------------------------- 
  
-while [ $(/usr/ucb/ps -auxwwwl | grep "$SHELL_EXE_NAME" | grep "shell_handler.ksh"|  grep -v "grep $SHELL_EXE_NAME"|grep -v "ssh"| wc -l) -ge 2 ]
+while [ $(ps -fu$USER | grep "$SHELL_EXE_NAME" | grep "shell_handler.ksh" | grep -v "grep $SHELL_EXE_NAME" | grep -v "ssh" | wc -l) -ge 2 ]
 do
    print "There is already a job track logs copy process running. Sleeping for 30 seconds"
    sleep 30

@@ -20,11 +20,23 @@ fi)|3|6|REk||{0|}}
 {30001002|XXparameter|DB_NAME|$(grep "^$CFG_DBC_PARAM\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-$DEFAULT_DB_NAME\})|3|6|REk||{0|}}
 {30001002|XXparameter|AB_IDB_CONFIG|$\{DB_NAME\}.dbc|3|6|REk|database configuration file|{0|}}
 {30001002|XXparameter|DB_TYPE|$(grep "^dbms\\>" $DW_DBC/$AB_IDB_CONFIG \| tr [:lower:] [:upper:] \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|REk||{0|}}
+{30001002|XXparameter|TRGT_DB|$(case $DB_TYPE in
+    "MSSQL" ) print $(grep "^MSSQL_TRGT_DB\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $VALUE);;
+          * ) print -- "dummy";;
+esac)|3|6|EKk||{0|}}
+{30001002|XXparameter|TRGT_DB_SCHEMA|$(case $DB_TYPE in
+    "MSSQL" ) print $(grep "^MSSQL_TRGT_DB_SCHEMA\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $VALUE);;
+          * ) print -- "";;
+esac)|3|6|EKk||{0|}}
+{30001002|XXparameter|DEFAULT_DB|$TRGT_DB|3|2|EK$||{0|}}
 {30001002|XXparameter|TNS_NAME|$(grep "^db_name\\>" $DW_DBC/$AB_IDB_CONFIG \| read A TNS_NAME_TMP
-  print $\{TNS_NAME_TMP#\@\})|3|6|REk||{0|}}
-{30001002|XXparameter|ORA_USERNAME|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)|3|6|REk||{0|}}
-{30001002|XXparameter|ORA_PASSWORD|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)|3|6|REk||{0|}}
-{30001002|XXparameter|DW_SA_LOG|$DW_LOG/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
+  print $\{TNS_NAME_TMP#\@\})|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_USERNAME|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_PASSWORD|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)|3|6|Ek||{0|}}
+{30001002|XXparameter|ODBC_DATA_SOURCE_NAME|$(grep "^odbc_data_source_name\\>" $DW_DBC/$AB_IDB_CONFIG \| read A ODSN_TMP; print $\{ODSN_TMP:-""\})|3|6|EKk||{0|}}
+{30001002|XXparameter|MSSQL_USERNAME|$(grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)|3|6|EKk||{0|}}
+{30001002|XXparameter|MSSQL_PASSWORD|$(grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)|3|6|EKk||{0|}}
+{30001002|XXparameter|DW_SA_LOG|$DW_LOG/$JOB_ENV/$SUBJECT_AREA/$TABLE_ID/$CURR_DATE|3|2|E$||{0|}}
 {30001002|XXparameter|DW_SA_TMP|$DW_TMP/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
 {30001002|XXparameter|FILE_DATETIME|$(date '+%Y%m%d-%H%M%S')|3|6|REk||{0|}}
 {30001002|XXparameter|CREATE_TMP_SQL_FILE|$(set -e
@@ -44,17 +56,17 @@ fi)|3|6|REk||{0|}}
 {30001002|XXparameter|_parameters_of_Rename_Run_SQL_Log_File_Tmp|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Run_SQL|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@0|0|0|0|517000|390000|0|target_table_load|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|517000|390000|7|}}
-{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|1|1|1|}Job 'target_table_load' Execution Status Report
+}}@0|@0|0|0|0|517000|397000|0|target_table_load_all_dbs|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|517000|397000|7|}}
+{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|1|1|1|}Job 'target_table_load_all_dbs' Execution Status Report
 
-Compilation of graph "target_table_load" started at Wednesday, August 13, 2014 13:37:04
+Compilation of graph "target_table_load_all_dbs" started at Tuesday, October 28, 2014 14:52:10
 No compilation errors
 ||||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@lvsdpelega001||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Lega 004||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
-{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|78000|118000|78000|138000|78000|183000|84000|183000|115000|183000|}7|17|}}
-{2010210004|XXGflow|6|0|11|0|{@{}@384|.5|.5|{8|176000|183000|208000|183000|210000|183000|230000|183000|}2|17|}}
-{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{8|384000|183000|384000|183000|430000|183000|437000|183000|}4|17|}}
+{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|78000|118000|78000|138000|78000|183000|84000|183000|115000|183000|}12|17|}}
+{2010210004|XXGflow|6|0|11|0|{@{}@384|.5|.5|{8|176000|183000|176000|183000|223000|183000|230000|183000|}10|17|}}
+{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{8|384000|183000|384000|183000|430000|183000|437000|183000|}8|17|}}
 {2010501005|XXGpvertex|8|0|15|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
 begin
   out.event_text :: in.event_text;
@@ -68,7 +80,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
-}}@1|@221000|130500|241000|151000|133000|65000|1|Reformat|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
+}}@1|@221000|130500|241000|151000|133000|65000|9|Reformat|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
 {2010203004|XXGoport|9|0|17|0|{@{}@373000|178000|11000|11000|out0|0.0|count|out|0|2448|0|}}
 {2010203004|XXGoport|10|0|20|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
 {2010203004|XXGoport|11|0|22|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
@@ -157,7 +169,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$\{RUN_SQL_LOGFILE\}.tmp", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Datasets\\Output_File.mdc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@1|@423000|143500|448000|164000|40000|40000|5|Run SQL Log File Tmp|Craig Werre||1|10|-1||6||32769|-1|-1|}}
+}}@1|@423000|143500|448000|164000|40000|40000|7|Run SQL Log File Tmp|Craig Werre||1|10|-1||6||32769|-1|-1|}}
 {2010202004|XXGiport|21|0|49|0|{@{}@438000|178000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|22|0|52|0|{Represents one file, many files, or a multifile as an output from your graph.  |{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
@@ -183,12 +195,12 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Database\\Run SQL.mpc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@14000|15500|34000|36000|90000|72000|8|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@14000|15500|34000|36000|90000|72000|13|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
 {2010203004|XXGoport|25|0|60|0|{@{}@73000|107000|11000|11000|log|0.0|@@@1176|0|}}
 {2010501005|XXGpvertex|26|0|63|0|{Executes SQL statements in a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|db-runsql|3|1|Hl|The name used on the mp command line for this component|{0|}}
 {30001002|XXparameter|image__|~ab_home/db/bin/db-runsql|3|2|H$|The image used if this component was a custom component|{0|}}
 {30001002|XXparameter|DBConfigFile||22|2|RFOf$|Database Description File|{0|}}
-{30001002|XXparameter|dbms||3|2|F$||{0|}}
+{30001002|XXparameter|dbms||3|2|RF$||{0|}}
 {30001002|XXparameter|interface|api|15|1|FKl|Run commands using utility or via api|{2|api|utility|}}
 {30001002|XXparameter|ansimode|True|13|1|FKl|Teradata: Use ANSI semantics if True; BTET semantics if False|{0|}}
 {30001002|XXparameter|ansimode.condition|param_exact dbms teradata|3|15|P?|@{0|}}
@@ -219,7 +231,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Datasets\\Intermediate_File.mdc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|read_metadata||3|8|s=|@{0|}}
-}}@0|@101000|143500|126000|164000|40000|40000|3|Run SQL Log File|Craig Werre||1|-1|-1||6||32769|-1|-1|}}
+}}@0|@101000|143500|126000|164000|40000|40000|11|Run SQL Log File|Craig Werre||1|-1|-1||6||32769|-1|-1|}}
 {2010203004|XXGoport|29|0|70|0|{@{}@165000|178000|11000|11000|read|0.0|@@@2160|0|}}
 {2010202004|XXGiport|30|0|73|0|{@{}@116000|178000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|31|0|76|0|{Represents one file, many files, or a multifile as an output from your graph.  |{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
@@ -246,7 +258,7 @@ metadata type: write = read|3|1|FHKl|@{0|}}
 {2010501005|XXGpvertex|34|0|87|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|commandline|mv $\{RUN_SQL_LOGFILE\}.tmp $\{RUN_SQL_LOGFILE\}|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$DW_TMP", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Miscellaneous\\Run Program.mpc|3|2|Pw$|@{0|}}
-}}@2|@21000|269500|41000|290000|145000|106000|6|Rename Run SQL Log File Tmp|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
+}}@2|@21000|269500|41000|290000|145000|106000|14|Rename Run SQL Log File Tmp|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
 {2010203004|XXGoport|35|0|89|0|{@{}@185000|337000|11000|11000|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|36|0|91|0|{@{}@31000|337000|11000|11000|in|0.0|@@@1732|0|}}
 {2010501005|XXGpvertex|37|0|93|0|{Executes a standard UNIX or Windows NT program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl|The name used on the mp command line for this component|{0|}}
@@ -271,7 +283,7 @@ metadata type: write = read|3|1|FHKl|@{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|39|0|98|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|40|0|104|0|{@{}@{1|6225309|}}}
+{2010110002|XXGconstant|40|0|104|0|{@{}@{1|7349039|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
