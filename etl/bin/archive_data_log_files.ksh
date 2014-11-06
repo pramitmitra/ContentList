@@ -52,7 +52,7 @@ then
    usage exit 4;
 fi
 
-STORAGE_TYPE=$1
+ARCH_TYPE=$1
 
 if [ $ARCH_TYPE = shared ]
 then
@@ -75,9 +75,9 @@ DW_SA_ARC=$DW_ARC/td1/dw_infra
 #--------------------------------------------------------------------------------------
 # Determine if there is already an achive process running
 #--------------------------------------------------------------------------------------
-while [ $(/usr/ucb/ps -auxwwwl | grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -ge 2 ]
+while [ $(/bin/ps -awwwl -u $DWI_WHOAMI| grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -ge 2 ]
   do
-    if [ $(/usr/ucb/ps -auxwwwl | grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -gt 2 ]
+    if [ $(/bin/ps -awwwl -u $DWI_WHOAMI| grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -gt 2 ]
     then
       print "There is already 2 achive process running. Exit"
       exit 0
@@ -143,6 +143,7 @@ function deal_dwsalog_selflogfile {
 # if previous error file is not empty, rename it to *.r4a.
 # otherwise remove it - excludes the current error file.
 #------------------------------------------------------------------------
+print "[deal_dwsalog_selflogfile] mark error files as r4a and rm empty error files excludes today"
 if [ -f $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}.!($CURR_DATETIME).* ]
 then
 	for FILE in $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}.!($CURR_DATETIME).[le][or][gr]
@@ -162,7 +163,7 @@ function rm_dwlog_olderthan31_dir {
 #------------------------------------------------------------------------
 #  Remove date based log dirs greater than 31 days old.
 #------------------------------------------------------------------------
-print "Removing date based log dirs greater than 31 days old  `date`"
+print "[rm_dwlog_olderthan31_dir] Removing date based log dirs greater than 31 days old  `date`"
 
 set +e
 find $DW_LOG/extract/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
@@ -175,7 +176,7 @@ function rm_dwarc_olderthantoday_datgzfile {
 #------------------------------------------------------------------------
 #  Remove data files with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing data files with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_datgzfile] Removing data files with a delete date of today or earlier  `date`"
 
 if [ -f $DW_ARC/extract/*/*.dat.*.*.gz ]
 then
@@ -197,7 +198,7 @@ function rm_dwarc_olderthantoday_zipfile {
 #------------------------------------------------------------------------
 #  Remove zip archives with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing zip archives with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_zipfile] Removing zip archives with a delete date of today or earlier  `date`"
 
 if [ -f $DW_ARC/extract/*/*.zip ]
 then
@@ -218,7 +219,7 @@ function rm_dwarc_olderthantoday_dir {
 #------------------------------------------------------------------------
 #  Remove dir archives with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing dir archives with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_dir] Removing dir archives with a delete date of today or earlier  `date`"
 
 if [ -d $DW_ARC/extract/*/*.dir ]
 then
@@ -239,7 +240,7 @@ fi
 #  CHANGED for mass file functionality
 #------------------------------------------------------------------------
 function rm_dwin_r4amassfile {
-
+print "[rm_dwin_r4amassfile] remove mass files with r4a marked"
 if [ -d $DW_IN/extract/*/r4a_???????? ]
 then
 	for DIR in $(ls -d $DW_IN/extract/*/r4a_????????)
@@ -279,6 +280,7 @@ fi
 }
 
 function rm_dwmfs_r4amassfile {
+print "[rm_dwmfs_r4amassfile] remove mass files with r4a marked"
 if [ -f $DW_MFS/fs??/arc/extract/*/*.gz ]
 then
 	for FILE in $DW_MFS/fs??/arc/extract/*/*.gz
@@ -313,7 +315,7 @@ function rm_dwarc_olderthan31_file {
 #------------------------------------------------------------------------
 #  Remove files greater than 31 days old.
 #------------------------------------------------------------------------
-print "Removing log/err files greater than 31 days old  `date`"
+print "[rm_dwarc_olderthan31_file] Removing log/err files greater than 31 days old  `date`"
 
 find $DW_ARC/*/*/ -type f -mtime +31 -exec rm -f {} \;	
 }
@@ -325,7 +327,7 @@ find $DW_ARC/*/*/ -type f -mtime +31 -exec rm -f {} \;
 #  Move these files to the archive directory and compress them.
 #------------------------------------------------------------------------
 function archive_dwin_r4afile {
-print "Moving and compressing data files marked .r4a in $DW_IN/extract   `date`"
+print "[archive_dwin_r4afile] Moving and compressing data files marked .r4a in $DW_IN/extract   `date`"
 
 return_subject_area_dirs $DW_IN/extract | while read SA_DIR
 do
@@ -388,6 +390,7 @@ done
 }
 
 function archive_dwmfs_r4afile {
+print "[archive_dwmfs_r4afile] archive r4a files under $DW_MFS"
 print "Moving and compressing data files marked .r4a in $DW_MFS/fs04/in/extract   `date`"
 
 return_subject_area_dirs $DW_MFS/fs04/in/extract | while read SA_DIR
@@ -541,11 +544,12 @@ done
 # 	fi
 # done
 
-function archive_dwlog_r4afiles{
+function archive_dwlog_r4afiles {
 #------------------------------------------------------------------------
 #  Get all log/err files in sa folder of dw_log marked .r4a (ready for archive).
 #  Move these files to the archive directory.
 #------------------------------------------------------------------------
+print "[archive_dwlog_r4afiles] mv all .r4a files in $DW_LOG to $DW_ARC"
 while read ETL_JOB_ENV
   do
     print "Moving log/err files marked .r4a in $DW_LOG/$ETL_JOB_ENV  `date`"
@@ -557,8 +561,13 @@ while read ETL_JOB_ENV
                 mkdirifnotexist $DW_ARC/$ETL_JOB_ENV/$SA_DIR
 		        for FILE in $DW_LOG/$ETL_JOB_ENV/$SA_DIR/*.r4a
 		          do
-			          mv -f $FILE $DW_ARC/$ETL_JOB_ENV/$SA_DIR/${FILE%.r4a}
+			          mv -f $FILE $DW_ARC/$ETL_JOB_ENV/$SA_DIR
 		        done
+ 
+          for FILE in $DW_ARC/$ETL_JOB_ENV/$SA_DIR/*.r4a
+  	        do
+  		        mv -f $FILE ${FILE%.r4a}
+  	      done
 	      fi
     done
 done < $DW_MASTER_CFG/dw_etl_job_env.lis
@@ -569,7 +578,7 @@ function rm_dwwatch_olderthan30_file {
 #------------------------------------------------------------------------
 #  Remove extract touch files greater than 30 days old.
 #------------------------------------------------------------------------
-print "Removing extract touch files greater than 30 days old  `date`"
+print "[rm_dwwatch_olderthan30_file] Removing extract touch files greater than 30 days old  `date`"
 
 set +e
 find $DW_WATCH/extract/ -type f -mtime +30 -exec rm -f {} \;
