@@ -169,7 +169,7 @@ else
                  -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                  $PARAM_LIST"
     exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
-                 DataplatformRunJar dw_adm ~sg_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
+                 DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                  $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                  -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                  -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
