@@ -33,7 +33,33 @@
 # Ryan Wong        08/02/2013      Update UOW archive.  Cannot use zip since it has a 2GB size limit.
 #                                    Instead, move directory to DW_ARC into a directory w/ext .dir
 # Ryan Wong        10/04/2013      Redhat changes
+# Jiankang Liu     11/03/2014      To adapt archive jobs to new ETL servers Tempo, make such changes:
+#										1. Add archive type parameter, local type runs on each nodes of Tempo cluster, shared type runs on random node. 
+#										2. Split code blocks into different functions base on functionality and directory. 
+#										3. Group the functions with $DW_LOG, $DW_WATCH into deal_shared_files function, while the functions with $DW_ARC 
+#										$DW_IN, $DW_MFS into deal_local_files function. 
+#										4. Call deal_shared_files if archive type is shared, else call deal_local_files. 
 #------------------------------------------------------------------------------------------------
+typeset -fu usage
+
+function usage {
+   	print "Usage:  $0 <ARCH_TYPE>
+	ARCH_TYPE =   <local|shared>"
+}
+
+if [ $# -ne 1 ]
+then
+   usage exit 4;
+fi
+
+ARCH_TYPE=$1
+
+if [ $ARCH_TYPE = shared ]
+then
+	export ARCH_TYPE="arch_shared"
+else
+	export ARCH_TYPE="arch_local"
+fi
 
 print "####################################################################################"
 print "#"
@@ -43,15 +69,15 @@ print "#########################################################################
 print ""
 
 SHELL_EXE_NAME=${0##*/}
-DW_SA_LOG=$DW_LOG/primary/dw_infra
-DW_SA_ARC=$DW_ARC/primary/dw_infra
+DW_SA_LOG=$DW_LOG/td1/dw_infra
+DW_SA_ARC=$DW_ARC/td1/dw_infra
 
 #--------------------------------------------------------------------------------------
 # Determine if there is already an achive process running
 #--------------------------------------------------------------------------------------
-while [ $(/usr/ucb/ps -auxwwwl | grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -ge 2 ]
+while [ $(/bin/ps -awwwl -u $DWI_WHOAMI| grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -ge 2 ]
   do
-    if [ $(/usr/ucb/ps -auxwwwl | grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -gt 2 ]
+    if [ $(/bin/ps -awwwl -u $DWI_WHOAMI| grep "archive_data_log_files.ksh" | grep -v "shell_handler.ksh" | grep -v "grep archive_data_log_files.ksh"| wc -l) -gt 2 ]
     then
       print "There is already 2 achive process running. Exit"
       exit 0
@@ -110,11 +136,14 @@ _dir=$1
   return 0
 }
 
+
+function deal_dwsalog_selflogfile {
 #------------------------------------------------------------------------
 # this section is for the log and error file created by this process.
 # if previous error file is not empty, rename it to *.r4a.
 # otherwise remove it - excludes the current error file.
 #------------------------------------------------------------------------
+print "[deal_dwsalog_selflogfile] mark error files as r4a and rm empty error files excludes today"
 if [ -f $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}.!($CURR_DATETIME).* ]
 then
 	for FILE in $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.${SHELL_EXE_NAME%.ksh}.!($CURR_DATETIME).[le][or][gr]
@@ -127,21 +156,27 @@ then
 		fi
 	done
 fi
+}
 
+
+function rm_dwlog_olderthan31_dir {
 #------------------------------------------------------------------------
 #  Remove date based log dirs greater than 31 days old.
 #------------------------------------------------------------------------
-print "Removing date based log dirs greater than 31 days old  `date`"
+print "[rm_dwlog_olderthan31_dir] Removing date based log dirs greater than 31 days old  `date`"
 
 set +e
 find $DW_LOG/extract/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
 find $DW_LOG/td?/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
 set -e
+}
 
+
+function rm_dwarc_olderthantoday_datgzfile {
 #------------------------------------------------------------------------
 #  Remove data files with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing data files with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_datgzfile] Removing data files with a delete date of today or earlier  `date`"
 
 if [ -f $DW_ARC/extract/*/*.dat.*.*.gz ]
 then
@@ -156,11 +191,14 @@ then
 		fi
 	done
 fi
+}
 
+
+function rm_dwarc_olderthantoday_zipfile {
 #------------------------------------------------------------------------
 #  Remove zip archives with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing zip archives with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_zipfile] Removing zip archives with a delete date of today or earlier  `date`"
 
 if [ -f $DW_ARC/extract/*/*.zip ]
 then
@@ -174,11 +212,14 @@ then
 		fi
 	done
 fi
+}
 
+
+function rm_dwarc_olderthantoday_dir {
 #------------------------------------------------------------------------
 #  Remove dir archives with a delete date of today or earlier.
 #------------------------------------------------------------------------
-print "Removing dir archives with a delete date of today or earlier  `date`"
+print "[rm_dwarc_olderthantoday_dir] Removing dir archives with a delete date of today or earlier  `date`"
 
 if [ -d $DW_ARC/extract/*/*.dir ]
 then
@@ -191,12 +232,15 @@ then
 			rm -rf $FILE
 		fi
 	done
-fi
+fi	
+}
+
 
 #------------------------------------------------------------------------
 #  CHANGED for mass file functionality
 #------------------------------------------------------------------------
-
+function rm_dwin_r4amassfile {
+print "[rm_dwin_r4amassfile] remove mass files with r4a marked"
 if [ -d $DW_IN/extract/*/r4a_???????? ]
 then
 	for DIR in $(ls -d $DW_IN/extract/*/r4a_????????)
@@ -233,7 +277,10 @@ then
 			rm -rf $DIR
 	done
 fi
+}
 
+function rm_dwmfs_r4amassfile {
+print "[rm_dwmfs_r4amassfile] remove mass files with r4a marked"
 if [ -f $DW_MFS/fs??/arc/extract/*/*.gz ]
 then
 	for FILE in $DW_MFS/fs??/arc/extract/*/*.gz
@@ -261,20 +308,26 @@ then
 		fi
 	done
 fi
+}
 
+
+function rm_dwarc_olderthan31_file {
 #------------------------------------------------------------------------
 #  Remove files greater than 31 days old.
 #------------------------------------------------------------------------
-print "Removing log/err files greater than 31 days old  `date`"
+print "[rm_dwarc_olderthan31_file] Removing log/err files greater than 31 days old  `date`"
 
-find $DW_ARC/*/*/ -type f -mtime +31 -exec rm -f {} \;
+find $DW_ARC/*/*/ -type f -mtime +31 -exec rm -f {} \;	
+}
+
 
 
 #------------------------------------------------------------------------
 #  Get all data files marked .r4a (ready for archive).
 #  Move these files to the archive directory and compress them.
 #------------------------------------------------------------------------
-print "Moving and compressing data files marked .r4a in $DW_IN/extract   `date`"
+function archive_dwin_r4afile {
+print "[archive_dwin_r4afile] Moving and compressing data files marked .r4a in $DW_IN/extract   `date`"
 
 return_subject_area_dirs $DW_IN/extract | while read SA_DIR
 do
@@ -334,7 +387,10 @@ do
 		done
 	fi
 done
+}
 
+function archive_dwmfs_r4afile {
+print "[archive_dwmfs_r4afile] archive r4a files under $DW_MFS"
 print "Moving and compressing data files marked .r4a in $DW_MFS/fs04/in/extract   `date`"
 
 return_subject_area_dirs $DW_MFS/fs04/in/extract | while read SA_DIR
@@ -424,7 +480,7 @@ do
 		done
 	fi
 done
-
+}
 
 #------------------------------------------------------------------------
 #  Get all log/err files marked .r4a (ready for archive).
@@ -488,6 +544,12 @@ done
 # 	fi
 # done
 
+function archive_dwlog_r4afiles {
+#------------------------------------------------------------------------
+#  Get all log/err files in sa folder of dw_log marked .r4a (ready for archive).
+#  Move these files to the archive directory.
+#------------------------------------------------------------------------
+print "[archive_dwlog_r4afiles] mv all .r4a files in $DW_LOG to $DW_ARC"
 while read ETL_JOB_ENV
   do
     print "Moving log/err files marked .r4a in $DW_LOG/$ETL_JOB_ENV  `date`"
@@ -509,15 +571,56 @@ while read ETL_JOB_ENV
 	      fi
     done
 done < $DW_MASTER_CFG/dw_etl_job_env.lis
+}
 
+
+function rm_dwwatch_olderthan30_file {
 #------------------------------------------------------------------------
 #  Remove extract touch files greater than 30 days old.
 #------------------------------------------------------------------------
-print "Removing extract touch files greater than 30 days old  `date`"
+print "[rm_dwwatch_olderthan30_file] Removing extract touch files greater than 30 days old  `date`"
 
 set +e
-find $DW_WATCH/extract/ -type f -mtime +20 -exec rm -f {} \;
-set -e
+find $DW_WATCH/extract/ -type f -mtime +30 -exec rm -f {} \;
+set -e	
+}
+
+function deal_shared_files {
+#------------------------------------------------------------------------
+#  deal the files under local directory
+#  in Tempo servers, such directories are mounted on shared storage
+#  $DW_LOG and $DW_WATCH
+#------------------------------------------------------------------------
+print "Deal with the files under $DW_LOG and $DW_WATCH"
+deal_dwsalog_selflogfile
+rm_dwlog_olderthan31_dir
+archive_dwlog_r4afiles
+rm_dwwatch_olderthan30_file
+}
+
+function deal_local_files {
+#------------------------------------------------------------------------
+#  deal the files under local directory
+#  in Tempo servers, such directories are mounted on shared storage
+#  $DW_ARC, $DW_IN, $DW_MFS
+#------------------------------------------------------------------------
+print "Deal with the files under $DW_ARC, $DW_IN, $DW_MFS"
+rm_dwarc_olderthantoday_datgzfile
+rm_dwarc_olderthantoday_zipfile
+rm_dwarc_olderthantoday_dir
+rm_dwin_r4amassfile
+rm_dwmfs_r4amassfile
+rm_dwarc_olderthan31_file
+archive_dwin_r4afile
+archive_dwmfs_r4afile
+}
+
+if [ $ARCH_TYPE = "arch_shared" ]
+then
+	deal_shared_files
+else
+	deal_local_files
+fi
 
 print ""
 print "####################################################################################"
