@@ -659,7 +659,7 @@ caty1stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty1stby.vip.ebay.com)
+        (HOST=caty1.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY1)))
 caty2stby=
@@ -680,7 +680,7 @@ caty4stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty4.vip.ebay.com)
+        (HOST=caty4stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY4)))
 caty5stby=
@@ -715,7 +715,7 @@ caty9stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty9stby.vip.ebay.com)
+        (HOST=caty9.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY9)))
 caty10stby=
@@ -771,7 +771,7 @@ caty17stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty17.vip.ebay.com)
+        (HOST=caty17stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(SID=caty17)))
 caty18stby=
@@ -799,7 +799,7 @@ caty21stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = caty21.vip.ebay.com)
+        (Host = caty21stby.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=caty21)))
 
@@ -2553,7 +2553,7 @@ caty22stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = caty22.vip.ebay.com)
+        (Host = caty22stby.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=caty22)))
 caty23=
@@ -2567,7 +2567,7 @@ caty23stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = caty23.vip.ebay.com)
+        (Host = caty23stby.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=caty23)))
 caty24=
@@ -5016,13 +5016,65 @@ bopis2 =
         (Port = 1521))
         (CONNECT_DATA = (SID=BOPIS2))) 
 
-PHXCSSTG=
-    (DESCRIPTION=
-    (ADDRESS=
-    (PROTOCOL=TCP)
-    (HOST=phxcsstg.vip.its.ebay.com)
-    (PORT=1521))
-    (CONNECT_DATA=
-    (SERVICE_NAME=CSSTGPHX))
-)
+CSDSS=
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsdss.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = CSDSS)
+    )
+  )
 
+ 
+spscaty23stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = caty23stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=caty23)))
+
+CSORP =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = CSORP)
+    )
+  )
+
+meds=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = meds.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MEDS)))
+
+
+O_NICE =
+    (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = CSORP)))
+
+
+O_MEDALLIA =
+  (DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+  (CONNECT_DATA =
+  (SERVER = DEDICATED)
+  (SERVICE_NAME = CSORP)))
+
+PHXCSSTG.VIP.ITS.EBAY.COM=
+  (DESCRIPTION=
+    (ADDRESS=
+      (PROTOCOL=TCP)
+      (HOST=phxcsstg.vip.its.ebay.com)
+      (PORT=1521)
+    )
+    (CONNECT_DATA=
+      (SERVICE_NAME=CSSTGPHX)
+    )
+  )
