@@ -62,7 +62,7 @@ print "#########################################################################
 print ""
 
 
-egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.${STORAGE_TYPE}.cfg | while read DIR_NAME REC_DEPTH RET_DAY
+egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.$STORAGE_TYPE.cfg | while read DIR_NAME REC_DEPTH RET_DAY
 do
     DIR_LEVEL=`print $(eval print $DIR_NAME) | awk -F\/ '{print NF}'`                  # Calculate Target Dir Level
     ((REC_LEVEL=DIR_LEVEL+REC_DEPTH))                                  # Calculate Max Depth
