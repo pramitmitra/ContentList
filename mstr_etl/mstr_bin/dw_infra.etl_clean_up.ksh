@@ -27,7 +27,30 @@
 # ----------  ----------------------  ---------------------------------------
 # 06/21/2010  Jacky Shen              Initial Program
 # 10/04/2013  Ryan Wong               Redhat changes
+# 11/19/2014 Jiankang Liu			  Add parameter to determine the storage type: local|shared
 ##########################################################################################################
+
+typeset -fu usage
+
+function usage {
+   	print "Usage:  $0 <STORAGE_TYPE>
+	STORAGE_TYPE =   <local|shared>"
+}
+
+if [ $# -ne 1 ]
+then
+   usage 
+   exit 4
+fi
+
+STORAGE_TYPE=$1
+
+if [ $STORAGE_TYPE = shared ]
+then
+	export STORAGE_TYPE="shared"
+else
+	export STORAGE_TYPE="local"
+fi
 
 . /dw/etl/mstr_cfg/etlenv.setup 
 
@@ -40,7 +63,7 @@ print "#########################################################################
 print ""
 
 
-egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.cfg | while read DIR_NAME REC_DEPTH RET_DAY
+egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.$STORAGE_TYPE.cfg | while read DIR_NAME REC_DEPTH RET_DAY
 do
     DIR_LEVEL=`print $(eval print $DIR_NAME) | awk -F\/ '{print NF}'`                  # Calculate Target Dir Level
     ((REC_LEVEL=DIR_LEVEL+REC_DEPTH))                                  # Calculate Max Depth
