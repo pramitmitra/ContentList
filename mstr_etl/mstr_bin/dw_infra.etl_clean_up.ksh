@@ -39,7 +39,8 @@ function usage {
 
 if [ $# -ne 1 ]
 then
-   usage exit 4;
+   usage 
+   exit 4
 fi
 
 STORAGE_TYPE=$1

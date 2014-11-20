@@ -49,7 +49,8 @@ function usage {
 
 if [ $# -ne 1 ]
 then
-   usage exit 4;
+   usage 
+   exit 4
 fi
 
 ARCH_TYPE=$1
