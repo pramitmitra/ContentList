@@ -63,11 +63,10 @@ print "#########################################################################
 print ""
 
 
-egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.$STORAGE_TYPE.cfg | while read DIR_NAME REC_DEPTH RET_DAY
+egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.$STORAGE_TYPE.cfg | while read DIR_NAME RET_DAY
 do
-    DIR_LEVEL=`print $(eval print $DIR_NAME) | awk -F\/ '{print NF}'`                  # Calculate Target Dir Level
-    ((REC_LEVEL=DIR_LEVEL+REC_DEPTH))                                  # Calculate Max Depth
-    find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY | nawk -F \/ -v rec_level="$REC_LEVEL" '{if(NF <= rec_level){scmd="rm -f " $0; print $0; system(scmd);}}'
+	print "find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete"
+    find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete
 done
 
 print ""
