@@ -225,7 +225,7 @@ then
 
    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load.${SQL_FILE_BASENAME}${UOW_APPEND}.$CURR_DATETIME.log
 
-        if [[ $DB_TYPE == "ORACLE" ]] 
+        if [[ $DB_TYPE == "ORACLE" || $DB_TYPE == "MSSQL" ]] 
         then
            # target_table_load_all_dbs.ksh is produced from graph target_table_load.ksh
            set +e
