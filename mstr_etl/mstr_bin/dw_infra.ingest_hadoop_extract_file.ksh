@@ -29,6 +29,7 @@ export HOST_ID=$6
 export SRC_HOST_CNT=$7
 export CURR_DATETIME_TMP=$8
 export UOW_TO=${9:-""}
+export UOW_FROM=${10:-""}
 
 
 . /dw/etl/mstr_cfg/etlenv.setup

@@ -116,10 +116,10 @@ do
     if [[ ${HOST_NAME%%.*} != `hostname` ]]
     then
       print "print \"Launching instance $instance_idx on $HOST_NAME ...\"" >> $COMMAND_SCRIPT
-      print "(/usr/bin/ssh -q $HOST_NAME \"ksh $HADOOP_EXTRACT_JOB $ETL_ID $JOB_ENV $BATCH_SEQ_NUM $HDP_CONN $RECORD_ID $instance_idx $SRC_HOST_CNT $CURR_DATETIME $UOW_TO\" > $LOG_FILE 2>&1) || (print \"INFRA_ERROR - Failure run hadoop_extract_file process on $HOST_NAME\" >>$LOG_FILE) &" >>$COMMAND_SCRIPT
+      print "(/usr/bin/ssh -q $HOST_NAME \"ksh $HADOOP_EXTRACT_JOB $ETL_ID $JOB_ENV $BATCH_SEQ_NUM $HDP_CONN $RECORD_ID $instance_idx $SRC_HOST_CNT $CURR_DATETIME $UOW_TO $UOW_FROM\" > $LOG_FILE 2>&1) || (print \"INFRA_ERROR - Failure run hadoop_extract_file process on $HOST_NAME\" >>$LOG_FILE) &" >>$COMMAND_SCRIPT
     else
       print "print \"Launching instance $instance_idx on $HOST_NAME ...\"" >> $COMMAND_SCRIPT
-      print "ksh $HADOOP_EXTRACT_JOB $ETL_ID $JOB_ENV $BATCH_SEQ_NUM $HDP_CONN $RECORD_ID $instance_idx $SRC_HOST_CNT $CURR_DATETIME $UOW_TO > $LOG_FILE 2>&1 &" >> $COMMAND_SCRIPT
+      print "ksh $HADOOP_EXTRACT_JOB $ETL_ID $JOB_ENV $BATCH_SEQ_NUM $HDP_CONN $RECORD_ID $instance_idx $SRC_HOST_CNT $CURR_DATETIME $UOW_TO $UOW_FROM > $LOG_FILE 2>&1 &" >> $COMMAND_SCRIPT
     fi
   fi
   instance_idx=$(( $instance_idx + 1 ))
