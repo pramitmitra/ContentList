@@ -281,12 +281,13 @@ wait
 
 set +e
 wc -l $MULTI_HDP_COMP_FILE | read DATA_FILE_COMP_COUNT FN
+UNIQ_DATA_FILE_COMP_COUNT=$(uniq $MULTI_HDP_COMP_FILE | wc -l)
 rcode=$?
 set -e
 
 if [ rcode -eq 0 ]
 then
-  if [ $DATA_FILE_COMP_COUNT -eq $FILE_ID ]
+  if [ $DATA_FILE_COMP_COUNT -eq $FILE_ID ] || [ $UNIQ_DATA_FILE_COMP_COUNT -eq $FILE_ID ]
   then
     rm -rf $MULTI_HDP_COMP_FILE
   else
