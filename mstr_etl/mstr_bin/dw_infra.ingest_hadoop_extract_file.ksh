@@ -17,6 +17,7 @@
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
 # George Xiong     09/30/2014      Modifications by George
+# Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 #
 #------------------------------------------------------------------------------------------------
 
@@ -281,12 +282,13 @@ wait
 
 set +e
 wc -l $MULTI_HDP_COMP_FILE | read DATA_FILE_COMP_COUNT FN
+UNIQ_DATA_FILE_COMP_COUNT=$(uniq $MULTI_HDP_COMP_FILE | wc -l)
 rcode=$?
 set -e
 
 if [ rcode -eq 0 ]
 then
-  if [ $DATA_FILE_COMP_COUNT -eq $FILE_ID ]
+  if [ $DATA_FILE_COMP_COUNT -eq $FILE_ID ] || [ $UNIQ_DATA_FILE_COMP_COUNT -eq $FILE_ID ]
   then
     rm -rf $MULTI_HDP_COMP_FILE
   else
