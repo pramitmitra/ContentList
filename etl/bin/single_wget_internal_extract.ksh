@@ -79,7 +79,7 @@ TARGET_FILE_TMP=`print $(eval print $TARGET_FILE)`
 
 cd $IN_DIR/
 set +e
-/usr/local/bin/wget --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP "$URL/$SOURCE_FILE_TMP" >&2
+/usr/bin/wget --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP "$URL/$SOURCE_FILE_TMP" >&2
 rcode=$?
 set -e
 
