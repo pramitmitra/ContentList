@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Thursday, September 11, 2014 10:09:53 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_extract", compiled at Friday, November 21, 2014 15:30:12 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -382,6 +382,13 @@ function _AB_PARSE_ARGUMENTS {
       ;;
      -QUERY_BAND_STRING )
       export QUERY_BAND_STRING;      QUERY_BAND_STRING="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -CNDTL_EXTRACT_JSON )
+      export CNDTL_EXTRACT_JSON;      CNDTL_EXTRACT_JSON="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
       _AB_USED_ARGUMENTS[_ab_index_var+1]=1
       let _ab_index_var=_ab_index_var+1
@@ -1133,6 +1140,12 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter QUERY_BAND_STRING of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
+export CNDTL_EXTRACT_JSON;CNDTL_EXTRACT_JSON=$(grep "^CNDTL_EXTRACT_JSON\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print ${VALUE:-0})
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter CNDTL_EXTRACT_JSON of single_table_extract', interpretation 'shell'
+   exit $mpjret
+fi
 (
    # Parameters of Gather Extract Logs
    LogFile="$EXTRACT_LOG_FILE"
@@ -1688,6 +1701,48 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
+(
+   # Parameters of Write JSON
+   condition=$CNDTL_EXTRACT_JSON
+   mpjret=$?
+   if [ 0 -ne $mpjret ] ; then
+      print -- Error evaluating: 'parameter condition of Write_JSON', interpretation 'shell'
+      exit $mpjret
+   fi
+   print -rn Write_JSON__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
+   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
+(
+   # Parameters of Write JSON Reformat
+   count=1
+   transform0=""
+   print -r -- "${transform0}" > "${_AB_PROXY_DIR}"'/Write_JSON_Reformat-19.xfr'
+   _AB_FILE_NAME__transform0=Write_JSON_Reformat-19.xfr
+   select=""
+   error_group=""
+   log_group=""
+   reject_threshold='Abort on first reject'
+   limit_keyword=0
+   ramp_keyword2=0.0
+   keyword_map='limit_keyword limit ramp_keyword ramp ramp_keyword2 ramp'
+   output_index=""
+   _AB_FILE_NAME__output_index=Write_JSON_Reformat-19.xfr
+   output_indexes=""
+   _AB_FILE_NAME__output_indexes=Write_JSON_Reformat-19.xfr
+   logging=False
+   condition=$CNDTL_EXTRACT_JSON
+   mpjret=$?
+   if [ 0 -ne $mpjret ] ; then
+      print -- Error evaluating: 'parameter condition of Write_JSON_Reformat', interpretation 'shell'
+      exit $mpjret
+   fi
+   print -rn Write_JSON_Reformat__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
+   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
 . ./${_AB_PROXY_DIR}/GDE-Parameters
 
 #+Script Start+  ==================== Edits in this section are preserved.
@@ -1774,17 +1829,23 @@ if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.k
 mv "${_AB_PROXY_DIR}" "${AB_JOB}"'-single_table_extract-ProxyDir'
 _AB_PROXY_DIR="${AB_JOB}"'-single_table_extract-ProxyDir'
 print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Input_Table_Generic_ODBC-3.dml'
-print -r -- 'void(1)' > "${_AB_PROXY_DIR}"'/Deflate-6.dml'
+print -r -- 'record
+  string(int) json_record;
+end;' > "${_AB_PROXY_DIR}"'/Write_JSON-6.dml'
+print -r -- 'record
+  string("\n") json_record;
+end;' > "${_AB_PROXY_DIR}"'/Write_JSON_Reformat-7.dml'
+print -r -- 'void(1)' > "${_AB_PROXY_DIR}"'/Deflate-8.dml'
 print -r -- 'out::rollup(in) =
 begin
   out.last_extract_value :: (string("\n")) first_defined(max(in.'"${ROLLUP_FIELD}"'), NULL);                  
-end;' > "${_AB_PROXY_DIR}"'/Get_Max_Value_for_Extract_Field-7.xfr'
+end;' > "${_AB_PROXY_DIR}"'/Get_Max_Value_for_Extract_Field-9.xfr'
 print -r -- 'record
   string("\n") last_extract_value;
-end;' > "${_AB_PROXY_DIR}"'/Last_Extract_Value_File_1-8.dml'
+end;' > "${_AB_PROXY_DIR}"'/Last_Extract_Value_File_1-10.dml'
 print -r -- 'record
   string("\n") line;
-end;' > "${_AB_PROXY_DIR}"'/Extract_Log_File-9.dml'
+end;' > "${_AB_PROXY_DIR}"'/Extract_Log_File-11.dml'
 print -r -- 'out::reformat(in) =
 begin
   let integer(4) teradata_start =string_index(in.line, "UTY8722") + 8;
@@ -1793,24 +1854,24 @@ begin
   let integer(4) end_rec_count =teradata_start > oracle_start ? string_length(in.line) - 38 : string_length(in.line);
 
   out.record_count :1: string_substring(in.line,start_rec_count,end_rec_count-start_rec_count);
-end;' > "${_AB_PROXY_DIR}"'/Reformat-10.xfr'
+end;' > "${_AB_PROXY_DIR}"'/Reformat-12.xfr'
 print -r -- 'record
   decimal("\n") record_count;
-end;' > "${_AB_PROXY_DIR}"'/Reformat-11.dml'
+end;' > "${_AB_PROXY_DIR}"'/Reformat-13.dml'
 print -r -- 'out::rollup(in) =
 begin
   out.record_count :: sum(in.record_count);
-end;' > "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-12.xfr'
+end;' > "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-14.xfr'
 print -r -- 'record
   decimal("\n", 0) record_count;
-end;' > "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-13.dml'
+end;' > "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-15.dml'
 print -r -- 'record
   string(1) a;
-end;' > "${_AB_PROXY_DIR}"'/Send_Primer_Row_to_Reformat-14.dml'
+end;' > "${_AB_PROXY_DIR}"'/Send_Primer_Row_to_Reformat-16.dml'
 print -r -- 'out::reformat(in) =
 begin
   out.last_extract_value :: $TO_EXTRACT_VALUE;
-end;' > "${_AB_PROXY_DIR}"'/Update_Last_Extract_Value_File-15.xfr'
+end;' > "${_AB_PROXY_DIR}"'/Update_Last_Extract_Value_File-17.xfr'
 
 mp job ${AB_JOB}
 
@@ -1824,12 +1885,14 @@ mp layout layout4 'file:'"$LAST_EXTRACT_VALUE_FILE"
 mp metadata metadata1 -file "$INPUT_DML"
 mp metadata metadata2 -file "${_AB_PROXY_DIR}"'/Input_Table_Generic_ODBC-3.dml'
 mp metadata metadata3 -file "$OUTPUT_DML"
-mp metadata metadata4 -file "${_AB_PROXY_DIR}"'/Deflate-6.dml'
-mp metadata metadata5 -file "${_AB_PROXY_DIR}"'/Last_Extract_Value_File_1-8.dml'
-mp metadata metadata6 -file "${_AB_PROXY_DIR}"'/Extract_Log_File-9.dml'
-mp metadata metadata7 -file "${_AB_PROXY_DIR}"'/Reformat-11.dml'
-mp metadata metadata8 -file "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-13.dml'
-mp metadata metadata9 -file "${_AB_PROXY_DIR}"'/Send_Primer_Row_to_Reformat-14.dml'
+mp metadata metadata4 -file "${_AB_PROXY_DIR}"'/Write_JSON-6.dml'
+mp metadata metadata5 -file "${_AB_PROXY_DIR}"'/Write_JSON_Reformat-7.dml'
+mp metadata metadata6 -file "${_AB_PROXY_DIR}"'/Deflate-8.dml'
+mp metadata metadata7 -file "${_AB_PROXY_DIR}"'/Last_Extract_Value_File_1-10.dml'
+mp metadata metadata8 -file "${_AB_PROXY_DIR}"'/Extract_Log_File-11.dml'
+mp metadata metadata9 -file "${_AB_PROXY_DIR}"'/Reformat-13.dml'
+mp metadata metadata10 -file "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-15.dml'
+mp metadata metadata11 -file "${_AB_PROXY_DIR}"'/Send_Primer_Row_to_Reformat-16.dml'
 
 export AB_CATALOG;AB_CATALOG=${AB_CATALOG:-"${XX_CATALOG}"}
 # Catalog Usage: Creating temporary catalog using lookup files only
@@ -1910,6 +1973,14 @@ AB_USERCOND_Conditional_Extract_Reformat="$CNDTL_EXTRACT_REFORMAT"
 AB_USERCOND_Conditional_Extract_Reformat=$(__AB_COND "${AB_USERCOND_Conditional_Extract_Reformat}")
 AB_IS_LIVE_Conditional_Extract_Reformat=1
 AB_HAS_DATA_Flow_21=1
+AB_USERCOND_Write_JSON="$Write_JSON__condition"
+AB_USERCOND_Write_JSON=$(__AB_COND "${AB_USERCOND_Write_JSON}")
+AB_IS_LIVE_Write_JSON=1
+AB_HAS_DATA_Flow_24=1
+AB_USERCOND_Write_JSON_Reformat="$Write_JSON_Reformat__condition"
+AB_USERCOND_Write_JSON_Reformat=$(__AB_COND "${AB_USERCOND_Write_JSON_Reformat}")
+AB_IS_LIVE_Write_JSON_Reformat=1
+AB_HAS_DATA_Flow_25=1
 AB_USERCOND_Deflate="$Deflate__condition"
 AB_USERCOND_Deflate=$(__AB_COND "${AB_USERCOND_Deflate}")
 AB_IS_LIVE_Deflate=1
@@ -2088,17 +2159,37 @@ while [ $done = false ] ; do
       done=false
    fi
    Temp="${AB_HAS_DATA_Flow_21}"
-   let AB_HAS_DATA_Flow_21="((AB_IS_LIVE_Conditional_Extract_Reformat) || (AB_HAS_DATA_Flow_23)) && ((AB_IS_LIVE_Deflate) || (AB_HAS_DATA_Flow_22))"
+   let AB_HAS_DATA_Flow_21="((AB_IS_LIVE_Conditional_Extract_Reformat) || (AB_HAS_DATA_Flow_23)) && ((AB_IS_LIVE_Write_JSON) || (AB_HAS_DATA_Flow_24))"
    if [ X"${AB_HAS_DATA_Flow_21}" != X"$Temp" ]; then
       done=false
    fi
+   Temp="${AB_IS_LIVE_Write_JSON}"
+   let AB_IS_LIVE_Write_JSON="((AB_HAS_DATA_Flow_21) && (AB_HAS_DATA_Flow_24)) && ((AB_USERCOND_Write_JSON) || ((((AB_HAS_DATA_Flow_21) > 1)) || (((AB_HAS_DATA_Flow_24) > 1))))"
+   if [ X"${AB_IS_LIVE_Write_JSON}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_24}"
+   let AB_HAS_DATA_Flow_24="((AB_IS_LIVE_Write_JSON) || (AB_HAS_DATA_Flow_21)) && ((AB_IS_LIVE_Write_JSON_Reformat) || (AB_HAS_DATA_Flow_25))"
+   if [ X"${AB_HAS_DATA_Flow_24}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_IS_LIVE_Write_JSON_Reformat}"
+   let AB_IS_LIVE_Write_JSON_Reformat="((AB_HAS_DATA_Flow_24) && (((AB_HAS_DATA_Flow_25) != 0))) && ((AB_USERCOND_Write_JSON_Reformat) || ((((AB_HAS_DATA_Flow_24) > 1)) || (((AB_HAS_DATA_Flow_25) > 1))))"
+   if [ X"${AB_IS_LIVE_Write_JSON_Reformat}" != X"$Temp" ]; then
+      done=false
+   fi
+   Temp="${AB_HAS_DATA_Flow_25}"
+   let AB_HAS_DATA_Flow_25="((AB_IS_LIVE_Write_JSON_Reformat) || (AB_HAS_DATA_Flow_24)) && ((AB_IS_LIVE_Deflate) || (AB_HAS_DATA_Flow_22))"
+   if [ X"${AB_HAS_DATA_Flow_25}" != X"$Temp" ]; then
+      done=false
+   fi
    Temp="${AB_IS_LIVE_Deflate}"
-   let AB_IS_LIVE_Deflate="((AB_HAS_DATA_Flow_21) && (AB_HAS_DATA_Flow_22)) && ((AB_USERCOND_Deflate) || ((((AB_HAS_DATA_Flow_21) > 1)) || (((AB_HAS_DATA_Flow_22) > 1))))"
+   let AB_IS_LIVE_Deflate="((AB_HAS_DATA_Flow_25) && (AB_HAS_DATA_Flow_22)) && ((AB_USERCOND_Deflate) || ((((AB_HAS_DATA_Flow_25) > 1)) || (((AB_HAS_DATA_Flow_22) > 1))))"
    if [ X"${AB_IS_LIVE_Deflate}" != X"$Temp" ]; then
       done=false
    fi
    Temp="${AB_HAS_DATA_Flow_22}"
-   let AB_HAS_DATA_Flow_22="(AB_IS_LIVE_Deflate) || (AB_HAS_DATA_Flow_21)"
+   let AB_HAS_DATA_Flow_22="(AB_IS_LIVE_Deflate) || (AB_HAS_DATA_Flow_25)"
    if [ X"${AB_HAS_DATA_Flow_22}" != X"$Temp" ]; then
       done=false
    fi
@@ -2219,6 +2310,12 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    print -r -- 'AB_USERCOND_Conditional_Extract_Reformat='"${AB_USERCOND_Conditional_Extract_Reformat}"
    print -r -- 'AB_IS_LIVE_Conditional_Extract_Reformat='"${AB_IS_LIVE_Conditional_Extract_Reformat}"
    print -r -- 'AB_HAS_DATA_Flow_21='"${AB_HAS_DATA_Flow_21}"
+   print -r -- 'AB_USERCOND_Write_JSON='"${AB_USERCOND_Write_JSON}"
+   print -r -- 'AB_IS_LIVE_Write_JSON='"${AB_IS_LIVE_Write_JSON}"
+   print -r -- 'AB_HAS_DATA_Flow_24='"${AB_HAS_DATA_Flow_24}"
+   print -r -- 'AB_USERCOND_Write_JSON_Reformat='"${AB_USERCOND_Write_JSON_Reformat}"
+   print -r -- 'AB_IS_LIVE_Write_JSON_Reformat='"${AB_IS_LIVE_Write_JSON_Reformat}"
+   print -r -- 'AB_HAS_DATA_Flow_25='"${AB_HAS_DATA_Flow_25}"
    print -r -- 'AB_USERCOND_Deflate='"${AB_USERCOND_Deflate}"
    print -r -- 'AB_IS_LIVE_Deflate='"${AB_IS_LIVE_Deflate}"
    print -r -- 'AB_HAS_DATA_Flow_22='"${AB_HAS_DATA_Flow_22}"
@@ -2253,7 +2350,7 @@ else
 fi
 mp ifile Extract_Log_File 'file:'"$EXTRACT_LOG_FILE"
 AB_PORT_Extract_Log_File_read=Extract_Log_File.read
-AB_METADATA_Extract_Log_File_read=' -metadata metadata6'
+AB_METADATA_Extract_Log_File_read=' -metadata metadata8'
 mp ofile Record_Count_File 'file:'"$RECORD_COUNT_FILE"
 if [ X"${AB_IS_LIVE_Last_Extract_Value_File}" != X0 ]; then
    mp ofile Last_Extract_Value_File 'file:'"$LAST_EXTRACT_VALUE_FILE"
@@ -2395,13 +2492,35 @@ else
    AB_METADATA_Conditional_Extract_Reformat_out_out0="${AB_METADATA_Retain_Flow_to_Flow_out}"
    :
 fi
+if [ X"${AB_IS_LIVE_Write_JSON}" != X0 ]; then
+   mp Write_JSON Write_JSON -layout Output_File
+   AB_PORT_Write_JSON_out=Write_JSON.out
+   AB_METADATA_Write_JSON_out=' -metadata metadata4'
+else
+   AB_PORT_Write_JSON_out="${AB_PORT_Conditional_Extract_Reformat_out_out0}"
+   AB_METADATA_Write_JSON_out="${AB_METADATA_Conditional_Extract_Reformat_out_out0}"
+   :
+fi
+if [ X"${AB_IS_LIVE_Write_JSON_Reformat}" != X0 ]; then
+   mp reformat-transform Write_JSON_Reformat -limit 0 -ramp 0.0 -layout Output_File
+   let AB_DO_ADD_PORT="AB_HAS_DATA_Flow_25"
+   if [ X"${AB_DO_ADD_PORT}" != X0 ]; then
+      mp add-port Write_JSON_Reformat.out.out0
+   fi
+   AB_PORT_Write_JSON_Reformat_out_out0=Write_JSON_Reformat.out.out0
+   AB_METADATA_Write_JSON_Reformat_out_out0=' -metadata metadata5'
+else
+   AB_PORT_Write_JSON_Reformat_out_out0="${AB_PORT_Write_JSON_out}"
+   AB_METADATA_Write_JSON_Reformat_out_out0="${AB_METADATA_Write_JSON_out}"
+   :
+fi
 if [ X"${AB_IS_LIVE_Deflate}" != X0 ]; then
    mp broadcast Deflate -compression "$Deflate__compression" -layout Output_File
    AB_PORT_Deflate_out=Deflate.out
-   AB_METADATA_Deflate_out=' -metadata metadata4'
+   AB_METADATA_Deflate_out=' -metadata metadata6'
 else
-   AB_PORT_Deflate_out="${AB_PORT_Conditional_Extract_Reformat_out_out0}"
-   AB_METADATA_Deflate_out="${AB_METADATA_Conditional_Extract_Reformat_out_out0}"
+   AB_PORT_Deflate_out="${AB_PORT_Write_JSON_Reformat_out_out0}"
+   AB_METADATA_Deflate_out="${AB_METADATA_Write_JSON_Reformat_out_out0}"
    :
 fi
 if [ X"${AB_IS_LIVE_Send_From_Extract_Value_to_Rollup}" != X0 ]; then
@@ -2412,9 +2531,9 @@ else
    :
 fi
 if [ X"${AB_IS_LIVE_Get_Max_Value_for_Extract_Field}" != X0 ]; then
-   mp hash-rollup Get_Max_Value_for_Extract_Field '{}' "${_AB_PROXY_DIR}"'/Get_Max_Value_for_Extract_Field-7.xfr' -max-core 67108864 -limit 0 -ramp 0.0 -layout Last_Extract_Value_File_1
+   mp hash-rollup Get_Max_Value_for_Extract_Field '{}' "${_AB_PROXY_DIR}"'/Get_Max_Value_for_Extract_Field-9.xfr' -max-core 67108864 -limit 0 -ramp 0.0 -layout Last_Extract_Value_File_1
    AB_PORT_Get_Max_Value_for_Extract_Field_out=Get_Max_Value_for_Extract_Field.out
-   AB_METADATA_Get_Max_Value_for_Extract_Field_out=' -metadata metadata5'
+   AB_METADATA_Get_Max_Value_for_Extract_Field_out=' -metadata metadata7'
 else
    :
 fi
@@ -2422,12 +2541,12 @@ mp checkpoint 0
 
 # Components in phase 1:
 mp reformat-transform Reformat -select 'string_index(line, "unload|rows|Rows unloaded:") > 0 || string_index(line, "UTY8722") > 0' -limit 0 -ramp 0.0 -layout Record_Count_File
-mp add-port Reformat.out.out0 ${_AB_PROXY_DIR:+"$_AB_PROXY_DIR"}'/Reformat-10.xfr'
+mp add-port Reformat.out.out0 ${_AB_PROXY_DIR:+"$_AB_PROXY_DIR"}'/Reformat-12.xfr'
 AB_PORT_Reformat_out_out0=Reformat.out.out0
-AB_METADATA_Reformat_out_out0=' -metadata metadata7'
-mp hash-rollup Rollup_Record_Counts '{}' "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-12.xfr' -max-core 67108864 -limit 0 -ramp 0.0 -layout Record_Count_File
+AB_METADATA_Reformat_out_out0=' -metadata metadata9'
+mp hash-rollup Rollup_Record_Counts '{}' "${_AB_PROXY_DIR}"'/Rollup_Record_Counts-14.xfr' -max-core 67108864 -limit 0 -ramp 0.0 -layout Record_Count_File
 AB_PORT_Rollup_Record_Counts_out=Rollup_Record_Counts.out
-AB_METADATA_Rollup_Record_Counts_out=' -metadata metadata8'
+AB_METADATA_Rollup_Record_Counts_out=' -metadata metadata10'
 if [ X"${AB_IS_LIVE_move_FEXP_LOGFILE}" != X0 ]; then
    mp filter move_FEXP_LOGFILE $move_FEXP_LOGFILE__commandline -layout layout3
 else
@@ -2439,7 +2558,7 @@ mp checkpoint 1
 if [ X"${AB_IS_LIVE_Send_Primer_Row_to_Reformat}" != X0 ]; then
    mp generate Send_Primer_Row_to_Reformat 1 -layout layout4
    AB_PORT_Send_Primer_Row_to_Reformat_out=Send_Primer_Row_to_Reformat.out
-   AB_METADATA_Send_Primer_Row_to_Reformat_out=' -metadata metadata9'
+   AB_METADATA_Send_Primer_Row_to_Reformat_out=' -metadata metadata11'
 else
    :
 fi
@@ -2447,10 +2566,10 @@ if [ X"${AB_IS_LIVE_Update_Last_Extract_Value_File}" != X0 ]; then
    mp reformat-transform Update_Last_Extract_Value_File -limit 0 -ramp 0.0 -layout layout4
    let AB_DO_ADD_PORT="AB_HAS_DATA_Flow_12"
    if [ X"${AB_DO_ADD_PORT}" != X0 ]; then
-      mp add-port Update_Last_Extract_Value_File.out.out0 ${_AB_PROXY_DIR:+"$_AB_PROXY_DIR"}'/Update_Last_Extract_Value_File-15.xfr'
+      mp add-port Update_Last_Extract_Value_File.out.out0 ${_AB_PROXY_DIR:+"$_AB_PROXY_DIR"}'/Update_Last_Extract_Value_File-17.xfr'
    fi
    AB_PORT_Update_Last_Extract_Value_File_out_out0=Update_Last_Extract_Value_File.out.out0
-   AB_METADATA_Update_Last_Extract_Value_File_out_out0=' -metadata metadata5'
+   AB_METADATA_Update_Last_Extract_Value_File_out_out0=' -metadata metadata7'
 else
    :
 fi
@@ -2508,9 +2627,17 @@ let AB_FLOW_CONDITION="(AB_IS_LIVE_Conditional_Extract_Reformat) && (AB_HAS_DATA
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
    mp straight-flow Flow_23 "${AB_PORT_Retain_Flow_to_Flow_out}" Conditional_Extract_Reformat.in${AB_METADATA_Retain_Flow_to_Flow_out}
 fi
-let AB_FLOW_CONDITION="(AB_IS_LIVE_Deflate) && (AB_HAS_DATA_Flow_21)"
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Write_JSON) && (AB_HAS_DATA_Flow_21)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
-   mp straight-flow Flow_21 "${AB_PORT_Conditional_Extract_Reformat_out_out0}" Deflate.in${AB_METADATA_Conditional_Extract_Reformat_out_out0}
+   mp straight-flow Flow_21 "${AB_PORT_Conditional_Extract_Reformat_out_out0}" Write_JSON.in${AB_METADATA_Conditional_Extract_Reformat_out_out0}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Write_JSON_Reformat) && (AB_HAS_DATA_Flow_24)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp straight-flow Flow_24 "${AB_PORT_Write_JSON_out}" Write_JSON_Reformat.in${AB_METADATA_Write_JSON_out}
+fi
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Deflate) && (AB_HAS_DATA_Flow_25)"
+if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
+   mp straight-flow Flow_25 "${AB_PORT_Write_JSON_Reformat_out_out0}" Deflate.in${AB_METADATA_Write_JSON_Reformat_out_out0}
 fi
 let AB_FLOW_CONDITION="AB_HAS_DATA_Flow_22"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
@@ -2545,7 +2672,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7551897
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1259329
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

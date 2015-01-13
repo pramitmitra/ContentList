@@ -1,5 +1,5 @@
 @
-{18|Type|XXGrepository|Primary_Name|XXGgraph|_ab_object_schema|0|_ab_semantic_schema|1|eme_flatten_format|1|schema_version|34|root_id|0|ent_count|203|rel_count|348|}
+{18|Type|XXGrepository|Primary_Name|XXGgraph|_ab_object_schema|0|_ab_semantic_schema|1|eme_flatten_format|1|schema_version|34|root_id|0|ent_count|223|rel_count|385|}
 {2010001002|XXGdirectory|0|1|1|0|{@{}@}}
 {2010600005|XXGgraph|1|0|1|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|ETL_ID||3|2|REFO$|subject_area.table_id|{0|}}
 {30001002|XXparameter|FILE_ID|1|3|2|REFO$|file id retrieved from the sources list file|{0|}}
@@ -378,6 +378,7 @@ else
 print "$QUERY_BAND_STRING"
 fi
 )|3|6|EKk||{0|}}
+{30001002|XXparameter|CNDTL_EXTRACT_JSON|$(grep "^CNDTL_EXTRACT_JSON\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|EKk||{0|}}
 {30001002|XXparameter|_parameters_of_Gather_Extract_Logs|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Replicate|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Output_File|@34|9|FHK|@{0|}}
@@ -405,11 +406,13 @@ fi
 {30001002|XXparameter|_parameters_of_Reformat|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Input_Table_Sqlserver|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_move_FEXP_LOGFILE|@34|9|FHK|@{0|}}
+{30001002|XXparameter|_parameters_of_Write_JSON|@34|9|FHK|@{0|}}
+{30001002|XXparameter|_parameters_of_Write_JSON_Reformat|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@0|0|0|0|1540000|1243000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1540351|1243860|7|}}
+}}@0|@0|0|0|0|1895000|1241000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1895000|1241000|7|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|1|1|1|}Job 'single_table_extract' Execution Status Report
 
-Compilation of graph "single_table_extract" started at Tuesday, April 01, 2014 14:56:54
+Compilation of graph "single_table_extract" started at Friday, November 21, 2014 15:23:45
 No compilation errors
 ||m_env -v
 
@@ -462,7 +465,7 @@ then
    exit 4
 fi
 ||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Lega 001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@lvsdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@Phase 1:  The log file from the Input Table
 component is parsed to get the number of
@@ -502,17 +505,19 @@ system.|839906|722163|860000|742000|357000|105000|738|}}
 {2010210004|XXGflow|21|0|41|0|{@{}@384|.5|.5|{12|260000|372000|260000|392000|173000|392000|173000|247000|85000|247000|85000|267000|}3203|19|}}
 {2010210004|XXGflow|22|0|43|0|{@{}@384|.5|.6666666865348816|{12|282000|507000|309000|507000|344000|507000|344000|284000|362000|284000|402000|284000|}3196|17|}}
 {2010210004|XXGflow|23|0|45|0|{@{}@384|.5116279125213623|0.0|{12|296000|331000|330000|331000|330000|331000|330000|274000|352000|274000|402000|274000|}3202|17|}}
-{2010210004|XXGflow|24|0|47|0|{@{}@384|.5|.5|{12|1242000|118000|1262000|118000|1263000|118000|1263000|120000|1264000|120000|1284000|120000|}795|17|}}
-{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{8|1412000|120000|1432000|120000|1444000|120000|1466000|120000|}829|17|}}
-{2010210004|XXGflow|26|0|51|0|{@{}@384|.5|.5|{12|1013000|119000|1033000|119000|1042000|119000|1042000|118000|1051000|118000|1071000|118000|}797|17|}}
-{2010210004|XXGflow|27|0|53|0|{@{}@384|.5|1.0|{12|555000|424000|575000|424000|603000|424000|603000|297000|603000|297000|623000|297000|}806|17|}}
-{2010210004|XXGflow|28|0|55|0|{@{}@384|.5|.5|{8|173000|1177000|193000|1177000|250000|1177000|270000|1177000|}833|17|}}
-{2010210004|XXGflow|29|0|57|0|{@{}@384|.5|1.0|{12|554000|289000|584000|289000|593000|289000|593000|287000|593000|287000|623000|287000|}802|531|}}
-{2010210004|XXGflow|30|0|59|0|{@{}@384|.5|.5|{12|788000|292000|788000|292000|807000|292000|807000|294000|826000|294000|833000|294000|}804|17|}}
-{2010210004|XXGflow|31|0|61|0|{@{}@384|.5|.5|{8|110000|976000|140000|976000|157000|976000|177000|976000|}837|17|}}
-{2010210004|XXGflow|32|0|63|0|{@{}@384|1.0|.8235294222831726|{12|271000|680000|302000|680000|359000|680000|359000|294000|372000|294000|402000|294000|}3205|17|}}
-{2010210004|XXGflow|33|0|65|0|{@{}@384|.5|.5|{12|331000|976000|331000|976000|345000|976000|345000|977000|359000|977000|366000|977000|}835|17|}}
-{2010501005|XXGpvertex|34|0|67|0|{Conditional component - Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|$REFORMAT_TRANS_FILE|3|2|f$|@{0|}}
+{2010210004|XXGflow|24|0|47|0|{@{}@384|.5|.5|{8|1242000|118000|1262000|118000|1267000|118000|1287000|118000|}3213|17|}}
+{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{8|1773000|118000|1793000|118000|1805000|118000|1827000|118000|}3227|17|}}
+{2010210004|XXGflow|26|0|51|0|{@{}@384|.5|.5|{12|1013000|119000|1033000|119000|1042000|119000|1042000|118000|1051000|118000|1071000|118000|}3211|17|}}
+{2010210004|XXGflow|27|0|53|0|{@{}@384|.5|.5|{6|1412000|118000|1432000|118000|1452000|118000|}3222|17|}}
+{2010210004|XXGflow|28|0|55|0|{@{}@384|.5|.5|{8|1606000|118000|1606000|118000|1638000|118000|1645000|118000|}3226|17|}}
+{2010210004|XXGflow|29|0|57|0|{@{}@384|.5|1.0|{12|555000|424000|575000|424000|603000|424000|603000|297000|603000|297000|623000|297000|}806|17|}}
+{2010210004|XXGflow|30|0|59|0|{@{}@384|.5|.5|{8|173000|1177000|193000|1177000|250000|1177000|270000|1177000|}833|17|}}
+{2010210004|XXGflow|31|0|61|0|{@{}@384|.5|1.0|{12|554000|289000|584000|289000|593000|289000|593000|287000|593000|287000|623000|287000|}802|531|}}
+{2010210004|XXGflow|32|0|63|0|{@{}@384|.5|.5|{12|788000|292000|788000|292000|807000|292000|807000|294000|826000|294000|833000|294000|}804|17|}}
+{2010210004|XXGflow|33|0|65|0|{@{}@384|.5|.5|{8|110000|976000|140000|976000|157000|976000|177000|976000|}837|17|}}
+{2010210004|XXGflow|34|0|67|0|{@{}@384|1.0|.8235294222831726|{12|271000|680000|302000|680000|359000|680000|359000|294000|372000|294000|402000|294000|}3205|17|}}
+{2010210004|XXGflow|35|0|69|0|{@{}@384|.5|.5|{12|331000|976000|331000|976000|345000|976000|345000|977000|359000|977000|366000|977000|}835|17|}}
+{2010501005|XXGpvertex|36|0|71|0|{Conditional component - Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|$REFORMAT_TRANS_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|condition|$CNDTL_EXTRACT_REFORMAT|3|2|$|@{0|}}
 {30001002|XXparameter|in_metadata|$INPUT_DML|3|2|f$|@{0|}}
 {30001002|XXparameter|out0_metadata|$OUTPUT_DML|3|2|f$|@{0|}}
@@ -521,13 +526,13 @@ system.|839906|722163|860000|742000|357000|105000|738|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Transform/Reformat.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
-}}@0|@1061615|55100|1082000|75000|150000|87000|796|Conditional Extract Reformat|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|35|0|69|0|{@{}@1231000|113000|11000|11000|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|36|0|72|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|37|0|74|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|38|0|76|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|39|0|78|0|{@{}@1072000|113000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|40|0|81|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
+}}@0|@1061615|55100|1082000|75000|150000|87000|3212|Conditional Extract Reformat|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|37|0|73|0|{@{}@1231000|113000|11000|11000|out0|0.0|count|out|0|2448|0|}}
+{2010203004|XXGoport|38|0|76|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
+{2010203004|XXGoport|39|0|78|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
+{2010203004|XXGoport|40|0|80|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|41|0|82|0|{@{}@1072000|113000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|42|0|85|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|count|1|1|1|Fl|Number of reformat transforms|{0|}}
 {30001002|XXparameter|count.is_index|true|3|9|P|@{0|}}
@@ -613,26 +618,26 @@ metadata type: reject = in
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|41|0|83|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|43|0|87|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 {30001002|XXparameter|transform0||8|8|FO=|Reformat transform|{0|}}
 {30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_value|0|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_name|transform|3|9|P|@{0|}}
 }}@0|0|0|0|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|42|0|87|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|44|0|91|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|43|0|90|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|45|0|94|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|44|0|93|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|46|0|97|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|45|0|96|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|47|0|100|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010503005|XXGfvertex|46|0|99|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010503005|XXGfvertex|48|0|103|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@0|@1452290|81437|1477000|101000|40000|40000|830|Output File|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|47|0|101|0|{@{}@1467000|115000|11000|11000|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|48|0|104|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
+}}@0|@1813290|79437|1838000|99000|40000|40000|3225|Output File|Craig Werre||1|10|0||6||32769|-1|-1|}}
+{2010202004|XXGiport|49|0|105|0|{@{}@1828000|113000|11000|11000|write|0.0|@@@1776|0|}}
+{2010503005|XXGfvertex|50|0|108|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
@@ -657,17 +662,17 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550332|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
-{2010202004|XXGiport|49|0|106|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|51|0|110|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
-{2010501005|XXGpvertex|50|0|109|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_COMPRESS|3|6|k|@{0|}}
+{2010501005|XXGpvertex|52|0|113|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_COMPRESS|3|6|k|@{0|}}
 {30001002|XXparameter|compression|$CNDTL_EXTRACT_COMPRESS_LEVEL|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Translate/Compress/Deflate.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@0|@1275471|67884|1295000|88000|107000|65000|794|Deflate|Ab Initio Software|Built-in 2.12.2.m1:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|51|0|111|0|{@{}@1401000|115000|11000|11000|out|0.0|@@@2320|0|}}
-{2010202004|XXGiport|52|0|114|0|{@{}@1285000|115000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|53|0|117|0|{Compresses data in a manner compatible with the zip and gzip deflate method. Use Inflate to uncompress the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
+}}@0|@1636471|65884|1656000|86000|107000|65000|3228|Deflate|Ab Initio Software|Built-in 2.12.2.m1:|1|10|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|53|0|115|0|{@{}@1762000|113000|11000|11000|out|0.0|@@@2320|0|}}
+{2010202004|XXGiport|54|0|118|0|{@{}@1646000|113000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|55|0|121|0|{Compresses data in a manner compatible with the zip and gzip deflate method. Use Inflate to uncompress the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort|in|3|2|F$||{0|}}
@@ -686,19 +691,166 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550340|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|54|0|119|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|56|0|123|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2320|0|}}
-{2010202004|XXGiport|55|0|122|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|57|0|126|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|56|0|128|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_PARTITION|3|2|$|@{0|}}
+{2010501005|XXGpvertex|58|0|130|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_JSON|3|6|k|@{0|}}
+{30001002|XXparameter|out0_metadata|record
+  string("\\n") json_record;
+end;|3|1|l|@{0|}}
+{30001002|XXparameter|error0_metadata|string('\\n')|3|1|l|@{0|}}
+{30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
+{30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Transform/Reformat.mpc|3|2|Pf$|@{0|}}
+{30001002|XXparameter|Layout||3|8|s=|@{0|}}
+{30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
+{30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
+}}@0|@1443000|55000|1463000|75000|133000|87000|3224|Write JSON Reformat|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|59|0|132|0|{@{}@1595000|113000|11000|11000|out0|0.0|count|out|0|2448|0|}}
+{2010203004|XXGoport|60|0|135|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
+{2010203004|XXGoport|61|0|137|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
+{2010203004|XXGoport|62|0|139|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|63|0|141|0|{@{}@1453000|113000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|64|0|144|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
+{30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
+{30001002|XXparameter|count|1|1|1|Fl|Number of reformat transforms|{0|}}
+{30001002|XXparameter|count.is_index|true|3|9|P|@{0|}}
+{30001002|XXparameter|transform0||8|1|FOl|Reformat transform|{0|}}
+{30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
+{30001002|XXparameter|transform0.index_value|0|3|9|P|@{0|}}
+{30001002|XXparameter|transform0.index_name|transform|3|9|P|@{0|}}
+{30001002|XXparameter|select||20|2|FK$|Filter expression before reformatting|{0|}}
+{30001002|XXparameter|error_group||3|2|F$|Optional group name identifying a Handle Errors component to which errors can be directed.|{0|}}
+{30001002|XXparameter|error_group.condition|version 2.16:|3|15|P?|@{0|}}
+{30001002|XXparameter|log_group||3|2|F$|Optional group name of a Handle Logs component to which log output can be directed.|{0|}}
+{30001002|XXparameter|log_group.condition|version 2.16:|3|15|P?|@{0|}}
+{30001002|XXparameter|reject_threshold|Abort on first reject|15|1|Fl|When to abort if input records are rejected|{3|Abort on first reject|Never abort|Use limit/ramp|}}
+{30001002|XXparameter|reject_threshold.display_name|reject-threshold|3|9|P|@{0|}}
+{30001002|XXparameter|limit|0|1|2|F$|Maximum rejected records before failure|{0|}}
+{30001002|XXparameter|limit.condition|param reject-threshold Use*|3|15|P?|@{0|}}
+{30001002|XXparameter|ramp|0.0|2|2|F$|Rate of rejected records|{0|}}
+{30001002|XXparameter|ramp.condition|param reject-threshold Use*|3|15|P?|@{0|}}
+{30001002|XXparameter|limit_keyword|value reject-threshold Never* 0 value reject-threshold Abort* 0 sameas limit default dollar_substitution 0|1|13|Kv|Maximum rejected records before failure|{0|}}
+{30001002|XXparameter|ramp_keyword|value reject-threshold Never* 99.0 value reject-threshold Abort* 0.0 sameas ramp default dollar_substitution 0.0|2|13|Kv|Rate of rejected records|{0|}}
+{30001002|XXparameter|ramp_keyword.condition|version :2.12.999.m999|3|15|P?|@{0|}}
+{30001002|XXparameter|ramp_keyword2|value reject-threshold Never* -1 value reject-threshold Abort* 0.0 sameas ramp default dollar_substitution 0.0|2|13|Kv|Rate of rejected records|{0|}}
+{30001002|XXparameter|ramp_keyword2.condition|version 2.13:|3|15|P?|@{0|}}
+{30001002|XXparameter|keyword_map|limit_keyword limit ramp_keyword ramp ramp_keyword2 ramp|3|2|$||{0|}}
+{30001002|XXparameter|keyword_map.display_name|keyword-map|3|9|P|@{0|}}
+{30001002|XXparameter|output_index||8|1|FKl|Output index computation|{0|}}
+{30001002|XXparameter|output_index.display_name|output-index|3|9|P|@{0|}}
+{30001002|XXparameter|output_index.keyword|output-index|3|9|P|@{0|}}
+{30001002|XXparameter|output_index_port|discriminator|3|2|FHK$|Output index port for debugger|{0|}}
+{30001002|XXparameter|output_index_port.display_name|output-index_port|3|9|P|@{0|}}
+{30001002|XXparameter|output_index_port.keyword|output-index_port|3|9|P|@{0|}}
+{30001002|XXparameter|output_index_signature|int output_index_out::output_index(in)|3|2|H$|Function returning index of output port|{0|}}
+{30001002|XXparameter|output_index_signature.display_name|output-index_signature|3|9|P|@{0|}}
+{30001002|XXparameter|output_indexes||8|1|FKl|Output index vector computation|{0|}}
+{30001002|XXparameter|output_indexes.display_name|output-indexes|3|9|P|@{0|}}
+{30001002|XXparameter|output_indexes.keyword|output-indexes|3|9|P|@{0|}}
+{30001002|XXparameter|output_indexes_port|discriminator|3|2|FHK$|Output index port for debugger|{0|}}
+{30001002|XXparameter|output_indexes_port.display_name|output-indexes_port|3|9|P|@{0|}}
+{30001002|XXparameter|output_indexes_port.keyword|output-indexes_port|3|9|P|@{0|}}
+{30001002|XXparameter|output_indexes_signature|int[int] output_indices_out::output_indexes(in)|3|2|H$|Function returning vector of indexes of output ports|{0|}}
+{30001002|XXparameter|output_indexes_signature.display_name|output-indexes_signature|3|9|P|@{0|}}
+{30001002|XXparameter|logging|False|13|1|Fl|Log internal events|{0|}}
+{30001002|XXparameter|log|log_concat|3|13|Kv|Special log parameter|{0|}}
+{30001002|XXparameter|log.condition|param logging True|3|15|P?|@{0|}}
+{30001002|XXparameter|log_input||15|1|Fl|Frequency of input records to log|{7| |1|10|100|1000|10000|100000|}}
+{30001002|XXparameter|log_input.condition|param logging True|3|15|P?|@{0|}}
+{30001002|XXparameter|log_output||15|1|Fl|Frequency of output records to log|{7| |1|10|100|1000|10000|100000|}}
+{30001002|XXparameter|log_output.condition|param logging True|3|15|P?|@{0|}}
+{30001002|XXparameter|log_reject||15|1|Fl|Frequency of reject records to log|{7| |1|10|100|1000|10000|100000|}}
+{30001002|XXparameter|log_reject.condition|param logging True|3|15|P?|@{0|}}
+{30001002|XXparameter|num_operations|5|1|2|H$|Number of operations in package|{0|}}
+{30001002|XXparameter|operation1|out::reformat(in)|3|2|H$|Reformat operation|{0|}}
+{30001002|XXparameter|condition||3|2|F$||{0|}}
+{30001002|XXparameter|conditionInputPort|in|3|2|F$||{0|}}
+{30001002|XXparameter|conditionOutputPort|out*|3|2|F$||{0|}}
+{30001002|XXparameter|condition_interpretation|Replace with flow|15|1|Fl||{2|Replace with flow|Remove completely|}}
+{30001002|XXparameter|condition_interpretation.display_name|condition-interpretation|3|9|P|@{0|}}
+{30001002|XXparameter|port_analysis|reject*=in;out*=in|3|2|H$||{0|}}
+{30001002|XXparameter|continuous_analysis||3|2|H$||{0|}}
+{30001002|XXparameter|filter_aggregate_analysis|out=filter(select)|3|2|H$||{0|}}
+{30001002|XXparameter|num_types|2|1|2|H$|Number of private data types in package|{0|}}
+{30001002|XXparameter|type1|error_info_t error_info "record string('', charset='x-ab-internal') component; int port_index; string('', charset='x-ab-internal') parameter; string('', charset='x-ab-internal') message; record string('', charset='x-ab-internal') code; int parent_index; record string('', charset='x-ab-internal') name; string('', charset='x-ab-internal') value; end[int] attributes; end[int] details; end"|3|2|H$|Type of error_info|{0|}}
+{30001002|XXparameter|type2|log_event_t log_event "record string('', charset='x-ab-internal') event_type; string('', charset='x-ab-internal') event_text; end"|3|2|H$|Type of error_info|{0|}}
+{30001002|XXparameter|operation2|optional out::output_for_error(error_info, in)|3|2|H$|Function to create output in case of error.|{0|}}
+{30001002|XXparameter|operation3|optional error::make_error(error_info, in)|3|2|H$|Function to create error record in case of error.|{0|}}
+{30001002|XXparameter|operation4|optional log_event::log_error(error_info, in)|3|2|H$|Function to create log record in case of error.|{0|}}
+{30001002|XXparameter|operation5|optional log_event::final_log_output()|3|2|H$|Function to create final log record.|{0|}}
+{30001002|XXparameter|num_callbacks|4|1|2|H$|Number of callbacks in package|{0|}}
+{30001002|XXparameter|_use_rich_error_format|True|13|1|Hl|False means use legacy string newline format|{0|}}
+{30001002|XXparameter|_use_rich_log_format|True|13|1|Hl|False means use legacy native charset format|{0|}}
+{30001002|XXparameter|Layout|@9|2|RFs$||{0|}}
+{30001002|XXparameter|main_mp_port|count out|3|1|l||{0|}}
+{30001002|XXparameter|in_metadata||7|1|RFsl||{0|}}
+{30001002|XXparameter|out0_metadata||7|1|RFl||{0|}}
+{30001002|XXparameter|reject0_metadata||7|1|Fsl||{0|}}
+{30001002|XXparameter|error0_metadata||7|1|Fl||{0|}}
+{30001002|XXparameter|log_metadata||7|1|Fl||{0|}}
+{30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
+{30001002|XXparameter|doc_operation1|out[*],reject[*],error[*],log::document(in)|3|2|RH$||{0|}}
+{30001002|XXparameter|mpcmodtime|1357932801|1|1|Hl|The last modification time of this component's template|{0|}}
+{30001002|XXparameter|_propagation|metadata type: error = "string('\\\\n')"
+metadata type: reject = in
+metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcomponent, event_type; string(\\"\|\\\\n\\") event_text; end"|3|1|HKl|@{0|}}
+{30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
+{2010203004|XXGoport|65|0|146|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{30001002|XXparameter|transform0||8|8|FO=|Reformat transform|{0|}}
+{30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
+{30001002|XXparameter|transform0.index_value|0|3|9|P|@{0|}}
+{30001002|XXparameter|transform0.index_name|transform|3|9|P|@{0|}}
+}}@0|0|0|0|out0|0.0|count|out|0|2448|0|}}
+{2010203004|XXGoport|66|0|150|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+}}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
+{2010203004|XXGoport|67|0|153|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+}}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
+{2010203004|XXGoport|68|0|156|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+}}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|69|0|159|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+}}@0|0|0|0|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|70|0|163|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_JSON|3|6|k|@{0|}}
+{30001002|XXparameter|out_metadata|record
+  string(int) json_record;
+end;|3|1|l|@{0|}}
+{30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Translate/JSON/Write_JSON.mpc|3|2|Pf$|@{0|}}
+{30001002|XXparameter|Layout||3|8|s=|@{0|}}
+{30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
+}}@0|@1277510|64878|1298000|85000|104000|68000|3215|Write JSON|Ab Initio Software|Built-in 3.1.0.r1.0:|1|100|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|71|0|165|0|{@{}@1401000|113000|11000|11000|out|0.0|@@@2448|0|}}
+{2010202004|XXGiport|72|0|168|0|{@{}@1288000|113000|11000|11000|in|0.0|@@@1936|0|}}
+{2010501005|XXGpvertex|73|0|171|0|{Writes a DML record the format of which is produced by xml-to-dml or json-to-dml to the out port as JSON data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|Write_JSON|3|1|Hl||{0|}}
+{30001002|XXparameter|image__|/~ab_home/bin/write-json|3|2|H$||{0|}}
+{30001002|XXparameter|condition||3|2|F$||{0|}}
+{30001002|XXparameter|conditionInputPort|in|3|2|F$||{0|}}
+{30001002|XXparameter|conditionOutputPort|out|3|2|F$||{0|}}
+{30001002|XXparameter|condition_interpretation|Replace with flow|15|1|Fl||{2|Replace with flow|Remove completely|}}
+{30001002|XXparameter|condition_interpretation.display_name|condition-interpretation|3|9|P|@{0|}}
+{30001002|XXparameter|port_analysis|out=all_to_all(in)|3|2|H$||{0|}}
+{30001002|XXparameter|continuous_analysis||3|2|H$||{0|}}
+{30001002|XXparameter|Layout|@9|2|RFs$||{0|}}
+{30001002|XXparameter|in_metadata||7|1|RFsl||{0|}}
+{30001002|XXparameter|out_metadata||7|1|RFl||{0|}}
+{30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
+{30001002|XXparameter|doc_operation1|out::document(in)|3|2|RH$||{0|}}
+{30001002|XXparameter|mpcmodtime|1357932801|1|1|Hl|The last modification time of this component's template|{0|}}
+{30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
+{2010203004|XXGoport|74|0|173|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+}}@0|0|0|0|out|0.0|@@@2448|0|}}
+{2010202004|XXGiport|75|0|176|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+}}@0|0|0|0|in|0.0|@@@1936|0|}}
+{2010501005|XXGpvertex|76|0|183|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_PARTITION|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$CNDTL_EXTRACT_PARTITION_LAYOUT", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Partitioning/Partition_by_Round-robin.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
 }}@0|@620822|45982|641000|66000|152000|106000|801|Conditional Partition by Round-robin|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|57|0|130|0|{@{}@792000|113000|11000|11000|out|0.0|@@@2323|0|}}
-{2010202004|XXGiport|58|0|133|0|{@{}@631000|113000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|59|0|136|0|{Distributes data records evenly to each output flow in round-robin fashion.
+{2010203004|XXGoport|77|0|185|0|{@{}@792000|113000|11000|11000|out|0.0|@@@2323|0|}}
+{2010202004|XXGiport|78|0|188|0|{@{}@631000|113000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|79|0|191|0|{Distributes data records evenly to each output flow in round-robin fashion.
 
 Use the Interleave component to reverse the effects of Partition by Round-robin.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|roundrobin-partition|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
@@ -719,11 +871,11 @@ Use the Interleave component to reverse the effects of Partition by Round-robin.
 {30001002|XXparameter|_propagate_through|metadata type: out = in
 metadata type: in = out|3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|60|0|138|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|80|0|193|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2323|0|}}
-{2010202004|XXGiport|61|0|141|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|81|0|196|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010505005|XXGtvertex|62|0|144|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|82|0|199|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
@@ -739,9 +891,9 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@0|@190867|631056|211000|651000|50000|60000|3207|Input Table-Sqlserver|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|63|0|146|0|{@{}@260000|675000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|64|0|149|0|{@{}@230000|710000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|65|0|152|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+{2010203004|XXGoport|83|0|201|0|{@{}@260000|675000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|84|0|204|0|{@{}@230000|710000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|85|0|207|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -1297,18 +1449,18 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
-{2010203004|XXGoport|66|0|154|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|86|0|209|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|67|0|157|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|87|0|212|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010503005|XXGfvertex|68|0|163|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010503005|XXGfvertex|88|0|218|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|read_metadata|record
   string("\\n") line;
 end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_File.mdc|3|2|Pf$|@{0|}}
 }}@1|@35245|937150|60000|957000|40000|40000|838|Extract Log File|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010203004|XXGoport|69|0|165|0|{@{}@99000|971000|11000|11000|read|0.0|@@@2160|0|}}
-{2010503005|XXGfvertex|70|0|168|0|{Represents one file, many files, or a multifile as an input to your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
+{2010203004|XXGoport|89|0|220|0|{@{}@99000|971000|11000|11000|read|0.0|@@@2160|0|}}
+{2010503005|XXGfvertex|90|0|223|0|{Represents one file, many files, or a multifile as an input to your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
@@ -1333,15 +1485,15 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550332|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
-{2010203004|XXGoport|71|0|170|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|91|0|225|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2160|0|}}
-{2010501005|XXGpvertex|72|0|173|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010501005|XXGpvertex|92|0|228|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "O" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 }}@0|@11526|450460|32000|470000|105000|97000|3190|Gather Extract Logs|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|73|0|175|0|{@{}@79000|460000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|74|0|178|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{2010202004|XXGiport|93|0|230|0|{@{}@79000|460000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|94|0|233|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
 {30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
@@ -1358,9 +1510,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|75|0|180|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|95|0|235|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010505005|XXGtvertex|76|0|183|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|96|0|238|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
@@ -1373,9 +1525,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@0|@202136|457691|222000|478000|50000|60000|3198|Input Table-Oracle|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|77|0|185|0|{@{}@271000|502000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|78|0|188|0|{@{}@241000|537000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|79|0|191|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+{2010203004|XXGoport|97|0|240|0|{@{}@271000|502000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|98|0|243|0|{@{}@241000|537000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|99|0|246|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -1931,17 +2083,17 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
-{2010203004|XXGoport|80|0|193|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|100|0|248|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|81|0|196|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|101|0|251|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010501005|XXGpvertex|82|0|200|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010501005|XXGpvertex|102|0|255|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 0 ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 }}@0|@11116|69189|31000|89000|108000|97000|845|Gather Extract Logs-1|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|83|0|202|0|{@{}@79000|79000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|84|0|205|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{2010202004|XXGiport|103|0|257|0|{@{}@79000|79000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|104|0|260|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
 {30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
@@ -1958,9 +2110,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|85|0|207|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|105|0|262|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010505005|XXGtvertex|86|0|210|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|106|0|265|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
@@ -1978,9 +2130,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@0|@203353|78090|223000|98000|50000|60000|851|Input Table-Teradata Fast Export|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|87|0|212|0|{@{}@272000|122000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|88|0|215|0|{@{}@242000|157000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|89|0|218|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+{2010203004|XXGoport|107|0|267|0|{@{}@272000|122000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|108|0|270|0|{@{}@242000|157000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|109|0|273|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -2536,17 +2688,17 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
-{2010203004|XXGoport|90|0|220|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|110|0|275|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|91|0|223|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|111|0|278|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010501005|XXGpvertex|92|0|227|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010501005|XXGpvertex|112|0|282|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "S" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 }}@0|@12427|623784|32000|644000|108000|97000|3194|Gather Extract Logs-2|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|93|0|229|0|{@{}@80000|634000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|94|0|232|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{2010202004|XXGiport|113|0|284|0|{@{}@80000|634000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|114|0|287|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
 {30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
@@ -2563,15 +2715,15 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|95|0|234|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|115|0|289|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|96|0|238|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010501005|XXGpvertex|116|0|293|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M" \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 }}@0|@15000|777579|35000|798000|108000|97000|3195|Gather Extract Logs-3|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|97|0|240|0|{@{}@83000|788000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|98|0|243|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{2010202004|XXGiport|117|0|295|0|{@{}@83000|788000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|118|0|298|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
 {30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
@@ -2588,9 +2740,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|99|0|245|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|119|0|300|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010505005|XXGtvertex|100|0|248|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|120|0|303|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
@@ -2602,9 +2754,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@0|@196102|804810|216000|825000|50000|60000|3201|Input Table-Generic ODBC|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|101|0|250|0|{@{}@265000|849000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|102|0|253|0|{@{}@235000|884000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|103|0|256|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+{2010203004|XXGoport|121|0|305|0|{@{}@265000|849000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|122|0|308|0|{@{}@235000|884000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|123|0|311|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -3160,17 +3312,17 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
-{2010203004|XXGoport|104|0|258|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|124|0|313|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|105|0|261|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|125|0|316|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010501005|XXGpvertex|106|0|265|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010501005|XXGpvertex|126|0|320|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 1 ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 }}@0|@11512|258462|32000|278000|108000|97000|763|Gather Extract Logs-4|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|107|0|267|0|{@{}@80000|268000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|108|0|270|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{2010202004|XXGiport|127|0|322|0|{@{}@80000|268000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|128|0|325|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
 {30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
@@ -3187,9 +3339,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|109|0|272|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|129|0|327|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010505005|XXGtvertex|110|0|275|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|130|0|330|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|ter_interface_new|api|3|1|l|@{0|}}
@@ -3207,9 +3359,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@0|@216115|282363|236000|302000|50000|60000|3204|Input Table-Teradata API|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|111|0|277|0|{@{}@285000|326000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|112|0|280|0|{@{}@255000|361000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|113|0|283|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+{2010203004|XXGoport|131|0|332|0|{@{}@285000|326000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|132|0|335|0|{@{}@255000|361000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|133|0|338|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -3765,11 +3917,11 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
-{2010203004|XXGoport|114|0|285|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|134|0|340|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|115|0|288|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|135|0|343|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010501005|XXGpvertex|116|0|292|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|sorted_input|False|3|1|l|@{0|}}
+{2010501005|XXGpvertex|136|0|347|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|sorted_input|False|3|1|l|@{0|}}
 {30001002|XXparameter|key|\{\}|3|2|$|@{0|}}
 {30001002|XXparameter|transform|out::rollup(in) =
 begin
@@ -3785,12 +3937,12 @@ end;|3|3|c|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
 }}@0|@613965|219698|634000|240000|144000|106000|803|Get Max Value for Extract Field|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|117|0|294|0|{@{}@777000|287000|11000|11000|out|0.0|@@@2448|0|}}
-{2010203004|XXGoport|118|0|297|0|{@{}@0|0|0|0|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|119|0|299|0|{@{}@0|0|0|0|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|120|0|301|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|121|0|303|0|{@{}@624000|282000|11000|21000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|122|0|307|0|{Generates data records that summarize groups of data records.  Rollup in memory maximizes performance by keeping intermediate results in main memory.  Rollup sorted requires grouped input.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|?rollup|3|1|Hl||{0|}}
+{2010203004|XXGoport|137|0|349|0|{@{}@777000|287000|11000|11000|out|0.0|@@@2448|0|}}
+{2010203004|XXGoport|138|0|352|0|{@{}@0|0|0|0|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|139|0|354|0|{@{}@0|0|0|0|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|140|0|356|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|141|0|358|0|{@{}@624000|282000|11000|21000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|142|0|362|0|{Generates data records that summarize groups of data records.  Rollup in memory maximizes performance by keeping intermediate results in main memory.  Rollup sorted requires grouped input.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|?rollup|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|/~ab_home/bin/transform|3|2|H$||{0|}}
 {30001002|XXparameter|sorted_input|True|13|1|Fl|Ordering of input data|{0|}}
 {30001002|XXparameter|sorted_input.display_name|sorted-input|3|9|P|@{0|}}
@@ -3903,25 +4055,25 @@ metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|123|0|309|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|143|0|364|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2448|0|}}
-{2010203004|XXGoport|124|0|312|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|144|0|367|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|125|0|315|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|145|0|370|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|126|0|318|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|146|0|373|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|127|0|321|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|147|0|376|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010503005|XXGfvertex|128|0|324|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_ROLLUP|3|2|$|@{0|}}
+{2010503005|XXGfvertex|148|0|379|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_ROLLUP|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$LAST_EXTRACT_VALUE_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|write_metadata|record
   string("\\n") last_extract_value;
 end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 }}@0|@819460|255266|844000|275000|40000|40000|805|Last Extract Value File-1|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|129|0|326|0|{@{}@834000|289000|11000|11000|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|130|0|329|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
+{2010202004|XXGiport|149|0|381|0|{@{}@834000|289000|11000|11000|write|0.0|@@@1776|0|}}
+{2010503005|XXGfvertex|150|0|384|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
@@ -3946,17 +4098,17 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550332|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
-{2010202004|XXGiport|131|0|331|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|151|0|386|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|132|0|342|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_VARIABLE|3|2|$|@{0|}}
+{2010503005|XXGfvertex|152|0|397|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_VARIABLE|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$LAST_EXTRACT_VALUE_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|write_metadata|record
   string("\\n") last_extract_value;
 end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 }}@2|@500928|1138573|526000|1159000|40000|40000|820|Last Extract Value File|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|133|0|344|0|{@{}@516000|1173000|11000|11000|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|134|0|347|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
+{2010202004|XXGiport|153|0|399|0|{@{}@516000|1173000|11000|11000|write|0.0|@@@1776|0|}}
+{2010503005|XXGfvertex|154|0|402|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
@@ -3981,14 +4133,14 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550332|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
-{2010202004|XXGiport|135|0|349|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|155|0|404|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|136|0|354|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$RECORD_COUNT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{2010503005|XXGfvertex|156|0|409|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$RECORD_COUNT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 }}@1|@562866|937439|588000|957000|40000|40000|828|Record Count File|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|137|0|356|0|{@{}@578000|971000|11000|11000|write|0.0|@@@1776|0|}}
-{2010503005|XXGfvertex|138|0|359|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
+{2010202004|XXGiport|157|0|411|0|{@{}@578000|971000|11000|11000|write|0.0|@@@1776|0|}}
+{2010503005|XXGfvertex|158|0|414|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
 {30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
@@ -4013,9 +4165,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550332|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
-{2010202004|XXGiport|139|0|361|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|159|0|416|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
-{2010501005|XXGpvertex|140|0|364|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|sorted_input|False|3|1|l|@{0|}}
+{2010501005|XXGpvertex|160|0|419|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|sorted_input|False|3|1|l|@{0|}}
 {30001002|XXparameter|key|\{\}|3|2|$|@{0|}}
 {30001002|XXparameter|transform|out::rollup(in) =
 begin
@@ -4031,12 +4183,12 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
 }}@1|@357255|913868|377000|934000|123000|87000|813|Rollup Record Counts|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|141|0|366|0|{@{}@499000|972000|11000|11000|out|0.0|@@@2448|0|}}
-{2010203004|XXGoport|142|0|369|0|{@{}@0|0|0|0|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|143|0|371|0|{@{}@0|0|0|0|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|144|0|373|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|145|0|375|0|{@{}@367000|972000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|146|0|378|0|{Generates data records that summarize groups of data records.  Rollup in memory maximizes performance by keeping intermediate results in main memory.  Rollup sorted requires grouped input.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|?rollup|3|1|Hl||{0|}}
+{2010203004|XXGoport|161|0|421|0|{@{}@499000|972000|11000|11000|out|0.0|@@@2448|0|}}
+{2010203004|XXGoport|162|0|424|0|{@{}@0|0|0|0|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|163|0|426|0|{@{}@0|0|0|0|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|164|0|428|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|165|0|430|0|{@{}@367000|972000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|166|0|433|0|{Generates data records that summarize groups of data records.  Rollup in memory maximizes performance by keeping intermediate results in main memory.  Rollup sorted requires grouped input.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|?rollup|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|/~ab_home/bin/transform|3|2|H$||{0|}}
 {30001002|XXparameter|sorted_input|True|13|1|Fl|Ordering of input data|{0|}}
 {30001002|XXparameter|sorted_input.display_name|sorted-input|3|9|P|@{0|}}
@@ -4149,17 +4301,17 @@ metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|147|0|380|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|167|0|435|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2448|0|}}
-{2010203004|XXGoport|148|0|383|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|168|0|438|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|149|0|386|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|169|0|441|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|150|0|389|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|170|0|444|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|151|0|392|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|171|0|447|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|152|0|396|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
+{2010501005|XXGpvertex|172|0|451|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
 begin
   let integer(4) teradata_start =string_index(in.line, "UTY8722") + 8;
   let integer(4) oracle_start =string_index(in.line, "unload\|rows\|Rows unloaded:") + 27;
@@ -4179,12 +4331,12 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
 }}@1|@167555|924249|188000|944000|133000|65000|836|Reformat|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|153|0|398|0|{@{}@320000|971000|11000|11000|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|154|0|401|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|155|0|403|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|156|0|405|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|157|0|407|0|{@{}@178000|971000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|158|0|410|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
+{2010203004|XXGoport|173|0|453|0|{@{}@320000|971000|11000|11000|out0|0.0|count|out|0|2448|0|}}
+{2010203004|XXGoport|174|0|456|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
+{2010203004|XXGoport|175|0|458|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
+{2010203004|XXGoport|176|0|460|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|177|0|462|0|{@{}@178000|971000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|178|0|465|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|count|1|1|1|Fl|Number of reformat transforms|{0|}}
 {30001002|XXparameter|count.is_index|true|3|9|P|@{0|}}
@@ -4270,29 +4422,29 @@ metadata type: reject = in
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|159|0|412|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|179|0|467|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 {30001002|XXparameter|transform0||8|8|FO=|Reformat transform|{0|}}
 {30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_value|0|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_name|transform|3|9|P|@{0|}}
 }}@0|0|0|0|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|160|0|416|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|180|0|471|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|161|0|419|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|181|0|474|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|162|0|422|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|182|0|477|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|163|0|425|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|183|0|480|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|164|0|433|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_ROLLUP|3|2|$|@{0|}}
+{2010501005|XXGpvertex|184|0|488|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_ROLLUP|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Replicate.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
 }}@0|@393199|229447|413000|249000|131000|71000|771|Replicate|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|165|0|435|0|{@{}@543000|274000|11000|21000|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|166|0|439|0|{@{}@403000|259000|11000|51000|in|0.0|@@@1812|0|}}
-{2010501005|XXGpvertex|167|0|446|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
+{2010203004|XXGoport|185|0|490|0|{@{}@543000|274000|11000|21000|out|0.0|@@@2068|0|}}
+{2010202004|XXGiport|186|0|494|0|{@{}@403000|259000|11000|51000|in|0.0|@@@1812|0|}}
+{2010501005|XXGpvertex|187|0|501|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|NoHidePorts|in out|3|2|H$||{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -4311,19 +4463,19 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through|metadata type: out = in
 metadata type: in = out|3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|168|0|448|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|188|0|503|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|169|0|451|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|189|0|506|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1812|0|}}
-{2010501005|XXGpvertex|170|0|457|0|{This is a conditional replicate function that is always set to the value of the preceding conditional partition. Provides workaround for partition component that doesn't retain flow-to-flow when its condition is false.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_PARTITION|3|2|$|@{0|}}
+{2010501005|XXGpvertex|190|0|512|0|{This is a conditional replicate function that is always set to the value of the preceding conditional partition. Provides workaround for partition component that doesn't retain flow-to-flow when its condition is false.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$CNDTL_EXTRACT_PARTITION|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Replicate.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
 }}@0|@856265|56108|876000|76000|127000|87000|798|Retain Flow to Flow|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|171|0|459|0|{@{}@1002000|114000|11000|11000|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|172|0|462|0|{@{}@866000|114000|11000|11000|in|0.0|@@@1812|0|}}
-{2010501005|XXGpvertex|173|0|465|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
+{2010203004|XXGoport|191|0|514|0|{@{}@1002000|114000|11000|11000|out|0.0|@@@2068|0|}}
+{2010202004|XXGiport|192|0|517|0|{@{}@866000|114000|11000|11000|in|0.0|@@@1812|0|}}
+{2010501005|XXGpvertex|193|0|520|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|NoHidePorts|in out|3|2|H$||{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -4342,19 +4494,19 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|_propagate_through|metadata type: out = in
 metadata type: in = out|3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|174|0|467|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|194|0|522|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|175|0|470|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|195|0|525|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1812|0|}}
-{2010501005|XXGpvertex|176|0|477|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|num_records|1|3|2|$|@{0|}}
+{2010501005|XXGpvertex|196|0|532|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|num_records|1|3|2|$|@{0|}}
 {30001002|XXparameter|command_line|-expression $ROLLUP_FIELD '$FROM_EXTRACT_VALUE'|3|2|$|@{0|}}
 {30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_ROLLUP|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Validate/Generate_Records.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
 }}@0|@375765|351684|396000|372000|149000|106000|807|Send From Extract Value to Rollup|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|177|0|479|0|{@{}@544000|419000|11000|11000|out|0.0|@@@2448|0|}}
-{2010501005|XXGpvertex|178|0|482|0|{Generates a specified number of data records with fields of specified lengths and types.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|generate|3|1|Hl||{0|}}
+{2010203004|XXGoport|197|0|534|0|{@{}@544000|419000|11000|11000|out|0.0|@@@2448|0|}}
+{2010501005|XXGpvertex|198|0|537|0|{Generates a specified number of data records with fields of specified lengths and types.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|generate|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|/~ab_home/bin/unitool|3|2|H$||{0|}}
 {30001002|XXparameter|num_records||1|2|RFO$|Number of records to generate|{0|}}
 {30001002|XXparameter|command_line||16|2|FO$|Field-specific options|{0|}}
@@ -4373,9 +4525,9 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|doc_operation1|out::document()|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550340|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|179|0|484|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|199|0|539|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2448|0|}}
-{2010501005|XXGpvertex|180|0|489|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|num_records|1|3|2|$|@{0|}}
+{2010501005|XXGpvertex|200|0|544|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|num_records|1|3|2|$|@{0|}}
 {30001002|XXparameter|condition|$CNDTL_LAST_EXTRACT_VARIABLE|3|2|$|@{0|}}
 {30001002|XXparameter|out_metadata|record
   string(1) a;
@@ -4383,8 +4535,8 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Validate/Generate_Records.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 }}@2|@11343|1105155|31000|1125000|132000|106000|834|Send Primer Row to Reformat|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|181|0|491|0|{@{}@162000|1172000|11000|11000|out|0.0|@@@2448|0|}}
-{2010501005|XXGpvertex|182|0|494|0|{Generates a specified number of data records with fields of specified lengths and types.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|generate|3|1|Hl||{0|}}
+{2010203004|XXGoport|201|0|546|0|{@{}@162000|1172000|11000|11000|out|0.0|@@@2448|0|}}
+{2010501005|XXGpvertex|202|0|549|0|{Generates a specified number of data records with fields of specified lengths and types.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|generate|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|/~ab_home/bin/unitool|3|2|H$||{0|}}
 {30001002|XXparameter|num_records||1|2|RFO$|Number of records to generate|{0|}}
 {30001002|XXparameter|command_line||16|2|FO$|Field-specific options|{0|}}
@@ -4403,9 +4555,9 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|doc_operation1|out::document()|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1299550340|1|1|Hl|The last modification time of this component's template|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|183|0|496|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|203|0|551|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2448|0|}}
-{2010501005|XXGpvertex|184|0|499|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
+{2010501005|XXGpvertex|204|0|554|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
 begin
   out.last_extract_value :: $TO_EXTRACT_VALUE;
 end;|3|1|l|@{0|}}
@@ -4419,12 +4571,12 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|out0_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
 }}@2|@260800|1105475|281000|1125000|157000|106000|832|Update Last Extract Value File|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|185|0|501|0|{@{}@437000|1172000|11000|11000|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|186|0|504|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|187|0|506|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|188|0|508|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|189|0|510|0|{@{}@271000|1172000|11000|11000|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|190|0|513|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
+{2010203004|XXGoport|205|0|556|0|{@{}@437000|1172000|11000|11000|out0|0.0|count|out|0|2448|0|}}
+{2010203004|XXGoport|206|0|559|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
+{2010203004|XXGoport|207|0|561|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
+{2010203004|XXGoport|208|0|563|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|209|0|565|0|{@{}@271000|1172000|11000|11000|in|0.0|@@@1808|0|}}
+{2010501005|XXGpvertex|210|0|568|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|count|1|1|1|Fl|Number of reformat transforms|{0|}}
 {30001002|XXparameter|count.is_index|true|3|9|P|@{0|}}
@@ -4510,29 +4662,29 @@ metadata type: reject = in
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|191|0|515|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|211|0|570|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 {30001002|XXparameter|transform0||8|8|FO=|Reformat transform|{0|}}
 {30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_value|0|3|9|P|@{0|}}
 {30001002|XXparameter|transform0.index_name|transform|3|9|P|@{0|}}
 }}@0|0|0|0|out0|0.0|count|out|0|2448|0|}}
-{2010203004|XXGoport|192|0|519|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|212|0|574|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
-{2010203004|XXGoport|193|0|522|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|213|0|577|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
-{2010203004|XXGoport|194|0|525|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|214|0|580|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|195|0|528|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010202004|XXGiport|215|0|583|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1808|0|}}
-{2010501005|XXGpvertex|196|0|535|0|{move $FEXP_LOGFILE to DW_SA_LOG|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|commandline|$DW_MASTER_BIN/dw_infra.move_fexp_logfile.ksh|3|6|k|@{0|}}
+{2010501005|XXGpvertex|216|0|592|0|{move $FEXP_LOGFILE to DW_SA_LOG|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|commandline|$DW_MASTER_BIN/dw_infra.move_fexp_logfile.ksh|3|6|k|@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 0 ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|condition_interpretation|Remove completely|3|1|l|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$DW_TMP", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Run_Program.mpc|3|2|Pf$|@{0|}}
 }}@1|@708145|930755|728000|951000|182000|68000|3189|move FEXP_LOGFILE|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|197|0|537|0|{@{}@909000|979000|11000|11000|out|0.0|@@@2260|0|}}
-{2010202004|XXGiport|198|0|539|0|{@{}@718000|979000|11000|11000|in|0.0|@@@1732|0|}}
-{2010501005|XXGpvertex|199|0|541|0|{Executes a standard UNIX or Windows program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl||{0|}}
+{2010203004|XXGoport|217|0|594|0|{@{}@909000|979000|11000|11000|out|0.0|@@@2260|0|}}
+{2010202004|XXGiport|218|0|596|0|{@{}@718000|979000|11000|11000|in|0.0|@@@1732|0|}}
+{2010501005|XXGpvertex|219|0|598|0|{Executes a standard UNIX or Windows program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|commandline||16|2|RFO$|Command line of UNIX or Windows program to execute|{0|}}
 {30001002|XXparameter|NoHidePorts|in out|3|2|H$||{0|}}
@@ -4550,11 +4702,11 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
-{2010203004|XXGoport|200|0|543|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010203004|XXGoport|220|0|600|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
-{2010202004|XXGiport|201|0|546|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
+{2010202004|XXGiport|221|0|603|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|202|0|549|0|{@{}@{1|7551897|}}}
+{2010110002|XXGconstant|222|0|606|0|{@{}@{1|1259329|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
@@ -4581,325 +4733,362 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010604001|XXGgraph_flow_flow|23|0|46|0|{Flow_21|}1|24|}
 {2010604001|XXGgraph_flow_flow|24|0|48|0|{Flow_22|}1|25|}
 {2010604001|XXGgraph_flow_flow|25|0|50|0|{Flow_23|}1|26|}
-{2010604001|XXGgraph_flow_flow|26|0|52|0|{Flow_3|}1|27|}
-{2010604001|XXGgraph_flow_flow|27|0|54|0|{Flow_4|}1|28|}
-{2010604001|XXGgraph_flow_flow|28|0|56|0|{Flow_5|}1|29|}
-{2010604001|XXGgraph_flow_flow|29|0|58|0|{Flow_6|}1|30|}
-{2010604001|XXGgraph_flow_flow|30|0|60|0|{Flow_7|}1|31|}
-{2010604001|XXGgraph_flow_flow|31|0|62|0|{Flow_8|}1|32|}
-{2010604001|XXGgraph_flow_flow|32|0|64|0|{Flow_9|}1|33|}
-{2010601001|XXGgraph_vertex_vertex|33|0|66|0|{Conditional_Extract_Reformat|}1|34|}
-{2010212001|XXGvertex_oport_oport|34|0|68|0|{0|out0|}34|35|}
-{2010213001|XXGoport_dst_flow|35|0|70|0|{0|}35|24|}
-{2010212001|XXGvertex_oport_oport|36|0|71|0|{1|reject0|}34|36|}
-{2010212001|XXGvertex_oport_oport|37|0|73|0|{2|error0|}34|37|}
-{2010212001|XXGvertex_oport_oport|38|0|75|0|{3|log|}34|38|}
-{2010211001|XXGvertex_iport_iport|39|0|77|0|{0|in|}34|39|}
-{2010214001|XXGiport_src_flow|40|0|79|0|{0|}39|26|}
-{2010007001|XXGobject_proto_object|41|0|80|0|{}34|40|}
-{2010212001|XXGvertex_oport_oport|42|0|82|0|{0|out0|}40|41|}
-{2010006001|XXGobject_psameas_object|43|0|84|0|{metadata|out0_metadata|1|0|}41|40|}
-{2010006001|XXGobject_psameas_object|44|0|85|0|{transform0|transform0|1|0|}41|40|}
-{2010212001|XXGvertex_oport_oport|45|0|86|0|{1|reject0|}40|42|}
-{2010006001|XXGobject_psameas_object|46|0|88|0|{metadata|reject0_metadata|1|0|}42|40|}
-{2010212001|XXGvertex_oport_oport|47|0|89|0|{2|error0|}40|43|}
-{2010006001|XXGobject_psameas_object|48|0|91|0|{metadata|error0_metadata|1|0|}43|40|}
-{2010212001|XXGvertex_oport_oport|49|0|92|0|{3|log|}40|44|}
-{2010006001|XXGobject_psameas_object|50|0|94|0|{metadata|log_metadata|1|0|}44|40|}
-{2010211001|XXGvertex_iport_iport|51|0|95|0|{0|in|}40|45|}
-{2010006001|XXGobject_psameas_object|52|0|97|0|{metadata|in_metadata|1|0|}45|40|}
-{2010006001|XXGobject_psameas_object|53|0|98|0|{Layout|Layout|0|0|}34|46|}
-{2010211001|XXGvertex_iport_iport|54|0|100|0|{0|write|}46|47|}
-{2010214001|XXGiport_src_flow|55|0|102|0|{0|}47|25|}
-{2010007001|XXGobject_proto_object|56|0|103|0|{}46|48|}
-{2010211001|XXGvertex_iport_iport|57|0|105|0|{0|write|}48|49|}
-{2010006001|XXGobject_psameas_object|58|0|107|0|{metadata|write_metadata|1|0|}49|48|}
-{2010006001|XXGobject_psameas_object|59|0|108|0|{write_metadata|out_metadata|0|0|}46|50|}
-{2010212001|XXGvertex_oport_oport|60|0|110|0|{0|out|}50|51|}
-{2010213001|XXGoport_dst_flow|61|0|112|0|{0|}51|25|}
-{2010211001|XXGvertex_iport_iport|62|0|113|0|{0|in|}50|52|}
-{2010214001|XXGiport_src_flow|63|0|115|0|{0|}52|24|}
-{2010007001|XXGobject_proto_object|64|0|116|0|{}50|53|}
-{2010212001|XXGvertex_oport_oport|65|0|118|0|{0|out|}53|54|}
-{2010006001|XXGobject_psameas_object|66|0|120|0|{metadata|out_metadata|1|0|}54|53|}
-{2010211001|XXGvertex_iport_iport|67|0|121|0|{0|in|}53|55|}
-{2010006001|XXGobject_psameas_object|68|0|123|0|{metadata|in_metadata|1|0|}55|53|}
-{2010006001|XXGobject_psameas_object|69|0|124|0|{Layout|Layout|0|0|}50|46|}
-{2010006001|XXGobject_psameas_object|70|0|125|0|{in_metadata|out0_metadata|0|0|}50|34|}
-{2010006001|XXGobject_psameas_object|71|0|126|0|{reject0_metadata|in_metadata|0|0|}34|34|}
-{2010601001|XXGgraph_vertex_vertex|72|0|127|0|{Conditional_Partition_by_Round_robin|}1|56|}
-{2010212001|XXGvertex_oport_oport|73|0|129|0|{0|out|}56|57|}
-{2010213001|XXGoport_dst_flow|74|0|131|0|{0|}57|13|}
-{2010211001|XXGvertex_iport_iport|75|0|132|0|{0|in|}56|58|}
-{2010214001|XXGiport_src_flow|76|0|134|0|{0|}58|18|}
-{2010007001|XXGobject_proto_object|77|0|135|0|{}56|59|}
-{2010212001|XXGvertex_oport_oport|78|0|137|0|{0|out|}59|60|}
-{2010006001|XXGobject_psameas_object|79|0|139|0|{metadata|out_metadata|1|0|}60|59|}
-{2010211001|XXGvertex_iport_iport|80|0|140|0|{0|in|}59|61|}
-{2010006001|XXGobject_psameas_object|81|0|142|0|{metadata|in_metadata|1|0|}61|59|}
-{2010006001|XXGobject_psameas_object|82|0|143|0|{in_metadata|read_metadata|0|0|}56|62|}
-{2010212001|XXGvertex_oport_oport|83|0|145|0|{0|read|}62|63|}
-{2010213001|XXGoport_dst_flow|84|0|147|0|{0|}63|32|}
-{2010212001|XXGvertex_oport_oport|85|0|148|0|{1|log|}62|64|}
-{2010213001|XXGoport_dst_flow|86|0|150|0|{0|}64|17|}
-{2010007001|XXGobject_proto_object|87|0|151|0|{}62|65|}
-{2010212001|XXGvertex_oport_oport|88|0|153|0|{0|read|}65|66|}
-{2010006001|XXGobject_psameas_object|89|0|155|0|{metadata|read_metadata|1|0|}66|65|}
-{2010212001|XXGvertex_oport_oport|90|0|156|0|{1|log|}65|67|}
-{2010006001|XXGobject_psameas_object|91|0|158|0|{metadata|log_metadata|1|0|}67|65|}
-{2010006001|XXGobject_psameas_object|92|0|159|0|{Layout|Layout|0|0|}62|56|}
-{2010006001|XXGobject_psameas_object|93|0|160|0|{out_metadata|read_metadata|0|0|}56|62|}
-{2010601001|XXGgraph_vertex_vertex|94|0|161|0|{Deflate|}1|50|}
-{2010601001|XXGgraph_vertex_vertex|95|0|162|0|{Extract_Log_File|}1|68|}
-{2010212001|XXGvertex_oport_oport|96|0|164|0|{0|read|}68|69|}
-{2010213001|XXGoport_dst_flow|97|0|166|0|{0|}69|31|}
-{2010007001|XXGobject_proto_object|98|0|167|0|{}68|70|}
-{2010212001|XXGvertex_oport_oport|99|0|169|0|{0|read|}70|71|}
-{2010006001|XXGobject_psameas_object|100|0|171|0|{metadata|read_metadata|1|0|}71|70|}
-{2010601001|XXGgraph_vertex_vertex|101|0|172|0|{Gather_Extract_Logs|}1|72|}
-{2010211001|XXGvertex_iport_iport|102|0|174|0|{0|in|}72|73|}
-{2010214001|XXGiport_src_flow|103|0|176|0|{0|}73|11|}
-{2010007001|XXGobject_proto_object|104|0|177|0|{}72|74|}
-{2010211001|XXGvertex_iport_iport|105|0|179|0|{0|in|}74|75|}
-{2010006001|XXGobject_psameas_object|106|0|181|0|{metadata|in_metadata|1|0|}75|74|}
-{2010006001|XXGobject_psameas_object|107|0|182|0|{in_metadata|log_metadata|0|0|}72|76|}
-{2010212001|XXGvertex_oport_oport|108|0|184|0|{0|read|}76|77|}
-{2010213001|XXGoport_dst_flow|109|0|186|0|{0|}77|22|}
-{2010212001|XXGvertex_oport_oport|110|0|187|0|{1|log|}76|78|}
-{2010213001|XXGoport_dst_flow|111|0|189|0|{0|}78|11|}
+{2010604001|XXGgraph_flow_flow|26|0|52|0|{Flow_24|}1|27|}
+{2010604001|XXGgraph_flow_flow|27|0|54|0|{Flow_25|}1|28|}
+{2010604001|XXGgraph_flow_flow|28|0|56|0|{Flow_3|}1|29|}
+{2010604001|XXGgraph_flow_flow|29|0|58|0|{Flow_4|}1|30|}
+{2010604001|XXGgraph_flow_flow|30|0|60|0|{Flow_5|}1|31|}
+{2010604001|XXGgraph_flow_flow|31|0|62|0|{Flow_6|}1|32|}
+{2010604001|XXGgraph_flow_flow|32|0|64|0|{Flow_7|}1|33|}
+{2010604001|XXGgraph_flow_flow|33|0|66|0|{Flow_8|}1|34|}
+{2010604001|XXGgraph_flow_flow|34|0|68|0|{Flow_9|}1|35|}
+{2010601001|XXGgraph_vertex_vertex|35|0|70|0|{Conditional_Extract_Reformat|}1|36|}
+{2010212001|XXGvertex_oport_oport|36|0|72|0|{0|out0|}36|37|}
+{2010213001|XXGoport_dst_flow|37|0|74|0|{0|}37|24|}
+{2010212001|XXGvertex_oport_oport|38|0|75|0|{1|reject0|}36|38|}
+{2010212001|XXGvertex_oport_oport|39|0|77|0|{2|error0|}36|39|}
+{2010212001|XXGvertex_oport_oport|40|0|79|0|{3|log|}36|40|}
+{2010211001|XXGvertex_iport_iport|41|0|81|0|{0|in|}36|41|}
+{2010214001|XXGiport_src_flow|42|0|83|0|{0|}41|26|}
+{2010007001|XXGobject_proto_object|43|0|84|0|{}36|42|}
+{2010212001|XXGvertex_oport_oport|44|0|86|0|{0|out0|}42|43|}
+{2010006001|XXGobject_psameas_object|45|0|88|0|{metadata|out0_metadata|1|0|}43|42|}
+{2010006001|XXGobject_psameas_object|46|0|89|0|{transform0|transform0|1|0|}43|42|}
+{2010212001|XXGvertex_oport_oport|47|0|90|0|{1|reject0|}42|44|}
+{2010006001|XXGobject_psameas_object|48|0|92|0|{metadata|reject0_metadata|1|0|}44|42|}
+{2010212001|XXGvertex_oport_oport|49|0|93|0|{2|error0|}42|45|}
+{2010006001|XXGobject_psameas_object|50|0|95|0|{metadata|error0_metadata|1|0|}45|42|}
+{2010212001|XXGvertex_oport_oport|51|0|96|0|{3|log|}42|46|}
+{2010006001|XXGobject_psameas_object|52|0|98|0|{metadata|log_metadata|1|0|}46|42|}
+{2010211001|XXGvertex_iport_iport|53|0|99|0|{0|in|}42|47|}
+{2010006001|XXGobject_psameas_object|54|0|101|0|{metadata|in_metadata|1|0|}47|42|}
+{2010006001|XXGobject_psameas_object|55|0|102|0|{Layout|Layout|0|0|}36|48|}
+{2010211001|XXGvertex_iport_iport|56|0|104|0|{0|write|}48|49|}
+{2010214001|XXGiport_src_flow|57|0|106|0|{0|}49|25|}
+{2010007001|XXGobject_proto_object|58|0|107|0|{}48|50|}
+{2010211001|XXGvertex_iport_iport|59|0|109|0|{0|write|}50|51|}
+{2010006001|XXGobject_psameas_object|60|0|111|0|{metadata|write_metadata|1|0|}51|50|}
+{2010006001|XXGobject_psameas_object|61|0|112|0|{write_metadata|out_metadata|0|0|}48|52|}
+{2010212001|XXGvertex_oport_oport|62|0|114|0|{0|out|}52|53|}
+{2010213001|XXGoport_dst_flow|63|0|116|0|{0|}53|25|}
+{2010211001|XXGvertex_iport_iport|64|0|117|0|{0|in|}52|54|}
+{2010214001|XXGiport_src_flow|65|0|119|0|{0|}54|28|}
+{2010007001|XXGobject_proto_object|66|0|120|0|{}52|55|}
+{2010212001|XXGvertex_oport_oport|67|0|122|0|{0|out|}55|56|}
+{2010006001|XXGobject_psameas_object|68|0|124|0|{metadata|out_metadata|1|0|}56|55|}
+{2010211001|XXGvertex_iport_iport|69|0|125|0|{0|in|}55|57|}
+{2010006001|XXGobject_psameas_object|70|0|127|0|{metadata|in_metadata|1|0|}57|55|}
+{2010006001|XXGobject_psameas_object|71|0|128|0|{Layout|Layout|0|0|}52|48|}
+{2010006001|XXGobject_psameas_object|72|0|129|0|{in_metadata|out0_metadata|0|0|}52|58|}
+{2010212001|XXGvertex_oport_oport|73|0|131|0|{0|out0|}58|59|}
+{2010213001|XXGoport_dst_flow|74|0|133|0|{0|}59|28|}
+{2010212001|XXGvertex_oport_oport|75|0|134|0|{1|reject0|}58|60|}
+{2010212001|XXGvertex_oport_oport|76|0|136|0|{2|error0|}58|61|}
+{2010212001|XXGvertex_oport_oport|77|0|138|0|{3|log|}58|62|}
+{2010211001|XXGvertex_iport_iport|78|0|140|0|{0|in|}58|63|}
+{2010214001|XXGiport_src_flow|79|0|142|0|{0|}63|27|}
+{2010007001|XXGobject_proto_object|80|0|143|0|{}58|64|}
+{2010212001|XXGvertex_oport_oport|81|0|145|0|{0|out0|}64|65|}
+{2010006001|XXGobject_psameas_object|82|0|147|0|{metadata|out0_metadata|1|0|}65|64|}
+{2010006001|XXGobject_psameas_object|83|0|148|0|{transform0|transform0|1|0|}65|64|}
+{2010212001|XXGvertex_oport_oport|84|0|149|0|{1|reject0|}64|66|}
+{2010006001|XXGobject_psameas_object|85|0|151|0|{metadata|reject0_metadata|1|0|}66|64|}
+{2010212001|XXGvertex_oport_oport|86|0|152|0|{2|error0|}64|67|}
+{2010006001|XXGobject_psameas_object|87|0|154|0|{metadata|error0_metadata|1|0|}67|64|}
+{2010212001|XXGvertex_oport_oport|88|0|155|0|{3|log|}64|68|}
+{2010006001|XXGobject_psameas_object|89|0|157|0|{metadata|log_metadata|1|0|}68|64|}
+{2010211001|XXGvertex_iport_iport|90|0|158|0|{0|in|}64|69|}
+{2010006001|XXGobject_psameas_object|91|0|160|0|{metadata|in_metadata|1|0|}69|64|}
+{2010006001|XXGobject_psameas_object|92|0|161|0|{Layout|Layout|0|0|}58|48|}
+{2010006001|XXGobject_psameas_object|93|0|162|0|{in_metadata|out_metadata|0|0|}58|70|}
+{2010212001|XXGvertex_oport_oport|94|0|164|0|{0|out|}70|71|}
+{2010213001|XXGoport_dst_flow|95|0|166|0|{0|}71|27|}
+{2010211001|XXGvertex_iport_iport|96|0|167|0|{0|in|}70|72|}
+{2010214001|XXGiport_src_flow|97|0|169|0|{0|}72|24|}
+{2010007001|XXGobject_proto_object|98|0|170|0|{}70|73|}
+{2010212001|XXGvertex_oport_oport|99|0|172|0|{0|out|}73|74|}
+{2010006001|XXGobject_psameas_object|100|0|174|0|{metadata|out_metadata|1|0|}74|73|}
+{2010211001|XXGvertex_iport_iport|101|0|175|0|{0|in|}73|75|}
+{2010006001|XXGobject_psameas_object|102|0|177|0|{metadata|in_metadata|1|0|}75|73|}
+{2010006001|XXGobject_psameas_object|103|0|178|0|{Layout|Layout|0|0|}70|48|}
+{2010006001|XXGobject_psameas_object|104|0|179|0|{in_metadata|out0_metadata|0|0|}70|36|}
+{2010006001|XXGobject_psameas_object|105|0|180|0|{reject0_metadata|out_metadata|0|0|}58|70|}
+{2010006001|XXGobject_psameas_object|106|0|181|0|{reject0_metadata|in_metadata|0|0|}36|36|}
+{2010601001|XXGgraph_vertex_vertex|107|0|182|0|{Conditional_Partition_by_Round_robin|}1|76|}
+{2010212001|XXGvertex_oport_oport|108|0|184|0|{0|out|}76|77|}
+{2010213001|XXGoport_dst_flow|109|0|186|0|{0|}77|13|}
+{2010211001|XXGvertex_iport_iport|110|0|187|0|{0|in|}76|78|}
+{2010214001|XXGiport_src_flow|111|0|189|0|{0|}78|18|}
 {2010007001|XXGobject_proto_object|112|0|190|0|{}76|79|}
-{2010212001|XXGvertex_oport_oport|113|0|192|0|{0|read|}79|80|}
-{2010006001|XXGobject_psameas_object|114|0|194|0|{metadata|read_metadata|1|0|}80|79|}
-{2010212001|XXGvertex_oport_oport|115|0|195|0|{1|log|}79|81|}
-{2010006001|XXGobject_psameas_object|116|0|197|0|{metadata|log_metadata|1|0|}81|79|}
-{2010006001|XXGobject_psameas_object|117|0|198|0|{Layout|Layout|0|0|}76|56|}
-{2010601001|XXGgraph_vertex_vertex|118|0|199|0|{Gather_Extract_Logs_1|}1|82|}
-{2010211001|XXGvertex_iport_iport|119|0|201|0|{0|in|}82|83|}
-{2010214001|XXGiport_src_flow|120|0|203|0|{0|}83|15|}
-{2010007001|XXGobject_proto_object|121|0|204|0|{}82|84|}
-{2010211001|XXGvertex_iport_iport|122|0|206|0|{0|in|}84|85|}
-{2010006001|XXGobject_psameas_object|123|0|208|0|{metadata|in_metadata|1|0|}85|84|}
-{2010006001|XXGobject_psameas_object|124|0|209|0|{in_metadata|log_metadata|0|0|}82|86|}
-{2010212001|XXGvertex_oport_oport|125|0|211|0|{0|read|}86|87|}
-{2010213001|XXGoport_dst_flow|126|0|213|0|{0|}87|16|}
-{2010212001|XXGvertex_oport_oport|127|0|214|0|{1|log|}86|88|}
-{2010213001|XXGoport_dst_flow|128|0|216|0|{0|}88|15|}
-{2010007001|XXGobject_proto_object|129|0|217|0|{}86|89|}
-{2010212001|XXGvertex_oport_oport|130|0|219|0|{0|read|}89|90|}
-{2010006001|XXGobject_psameas_object|131|0|221|0|{metadata|read_metadata|1|0|}90|89|}
-{2010212001|XXGvertex_oport_oport|132|0|222|0|{1|log|}89|91|}
-{2010006001|XXGobject_psameas_object|133|0|224|0|{metadata|log_metadata|1|0|}91|89|}
-{2010006001|XXGobject_psameas_object|134|0|225|0|{Layout|Layout|0|0|}86|56|}
-{2010601001|XXGgraph_vertex_vertex|135|0|226|0|{Gather_Extract_Logs_2|}1|92|}
-{2010211001|XXGvertex_iport_iport|136|0|228|0|{0|in|}92|93|}
-{2010214001|XXGiport_src_flow|137|0|230|0|{0|}93|17|}
-{2010007001|XXGobject_proto_object|138|0|231|0|{}92|94|}
-{2010211001|XXGvertex_iport_iport|139|0|233|0|{0|in|}94|95|}
-{2010006001|XXGobject_psameas_object|140|0|235|0|{metadata|in_metadata|1|0|}95|94|}
-{2010006001|XXGobject_psameas_object|141|0|236|0|{in_metadata|log_metadata|0|0|}92|62|}
-{2010601001|XXGgraph_vertex_vertex|142|0|237|0|{Gather_Extract_Logs_3|}1|96|}
-{2010211001|XXGvertex_iport_iport|143|0|239|0|{0|in|}96|97|}
-{2010214001|XXGiport_src_flow|144|0|241|0|{0|}97|19|}
-{2010007001|XXGobject_proto_object|145|0|242|0|{}96|98|}
-{2010211001|XXGvertex_iport_iport|146|0|244|0|{0|in|}98|99|}
-{2010006001|XXGobject_psameas_object|147|0|246|0|{metadata|in_metadata|1|0|}99|98|}
-{2010006001|XXGobject_psameas_object|148|0|247|0|{in_metadata|log_metadata|0|0|}96|100|}
-{2010212001|XXGvertex_oport_oport|149|0|249|0|{0|read|}100|101|}
-{2010213001|XXGoport_dst_flow|150|0|251|0|{0|}101|20|}
-{2010212001|XXGvertex_oport_oport|151|0|252|0|{1|log|}100|102|}
-{2010213001|XXGoport_dst_flow|152|0|254|0|{0|}102|19|}
-{2010007001|XXGobject_proto_object|153|0|255|0|{}100|103|}
-{2010212001|XXGvertex_oport_oport|154|0|257|0|{0|read|}103|104|}
-{2010006001|XXGobject_psameas_object|155|0|259|0|{metadata|read_metadata|1|0|}104|103|}
-{2010212001|XXGvertex_oport_oport|156|0|260|0|{1|log|}103|105|}
-{2010006001|XXGobject_psameas_object|157|0|262|0|{metadata|log_metadata|1|0|}105|103|}
-{2010006001|XXGobject_psameas_object|158|0|263|0|{Layout|Layout|0|0|}100|56|}
-{2010601001|XXGgraph_vertex_vertex|159|0|264|0|{Gather_Extract_Logs_4|}1|106|}
-{2010211001|XXGvertex_iport_iport|160|0|266|0|{0|in|}106|107|}
-{2010214001|XXGiport_src_flow|161|0|268|0|{0|}107|21|}
-{2010007001|XXGobject_proto_object|162|0|269|0|{}106|108|}
-{2010211001|XXGvertex_iport_iport|163|0|271|0|{0|in|}108|109|}
-{2010006001|XXGobject_psameas_object|164|0|273|0|{metadata|in_metadata|1|0|}109|108|}
-{2010006001|XXGobject_psameas_object|165|0|274|0|{in_metadata|log_metadata|0|0|}106|110|}
-{2010212001|XXGvertex_oport_oport|166|0|276|0|{0|read|}110|111|}
-{2010213001|XXGoport_dst_flow|167|0|278|0|{0|}111|23|}
-{2010212001|XXGvertex_oport_oport|168|0|279|0|{1|log|}110|112|}
-{2010213001|XXGoport_dst_flow|169|0|281|0|{0|}112|21|}
-{2010007001|XXGobject_proto_object|170|0|282|0|{}110|113|}
-{2010212001|XXGvertex_oport_oport|171|0|284|0|{0|read|}113|114|}
-{2010006001|XXGobject_psameas_object|172|0|286|0|{metadata|read_metadata|1|0|}114|113|}
-{2010212001|XXGvertex_oport_oport|173|0|287|0|{1|log|}113|115|}
-{2010006001|XXGobject_psameas_object|174|0|289|0|{metadata|log_metadata|1|0|}115|113|}
-{2010006001|XXGobject_psameas_object|175|0|290|0|{Layout|Layout|0|0|}110|56|}
-{2010601001|XXGgraph_vertex_vertex|176|0|291|0|{Get_Max_Value_for_Extract_Field|}1|116|}
-{2010212001|XXGvertex_oport_oport|177|0|293|0|{0|out|}116|117|}
-{2010213001|XXGoport_dst_flow|178|0|295|0|{0|}117|30|}
-{2010212001|XXGvertex_oport_oport|179|0|296|0|{1|reject|}116|118|}
-{2010212001|XXGvertex_oport_oport|180|0|298|0|{2|error|}116|119|}
-{2010212001|XXGvertex_oport_oport|181|0|300|0|{3|log|}116|120|}
-{2010211001|XXGvertex_iport_iport|182|0|302|0|{0|in|}116|121|}
-{2010214001|XXGiport_src_flow|183|0|304|0|{0|}121|29|}
-{2010214001|XXGiport_src_flow|184|0|305|0|{1|}121|27|}
-{2010007001|XXGobject_proto_object|185|0|306|0|{}116|122|}
-{2010212001|XXGvertex_oport_oport|186|0|308|0|{0|out|}122|123|}
-{2010006001|XXGobject_psameas_object|187|0|310|0|{metadata|out_metadata|1|0|}123|122|}
-{2010212001|XXGvertex_oport_oport|188|0|311|0|{1|reject|}122|124|}
-{2010006001|XXGobject_psameas_object|189|0|313|0|{metadata|reject_metadata|1|0|}124|122|}
-{2010212001|XXGvertex_oport_oport|190|0|314|0|{2|error|}122|125|}
-{2010006001|XXGobject_psameas_object|191|0|316|0|{metadata|error_metadata|1|0|}125|122|}
-{2010212001|XXGvertex_oport_oport|192|0|317|0|{3|log|}122|126|}
-{2010006001|XXGobject_psameas_object|193|0|319|0|{metadata|log_metadata|1|0|}126|122|}
-{2010211001|XXGvertex_iport_iport|194|0|320|0|{0|in|}122|127|}
-{2010006001|XXGobject_psameas_object|195|0|322|0|{metadata|in_metadata|1|0|}127|122|}
-{2010006001|XXGobject_psameas_object|196|0|323|0|{Layout|Layout|0|0|}116|128|}
-{2010211001|XXGvertex_iport_iport|197|0|325|0|{0|write|}128|129|}
-{2010214001|XXGiport_src_flow|198|0|327|0|{0|}129|30|}
-{2010007001|XXGobject_proto_object|199|0|328|0|{}128|130|}
-{2010211001|XXGvertex_iport_iport|200|0|330|0|{0|write|}130|131|}
-{2010006001|XXGobject_psameas_object|201|0|332|0|{metadata|write_metadata|1|0|}131|130|}
-{2010006001|XXGobject_psameas_object|202|0|333|0|{in_metadata|read_metadata|0|0|}116|62|}
-{2010006001|XXGobject_psameas_object|203|0|334|0|{out_metadata|write_metadata|0|0|}116|128|}
-{2010006001|XXGobject_psameas_object|204|0|335|0|{reject_metadata|read_metadata|0|0|}116|62|}
-{2010601001|XXGgraph_vertex_vertex|205|0|336|0|{Input_Table_Generic_ODBC|}1|100|}
-{2010601001|XXGgraph_vertex_vertex|206|0|337|0|{Input_Table_Oracle|}1|76|}
-{2010601001|XXGgraph_vertex_vertex|207|0|338|0|{Input_Table_Sqlserver|}1|62|}
-{2010601001|XXGgraph_vertex_vertex|208|0|339|0|{Input_Table_Teradata_API|}1|110|}
-{2010601001|XXGgraph_vertex_vertex|209|0|340|0|{Input_Table_Teradata_Fast_Export|}1|86|}
-{2010601001|XXGgraph_vertex_vertex|210|0|341|0|{Last_Extract_Value_File|}1|132|}
-{2010211001|XXGvertex_iport_iport|211|0|343|0|{0|write|}132|133|}
-{2010214001|XXGiport_src_flow|212|0|345|0|{0|}133|14|}
-{2010007001|XXGobject_proto_object|213|0|346|0|{}132|134|}
-{2010211001|XXGvertex_iport_iport|214|0|348|0|{0|write|}134|135|}
-{2010006001|XXGobject_psameas_object|215|0|350|0|{metadata|write_metadata|1|0|}135|134|}
-{2010601001|XXGgraph_vertex_vertex|216|0|351|0|{Last_Extract_Value_File_1|}1|128|}
-{2010601001|XXGgraph_vertex_vertex|217|0|352|0|{Output_File|}1|46|}
-{2010601001|XXGgraph_vertex_vertex|218|0|353|0|{Record_Count_File|}1|136|}
-{2010211001|XXGvertex_iport_iport|219|0|355|0|{0|write|}136|137|}
-{2010214001|XXGiport_src_flow|220|0|357|0|{0|}137|12|}
-{2010007001|XXGobject_proto_object|221|0|358|0|{}136|138|}
-{2010211001|XXGvertex_iport_iport|222|0|360|0|{0|write|}138|139|}
-{2010006001|XXGobject_psameas_object|223|0|362|0|{metadata|write_metadata|1|0|}139|138|}
-{2010006001|XXGobject_psameas_object|224|0|363|0|{write_metadata|out_metadata|0|0|}136|140|}
-{2010212001|XXGvertex_oport_oport|225|0|365|0|{0|out|}140|141|}
-{2010213001|XXGoport_dst_flow|226|0|367|0|{0|}141|12|}
-{2010212001|XXGvertex_oport_oport|227|0|368|0|{1|reject|}140|142|}
-{2010212001|XXGvertex_oport_oport|228|0|370|0|{2|error|}140|143|}
-{2010212001|XXGvertex_oport_oport|229|0|372|0|{3|log|}140|144|}
-{2010211001|XXGvertex_iport_iport|230|0|374|0|{0|in|}140|145|}
-{2010214001|XXGiport_src_flow|231|0|376|0|{0|}145|33|}
-{2010007001|XXGobject_proto_object|232|0|377|0|{}140|146|}
-{2010212001|XXGvertex_oport_oport|233|0|379|0|{0|out|}146|147|}
-{2010006001|XXGobject_psameas_object|234|0|381|0|{metadata|out_metadata|1|0|}147|146|}
-{2010212001|XXGvertex_oport_oport|235|0|382|0|{1|reject|}146|148|}
-{2010006001|XXGobject_psameas_object|236|0|384|0|{metadata|reject_metadata|1|0|}148|146|}
-{2010212001|XXGvertex_oport_oport|237|0|385|0|{2|error|}146|149|}
-{2010006001|XXGobject_psameas_object|238|0|387|0|{metadata|error_metadata|1|0|}149|146|}
-{2010212001|XXGvertex_oport_oport|239|0|388|0|{3|log|}146|150|}
-{2010006001|XXGobject_psameas_object|240|0|390|0|{metadata|log_metadata|1|0|}150|146|}
-{2010211001|XXGvertex_iport_iport|241|0|391|0|{0|in|}146|151|}
-{2010006001|XXGobject_psameas_object|242|0|393|0|{metadata|in_metadata|1|0|}151|146|}
-{2010006001|XXGobject_psameas_object|243|0|394|0|{Layout|Layout|0|0|}140|136|}
-{2010006001|XXGobject_psameas_object|244|0|395|0|{in_metadata|out0_metadata|0|0|}140|152|}
-{2010212001|XXGvertex_oport_oport|245|0|397|0|{0|out0|}152|153|}
-{2010213001|XXGoport_dst_flow|246|0|399|0|{0|}153|33|}
-{2010212001|XXGvertex_oport_oport|247|0|400|0|{1|reject0|}152|154|}
-{2010212001|XXGvertex_oport_oport|248|0|402|0|{2|error0|}152|155|}
-{2010212001|XXGvertex_oport_oport|249|0|404|0|{3|log|}152|156|}
-{2010211001|XXGvertex_iport_iport|250|0|406|0|{0|in|}152|157|}
-{2010214001|XXGiport_src_flow|251|0|408|0|{0|}157|31|}
-{2010007001|XXGobject_proto_object|252|0|409|0|{}152|158|}
-{2010212001|XXGvertex_oport_oport|253|0|411|0|{0|out0|}158|159|}
-{2010006001|XXGobject_psameas_object|254|0|413|0|{metadata|out0_metadata|1|0|}159|158|}
-{2010006001|XXGobject_psameas_object|255|0|414|0|{transform0|transform0|1|0|}159|158|}
-{2010212001|XXGvertex_oport_oport|256|0|415|0|{1|reject0|}158|160|}
-{2010006001|XXGobject_psameas_object|257|0|417|0|{metadata|reject0_metadata|1|0|}160|158|}
-{2010212001|XXGvertex_oport_oport|258|0|418|0|{2|error0|}158|161|}
-{2010006001|XXGobject_psameas_object|259|0|420|0|{metadata|error0_metadata|1|0|}161|158|}
-{2010212001|XXGvertex_oport_oport|260|0|421|0|{3|log|}158|162|}
-{2010006001|XXGobject_psameas_object|261|0|423|0|{metadata|log_metadata|1|0|}162|158|}
-{2010211001|XXGvertex_iport_iport|262|0|424|0|{0|in|}158|163|}
-{2010006001|XXGobject_psameas_object|263|0|426|0|{metadata|in_metadata|1|0|}163|158|}
-{2010006001|XXGobject_psameas_object|264|0|427|0|{Layout|Layout|0|0|}152|136|}
-{2010006001|XXGobject_psameas_object|265|0|428|0|{in_metadata|read_metadata|0|0|}152|68|}
-{2010006001|XXGobject_psameas_object|266|0|429|0|{reject0_metadata|read_metadata|0|0|}152|68|}
-{2010006001|XXGobject_psameas_object|267|0|430|0|{reject_metadata|out0_metadata|0|0|}140|152|}
-{2010601001|XXGgraph_vertex_vertex|268|0|431|0|{Reformat|}1|152|}
-{2010601001|XXGgraph_vertex_vertex|269|0|432|0|{Replicate|}1|164|}
-{2010212001|XXGvertex_oport_oport|270|0|434|0|{0|out|}164|165|}
-{2010213001|XXGoport_dst_flow|271|0|436|0|{0|}165|18|}
-{2010213001|XXGoport_dst_flow|272|0|437|0|{1|}165|29|}
-{2010211001|XXGvertex_iport_iport|273|0|438|0|{0|in|}164|166|}
-{2010214001|XXGiport_src_flow|274|0|440|0|{0|}166|16|}
-{2010214001|XXGiport_src_flow|275|0|441|0|{1|}166|23|}
-{2010214001|XXGiport_src_flow|276|0|442|0|{2|}166|22|}
-{2010214001|XXGiport_src_flow|277|0|443|0|{3|}166|32|}
-{2010214001|XXGiport_src_flow|278|0|444|0|{4|}166|20|}
-{2010007001|XXGobject_proto_object|279|0|445|0|{}164|167|}
-{2010212001|XXGvertex_oport_oport|280|0|447|0|{0|out|}167|168|}
-{2010006001|XXGobject_psameas_object|281|0|449|0|{metadata|out_metadata|1|0|}168|167|}
-{2010211001|XXGvertex_iport_iport|282|0|450|0|{0|in|}167|169|}
-{2010006001|XXGobject_psameas_object|283|0|452|0|{metadata|in_metadata|1|0|}169|167|}
-{2010006001|XXGobject_psameas_object|284|0|453|0|{Layout|Layout|0|0|}164|56|}
-{2010006001|XXGobject_psameas_object|285|0|454|0|{in_metadata|read_metadata|0|0|}164|62|}
-{2010006001|XXGobject_psameas_object|286|0|455|0|{out_metadata|read_metadata|0|0|}164|62|}
-{2010601001|XXGgraph_vertex_vertex|287|0|456|0|{Retain_Flow_to_Flow|}1|170|}
-{2010212001|XXGvertex_oport_oport|288|0|458|0|{0|out|}170|171|}
-{2010213001|XXGoport_dst_flow|289|0|460|0|{0|}171|26|}
-{2010211001|XXGvertex_iport_iport|290|0|461|0|{0|in|}170|172|}
-{2010214001|XXGiport_src_flow|291|0|463|0|{0|}172|13|}
-{2010007001|XXGobject_proto_object|292|0|464|0|{}170|173|}
-{2010212001|XXGvertex_oport_oport|293|0|466|0|{0|out|}173|174|}
-{2010006001|XXGobject_psameas_object|294|0|468|0|{metadata|out_metadata|1|0|}174|173|}
-{2010211001|XXGvertex_iport_iport|295|0|469|0|{0|in|}173|175|}
-{2010006001|XXGobject_psameas_object|296|0|471|0|{metadata|in_metadata|1|0|}175|173|}
-{2010006001|XXGobject_psameas_object|297|0|472|0|{Layout|Layout|0|0|}170|46|}
-{2010006001|XXGobject_psameas_object|298|0|473|0|{in_metadata|in_metadata|0|0|}170|34|}
-{2010006001|XXGobject_psameas_object|299|0|474|0|{out_metadata|in_metadata|0|0|}170|34|}
-{2010601001|XXGgraph_vertex_vertex|300|0|475|0|{Rollup_Record_Counts|}1|140|}
-{2010601001|XXGgraph_vertex_vertex|301|0|476|0|{Send_From_Extract_Value_to_Rollup|}1|176|}
-{2010212001|XXGvertex_oport_oport|302|0|478|0|{0|out|}176|177|}
-{2010213001|XXGoport_dst_flow|303|0|480|0|{0|}177|27|}
-{2010007001|XXGobject_proto_object|304|0|481|0|{}176|178|}
-{2010212001|XXGvertex_oport_oport|305|0|483|0|{0|out|}178|179|}
-{2010006001|XXGobject_psameas_object|306|0|485|0|{metadata|out_metadata|1|0|}179|178|}
-{2010006001|XXGobject_psameas_object|307|0|486|0|{Layout|Layout|0|0|}176|128|}
-{2010006001|XXGobject_psameas_object|308|0|487|0|{out_metadata|read_metadata|0|0|}176|62|}
-{2010601001|XXGgraph_vertex_vertex|309|0|488|0|{Send_Primer_Row_to_Reformat|}1|180|}
-{2010212001|XXGvertex_oport_oport|310|0|490|0|{0|out|}180|181|}
-{2010213001|XXGoport_dst_flow|311|0|492|0|{0|}181|28|}
-{2010007001|XXGobject_proto_object|312|0|493|0|{}180|182|}
-{2010212001|XXGvertex_oport_oport|313|0|495|0|{0|out|}182|183|}
-{2010006001|XXGobject_psameas_object|314|0|497|0|{metadata|out_metadata|1|0|}183|182|}
-{2010006001|XXGobject_psameas_object|315|0|498|0|{Layout|Layout|0|0|}180|184|}
-{2010212001|XXGvertex_oport_oport|316|0|500|0|{0|out0|}184|185|}
-{2010213001|XXGoport_dst_flow|317|0|502|0|{0|}185|14|}
-{2010212001|XXGvertex_oport_oport|318|0|503|0|{1|reject0|}184|186|}
-{2010212001|XXGvertex_oport_oport|319|0|505|0|{2|error0|}184|187|}
-{2010212001|XXGvertex_oport_oport|320|0|507|0|{3|log|}184|188|}
-{2010211001|XXGvertex_iport_iport|321|0|509|0|{0|in|}184|189|}
-{2010214001|XXGiport_src_flow|322|0|511|0|{0|}189|28|}
-{2010007001|XXGobject_proto_object|323|0|512|0|{}184|190|}
-{2010212001|XXGvertex_oport_oport|324|0|514|0|{0|out0|}190|191|}
-{2010006001|XXGobject_psameas_object|325|0|516|0|{metadata|out0_metadata|1|0|}191|190|}
-{2010006001|XXGobject_psameas_object|326|0|517|0|{transform0|transform0|1|0|}191|190|}
-{2010212001|XXGvertex_oport_oport|327|0|518|0|{1|reject0|}190|192|}
-{2010006001|XXGobject_psameas_object|328|0|520|0|{metadata|reject0_metadata|1|0|}192|190|}
-{2010212001|XXGvertex_oport_oport|329|0|521|0|{2|error0|}190|193|}
-{2010006001|XXGobject_psameas_object|330|0|523|0|{metadata|error0_metadata|1|0|}193|190|}
-{2010212001|XXGvertex_oport_oport|331|0|524|0|{3|log|}190|194|}
-{2010006001|XXGobject_psameas_object|332|0|526|0|{metadata|log_metadata|1|0|}194|190|}
-{2010211001|XXGvertex_iport_iport|333|0|527|0|{0|in|}190|195|}
-{2010006001|XXGobject_psameas_object|334|0|529|0|{metadata|in_metadata|1|0|}195|190|}
-{2010006001|XXGobject_psameas_object|335|0|530|0|{in_metadata|out_metadata|0|0|}184|180|}
-{2010006001|XXGobject_psameas_object|336|0|531|0|{out0_metadata|write_metadata|0|0|}184|132|}
-{2010006001|XXGobject_psameas_object|337|0|532|0|{reject0_metadata|out_metadata|0|0|}184|180|}
-{2010601001|XXGgraph_vertex_vertex|338|0|533|0|{Update_Last_Extract_Value_File|}1|184|}
-{2010601001|XXGgraph_vertex_vertex|339|0|534|0|{move_FEXP_LOGFILE|}1|196|}
-{2010212001|XXGvertex_oport_oport|340|0|536|0|{0|out|}196|197|}
-{2010211001|XXGvertex_iport_iport|341|0|538|0|{0|in|}196|198|}
-{2010007001|XXGobject_proto_object|342|0|540|0|{}196|199|}
-{2010212001|XXGvertex_oport_oport|343|0|542|0|{0|out|}199|200|}
-{2010006001|XXGobject_psameas_object|344|0|544|0|{metadata|out_metadata|1|0|}200|199|}
-{2010211001|XXGvertex_iport_iport|345|0|545|0|{0|in|}199|201|}
-{2010006001|XXGobject_psameas_object|346|0|547|0|{metadata|in_metadata|1|0|}201|199|}
-{2010109001|XXGobject_property_value|347|0|548|0|{0|TrackingThumbprint|72|}1|202|}
+{2010212001|XXGvertex_oport_oport|113|0|192|0|{0|out|}79|80|}
+{2010006001|XXGobject_psameas_object|114|0|194|0|{metadata|out_metadata|1|0|}80|79|}
+{2010211001|XXGvertex_iport_iport|115|0|195|0|{0|in|}79|81|}
+{2010006001|XXGobject_psameas_object|116|0|197|0|{metadata|in_metadata|1|0|}81|79|}
+{2010006001|XXGobject_psameas_object|117|0|198|0|{in_metadata|read_metadata|0|0|}76|82|}
+{2010212001|XXGvertex_oport_oport|118|0|200|0|{0|read|}82|83|}
+{2010213001|XXGoport_dst_flow|119|0|202|0|{0|}83|34|}
+{2010212001|XXGvertex_oport_oport|120|0|203|0|{1|log|}82|84|}
+{2010213001|XXGoport_dst_flow|121|0|205|0|{0|}84|17|}
+{2010007001|XXGobject_proto_object|122|0|206|0|{}82|85|}
+{2010212001|XXGvertex_oport_oport|123|0|208|0|{0|read|}85|86|}
+{2010006001|XXGobject_psameas_object|124|0|210|0|{metadata|read_metadata|1|0|}86|85|}
+{2010212001|XXGvertex_oport_oport|125|0|211|0|{1|log|}85|87|}
+{2010006001|XXGobject_psameas_object|126|0|213|0|{metadata|log_metadata|1|0|}87|85|}
+{2010006001|XXGobject_psameas_object|127|0|214|0|{Layout|Layout|0|0|}82|76|}
+{2010006001|XXGobject_psameas_object|128|0|215|0|{out_metadata|read_metadata|0|0|}76|82|}
+{2010601001|XXGgraph_vertex_vertex|129|0|216|0|{Deflate|}1|52|}
+{2010601001|XXGgraph_vertex_vertex|130|0|217|0|{Extract_Log_File|}1|88|}
+{2010212001|XXGvertex_oport_oport|131|0|219|0|{0|read|}88|89|}
+{2010213001|XXGoport_dst_flow|132|0|221|0|{0|}89|33|}
+{2010007001|XXGobject_proto_object|133|0|222|0|{}88|90|}
+{2010212001|XXGvertex_oport_oport|134|0|224|0|{0|read|}90|91|}
+{2010006001|XXGobject_psameas_object|135|0|226|0|{metadata|read_metadata|1|0|}91|90|}
+{2010601001|XXGgraph_vertex_vertex|136|0|227|0|{Gather_Extract_Logs|}1|92|}
+{2010211001|XXGvertex_iport_iport|137|0|229|0|{0|in|}92|93|}
+{2010214001|XXGiport_src_flow|138|0|231|0|{0|}93|11|}
+{2010007001|XXGobject_proto_object|139|0|232|0|{}92|94|}
+{2010211001|XXGvertex_iport_iport|140|0|234|0|{0|in|}94|95|}
+{2010006001|XXGobject_psameas_object|141|0|236|0|{metadata|in_metadata|1|0|}95|94|}
+{2010006001|XXGobject_psameas_object|142|0|237|0|{in_metadata|log_metadata|0|0|}92|96|}
+{2010212001|XXGvertex_oport_oport|143|0|239|0|{0|read|}96|97|}
+{2010213001|XXGoport_dst_flow|144|0|241|0|{0|}97|22|}
+{2010212001|XXGvertex_oport_oport|145|0|242|0|{1|log|}96|98|}
+{2010213001|XXGoport_dst_flow|146|0|244|0|{0|}98|11|}
+{2010007001|XXGobject_proto_object|147|0|245|0|{}96|99|}
+{2010212001|XXGvertex_oport_oport|148|0|247|0|{0|read|}99|100|}
+{2010006001|XXGobject_psameas_object|149|0|249|0|{metadata|read_metadata|1|0|}100|99|}
+{2010212001|XXGvertex_oport_oport|150|0|250|0|{1|log|}99|101|}
+{2010006001|XXGobject_psameas_object|151|0|252|0|{metadata|log_metadata|1|0|}101|99|}
+{2010006001|XXGobject_psameas_object|152|0|253|0|{Layout|Layout|0|0|}96|76|}
+{2010601001|XXGgraph_vertex_vertex|153|0|254|0|{Gather_Extract_Logs_1|}1|102|}
+{2010211001|XXGvertex_iport_iport|154|0|256|0|{0|in|}102|103|}
+{2010214001|XXGiport_src_flow|155|0|258|0|{0|}103|15|}
+{2010007001|XXGobject_proto_object|156|0|259|0|{}102|104|}
+{2010211001|XXGvertex_iport_iport|157|0|261|0|{0|in|}104|105|}
+{2010006001|XXGobject_psameas_object|158|0|263|0|{metadata|in_metadata|1|0|}105|104|}
+{2010006001|XXGobject_psameas_object|159|0|264|0|{in_metadata|log_metadata|0|0|}102|106|}
+{2010212001|XXGvertex_oport_oport|160|0|266|0|{0|read|}106|107|}
+{2010213001|XXGoport_dst_flow|161|0|268|0|{0|}107|16|}
+{2010212001|XXGvertex_oport_oport|162|0|269|0|{1|log|}106|108|}
+{2010213001|XXGoport_dst_flow|163|0|271|0|{0|}108|15|}
+{2010007001|XXGobject_proto_object|164|0|272|0|{}106|109|}
+{2010212001|XXGvertex_oport_oport|165|0|274|0|{0|read|}109|110|}
+{2010006001|XXGobject_psameas_object|166|0|276|0|{metadata|read_metadata|1|0|}110|109|}
+{2010212001|XXGvertex_oport_oport|167|0|277|0|{1|log|}109|111|}
+{2010006001|XXGobject_psameas_object|168|0|279|0|{metadata|log_metadata|1|0|}111|109|}
+{2010006001|XXGobject_psameas_object|169|0|280|0|{Layout|Layout|0|0|}106|76|}
+{2010601001|XXGgraph_vertex_vertex|170|0|281|0|{Gather_Extract_Logs_2|}1|112|}
+{2010211001|XXGvertex_iport_iport|171|0|283|0|{0|in|}112|113|}
+{2010214001|XXGiport_src_flow|172|0|285|0|{0|}113|17|}
+{2010007001|XXGobject_proto_object|173|0|286|0|{}112|114|}
+{2010211001|XXGvertex_iport_iport|174|0|288|0|{0|in|}114|115|}
+{2010006001|XXGobject_psameas_object|175|0|290|0|{metadata|in_metadata|1|0|}115|114|}
+{2010006001|XXGobject_psameas_object|176|0|291|0|{in_metadata|log_metadata|0|0|}112|82|}
+{2010601001|XXGgraph_vertex_vertex|177|0|292|0|{Gather_Extract_Logs_3|}1|116|}
+{2010211001|XXGvertex_iport_iport|178|0|294|0|{0|in|}116|117|}
+{2010214001|XXGiport_src_flow|179|0|296|0|{0|}117|19|}
+{2010007001|XXGobject_proto_object|180|0|297|0|{}116|118|}
+{2010211001|XXGvertex_iport_iport|181|0|299|0|{0|in|}118|119|}
+{2010006001|XXGobject_psameas_object|182|0|301|0|{metadata|in_metadata|1|0|}119|118|}
+{2010006001|XXGobject_psameas_object|183|0|302|0|{in_metadata|log_metadata|0|0|}116|120|}
+{2010212001|XXGvertex_oport_oport|184|0|304|0|{0|read|}120|121|}
+{2010213001|XXGoport_dst_flow|185|0|306|0|{0|}121|20|}
+{2010212001|XXGvertex_oport_oport|186|0|307|0|{1|log|}120|122|}
+{2010213001|XXGoport_dst_flow|187|0|309|0|{0|}122|19|}
+{2010007001|XXGobject_proto_object|188|0|310|0|{}120|123|}
+{2010212001|XXGvertex_oport_oport|189|0|312|0|{0|read|}123|124|}
+{2010006001|XXGobject_psameas_object|190|0|314|0|{metadata|read_metadata|1|0|}124|123|}
+{2010212001|XXGvertex_oport_oport|191|0|315|0|{1|log|}123|125|}
+{2010006001|XXGobject_psameas_object|192|0|317|0|{metadata|log_metadata|1|0|}125|123|}
+{2010006001|XXGobject_psameas_object|193|0|318|0|{Layout|Layout|0|0|}120|76|}
+{2010601001|XXGgraph_vertex_vertex|194|0|319|0|{Gather_Extract_Logs_4|}1|126|}
+{2010211001|XXGvertex_iport_iport|195|0|321|0|{0|in|}126|127|}
+{2010214001|XXGiport_src_flow|196|0|323|0|{0|}127|21|}
+{2010007001|XXGobject_proto_object|197|0|324|0|{}126|128|}
+{2010211001|XXGvertex_iport_iport|198|0|326|0|{0|in|}128|129|}
+{2010006001|XXGobject_psameas_object|199|0|328|0|{metadata|in_metadata|1|0|}129|128|}
+{2010006001|XXGobject_psameas_object|200|0|329|0|{in_metadata|log_metadata|0|0|}126|130|}
+{2010212001|XXGvertex_oport_oport|201|0|331|0|{0|read|}130|131|}
+{2010213001|XXGoport_dst_flow|202|0|333|0|{0|}131|23|}
+{2010212001|XXGvertex_oport_oport|203|0|334|0|{1|log|}130|132|}
+{2010213001|XXGoport_dst_flow|204|0|336|0|{0|}132|21|}
+{2010007001|XXGobject_proto_object|205|0|337|0|{}130|133|}
+{2010212001|XXGvertex_oport_oport|206|0|339|0|{0|read|}133|134|}
+{2010006001|XXGobject_psameas_object|207|0|341|0|{metadata|read_metadata|1|0|}134|133|}
+{2010212001|XXGvertex_oport_oport|208|0|342|0|{1|log|}133|135|}
+{2010006001|XXGobject_psameas_object|209|0|344|0|{metadata|log_metadata|1|0|}135|133|}
+{2010006001|XXGobject_psameas_object|210|0|345|0|{Layout|Layout|0|0|}130|76|}
+{2010601001|XXGgraph_vertex_vertex|211|0|346|0|{Get_Max_Value_for_Extract_Field|}1|136|}
+{2010212001|XXGvertex_oport_oport|212|0|348|0|{0|out|}136|137|}
+{2010213001|XXGoport_dst_flow|213|0|350|0|{0|}137|32|}
+{2010212001|XXGvertex_oport_oport|214|0|351|0|{1|reject|}136|138|}
+{2010212001|XXGvertex_oport_oport|215|0|353|0|{2|error|}136|139|}
+{2010212001|XXGvertex_oport_oport|216|0|355|0|{3|log|}136|140|}
+{2010211001|XXGvertex_iport_iport|217|0|357|0|{0|in|}136|141|}
+{2010214001|XXGiport_src_flow|218|0|359|0|{0|}141|31|}
+{2010214001|XXGiport_src_flow|219|0|360|0|{1|}141|29|}
+{2010007001|XXGobject_proto_object|220|0|361|0|{}136|142|}
+{2010212001|XXGvertex_oport_oport|221|0|363|0|{0|out|}142|143|}
+{2010006001|XXGobject_psameas_object|222|0|365|0|{metadata|out_metadata|1|0|}143|142|}
+{2010212001|XXGvertex_oport_oport|223|0|366|0|{1|reject|}142|144|}
+{2010006001|XXGobject_psameas_object|224|0|368|0|{metadata|reject_metadata|1|0|}144|142|}
+{2010212001|XXGvertex_oport_oport|225|0|369|0|{2|error|}142|145|}
+{2010006001|XXGobject_psameas_object|226|0|371|0|{metadata|error_metadata|1|0|}145|142|}
+{2010212001|XXGvertex_oport_oport|227|0|372|0|{3|log|}142|146|}
+{2010006001|XXGobject_psameas_object|228|0|374|0|{metadata|log_metadata|1|0|}146|142|}
+{2010211001|XXGvertex_iport_iport|229|0|375|0|{0|in|}142|147|}
+{2010006001|XXGobject_psameas_object|230|0|377|0|{metadata|in_metadata|1|0|}147|142|}
+{2010006001|XXGobject_psameas_object|231|0|378|0|{Layout|Layout|0|0|}136|148|}
+{2010211001|XXGvertex_iport_iport|232|0|380|0|{0|write|}148|149|}
+{2010214001|XXGiport_src_flow|233|0|382|0|{0|}149|32|}
+{2010007001|XXGobject_proto_object|234|0|383|0|{}148|150|}
+{2010211001|XXGvertex_iport_iport|235|0|385|0|{0|write|}150|151|}
+{2010006001|XXGobject_psameas_object|236|0|387|0|{metadata|write_metadata|1|0|}151|150|}
+{2010006001|XXGobject_psameas_object|237|0|388|0|{in_metadata|read_metadata|0|0|}136|82|}
+{2010006001|XXGobject_psameas_object|238|0|389|0|{out_metadata|write_metadata|0|0|}136|148|}
+{2010006001|XXGobject_psameas_object|239|0|390|0|{reject_metadata|read_metadata|0|0|}136|82|}
+{2010601001|XXGgraph_vertex_vertex|240|0|391|0|{Input_Table_Generic_ODBC|}1|120|}
+{2010601001|XXGgraph_vertex_vertex|241|0|392|0|{Input_Table_Oracle|}1|96|}
+{2010601001|XXGgraph_vertex_vertex|242|0|393|0|{Input_Table_Sqlserver|}1|82|}
+{2010601001|XXGgraph_vertex_vertex|243|0|394|0|{Input_Table_Teradata_API|}1|130|}
+{2010601001|XXGgraph_vertex_vertex|244|0|395|0|{Input_Table_Teradata_Fast_Export|}1|106|}
+{2010601001|XXGgraph_vertex_vertex|245|0|396|0|{Last_Extract_Value_File|}1|152|}
+{2010211001|XXGvertex_iport_iport|246|0|398|0|{0|write|}152|153|}
+{2010214001|XXGiport_src_flow|247|0|400|0|{0|}153|14|}
+{2010007001|XXGobject_proto_object|248|0|401|0|{}152|154|}
+{2010211001|XXGvertex_iport_iport|249|0|403|0|{0|write|}154|155|}
+{2010006001|XXGobject_psameas_object|250|0|405|0|{metadata|write_metadata|1|0|}155|154|}
+{2010601001|XXGgraph_vertex_vertex|251|0|406|0|{Last_Extract_Value_File_1|}1|148|}
+{2010601001|XXGgraph_vertex_vertex|252|0|407|0|{Output_File|}1|48|}
+{2010601001|XXGgraph_vertex_vertex|253|0|408|0|{Record_Count_File|}1|156|}
+{2010211001|XXGvertex_iport_iport|254|0|410|0|{0|write|}156|157|}
+{2010214001|XXGiport_src_flow|255|0|412|0|{0|}157|12|}
+{2010007001|XXGobject_proto_object|256|0|413|0|{}156|158|}
+{2010211001|XXGvertex_iport_iport|257|0|415|0|{0|write|}158|159|}
+{2010006001|XXGobject_psameas_object|258|0|417|0|{metadata|write_metadata|1|0|}159|158|}
+{2010006001|XXGobject_psameas_object|259|0|418|0|{write_metadata|out_metadata|0|0|}156|160|}
+{2010212001|XXGvertex_oport_oport|260|0|420|0|{0|out|}160|161|}
+{2010213001|XXGoport_dst_flow|261|0|422|0|{0|}161|12|}
+{2010212001|XXGvertex_oport_oport|262|0|423|0|{1|reject|}160|162|}
+{2010212001|XXGvertex_oport_oport|263|0|425|0|{2|error|}160|163|}
+{2010212001|XXGvertex_oport_oport|264|0|427|0|{3|log|}160|164|}
+{2010211001|XXGvertex_iport_iport|265|0|429|0|{0|in|}160|165|}
+{2010214001|XXGiport_src_flow|266|0|431|0|{0|}165|35|}
+{2010007001|XXGobject_proto_object|267|0|432|0|{}160|166|}
+{2010212001|XXGvertex_oport_oport|268|0|434|0|{0|out|}166|167|}
+{2010006001|XXGobject_psameas_object|269|0|436|0|{metadata|out_metadata|1|0|}167|166|}
+{2010212001|XXGvertex_oport_oport|270|0|437|0|{1|reject|}166|168|}
+{2010006001|XXGobject_psameas_object|271|0|439|0|{metadata|reject_metadata|1|0|}168|166|}
+{2010212001|XXGvertex_oport_oport|272|0|440|0|{2|error|}166|169|}
+{2010006001|XXGobject_psameas_object|273|0|442|0|{metadata|error_metadata|1|0|}169|166|}
+{2010212001|XXGvertex_oport_oport|274|0|443|0|{3|log|}166|170|}
+{2010006001|XXGobject_psameas_object|275|0|445|0|{metadata|log_metadata|1|0|}170|166|}
+{2010211001|XXGvertex_iport_iport|276|0|446|0|{0|in|}166|171|}
+{2010006001|XXGobject_psameas_object|277|0|448|0|{metadata|in_metadata|1|0|}171|166|}
+{2010006001|XXGobject_psameas_object|278|0|449|0|{Layout|Layout|0|0|}160|156|}
+{2010006001|XXGobject_psameas_object|279|0|450|0|{in_metadata|out0_metadata|0|0|}160|172|}
+{2010212001|XXGvertex_oport_oport|280|0|452|0|{0|out0|}172|173|}
+{2010213001|XXGoport_dst_flow|281|0|454|0|{0|}173|35|}
+{2010212001|XXGvertex_oport_oport|282|0|455|0|{1|reject0|}172|174|}
+{2010212001|XXGvertex_oport_oport|283|0|457|0|{2|error0|}172|175|}
+{2010212001|XXGvertex_oport_oport|284|0|459|0|{3|log|}172|176|}
+{2010211001|XXGvertex_iport_iport|285|0|461|0|{0|in|}172|177|}
+{2010214001|XXGiport_src_flow|286|0|463|0|{0|}177|33|}
+{2010007001|XXGobject_proto_object|287|0|464|0|{}172|178|}
+{2010212001|XXGvertex_oport_oport|288|0|466|0|{0|out0|}178|179|}
+{2010006001|XXGobject_psameas_object|289|0|468|0|{metadata|out0_metadata|1|0|}179|178|}
+{2010006001|XXGobject_psameas_object|290|0|469|0|{transform0|transform0|1|0|}179|178|}
+{2010212001|XXGvertex_oport_oport|291|0|470|0|{1|reject0|}178|180|}
+{2010006001|XXGobject_psameas_object|292|0|472|0|{metadata|reject0_metadata|1|0|}180|178|}
+{2010212001|XXGvertex_oport_oport|293|0|473|0|{2|error0|}178|181|}
+{2010006001|XXGobject_psameas_object|294|0|475|0|{metadata|error0_metadata|1|0|}181|178|}
+{2010212001|XXGvertex_oport_oport|295|0|476|0|{3|log|}178|182|}
+{2010006001|XXGobject_psameas_object|296|0|478|0|{metadata|log_metadata|1|0|}182|178|}
+{2010211001|XXGvertex_iport_iport|297|0|479|0|{0|in|}178|183|}
+{2010006001|XXGobject_psameas_object|298|0|481|0|{metadata|in_metadata|1|0|}183|178|}
+{2010006001|XXGobject_psameas_object|299|0|482|0|{Layout|Layout|0|0|}172|156|}
+{2010006001|XXGobject_psameas_object|300|0|483|0|{in_metadata|read_metadata|0|0|}172|88|}
+{2010006001|XXGobject_psameas_object|301|0|484|0|{reject0_metadata|read_metadata|0|0|}172|88|}
+{2010006001|XXGobject_psameas_object|302|0|485|0|{reject_metadata|out0_metadata|0|0|}160|172|}
+{2010601001|XXGgraph_vertex_vertex|303|0|486|0|{Reformat|}1|172|}
+{2010601001|XXGgraph_vertex_vertex|304|0|487|0|{Replicate|}1|184|}
+{2010212001|XXGvertex_oport_oport|305|0|489|0|{0|out|}184|185|}
+{2010213001|XXGoport_dst_flow|306|0|491|0|{0|}185|18|}
+{2010213001|XXGoport_dst_flow|307|0|492|0|{1|}185|31|}
+{2010211001|XXGvertex_iport_iport|308|0|493|0|{0|in|}184|186|}
+{2010214001|XXGiport_src_flow|309|0|495|0|{0|}186|16|}
+{2010214001|XXGiport_src_flow|310|0|496|0|{1|}186|23|}
+{2010214001|XXGiport_src_flow|311|0|497|0|{2|}186|22|}
+{2010214001|XXGiport_src_flow|312|0|498|0|{3|}186|34|}
+{2010214001|XXGiport_src_flow|313|0|499|0|{4|}186|20|}
+{2010007001|XXGobject_proto_object|314|0|500|0|{}184|187|}
+{2010212001|XXGvertex_oport_oport|315|0|502|0|{0|out|}187|188|}
+{2010006001|XXGobject_psameas_object|316|0|504|0|{metadata|out_metadata|1|0|}188|187|}
+{2010211001|XXGvertex_iport_iport|317|0|505|0|{0|in|}187|189|}
+{2010006001|XXGobject_psameas_object|318|0|507|0|{metadata|in_metadata|1|0|}189|187|}
+{2010006001|XXGobject_psameas_object|319|0|508|0|{Layout|Layout|0|0|}184|76|}
+{2010006001|XXGobject_psameas_object|320|0|509|0|{in_metadata|read_metadata|0|0|}184|82|}
+{2010006001|XXGobject_psameas_object|321|0|510|0|{out_metadata|read_metadata|0|0|}184|82|}
+{2010601001|XXGgraph_vertex_vertex|322|0|511|0|{Retain_Flow_to_Flow|}1|190|}
+{2010212001|XXGvertex_oport_oport|323|0|513|0|{0|out|}190|191|}
+{2010213001|XXGoport_dst_flow|324|0|515|0|{0|}191|26|}
+{2010211001|XXGvertex_iport_iport|325|0|516|0|{0|in|}190|192|}
+{2010214001|XXGiport_src_flow|326|0|518|0|{0|}192|13|}
+{2010007001|XXGobject_proto_object|327|0|519|0|{}190|193|}
+{2010212001|XXGvertex_oport_oport|328|0|521|0|{0|out|}193|194|}
+{2010006001|XXGobject_psameas_object|329|0|523|0|{metadata|out_metadata|1|0|}194|193|}
+{2010211001|XXGvertex_iport_iport|330|0|524|0|{0|in|}193|195|}
+{2010006001|XXGobject_psameas_object|331|0|526|0|{metadata|in_metadata|1|0|}195|193|}
+{2010006001|XXGobject_psameas_object|332|0|527|0|{Layout|Layout|0|0|}190|48|}
+{2010006001|XXGobject_psameas_object|333|0|528|0|{in_metadata|in_metadata|0|0|}190|36|}
+{2010006001|XXGobject_psameas_object|334|0|529|0|{out_metadata|in_metadata|0|0|}190|36|}
+{2010601001|XXGgraph_vertex_vertex|335|0|530|0|{Rollup_Record_Counts|}1|160|}
+{2010601001|XXGgraph_vertex_vertex|336|0|531|0|{Send_From_Extract_Value_to_Rollup|}1|196|}
+{2010212001|XXGvertex_oport_oport|337|0|533|0|{0|out|}196|197|}
+{2010213001|XXGoport_dst_flow|338|0|535|0|{0|}197|29|}
+{2010007001|XXGobject_proto_object|339|0|536|0|{}196|198|}
+{2010212001|XXGvertex_oport_oport|340|0|538|0|{0|out|}198|199|}
+{2010006001|XXGobject_psameas_object|341|0|540|0|{metadata|out_metadata|1|0|}199|198|}
+{2010006001|XXGobject_psameas_object|342|0|541|0|{Layout|Layout|0|0|}196|148|}
+{2010006001|XXGobject_psameas_object|343|0|542|0|{out_metadata|read_metadata|0|0|}196|82|}
+{2010601001|XXGgraph_vertex_vertex|344|0|543|0|{Send_Primer_Row_to_Reformat|}1|200|}
+{2010212001|XXGvertex_oport_oport|345|0|545|0|{0|out|}200|201|}
+{2010213001|XXGoport_dst_flow|346|0|547|0|{0|}201|30|}
+{2010007001|XXGobject_proto_object|347|0|548|0|{}200|202|}
+{2010212001|XXGvertex_oport_oport|348|0|550|0|{0|out|}202|203|}
+{2010006001|XXGobject_psameas_object|349|0|552|0|{metadata|out_metadata|1|0|}203|202|}
+{2010006001|XXGobject_psameas_object|350|0|553|0|{Layout|Layout|0|0|}200|204|}
+{2010212001|XXGvertex_oport_oport|351|0|555|0|{0|out0|}204|205|}
+{2010213001|XXGoport_dst_flow|352|0|557|0|{0|}205|14|}
+{2010212001|XXGvertex_oport_oport|353|0|558|0|{1|reject0|}204|206|}
+{2010212001|XXGvertex_oport_oport|354|0|560|0|{2|error0|}204|207|}
+{2010212001|XXGvertex_oport_oport|355|0|562|0|{3|log|}204|208|}
+{2010211001|XXGvertex_iport_iport|356|0|564|0|{0|in|}204|209|}
+{2010214001|XXGiport_src_flow|357|0|566|0|{0|}209|30|}
+{2010007001|XXGobject_proto_object|358|0|567|0|{}204|210|}
+{2010212001|XXGvertex_oport_oport|359|0|569|0|{0|out0|}210|211|}
+{2010006001|XXGobject_psameas_object|360|0|571|0|{metadata|out0_metadata|1|0|}211|210|}
+{2010006001|XXGobject_psameas_object|361|0|572|0|{transform0|transform0|1|0|}211|210|}
+{2010212001|XXGvertex_oport_oport|362|0|573|0|{1|reject0|}210|212|}
+{2010006001|XXGobject_psameas_object|363|0|575|0|{metadata|reject0_metadata|1|0|}212|210|}
+{2010212001|XXGvertex_oport_oport|364|0|576|0|{2|error0|}210|213|}
+{2010006001|XXGobject_psameas_object|365|0|578|0|{metadata|error0_metadata|1|0|}213|210|}
+{2010212001|XXGvertex_oport_oport|366|0|579|0|{3|log|}210|214|}
+{2010006001|XXGobject_psameas_object|367|0|581|0|{metadata|log_metadata|1|0|}214|210|}
+{2010211001|XXGvertex_iport_iport|368|0|582|0|{0|in|}210|215|}
+{2010006001|XXGobject_psameas_object|369|0|584|0|{metadata|in_metadata|1|0|}215|210|}
+{2010006001|XXGobject_psameas_object|370|0|585|0|{in_metadata|out_metadata|0|0|}204|200|}
+{2010006001|XXGobject_psameas_object|371|0|586|0|{out0_metadata|write_metadata|0|0|}204|152|}
+{2010006001|XXGobject_psameas_object|372|0|587|0|{reject0_metadata|out_metadata|0|0|}204|200|}
+{2010601001|XXGgraph_vertex_vertex|373|0|588|0|{Update_Last_Extract_Value_File|}1|204|}
+{2010601001|XXGgraph_vertex_vertex|374|0|589|0|{Write_JSON|}1|70|}
+{2010601001|XXGgraph_vertex_vertex|375|0|590|0|{Write_JSON_Reformat|}1|58|}
+{2010601001|XXGgraph_vertex_vertex|376|0|591|0|{move_FEXP_LOGFILE|}1|216|}
+{2010212001|XXGvertex_oport_oport|377|0|593|0|{0|out|}216|217|}
+{2010211001|XXGvertex_iport_iport|378|0|595|0|{0|in|}216|218|}
+{2010007001|XXGobject_proto_object|379|0|597|0|{}216|219|}
+{2010212001|XXGvertex_oport_oport|380|0|599|0|{0|out|}219|220|}
+{2010006001|XXGobject_psameas_object|381|0|601|0|{metadata|out_metadata|1|0|}220|219|}
+{2010211001|XXGvertex_iport_iport|382|0|602|0|{0|in|}219|221|}
+{2010006001|XXGobject_psameas_object|383|0|604|0|{metadata|in_metadata|1|0|}221|219|}
+{2010109001|XXGobject_property_value|384|0|605|0|{0|TrackingThumbprint|72|}1|222|}
