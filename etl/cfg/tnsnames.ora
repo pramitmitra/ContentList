@@ -4817,7 +4817,7 @@ SIEBEL=
         (PROTOCOL=TCP)
         (HOST=siebel.vip.ebay.com)
         (PORT=1521))
-        (CONNECT_DATA=(SID= SIEBEL)))
+        (CONNECT_DATA=(SERVICE_NAME= SIEBEL)))
 
 caty12stbyhdp=
         (DESCRIPTION=
