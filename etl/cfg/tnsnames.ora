@@ -5078,3 +5078,17 @@ PHXCSSTG=
       (SERVICE_NAME=CSSTGPHX)
     )
   )
+
+
+vuact1 = 
+  (DESCRIPTION = 
+  (ADDRESS = (PROTOCOL = TCP) (Host = vuact1.vip.ebay.com) (Port = 1521)) 
+  (CONNECT_DATA = 
+  (SID=VUACT1)))
+
+
+vuact2 = 
+  (DESCRIPTION = 
+  (ADDRESS = (PROTOCOL = TCP) (Host = vuact2.vip.ebay.com) (Port = 1521)) 
+  (CONNECT_DATA = 
+  (SID=VUACT2)))
