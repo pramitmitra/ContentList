@@ -736,7 +736,7 @@ caty12stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty12stby.vip.ebay.com)
+        (HOST=caty12.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY12)))
 caty13stby=
