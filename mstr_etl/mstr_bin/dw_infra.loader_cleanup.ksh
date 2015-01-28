@@ -44,7 +44,6 @@
 # Ryan Wong        07/15/2013      Fix UOW cleanup folder for DATA_RET_DAYS gt 0, add TABLE_ID to r4a folder name
 # Ryan Wong        08/01/2013      Fix R4A_FILE list for UOW to be less than (lt) the MIN_LOAD_UNIT_OF_WORK
 # Ryan Wong        10/04/2013      Redhat changes
-# Ryan Wong        01/15/2015      Deprecated mapping of primary/secondary/all from LOAD_JOB_ENV
 #------------------------------------------------------------------------------------------------
 
 JOB_ENV=$1        # extract, td1, td2, td3, td4, etc... ( primary, secondary, all -- deprecated )
@@ -86,8 +85,8 @@ then
     set -e
     if [[ $rcode != 0 ]]
     then
-      print "${0##*/}:  EXTRACT_PROCESS_TYPE not found in $DW_CFG/$ETL_ID.cfg.  Defaulting to empty string"
-      EXTRACT_PROCESS_TYPE=""
+      print "${0##*/}:  ERROR, failure determining value for EXTRACT_PROCESS_TYPE parameter from $DW_CFG/$ETL_ID.cfg" >&2
+      exit 4
     fi
 
     #----------------------------------------------------------------------------------------------------------
@@ -109,9 +108,9 @@ then
     else
       #----------------------------------------------------------------------------------------------------------
       # LOAD_JOB_ENV is a pipe delimited list of all targets in use. A single target is stand alone sans pipe.
-      # Determines which load BATCH_SEQ_NUM file(s) to use to determine when data files have been loaded and can
-      # be archived.
-      # Mapping of primary, secondary, all are deprecated in favor of td1, td2, etc...
+      # primary, secondary, all are deprecated in favor of td1, td2, etc... all resolves to td1|td2 until
+      # functionality is completely deprecated from the production environment. Determines which load
+      # BATCH_SEQ_NUM file(s) to use to determine when data files have been loaded and can be archived.
       #----------------------------------------------------------------------------------------------------------
       set +e
       grep "^LOAD_JOB_ENV\>" $DW_CFG/$ETL_ID.cfg | read PARAM LOAD_JOB_ENV COMMENT
@@ -123,6 +122,13 @@ then
         print "${0##*/}:  ERROR, failure determining value for LOAD_JOB_ENV parameter from $DW_CFG/$ETL_ID.cfg" >&2
         exit 4
       fi
+
+      # Convert legacy dual values to current multi env values
+      case $LOAD_JOB_ENV in
+              all)   LOAD_JOB_ENV="td1|td2";;
+          primary)   LOAD_JOB_ENV=td1;;
+        secondary)   LOAD_JOB_ENV=td2;;
+      esac
 
       # Fill job environment array, count elements and initialize loop index to 0
       set -A LOAD_JOB_ENV_ARR `print "$LOAD_JOB_ENV"| awk -F'|' '{for(i=1; i<=NF; i++){printf("%s ", $i)}}'`
@@ -810,6 +816,36 @@ then
         done
     fi
 
+
+    #------------------------------------------------------------------------
+    #  Move extract and load log/err files to the archive directory.
+    #------------------------------------------------------------------------
+#    print "Marking log files from previous processing periods as .r4a"
+#
+#    if [ -f $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.!(*.r4a|*$CURR_DATETIME.*) ]
+#    then
+#        for fn in $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.!(*.r4a|*$CURR_DATETIME.*)
+#        do
+#            if [[ ${fn##*.} == err && ! -s $fn ]]
+#            then
+#                rm -f $fn     # remove empty error files
+#            else
+#                mv -f $fn $fn.r4a
+#            fi
+#        done
+#    fi
+#
+#    if [[ $JOB_TYPE_ID == dm ]]
+#    then
+#       if [ -f $DW_SA_LOG/$TABLE_ID.bt.*.datamove.!(*.r4a|*$CURR_DATETIME.*) ]
+#       then
+#           for fn in $DW_SA_LOG/$TABLE_ID.bt.*.datamove.!(*.r4a|*$CURR_DATETIME.*)
+#           do
+#               mv $fn $fn.r4a
+#           done
+#       fi
+#    fi
+
 else
     #------------------------------------------------------------------------
     #  Remove bteq temp files.
@@ -824,6 +860,23 @@ else
         done
     fi
 
+    #------------------------------------------------------------------------
+    #  Move bteq log/err files to the archive directory.
+    #------------------------------------------------------------------------
+#    print "Marking log files from previous processing periods as .r4a"
+#
+#    if [ -f $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.*${SQL_FILE_BASENAME}.!(*.r4a|*$CURR_DATETIME.*) ]
+#    then
+#        for fn in $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.*${SQL_FILE_BASENAME}.!(*.r4a|*$CURR_DATETIME.*)
+#        do
+#            if [[ ${fn##*.} == err && ! -s $fn ]]
+#            then
+#                rm -f $fn     # remove empty error files
+#            else
+#                mv -f $fn $fn.r4a
+#            fi
+#        done
+#    fi
 fi
 
 print "loader cleanup process complete"
