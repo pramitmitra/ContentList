@@ -78,7 +78,7 @@ TARGET_FILE_TMP=`print $(eval print $TARGET_FILE)`
 #TARGET_FILE_TMP=${TARGET_FILE_TMP%%$COMPRESS_SFX}.$BATCH_SEQ_NUM$COMPRESS_SFX
 
 set +e
-ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; /usr/bin/wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
+ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
 rcode=$?
 set -e
 
@@ -87,7 +87,7 @@ then
         print "${0##*/}:  ERROR, failure executing wget." >&2
         print "${0##*/}:  ERROR, see ${SCP_HOST}:$REMOTE_DIR/$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log for wget error message." >&2
         print
-        print \"$SCP_USERNAME@$SCP_HOST \"cd $REMOTE_DIR\; /usr/bin/wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP\" >&2
+        print \"$SCP_USERNAME@$SCP_HOST \"cd $REMOTE_DIR\; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP\" >&2
         print
         print "Output of file: ${SCP_HOST}:$REMOTE_DIR/$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log"
         print  
