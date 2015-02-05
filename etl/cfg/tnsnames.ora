@@ -680,7 +680,7 @@ caty4stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty4stby.vip.ebay.com)
+        (HOST=caty4.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY4)))
 caty5stby=
@@ -757,7 +757,7 @@ caty15stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty15stby.vip.ebay.com)
+        (HOST=caty15.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(SID=caty15)))
 caty16stby=
@@ -5092,3 +5092,31 @@ vuact2 =
   (ADDRESS = (PROTOCOL = TCP) (Host = vuact2.vip.ebay.com) (Port = 1521)) 
   (CONNECT_DATA = 
   (SID=VUACT2)))
+
+cshadoop =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = CSORP
+    )
+  )
+
+csorpivr =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = CSORP)
+    )
+  )
+
+
+csorpocs =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = CSORP)
+    )
+  )
