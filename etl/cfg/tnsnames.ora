@@ -5098,7 +5098,7 @@ cshadoop =
     (ADDRESS = (PROTOCOL = TCP)(HOST = exacsorp.vip.ebay.com)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
-      (SERVICE_NAME = CSORP
+      (SERVICE_NAME = CSORP)
     )
   )
 
