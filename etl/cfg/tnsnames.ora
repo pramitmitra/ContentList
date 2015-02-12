@@ -659,7 +659,7 @@ caty1stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty1.vip.ebay.com)
+        (HOST=caty1stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY1)))
 caty2stby=
@@ -680,7 +680,7 @@ caty4stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty4.vip.ebay.com)
+        (HOST=caty4stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY4)))
 caty5stby=
@@ -708,7 +708,7 @@ caty8stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty8stby.vip.ebay.com)
+        (HOST=caty8.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY8)))
 caty9stby=
@@ -799,7 +799,7 @@ caty21stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = caty21stby.vip.ebay.com)
+        (Host = caty21.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=caty21)))
 
@@ -3012,7 +3012,7 @@ caty25stby=
 
         (PROTOCOL = TCP)
 
-        (Host = caty25stby.vip.ebay.com)
+        (Host = caty25.vip.ebay.com)
 
         (Port = 1521))
 
@@ -4823,7 +4823,7 @@ caty12stbyhdp=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty12stby.vip.ebay.com)
+        (HOST=caty12.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY12)))
 mobile=
