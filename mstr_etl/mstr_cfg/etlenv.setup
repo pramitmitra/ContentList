@@ -393,7 +393,7 @@ export DW_HD3_DB=artemis
 
 export HD1_NN_URL="hdfs://ares-nn.vip.ebay.com:8020"
 export HD2_NN_URL="hdfs://apollo-phx-nn.vip.ebay.com:8020"
-export HD3_NN_URL="hdfs://lvsdpehdc25en0001.lvs.ebay.com:8020"
+export HD3_NN_URL="hdfs://artemis-lvs-nn.vip.ebay.com:8020"
 
 svr_loc=$(nslookup $servername | grep "^Name:" | cut -f2 | cut -d'.' -f2)
 set +eu
