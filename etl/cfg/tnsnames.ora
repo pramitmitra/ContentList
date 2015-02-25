@@ -5120,3 +5120,30 @@ csorpocs =
       (SERVICE_NAME = CSORP)
     )
   )
+
+
+INQ85 =
+(DESCRIPTION=
+(ADDRESS= (PROTOCOL=TCP)(HOST=inquira.vip.ebay.com)(PORT=1527))
+(CONNECT_DATA=(SID=INQ85)))
+
+cshost=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=SUPT)))
+
+supt=
+        (DESCRIPTION=
+        (SDU=8192)
+        (TDU=8192)
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=supt.vip.ebay.com)
+        (PORT=1521))
+        (CONNECT_DATA=(sid=SUPT)))
+
