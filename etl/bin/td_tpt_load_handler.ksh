@@ -14,6 +14,7 @@
 # 2013-10-04  1.2    Ryan Wong                    Redhat changes
 # 2013-10-08  1.3    Ryan Wong                    Netstat on Redhat
 # 2013-10-17  1.4    Ryan Wong                    Changed tpt_load binary to point to DW_MASTER_EXE
+# 2015-03-02  1.5    Jiankang Liu                 Fix the tpt_load job path bug
 ####################################################################################################
 
 if [ $# -lt 2 ]
@@ -41,7 +42,7 @@ CURR_DATETIME=$(date '+%Y%m%d-%H%M%S')
 . /dw/etl/mstr_cfg/etlenv.setup
 
 
-TPT_LOAD_JOB="$DW_MASTER_EXE/td_tpt_load.ksh"
+TPT_LOAD_JOB="$DW_BIN/td_tpt_load.ksh"
 logon_file="$DW_LOGINS/$SUBJECT_AREA"
 work_directory="$DW_TMP/$JOB_ENV/$SUBJECT_AREA"
 log_file="$DW_LOG/$JOB_ENV/$SUBJECT_AREA/$TABLE_ID.ld.$(date '+%Y%m%d-%H%M%S').log"
