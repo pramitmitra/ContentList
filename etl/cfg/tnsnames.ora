@@ -5123,9 +5123,14 @@ csorpocs =
 
 
 INQ85 =
-(DESCRIPTION=
-(ADDRESS= (PROTOCOL=TCP)(HOST=inquira.vip.ebay.com)(PORT=1527))
-(CONNECT_DATA=(SID=INQ85)))
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = inquira.vip.ebay.com)(PORT = 1527))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = INQ85)
+    )
+  )
+
 
 cshost=
         (DESCRIPTION=
