@@ -3261,6 +3261,13 @@ utrade10=
   (CONNECT_DATA=(SID=UTRADE10)))
 
   
+utrade10stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = utrade10secondary.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=UTRADE10)))
 
   
 
