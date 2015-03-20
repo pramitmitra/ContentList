@@ -242,8 +242,8 @@ then
   		print "Cleaning up Hadoop Target folder $HADOOP_TARGET_FOLDER on $HADOOP_SYSTEM, see log $CLENA_UP_HADOOP_TARGET_FOLDER_LOG"
 	 	
 		set +e
-		   print  "ssh $SSH_USER@$HADOOP_CLI \" .  ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||print 0 \""  > $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
-		   ssh $SSH_USER@$HADOOP_CLI ". ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||print 0"  >> $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
+		   print  "ssh $SSH_USER@$HADOOP_CLI \" .  ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||echo 0 \""  > $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
+		   ssh $SSH_USER@$HADOOP_CLI ". ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||echo 0"  >> $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
 		   rcode=$?
 		   print $rcode
 		set -e
