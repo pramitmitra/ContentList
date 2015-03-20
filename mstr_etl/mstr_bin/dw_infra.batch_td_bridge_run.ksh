@@ -9,6 +9,7 @@
 # 2013-05-23  1.1    George Xiong                    Initial
 # 2013-09-08  1.2    George Xiong                    add env for Artemis
 # 2013-10-04  1.3    Ryan Wong                       Redhat changes
+# 2015-03-20  1.3    Jiankang Liu                    Fix the print: command not found bug in remote server
 #------------------------------------------------------------------------------------------------
 
 typeset -fu processCommand
