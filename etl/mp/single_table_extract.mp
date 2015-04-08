@@ -76,34 +76,46 @@ then
 else
    print 0
 fi)|3|6|REk||{0|}}
-{30001002|XXparameter|MSSQL_USERNAME|$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_USER
-else
-   print 0
-fi)|3|6|REk||{0|}}
-{30001002|XXparameter|MSSQL_PASSWORD|$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_PASS
-else
-   print 0
-fi)|3|6|REk||{0|}}
-{30001002|XXparameter|MYSQL_USERNAME|$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_USER
-else
-   print 0
-fi)|3|6|REk||{0|}}
-{30001002|XXparameter|MYSQL_PASSWORD|$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_PASS
-else
-   print 0
-fi)|3|6|REk||{0|}}
+{30001002|XXparameter|MSSQL_USERNAME|$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_USER
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+)|3|6|Ek||{0|}}
+{30001002|XXparameter|MSSQL_PASSWORD|$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_PASS
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )|3|6|Ek||{0|}}
+{30001002|XXparameter|MYSQL_USERNAME|$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_USER
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+  )|3|6|Ek||{0|}}
+{30001002|XXparameter|MYSQL_PASSWORD|$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_PASS
+    else
+      print $MYSQL_PASSWORD
+    fi
+  fi
+ )|3|6|Ek||{0|}}
 {30001002|XXparameter|FEXP_SLEEP|$(if [[ $EXTRACT_TYPE = "T" ]]
 then
    print $(grep "^FEXP_SLEEP\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $VALUE)
@@ -380,6 +392,11 @@ fi
 )|3|6|EKk||{0|}}
 {30001002|XXparameter|CNDTL_EXTRACT_JSON|$(grep "^CNDTL_EXTRACT_JSON\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|EKk||{0|}}
 {30001002|XXparameter|_ab_has_render_fixups|2|1|1|Hl||{0|}}
+{30001002|XXparameter|STAGE_DB|$(case $EXTRACT_TYPE in
+       "S" ) print $(grep "^MSSQL_STAGE_DB\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $VALUE);;
+             * ) print $(grep "^STAGE_DB\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $\{VALUE-""\});;
+esac)|3|6|EKk||{0|}}
+{30001002|XXparameter|DEFAULT_DB|$STAGE_DB|3|2|EK$||{0|}}
 {30001002|XXparameter|_parameters_of_Gather_Extract_Logs|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Replicate|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Output_File|@34|9|FHK|@{0|}}
@@ -410,10 +427,10 @@ fi
 {30001002|XXparameter|_parameters_of_Write_JSON|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Write_JSON_Reformat|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@0|0|0|0|1884000|1246000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1883000|1246000|7|}}
+}}@0|@0|0|0|0|1894000|1246000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1893000|1246000|7|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|1|1|1|}Job 'single_table_extract' Execution Status Report
 
-Compilation of graph "single_table_extract" started at Friday, November 21, 2014 15:23:45
+Compilation of graph "single_table_extract" started at Thursday, April 02, 2015 12:16:30
 No compilation errors
 ||m_env -v
 
@@ -466,7 +483,7 @@ then
    exit 4
 fi
 ||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 004||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@Phase 1:  The log file from the Input Table
 component is parsed to get the number of
@@ -494,24 +511,24 @@ $FROM_EXTRACT_VALUE in the next run of the loader
 system.|839906|722163|860000|742000|357000|105000|738|}}
 {2010242002|XXGface|10|0|19|0|{@{}@Courier New|16711680|90|0|}}
 {2010210004|XXGflow|11|0|21|0|{@{}@384|.5|.5|{12|249000|550000|249000|570000|164000|570000|164000|449000|79000|449000|79000|470000|}3197|19|}}
-{2010210004|XXGflow|12|0|23|0|{@{}@384|.5|.5|{12|506000|989000|526000|989000|536000|989000|536000|1014000|547000|1014000|568000|1014000|}3233|17|}}
+{2010210004|XXGflow|12|0|23|0|{@{}@384|.5|.5|{12|506000|989000|526000|989000|536000|989000|536000|1014000|547000|1014000|568000|1014000|}3243|17|}}
 {2010210004|XXGflow|13|0|25|0|{@{}@384|.5|.5|{12|751000|154000|771000|154000|825000|154000|825000|149000|879000|149000|900000|149000|}800|20|}}
-{2010210004|XXGflow|14|0|27|0|{@{}@384|.5|.5|{12|438000|1189000|458000|1189000|471000|1189000|471000|1219000|485000|1219000|506000|1219000|}3235|17|}}
-{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|249000|170000|249000|190000|164000|190000|164000|61000|79000|61000|79000|82000|}850|19|}}
+{2010210004|XXGflow|14|0|27|0|{@{}@384|.5|.5|{12|438000|1189000|458000|1189000|471000|1189000|471000|1219000|485000|1219000|506000|1219000|}3245|17|}}
+{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|249000|170000|249000|190000|164000|190000|164000|61000|79000|61000|79000|82000|}3239|19|}}
 {2010210004|XXGflow|16|0|31|0|{@{}@384|.5|0.0|{12|288000|129000|308000|129000|308000|129000|308000|274000|417000|274000|438000|274000|}849|17|}}
-{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|234000|723000|234000|743000|157000|743000|157000|616000|79000|616000|79000|637000|}3206|19|}}
+{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|234000|723000|234000|743000|157000|743000|157000|616000|79000|616000|79000|637000|}3247|19|}}
 {2010210004|XXGflow|18|0|35|0|{@{}@384|.5|.5|{12|509000|289000|529000|289000|594000|289000|594000|154000|659000|154000|680000|154000|}799|17|}}
-{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|239000|897000|239000|917000|162000|917000|162000|770000|84000|770000|84000|791000|}3200|19|}}
+{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|239000|897000|239000|917000|162000|917000|162000|770000|84000|770000|84000|791000|}3249|19|}}
 {2010210004|XXGflow|20|0|39|0|{@{}@384|.5|1.0|{12|281000|859000|301000|859000|417000|859000|417000|314000|417000|314000|438000|314000|}3199|17|}}
 {2010210004|XXGflow|21|0|41|0|{@{}@384|.5|.5|{12|259000|374000|259000|394000|169000|394000|169000|250000|79000|250000|79000|271000|}3203|19|}}
 {2010210004|XXGflow|22|0|43|0|{@{}@384|.5|.6666666865348816|{12|287000|509000|307000|509000|367000|509000|367000|294000|397000|294000|438000|294000|}3196|17|}}
 {2010210004|XXGflow|23|0|45|0|{@{}@384|.5116279125213623|0.0|{12|301000|334000|321000|334000|321000|334000|321000|284000|387000|284000|438000|284000|}3202|17|}}
 {2010210004|XXGflow|24|0|47|0|{@{}@384|.5|.5|{8|1232000|129000|1252000|129000|1271000|129000|1292000|129000|}3213|17|}}
-{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{12|1737000|129000|1757000|129000|1777000|129000|1777000|159000|1797000|159000|1818000|159000|}3229|17|}}
+{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{8|1737000|129000|1757000|129000|1807000|129000|1828000|129000|}3251|17|}}
 {2010210004|XXGflow|26|0|51|0|{@{}@384|.5|.5|{12|971000|149000|991000|149000|1023000|149000|1023000|129000|1055000|129000|1076000|129000|}3211|17|}}
 {2010210004|XXGflow|27|0|53|0|{@{}@384|.5|.5|{8|1406000|129000|1426000|129000|1436000|129000|1457000|129000|}3222|17|}}
 {2010210004|XXGflow|28|0|55|0|{@{}@384|.5|.5|{8|1599000|129000|1619000|129000|1651000|129000|1672000|129000|}3226|17|}}
-{2010210004|XXGflow|29|0|57|0|{@{}@384|.5|1.0|{12|515000|469000|535000|469000|607000|469000|607000|309000|607000|309000|628000|309000|}806|17|}}
+{2010210004|XXGflow|29|0|57|0|{@{}@384|.5|1.0|{12|515000|469000|535000|469000|607000|469000|607000|309000|607000|309000|628000|309000|}3233|17|}}
 {2010210004|XXGflow|30|0|59|0|{@{}@384|.5|.5|{12|142000|1219000|162000|1219000|208000|1219000|208000|1189000|254000|1189000|275000|1189000|}833|17|}}
 {2010210004|XXGflow|31|0|61|0|{@{}@384|.5|1.0|{8|509000|299000|529000|299000|597000|299000|628000|299000|}802|531|}}
 {2010210004|XXGflow|32|0|63|0|{@{}@384|.5|.5|{12|782000|304000|802000|304000|802000|304000|802000|334000|803000|334000|824000|334000|}3231|17|}}
@@ -637,8 +654,8 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@0|@1807290|112437|1829000|132000|56000|50000|3230|Output File|Craig Werre||1|10|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|49|0|105|0|{@{}@1819000|154000|11000|11000|write|0.0|@@@1776|0|}}
+}}@0|@1817290|82437|1839000|102000|56000|50000|3252|Output File|Craig Werre||1|10|0||6||32769|-1|-1|}}
+{2010202004|XXGiport|49|0|105|0|{@{}@1829000|124000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|50|0|108|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -2093,7 +2110,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 0 ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@0|@45116|87189|60000|93000|40000|47000|845|Gather Extract Logs-1|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@45116|87189|60000|93000|40000|47000|3240|Gather Extract Logs-1|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
 {2010202004|XXGiport|103|0|257|0|{@{}@74000|83000|11000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|104|0|260|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
@@ -2698,7 +2715,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "S" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@0|@46427|641784|61000|648000|40000|47000|3194|Gather Extract Logs-2|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@46427|641784|61000|648000|40000|47000|3248|Gather Extract Logs-2|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
 {2010202004|XXGiport|113|0|284|0|{@{}@74000|638000|11000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|114|0|287|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
@@ -2723,7 +2740,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M" \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@0|@49000|795579|64000|802000|40000|47000|3195|Gather Extract Logs-3|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@49000|795579|64000|802000|40000|47000|3250|Gather Extract Logs-3|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
 {2010202004|XXGiport|117|0|295|0|{@{}@79000|792000|11000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|118|0|298|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
@@ -4110,7 +4127,7 @@ end;|3|1|l|@{0|}}
   string("\\n") last_extract_value;
 end;|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
-}}@2|@494928|1171573|517000|1192000|56000|50000|3236|Last Extract Value File|Craig Werre||1|10|0||6||32769|-1|-1|}}
+}}@2|@494928|1171573|517000|1192000|56000|50000|3246|Last Extract Value File|Craig Werre||1|10|0||6||32769|-1|-1|}}
 {2010202004|XXGiport|153|0|399|0|{@{}@507000|1214000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|154|0|402|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
@@ -4143,7 +4160,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$RECORD_COUNT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@1|@556866|970439|579000|990000|56000|50000|3234|Record Count File|Craig Werre||1|10|0||6||32769|-1|-1|}}
+}}@1|@556866|970439|579000|990000|56000|50000|3244|Record Count File|Craig Werre||1|10|0||6||32769|-1|-1|}}
 {2010202004|XXGiport|157|0|411|0|{@{}@569000|1009000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|158|0|414|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
@@ -4509,7 +4526,7 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Validate/Generate_Records.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
-}}@0|@424765|417684|445000|438000|60000|60000|807|Send From Extract Value to Rollup|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@424765|417684|445000|438000|60000|60000|3234|Send From Extract Value to Rollup|Ab Initio Software|Built-in 2.0:|1|10|0||6||32769|1|{1|0|}}}
 {2010203004|XXGoport|197|0|534|0|{@{}@504000|464000|11000|11000|out|0.0|@@@2448|0|}}
 {2010501005|XXGpvertex|198|0|537|0|{Generates a specified number of data records with fields of specified lengths and types.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|generate|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|/~ab_home/bin/unitool|3|2|H$||{0|}}
@@ -4711,7 +4728,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|221|0|603|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|222|0|606|0|{@{}@{1|791823|}}}
+{2010110002|XXGconstant|222|0|606|0|{@{}@{1|233401|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}

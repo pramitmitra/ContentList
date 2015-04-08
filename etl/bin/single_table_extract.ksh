@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Thursday, April 02, 2015 13:57:54 using GDE version 3.1.4.1
+# Deployed execution script for graph "single_table_extract", compiled at Monday, April 06, 2015 13:52:50 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -394,6 +394,20 @@ function _AB_PARSE_ARGUMENTS {
       let _ab_index_var=_ab_index_var+1
       shift
       ;;
+     -STAGE_DB )
+      export STAGE_DB;      STAGE_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -DEFAULT_DB )
+      export DEFAULT_DB;      DEFAULT_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
    * )
       if [ X"${_AB_USED_ARGUMENTS[_ab_index_var]}" != X1 ]; then
          print -r -- 'Unexpected command line argument found: '"${_ab_kwd}"
@@ -553,49 +567,61 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_USER
-else
-   print 0
-fi)
+export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_USER
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_PASS
-else
-   print 0
-fi)
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_PASS
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_PASSWORD of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_USER
-else
-   print 0
-fi)
+export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_USER
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+  )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_PASS
-else
-   print 0
-fi)
+export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_PASS
+    else
+      print $MYSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_PASSWORD of single_table_extract', interpretation 'shell'
@@ -1146,6 +1172,16 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter CNDTL_EXTRACT_JSON of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
+export STAGE_DB;STAGE_DB=$(case $EXTRACT_TYPE in
+       "S" ) print $(grep "^MSSQL_STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+             * ) print $(grep "^STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print ${VALUE-""});;
+esac)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter STAGE_DB of single_table_extract', interpretation 'shell'
+   exit $mpjret
+fi
+export DEFAULT_DB;DEFAULT_DB="$STAGE_DB"
 (
    # Parameters of Gather Extract Logs
    LogFile="$EXTRACT_LOG_FILE"
@@ -2678,7 +2714,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=800955
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=5354257
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
