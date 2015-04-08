@@ -1,5 +1,5 @@
 @
-{18|Type|XXGrepository|Primary_Name|XXGgraph|_ab_object_schema|0|_ab_semantic_schema|1|eme_flatten_format|1|schema_version|34|root_id|0|ent_count|41|rel_count|65|}
+{18|Type|XXGrepository|Primary_Name|XXGgraph|_ab_object_schema|0|_ab_semantic_schema|0|eme_flatten_format|1|schema_version|34|root_id|0|ent_count|41|rel_count|65|}
 {2010001002|XXGdirectory|0|1|1|0|{@{}@}}
 {2010600005|XXGgraph|1|0|1|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|ETL_ID||3|2|REFO$|subject_area.table_id|{0|}}
 {30001002|XXparameter|JOB_ENV||3|2|REFO$|primary or secondary|{0|}}
@@ -34,8 +34,46 @@ esac)|3|6|EKk||{0|}}
 {30001002|XXparameter|ORA_USERNAME|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)|3|6|Ek||{0|}}
 {30001002|XXparameter|ORA_PASSWORD|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)|3|6|Ek||{0|}}
 {30001002|XXparameter|ODBC_DATA_SOURCE_NAME|$(grep "^odbc_data_source_name\\>" $DW_DBC/$AB_IDB_CONFIG \| read A ODSN_TMP; print $\{ODSN_TMP:-""\})|3|6|EKk||{0|}}
-{30001002|XXparameter|MSSQL_USERNAME|$(grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)|3|6|EKk||{0|}}
-{30001002|XXparameter|MSSQL_PASSWORD|$(grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)|3|6|EKk||{0|}}
+{30001002|XXparameter|MSSQL_USERNAME|$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+ )|3|6|EKk||{0|}}
+{30001002|XXparameter|MSSQL_PASSWORD|$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )|3|6|EKk||{0|}}
+{30001002|XXparameter|MYSQL_USERNAME|$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+ )|3|6|EKk||{0|}}
+{30001002|XXparameter|MYSQL_PASSWORD|$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
+    else
+      print $MYSQL_PASSWORD
+    fi
+  fi
+ )|3|6|EKk||{0|}}
 {30001002|XXparameter|DW_SA_LOG|$DW_LOG/$JOB_ENV/$SUBJECT_AREA/$TABLE_ID/$CURR_DATE|3|2|E$||{0|}}
 {30001002|XXparameter|DW_SA_TMP|$DW_TMP/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
 {30001002|XXparameter|FILE_DATETIME|$(date '+%Y%m%d-%H%M%S')|3|6|REk||{0|}}
@@ -50,23 +88,24 @@ esac)|3|6|EKk||{0|}}
   set +e)|3|6|REk||{0|}}
 {30001002|XXparameter|RUN_SQL_FILE|$(. $DW_SA_TMP/$TABLE_ID.bt.$SQL_FILENAME.tmp)|3|6|REk|File with SQL to run|{0|}}
 {30001002|XXparameter|RUN_SQL_LOGFILE|$DW_SA_LOG/$TABLE_ID.bt.$\{SQL_FILENAME%.sql\}.$FILE_DATETIME.log|3|6|REk||{0|}}
+{30001002|XXparameter|_ab_has_render_fixups|2|1|1|Hl||{0|}}
 {30001002|XXparameter|_parameters_of_Run_SQL_Log_File|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Reformat|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Run_SQL_Log_File_Tmp|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Rename_Run_SQL_Log_File_Tmp|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Run_SQL|@34|9|FHK|@{0|}}
 {30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
-}}@0|@0|0|0|0|517000|397000|0|target_table_load_all_dbs|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|517000|397000|7|}}
-{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{3|1|1|1|}Job 'target_table_load_all_dbs' Execution Status Report
+}}@0|@0|0|0|0|508000|412000|0|target_table_load_all_dbs|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|508000|411000|7|}}
+{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|1|1|1|}Job 'target_table_load_all_dbs' Execution Status Report
 
-Compilation of graph "target_table_load_all_dbs" started at Tuesday, October 28, 2014 14:52:10
+Compilation of graph "target_table_load_all_dbs" started at Monday, April 06, 2015 13:56:15
 No compilation errors
 ||||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Lega 004||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 001||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
-{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|78000|118000|78000|138000|78000|183000|84000|183000|115000|183000|}12|17|}}
-{2010210004|XXGflow|6|0|11|0|{@{}@384|.5|.5|{8|176000|183000|176000|183000|223000|183000|230000|183000|}10|17|}}
-{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{8|384000|183000|384000|183000|430000|183000|437000|183000|}8|17|}}
+{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|64000|134000|64000|154000|64000|224000|85000|224000|106000|224000|}12|17|}}
+{2010210004|XXGflow|6|0|11|0|{@{}@384|.5|.5|{12|183000|224000|203000|224000|208000|224000|208000|184000|214000|184000|235000|184000|}10|17|}}
+{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{12|374000|184000|394000|184000|400000|184000|400000|239000|407000|239000|428000|239000|}8|17|}}
 {2010501005|XXGpvertex|8|0|15|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
 begin
   out.event_text :: in.event_text;
@@ -80,12 +119,12 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject0_metadata||3|8|s=|@{0|}}
-}}@1|@221000|130500|241000|151000|133000|65000|9|Reformat|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
-{2010203004|XXGoport|9|0|17|0|{@{}@373000|178000|11000|11000|out0|0.0|count|out|0|2448|0|}}
+}}@1|@226000|130500|246000|151000|118000|69000|9|Reformat|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
+{2010203004|XXGoport|9|0|17|0|{@{}@363000|179000|11000|11000|out0|0.0|count|out|0|2448|0|}}
 {2010203004|XXGoport|10|0|20|0|{@{}@0|0|0|0|reject0|0.0|count|reject|0|1168|0|}}
 {2010203004|XXGoport|11|0|22|0|{@{}@0|0|0|0|error0|0.0|count|error|0|1176|0|}}
 {2010203004|XXGoport|12|0|24|0|{@{}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|13|0|26|0|{@{}@231000|178000|11000|11000|in|0.0|@@@1808|0|}}
+{2010202004|XXGiport|13|0|26|0|{@{}@236000|179000|11000|11000|in|0.0|@@@1808|0|}}
 {2010501005|XXGpvertex|14|0|29|0|{Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|reformat-transform|3|1|Hl|The name used on the mp command line for this component|{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$|The image used if this component was a custom component|{0|}}
 {30001002|XXparameter|count|1|1|1|Fl|Number of reformat transforms|{0|}}
@@ -150,7 +189,7 @@ end;|3|1|l|@{0|}}
 metadata type: reject = in
 metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcomponent, event_type; string(\\"\|\\\\n\\") event_text; end"|3|1|HKl|@{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|15|0|31|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 {30001002|XXparameter|transform0||8|8|FO=|Reformat transform|{0|}}
 {30001002|XXparameter|transform0.index|count|3|9|P|@{0|}}
@@ -169,8 +208,8 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:$\{RUN_SQL_LOGFILE\}.tmp", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Datasets\\Output_File.mdc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@1|@423000|143500|448000|164000|40000|40000|7|Run SQL Log File Tmp|Craig Werre||1|10|-1||6||32769|-1|-1|}}
-{2010202004|XXGiport|21|0|49|0|{@{}@438000|178000|11000|11000|write|0.0|@@@1776|0|}}
+}}@1|@417000|195500|439000|216000|56000|50000|7|Run SQL Log File Tmp|Craig Werre||1|10|-1||6||32769|-1|-1|}}
+{2010202004|XXGiport|21|0|49|0|{@{}@429000|234000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|22|0|52|0|{Represents one file, many files, or a multifile as an output from your graph.  |{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -184,7 +223,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|write_metadata||7|1|RFsl||{0|}}
 {30001002|XXparameter|mpcmodtime|1002319848|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
 {2010202004|XXGiport|23|0|54|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
 {2010501005|XXGpvertex|24|0|58|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|DBConfigFile|$AB_IDB_CONFIG|3|2|f$|@{0|}}
@@ -195,8 +234,8 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Database\\Run SQL.mpc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@14000|15500|34000|36000|90000|72000|13|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|25|0|60|0|{@{}@73000|107000|11000|11000|log|0.0|@@@1176|0|}}
+}}@0|@11000|10000|31000|30000|92000|94000|13|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|25|0|60|0|{@{}@59000|123000|11000|11000|log|0.0|@@@1176|0|}}
 {2010501005|XXGpvertex|26|0|63|0|{Executes SQL statements in a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|db-runsql|3|1|Hl|The name used on the mp command line for this component|{0|}}
 {30001002|XXparameter|image__|~ab_home/db/bin/db-runsql|3|2|H$|The image used if this component was a custom component|{0|}}
 {30001002|XXparameter|DBConfigFile||22|2|RFOf$|Database Description File|{0|}}
@@ -223,7 +262,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|mpcmodtime|1049135758|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|Layout|$[[record kind 78 subkind 68 parts [vector]]]|9|9|RFs||{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcomponent, event_type; string(\\"\|\\\\n\\") event_text; end"|3|1|HKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|27|0|65|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
 {2010503005|XXGfvertex|28|0|68|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0463|3|2|$|@{0|}}
@@ -231,9 +270,9 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Datasets\\Intermediate_File.mdc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|read_metadata||3|8|s=|@{0|}}
-}}@0|@101000|143500|126000|164000|40000|40000|11|Run SQL Log File|Craig Werre||1|-1|-1||6||32769|-1|-1|}}
-{2010203004|XXGoport|29|0|70|0|{@{}@165000|178000|11000|11000|read|0.0|@@@2160|0|}}
-{2010202004|XXGiport|30|0|73|0|{@{}@116000|178000|11000|11000|write|0.0|@@@1776|0|}}
+}}@0|@95000|176500|117000|197000|56000|50000|11|Run SQL Log File|Craig Werre||1|-1|-1||6||32769|-1|-1|}}
+{2010203004|XXGoport|29|0|70|0|{@{}@172000|219000|11000|11000|read|0.0|@@@2160|0|}}
+{2010202004|XXGiport|30|0|73|0|{@{}@107000|219000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|31|0|76|0|{Represents one file, many files, or a multifile as an output from your graph.  |{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -250,7 +289,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|_propagate_through|metadata type: read = write
 metadata type: write = read|3|1|FHKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
 {2010203004|XXGoport|32|0|78|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2160|0|}}
 {2010202004|XXGiport|33|0|81|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -258,9 +297,9 @@ metadata type: write = read|3|1|FHKl|@{0|}}
 {2010501005|XXGpvertex|34|0|87|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|commandline|mv $\{RUN_SQL_LOGFILE\}.tmp $\{RUN_SQL_LOGFILE\}|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$DW_TMP", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Miscellaneous\\Run Program.mpc|3|2|Pw$|@{0|}}
-}}@2|@21000|269500|41000|290000|145000|106000|14|Rename Run SQL Log File Tmp|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
-{2010203004|XXGoport|35|0|89|0|{@{}@185000|337000|11000|11000|out|0.0|@@@2260|0|}}
-{2010202004|XXGiport|36|0|91|0|{@{}@31000|337000|11000|11000|in|0.0|@@@1732|0|}}
+}}@2|@26000|269500|46000|290000|134000|127000|14|Rename Run SQL Log File Tmp|Ab Initio Software|Built-in|1|10|-1||6||36865|1|{1|0|}}}
+{2010203004|XXGoport|35|0|89|0|{@{}@179000|349000|11000|11000|out|0.0|@@@2260|0|}}
+{2010202004|XXGiport|36|0|91|0|{@{}@36000|349000|11000|11000|in|0.0|@@@1732|0|}}
 {2010501005|XXGpvertex|37|0|93|0|{Executes a standard UNIX or Windows NT program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl|The name used on the mp command line for this component|{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$|The image used if this component was a custom component|{0|}}
 {30001002|XXparameter|commandline||16|2|RFO$|Unix or NT command line|{0|}}
@@ -278,12 +317,12 @@ metadata type: write = read|3|1|FHKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1003947270|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|port_analysis|out=in|3|2|H$||{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|38|0|95|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|39|0|98|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|40|0|104|0|{@{}@{1|7349039|}}}
+{2010110002|XXGconstant|40|0|104|0|{@{}@{1|3749237|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}

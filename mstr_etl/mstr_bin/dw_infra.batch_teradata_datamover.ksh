@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "dw_infra.batch_teradata_datamover", compiled at Thursday, April 02, 2015 14:12:01 using GDE version 3.1.4.1
+# Deployed execution script for graph "dw_infra.batch_teradata_datamover", compiled at Monday, March 30, 2015 14:56:33 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}dw_infra_batch_teradata_datamover
 # Begin Ab Initio shell utility functions
 
@@ -1570,7 +1570,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=911440
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=706463
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

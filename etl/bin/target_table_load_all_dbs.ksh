@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "target_table_load_all_dbs", compiled at Friday, October 31, 2014 09:38:27 using GDE version 3.0.3.1
+# Deployed execution script for graph "target_table_load_all_dbs", compiled at Tuesday, April 07, 2015 13:19:57 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}target_table_load_all_dbs
 # Begin Ab Initio shell utility functions
 
@@ -192,7 +192,7 @@ export AB_GRAPH_NAME;AB_GRAPH_NAME=target_table_load_all_dbs
 
 # Host Setup Commands:
 . /dw/etl/mstr_cfg/etlenv.setup
-_AB_PROXY_DIR=target_table_load_all_dbs-ProxyDir-$$
+_AB_PROXY_DIR="$(pwd)"/target_table_load_all_dbs-ProxyDir-$$
 rm -rf "${_AB_PROXY_DIR}"
 mkdir "${_AB_PROXY_DIR}"
 print -r -- "" > "${_AB_PROXY_DIR}"'/GDE-Parameters'
@@ -276,6 +276,20 @@ function _AB_PARSE_ARGUMENTS {
       ;;
      -MSSQL_PASSWORD )
       export MSSQL_PASSWORD;      MSSQL_PASSWORD="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MYSQL_USERNAME )
+      export MYSQL_USERNAME;      MYSQL_USERNAME="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -MYSQL_PASSWORD )
+      export MYSQL_PASSWORD;      MYSQL_PASSWORD="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
       _AB_USED_ARGUMENTS[_ab_index_var+1]=1
       let _ab_index_var=_ab_index_var+1
@@ -413,16 +427,64 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ODBC_DATA_SOURCE_NAME of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_USERNAME;MSSQL_USERNAME=$(grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)
+export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_USERNAME of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_PASSWORD;MSSQL_PASSWORD=$(grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODSN MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_PASSWORD of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+ )
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MYSQL_USERNAME of target_table_load_all_dbs', interpretation 'shell'
+   exit $mpjret
+fi
+export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
+    else
+      print $MYSQL_PASSWORD
+    fi
+  fi
+ )
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter MYSQL_PASSWORD of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
 export DW_SA_LOG;DW_SA_LOG="$DW_LOG"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"'/'"$TABLE_ID"'/'"$CURR_DATE"
@@ -492,16 +554,16 @@ fi
    fi
    print -r -- "${SQLFile}" > "${_AB_PROXY_DIR}"'/Run_SQL-2.sql'
    _AB_FILE_NAME__SQLFile=Run_SQL-2.sql
-   print -rn Run_SQL__SQLFile= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${SQLFile}" >> ${_AB_PROXY_DIR}/GDE-Parameters
-   print -rn _AB_FILE_NAME__Run_SQL__SQLFile= >> ${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${_AB_FILE_NAME__SQLFile}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Run_SQL__SQLFile= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${SQLFile}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
+   print -rn _AB_FILE_NAME__Run_SQL__SQLFile= >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${_AB_FILE_NAME__SQLFile}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
-. ./${_AB_PROXY_DIR}/GDE-Parameters
+. "${_AB_PROXY_DIR}"'/GDE-Parameters'
 
-#+Script Start+  ==================== Edits in this section are preserved.
+#+Script Start+  ==================== 
 #+End Script Start+  ====================
 # Check that the "mp" program is found correctly on the PATH
 case "$_ab_uname" in
@@ -531,8 +593,8 @@ if [ "$_ab_found_mp" = "" ] || [ "$_ab_found_mp" -ot "$_ab_expected_mp" ] || [ "
   exit 1
 fi
 if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.ksh; fi
-mv "${_AB_PROXY_DIR}" "${AB_JOB}"'-target_table_load_all_dbs-ProxyDir'
-_AB_PROXY_DIR="${AB_JOB}"'-target_table_load_all_dbs-ProxyDir'
+mv "${_AB_PROXY_DIR}" "$(pwd)"/"${AB_JOB}"'-target_table_load_all_dbs-ProxyDir'
+_AB_PROXY_DIR="$(pwd)"/"${AB_JOB}"'-target_table_load_all_dbs-ProxyDir'
 print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Run_SQL-3.dml'
 print -r -- 'out::reformat(in) =
 begin
@@ -580,7 +642,7 @@ mp straight-flow Flow_2 Run_SQL_Log_File.read Reformat.in -metadata metadata1
 mp straight-flow Flow_3 Reformat.out.out0 Run_SQL_Log_File_Tmp.write -metadata metadata2
 
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7349039
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=3794828
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
@@ -590,7 +652,7 @@ m_rmcatalog > /dev/null 2>&1
 export XX_CATALOG;XX_CATALOG="${SAVED_CATALOG}"
 export AB_CATALOG;AB_CATALOG="${SAVED_CATALOG}"
 
-#+Script End+  ==================== Edits in this section are preserved.
+#+Script End+  ==================== 
 #+End Script End+  ====================
 
 exit $mpjret
