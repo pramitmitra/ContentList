@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_load", compiled at Tuesday, October 28, 2014 13:37:52 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_load", compiled at Monday, April 06, 2015 15:32:10 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_load
 # Begin Ab Initio shell utility functions
 
@@ -192,7 +192,7 @@ export AB_GRAPH_NAME;AB_GRAPH_NAME=single_table_load
 
 # Host Setup Commands:
 . /dw/etl/mstr_cfg/etlenv.setup
-_AB_PROXY_DIR=single_table_load-ProxyDir-$$
+_AB_PROXY_DIR="$(pwd)"/single_table_load-ProxyDir-$$
 rm -rf "${_AB_PROXY_DIR}"
 mkdir "${_AB_PROXY_DIR}"
 print -r -- "" > "${_AB_PROXY_DIR}"'/GDE-Parameters'
@@ -292,27 +292,6 @@ function _AB_PARSE_ARGUMENTS {
       ;;
      -AB_IDB_MSSQL_CONFIG )
       AB_IDB_MSSQL_CONFIG="${1}"
-      _AB_USED_ARGUMENTS[_ab_index_var]=1
-      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
-      let _ab_index_var=_ab_index_var+1
-      shift
-      ;;
-     -MSSQL_ODBC_NAME )
-      export MSSQL_ODBC_NAME;      MSSQL_ODBC_NAME="${1}"
-      _AB_USED_ARGUMENTS[_ab_index_var]=1
-      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
-      let _ab_index_var=_ab_index_var+1
-      shift
-      ;;
-     -MSSQL_USERNAME )
-      export MSSQL_USERNAME;      MSSQL_USERNAME="${1}"
-      _AB_USED_ARGUMENTS[_ab_index_var]=1
-      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
-      let _ab_index_var=_ab_index_var+1
-      shift
-      ;;
-     -MSSQL_PASSWORD )
-      export MSSQL_PASSWORD;      MSSQL_PASSWORD="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
       _AB_USED_ARGUMENTS[_ab_index_var+1]=1
       let _ab_index_var=_ab_index_var+1
@@ -572,29 +551,50 @@ if [ 0 -ne $mpjret ] ; then
 fi
 AB_IDB_MYSQL_CONFIG=$( if [[ $DB_TYPE != 'MYSQL' ]] 
 then 
-    print MYSQL_sample.dbc 
+    print mysql_sample.dbc 
 else 
-    print $AB_IDB_CONFIG 
+    print $AB_IDB_CONFIG
 fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter AB_IDB_MYSQL_CONFIG of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_ODBC_NAME;MYSQL_ODBC_NAME=$(grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_MYSQL_CONFIG | read A ODBC_NAME_TMP
-  print ${ODBC_NAME_TMP})
+export MYSQL_ODBC_NAME;MYSQL_ODBC_NAME=$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_MYSQL_CONFIG | read A ODBC_NAME_TMP; print ${ODBC_NAME_TMP}
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_ODBC_NAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_USERNAME;MYSQL_USERNAME=$(grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME)
+export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_USERNAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_PASSWORD;MYSQL_PASSWORD=$(grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD)
+export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $DB_TYPE == 'MYSQL' ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
+    else
+      print $MYSQL_PASSWORD
+    fi
+   fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_PASSWORD of single_table_load', interpretation 'shell'
@@ -611,20 +611,41 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter AB_IDB_MSSQL_CONFIG of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_ODBC_NAME;MSSQL_ODBC_NAME=$(grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_MSSQL_CONFIG | read A ODBC_NAME_TMP
-  print ${ODBC_NAME_TMP})
+MSSQL_ODBC_NAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    grep "^odbc_data_source_name\>" $DW_DBC/$AB_IDB_MSSQL_CONFIG | read A ODBC_NAME_TMP; print ${ODBC_NAME_TMP}
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_ODBC_NAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_USERNAME;MSSQL_USERNAME=$(grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME)
+export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_USERNAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_PASSWORD;MSSQL_PASSWORD=$(grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD)
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $DB_TYPE == 'MSSQL' ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_PASSWORD of single_table_load', interpretation 'shell'
@@ -1618,15 +1639,15 @@ fi
       print -- Error evaluating: 'parameter condition of Input_File', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_File__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_File__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
 # Parameters of Reject File-5 skipped because it is disabled
-. ./${_AB_PROXY_DIR}/GDE-Parameters
+. "${_AB_PROXY_DIR}"'/GDE-Parameters'
 
-#+Script Start+  ==================== Edits in this section are preserved.
+#+Script Start+  ==================== 
 m_env -v
 
 if [ -z $USE_DISTR_TABLE ]
@@ -1693,8 +1714,8 @@ if [ "$_ab_found_mp" = "" ] || [ "$_ab_found_mp" -ot "$_ab_expected_mp" ] || [ "
   exit 1
 fi
 if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.ksh; fi
-mv "${_AB_PROXY_DIR}" "${AB_JOB}"'-single_table_load-ProxyDir'
-_AB_PROXY_DIR="${AB_JOB}"'-single_table_load-ProxyDir'
+mv "${_AB_PROXY_DIR}" "$(pwd)"/"${AB_JOB}"'-single_table_load-ProxyDir'
+_AB_PROXY_DIR="$(pwd)"/"${AB_JOB}"'-single_table_load-ProxyDir'
 print -r -- 'string('"'"'\n'"'"')' > "${_AB_PROXY_DIR}"'/Load_Reformat-5.dml'
 print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Output_Table_API-7.dml'
 
@@ -2703,7 +2724,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=2860699
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=5772337
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
@@ -2713,7 +2734,7 @@ m_rmcatalog > /dev/null 2>&1
 export XX_CATALOG;XX_CATALOG="${SAVED_CATALOG}"
 export AB_CATALOG;AB_CATALOG="${SAVED_CATALOG}"
 
-#+Script End+  ==================== Edits in this section are preserved.
+#+Script End+  ==================== 
 
 
 

@@ -200,7 +200,6 @@ fi)|3|6|REk||{0|}}
       print $DW_TMP/$TABLE_ID.$JOB_TYPE_ID.load.rej
   fi
  )|3|6|REk||{0|}}
-{30001002|XXparameter|_ab_has_render_fixups|2|1|1|Hl||{0|}}
 {30001002|XXparameter|_parameters_of_T2T_API_Mode_Extract_Log|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_T2T_API_Mode_Load_Errors|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_T2T_API_Mode_Load_Log|@34|9|FHK|@{0|}}
@@ -222,48 +221,48 @@ fi)|3|6|REk||{0|}}
 {30001002|XXparameter|_parameters_of_T2F_TPT_Mode_Output_File|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_T2T_API_Mode_Append_Output_Table|@34|9|FHK|@{0|}}
 {30001002|XXparameter|_parameters_of_Utility_Load_Table_Check_KSH|@34|9|FHK|@{0|}}
-{30001002|XXparameter|!ab_compatibility|3.1.4.4|3|9|P|@{0|}}
+{30001002|XXparameter|!ab_compatibility|3.1.2.1|3|9|P|@{0|}}
 {30001002|XXparameter|_ab_semantic_schema|2|1|1|Hnl|@{0|}}
-}}@0|@0|0|0|0|1376000|1058000|0|dw_infra.batch_teradata_datamover|Kevin Oaks||1|10|0||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1375000|1058000|7|}}
-{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{2|0|1|}Job 'dw_infra.batch_teradata_datamover' Execution Status Report
+}}@0|@0|0|0|0|1406000|1068000|0|dw_infra.batch_teradata_datamover|Kevin Oaks||1|10|0||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1406061|1068000|7|}}
+{2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.0.3.1|{2|0|1|}Job 'dw_infra.batch_teradata_datamover' Execution Status Report
 
 Compilation of graph "dw_infra.batch_teradata_datamover" started at Tuesday, October 25, 2011 11:49:02
 No compilation errors
 ||m_env -v
 
 ||@|33207807|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 004||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@LVS APD 001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
-{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{12|148000|714000|168000|714000|184000|714000|184000|739000|201000|739000|232000|739000|}3047|17|}}
-{2010210004|XXGflow|6|0|11|0|{@{}@384|.942105233669281|.5|{12|494000|654000|494000|674000|494000|904000|624000|904000|624000|919000|624000|950000|}3082|19|}}
-{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{12|1031000|739000|1051000|739000|1070000|739000|1070000|824000|1089000|824000|1110000|824000|}3074|17|}}
-{2010210004|XXGflow|8|0|15|0|{@{}@384|.5|.5|{12|1184000|865000|1184000|895000|1184000|916000|1209000|916000|1209000|937000|1209000|968000|}3076|19|}}
-{2010210004|XXGflow|9|0|17|0|{@{}@384|.5|.5|{12|1224000|865000|1224000|885000|1224000|910000|1339000|910000|1339000|935000|1339000|956000|}3077|19|}}
-{2010210004|XXGflow|10|0|19|0|{@{}@384|.5|.5|{12|1144000|865000|1144000|885000|1144000|909000|1054000|909000|1054000|934000|1054000|965000|}3075|19|}}
-{2010210004|XXGflow|11|0|21|0|{@{}@384|.5|.5|{12|1031000|729000|1061000|729000|1074000|729000|1074000|669000|1088000|669000|1109000|669000|}3062|17|}}
-{2010210004|XXGflow|12|0|23|0|{@{}@384|.8693467378616333|.5|{12|1139000|707000|1139000|727000|1139000|915000|1064000|915000|1064000|944000|1064000|965000|}3066|19|}}
-{2010210004|XXGflow|13|0|25|0|{@{}@384|.9615384340286255|.5|{12|1179000|707000|1179000|737000|1179000|938000|1199000|938000|1199000|947000|1199000|968000|}3068|19|}}
-{2010210004|XXGflow|14|0|27|0|{@{}@384|.942105233669281|.5|{12|1219000|707000|1219000|727000|1219000|913000|1349000|913000|1349000|925000|1349000|956000|}3072|19|}}
-{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|863000|709000|883000|709000|906000|709000|906000|734000|929000|734000|960000|734000|}3059|17|}}
-{2010210004|XXGflow|16|0|31|0|{@{}@384|.5|.5|{12|109000|754000|109000|774000|109000|856000|99000|856000|99000|939000|99000|960000|}3023|19|}}
-{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|824000|748000|824000|768000|824000|855000|819000|855000|819000|942000|819000|963000|}3060|19|}}
-{2010210004|XXGflow|18|0|35|0|{@{}@384|.5|.0317460335791111|{12|303000|724000|323000|724000|326000|724000|326000|449000|429000|449000|450000|449000|}3084|17|}}
-{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|141000|449000|161000|449000|186000|449000|186000|729000|211000|729000|232000|729000|}3046|17|}}
-{2010210004|XXGflow|20|0|39|0|{@{}@384|.5|.5|{12|850000|449000|870000|449000|904000|449000|904000|724000|939000|724000|960000|724000|}3055|17|}}
-{2010210004|XXGflow|21|0|41|0|{@{}@384|.5|.05970149114727974|{12|1031000|719000|1051000|719000|1058000|719000|1058000|449000|1180000|449000|1201000|449000|}3086|17|}}
-{2010210004|XXGflow|22|0|43|0|{@{}@384|.26923078298568726|.5|{12|414000|859000|414000|879000|414000|892000|329000|892000|329000|928000|329000|959000|}3038|19|}}
-{2010210004|XXGflow|23|0|45|0|{@{}@384|.5|.5|{12|454000|859000|454000|889000|454000|910000|484000|910000|484000|931000|484000|962000|}3042|19|}}
-{2010210004|XXGflow|24|0|47|0|{@{}@384|.4166666567325592|.5|{12|494000|859000|494000|879000|494000|899000|614000|899000|614000|929000|614000|950000|}3044|19|}}
-{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{12|303000|744000|323000|744000|342000|744000|342000|819000|362000|819000|383000|819000|}3049|17|}}
-{2010210004|XXGflow|26|0|51|0|{@{}@384|.5|.5|{12|303000|734000|333000|734000|347000|734000|347000|614000|362000|614000|383000|614000|}3079|17|}}
-{2010210004|XXGflow|27|0|53|0|{@{}@384|.8693467378616333|.5|{12|414000|654000|414000|674000|414000|903000|339000|903000|339000|938000|339000|959000|}3080|19|}}
-{2010210004|XXGflow|28|0|55|0|{@{}@384|.9615384340286255|.5|{12|454000|654000|454000|684000|454000|931000|474000|931000|474000|941000|474000|962000|}3081|19|}}
+{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{8|143000|711000|143000|711000|189000|711000|196000|711000|}3047|17|}}
+{2010210004|XXGflow|6|0|11|0|{@{}@384|.942105233669281|.5|{12|532000|652000|532000|672000|532000|895000|629000|895000|629000|909000|629000|939000|}3082|19|}}
+{2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{12|1076000|711000|1096000|711000|1111000|711000|1111000|822000|1126000|822000|1146000|822000|}3074|17|}}
+{2010210004|XXGflow|8|0|15|0|{@{}@384|.5|.5|{8|1218000|863000|1218000|893000|1218000|927000|1218000|947000|}3076|19|}}
+{2010210004|XXGflow|9|0|17|0|{@{}@384|.5|.5|{12|1259000|863000|1259000|883000|1259000|904000|1346000|904000|1346000|925000|1346000|945000|}3077|19|}}
+{2010210004|XXGflow|10|0|19|0|{@{}@384|.5|.5|{12|1177000|863000|1177000|883000|1177000|898000|1063000|898000|1063000|914000|1063000|944000|}3075|19|}}
+{2010210004|XXGflow|11|0|21|0|{@{}@384|.5|.5|{12|1076000|701000|1106000|701000|1115000|701000|1115000|664000|1125000|664000|1145000|664000|}3062|17|}}
+{2010210004|XXGflow|12|0|23|0|{@{}@384|.8693467378616333|.5|{12|1176000|705000|1176000|725000|1176000|898000|1073000|898000|1073000|924000|1073000|944000|}3066|19|}}
+{2010210004|XXGflow|13|0|25|0|{@{}@384|.9615384340286255|.5|{12|1217000|705000|1217000|735000|1217000|909000|1208000|909000|1208000|917000|1208000|947000|}3068|19|}}
+{2010210004|XXGflow|14|0|27|0|{@{}@384|.942105233669281|.5|{12|1258000|705000|1258000|725000|1258000|903000|1356000|903000|1356000|915000|1356000|945000|}3072|19|}}
+{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|858000|705000|894000|705000|894000|705000|894000|706000|894000|706000|924000|706000|}3059|17|}}
+{2010210004|XXGflow|16|0|31|0|{@{}@384|.5|.5|{8|107000|752000|107000|772000|107000|919000|107000|939000|}3023|19|}}
+{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|822000|746000|822000|766000|822000|844000|824000|844000|824000|922000|824000|942000|}3060|19|}}
+{2010210004|XXGflow|18|0|35|0|{@{}@384|.5|.0317460335791111|{12|348000|696000|368000|696000|369000|696000|369000|391000|419000|391000|459000|391000|}3048|17|}}
+{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|134000|391000|173000|391000|174000|391000|174000|701000|176000|701000|196000|701000|}3046|17|}}
+{2010210004|XXGflow|20|0|39|0|{@{}@384|.5|.5|{12|843000|390000|883000|390000|893000|390000|893000|696000|904000|696000|924000|696000|}3055|17|}}
+{2010210004|XXGflow|21|0|41|0|{@{}@384|.5|.05970149114727974|{12|1076000|691000|1096000|691000|1100000|691000|1100000|391000|1169000|391000|1210000|391000|}3056|17|}}
+{2010210004|XXGflow|22|0|43|0|{@{}@384|.26923078298568726|.5|{12|450000|857000|450000|877000|450000|885000|335000|885000|335000|908000|335000|938000|}3038|19|}}
+{2010210004|XXGflow|23|0|45|0|{@{}@384|.5|.5|{8|491000|857000|491000|887000|491000|921000|491000|941000|}3042|19|}}
+{2010210004|XXGflow|24|0|47|0|{@{}@384|.4166666567325592|.5|{12|532000|857000|532000|877000|532000|894000|619000|894000|619000|919000|619000|939000|}3044|19|}}
+{2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{12|348000|716000|368000|716000|383000|716000|383000|816000|399000|816000|419000|816000|}3049|17|}}
+{2010210004|XXGflow|26|0|51|0|{@{}@384|.5|.5|{12|348000|706000|378000|706000|388000|706000|388000|611000|399000|611000|419000|611000|}3079|17|}}
+{2010210004|XXGflow|27|0|53|0|{@{}@384|.8693467378616333|.5|{12|450000|652000|450000|672000|450000|885000|345000|885000|345000|918000|345000|938000|}3080|19|}}
+{2010210004|XXGflow|28|0|55|0|{@{}@384|.9615384340286255|.5|{12|491000|652000|491000|682000|491000|902000|481000|902000|481000|911000|481000|941000|}3081|19|}}
 {2010503005|XXGfvertex|29|0|57|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$API_LOAD_FROM_FILE|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|read_metadata|$DML_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_File.mdc|3|2|Pf$|@{0|}}
-}}@1|@52767|403917|75000|424000|56000|50000|1|F2T API Mode Input File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
-{2010203004|XXGoport|30|0|59|0|{@{}@130000|444000|11000|11000|read|0.0|@@@2160|0|}}
+}}@1|@58767|351917|84000|372000|40000|40000|1|F2T API Mode Input File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
+{2010203004|XXGoport|30|0|59|0|{@{}@123000|386000|11000|11000|read|0.0|@@@2160|0|}}
 {2010503005|XXGfvertex|31|0|62|0|{Represents one file, many files, or a multifile as an input to your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -288,15 +287,15 @@ No compilation errors
 {30001002|XXparameter|read_metadata||7|1|RFl||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701710|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
 {2010203004|XXGoport|32|0|64|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2160|0|}}
 {2010503005|XXGfvertex|33|0|67|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$TPT_LOAD_FROM_FILE|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$INPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|read_metadata|$DML_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_File.mdc|3|2|Pf$|@{0|}}
-}}@1|@761703|403215|784000|423000|56000|50000|2|F2T TPT Mode Input File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
-{2010203004|XXGoport|34|0|69|0|{@{}@839000|444000|11000|11000|read|0.0|@@@2160|0|}}
+}}@1|@767703|351215|793000|371000|40000|40000|2|F2T TPT Mode Input File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
+{2010203004|XXGoport|34|0|69|0|{@{}@832000|385000|11000|11000|read|0.0|@@@2160|0|}}
 {2010503005|XXGfvertex|35|0|72|0|{Represents one file, many files, or a multifile as an input to your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -321,16 +320,15 @@ No compilation errors
 {30001002|XXparameter|read_metadata||7|1|RFl||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701710|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
 {2010203004|XXGoport|36|0|74|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2160|0|}}
-{2010503005|XXGfvertex|37|0|77|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0664|3|2|$|@{0|}}
-{30001002|XXparameter|condition|$API_EXTRACT_TO_FILE|3|2|$|@{0|}}
+{2010503005|XXGfvertex|37|0|77|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$API_EXTRACT_TO_FILE|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
-}}@1|@438975|403917|461000|424000|56000|50000|3085|T2F API Mode Output File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|38|0|79|0|{@{}@451000|444000|11000|11000|write|0.0|@@@1776|0|}}
+}}@1|@444975|351917|470000|372000|40000|40000|3|T2F API Mode Output File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
+{2010202004|XXGiport|38|0|79|0|{@{}@460000|386000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|39|0|82|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -355,7 +353,7 @@ No compilation errors
 {30001002|XXparameter|write_metadata||7|1|RFsl||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701711|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
 {2010202004|XXGiport|40|0|84|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
 {2010505005|XXGtvertex|41|0|87|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$\{AB_IDB_SRC_DBC\}|3|2|f$|@{0|}}
@@ -369,9 +367,9 @@ No compilation errors
 {30001002|XXparameter|read_metadata|$DML_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
-}}@1|@57560|663790|78000|684000|60000|60000|3024|T2T API Mode Input Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|42|0|89|0|{@{}@137000|709000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|43|0|92|0|{@{}@104000|743000|11000|11000|log|0.0|@@@1176|0|}}
+}}@1|@62560|661790|83000|682000|50000|60000|3024|T2T API Mode Input Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|42|0|89|0|{@{}@132000|706000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|43|0|92|0|{@{}@102000|741000|11000|11000|log|0.0|@@@1176|0|}}
 {2010505005|XXGtvertex|44|0|95|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
@@ -945,18 +943,17 @@ No compilation errors
 {30001002|XXparameter|mpcmodtime|1332701710|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|45|0|97|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
 {2010203004|XXGoport|46|0|100|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
-{2010503005|XXGfvertex|47|0|103|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0664|3|2|$|@{0|}}
-{30001002|XXparameter|condition|$TPT_EXTRACT_TO_FILE|3|2|$|@{0|}}
+{2010503005|XXGfvertex|47|0|103|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$TPT_EXTRACT_TO_FILE|3|2|$|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_File.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|=|@{0|}}
-}}@1|@1189550|404290|1212000|424000|56000|50000|3087|T2F TPT Mode Output File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
-{2010202004|XXGiport|48|0|105|0|{@{}@1202000|444000|11000|11000|write|0.0|@@@1776|0|}}
+}}@1|@1195550|352290|1221000|372000|40000|40000|4|T2F TPT Mode Output File|Kevin Oaks||1|100|0||6||32769|-1|-1|}}
+{2010202004|XXGiport|48|0|105|0|{@{}@1211000|386000|11000|11000|write|0.0|@@@1776|0|}}
 {2010503005|XXGfvertex|49|0|108|0|{Represents one file, many files, or a multifile as an output from your graph.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|protection|0666|12|2|RF$||{0|}}
 {30001002|XXparameter|mode|0x0062|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|condition||3|2|F$||{0|}}
@@ -981,7 +978,7 @@ No compilation errors
 {30001002|XXparameter|write_metadata||7|1|RFl||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701711|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|-1|-1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|-1|-1|}}
 {2010202004|XXGiport|50|0|110|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|write|0.0|@@@1776|0|}}
 {2010505005|XXGtvertex|51|0|114|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$\{AB_IDB_TRGT_DBC\}|3|2|f$|@{0|}}
@@ -996,11 +993,11 @@ No compilation errors
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
-}}@1|@404709|564066|394000|584000|122000|60000|3083|T2T API Mode Append Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|52|0|116|0|{@{}@409000|643000|11000|11000|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|53|0|119|0|{@{}@449000|643000|11000|11000|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|54|0|122|0|{@{}@489000|643000|11000|11000|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|55|0|125|0|{@{}@384000|609000|11000|11000|write|0.0|@@@1936|0|}}
+}}@1|@409709|562066|430000|582000|123000|60000|3083|T2T API Mode Append Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|52|0|116|0|{@{}@445000|641000|11000|11000|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|53|0|119|0|{@{}@486000|641000|11000|11000|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|54|0|122|0|{@{}@527000|641000|11000|11000|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|55|0|125|0|{@{}@420000|606000|11000|11000|write|0.0|@@@1936|0|}}
 {2010110002|XXGconstant|56|0|128|0|{@{}@{1|$\{TRGT_TABLE\}|}}}
 {2010110002|XXGconstant|57|0|130|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|58|0|132|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
@@ -1580,7 +1577,7 @@ No compilation errors
 metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location|@3|9|F|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|59|0|134|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
 {2010203004|XXGoport|60|0|137|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -1593,8 +1590,8 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|condition|$USE_API_EXTRACT|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@64560|964790|80000|971000|40000|47000|5|T2T API Mode Extract Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|64|0|150|0|{@{}@94000|961000|11000|11000|in|0.0|@@@786|0|}}
+}}@1|@30560|929790|51000|950000|113000|116000|5|T2T API Mode Extract Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|64|0|150|0|{@{}@102000|940000|11000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|65|0|153|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -1611,15 +1608,15 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|66|0|155|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|67|0|160|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_TABLE_ERROR_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$USE_API|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@443560|967192|454000|973000|50000|47000|3025|T2T API Mode Load Errors|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|68|0|162|0|{@{}@469000|963000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@409560|932192|430000|952000|113000|116000|3025|T2T API Mode Load Errors|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|68|0|162|0|{@{}@476000|942000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|69|0|166|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -1636,15 +1633,15 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|70|0|168|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|71|0|172|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_TABLE_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$USE_API|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@583560|955192|594000|961000|50000|47000|3026|T2T API Mode Load Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|72|0|174|0|{@{}@609000|951000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@549560|930192|570000|950000|110000|116000|3026|T2T API Mode Load Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|72|0|174|0|{@{}@614000|940000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|73|0|178|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -1661,15 +1658,15 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|74|0|180|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|75|0|184|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_TABLE_REJECT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$USE_API|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@297560|964192|308000|970000|50000|47000|3027|T2T API Mode Load Rejects|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|76|0|186|0|{@{}@324000|960000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@263560|929192|284000|949000|114000|116000|3027|T2T API Mode Load Rejects|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|76|0|186|0|{@{}@330000|939000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|77|0|190|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -1686,7 +1683,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|78|0|192|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010505005|XXGtvertex|79|0|196|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x000A|3|2|$|@{0|}}
@@ -1702,11 +1699,11 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
-}}@1|@404560|769192|394000|789000|122000|60000|3045|T2T API Mode Trunc/Ins Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|80|0|198|0|{@{}@409000|848000|11000|11000|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|81|0|201|0|{@{}@449000|848000|11000|11000|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|82|0|204|0|{@{}@489000|848000|11000|11000|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|83|0|207|0|{@{}@384000|814000|11000|11000|write|0.0|@@@1936|0|}}
+}}@1|@409560|767192|430000|787000|123000|60000|3045|T2T API Mode Trunc/Ins Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|80|0|198|0|{@{}@445000|846000|11000|11000|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|81|0|201|0|{@{}@486000|846000|11000|11000|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|82|0|204|0|{@{}@527000|846000|11000|11000|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|83|0|207|0|{@{}@420000|811000|11000|11000|write|0.0|@@@1936|0|}}
 {2010110002|XXGconstant|84|0|210|0|{@{}@{1|$\{TRGT_TABLE\}|}}}
 {2010110002|XXGconstant|85|0|212|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|86|0|214|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
@@ -2286,7 +2283,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location|@3|9|F|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|87|0|216|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
 {2010203004|XXGoport|88|0|219|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -2301,9 +2298,9 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Replicate.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
-}}@1|@232560|706192|243000|710000|50000|51000|3050|T2T API Replicate|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|92|0|232|0|{@{}@292000|719000|11000|31000|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|93|0|237|0|{@{}@233000|724000|11000|21000|in|0.0|@@@1812|0|}}
+}}@1|@186560|653192|207000|673000|131000|68000|3050|T2T API Replicate|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|92|0|232|0|{@{}@337000|691000|11000|31000|out|0.0|@@@2068|0|}}
+{2010202004|XXGiport|93|0|237|0|{@{}@197000|696000|11000|21000|in|0.0|@@@1812|0|}}
 {2010501005|XXGpvertex|94|0|241|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|NoHidePorts|in out|3|2|H$||{0|}}
@@ -2322,7 +2319,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagate_through|metadata type: out = in
 metadata type: in = out|3|1|FHKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|95|0|243|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2068|0|}}
 {2010202004|XXGiport|96|0|246|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -2350,11 +2347,11 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
-}}@1|@1130647|616894|1120000|637000|122000|60000|3073|T2T TPT Mode Append Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|98|0|253|0|{@{}@1134000|696000|11000|11000|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|99|0|256|0|{@{}@1174000|696000|11000|11000|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|100|0|259|0|{@{}@1214000|696000|11000|11000|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|101|0|262|0|{@{}@1110000|664000|11000|11000|write|0.0|@@@1936|0|}}
+}}@1|@1135647|614894|1156000|635000|123000|60000|3073|T2T TPT Mode Append Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|98|0|253|0|{@{}@1171000|694000|11000|11000|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|99|0|256|0|{@{}@1212000|694000|11000|11000|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|100|0|259|0|{@{}@1253000|694000|11000|11000|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|101|0|262|0|{@{}@1146000|659000|11000|11000|write|0.0|@@@1936|0|}}
 {2010110002|XXGconstant|102|0|265|0|{@{}@{1|$\{TRGT_TABLE\}|}}}
 {2010110002|XXGconstant|103|0|267|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|104|0|269|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
@@ -2934,7 +2931,7 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location|@3|9|F|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|105|0|271|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
 {2010203004|XXGoport|106|0|274|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -2960,9 +2957,9 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|read_metadata|$DML_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
-}}@1|@773153|658146|793000|678000|60000|60000|3061|T2T TPT Mode Input Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|110|0|285|0|{@{}@852000|704000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|111|0|288|0|{@{}@819000|737000|11000|11000|log|0.0|@@@1176|0|}}
+}}@1|@778153|656146|798000|676000|50000|60000|3061|T2T TPT Mode Input Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|110|0|285|0|{@{}@847000|700000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|111|0|288|0|{@{}@817000|735000|11000|11000|log|0.0|@@@1176|0|}}
 {2010505005|XXGtvertex|112|0|291|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
@@ -3536,7 +3533,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1332701710|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|113|0|293|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
 {2010203004|XXGoport|114|0|296|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -3545,8 +3542,8 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|condition|$USE_TPT|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@781601|967744|797000|974000|40000|47000|3051|T2T TPT Mode Extract Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|116|0|302|0|{@{}@814000|964000|11000|11000|in|0.0|@@@786|0|}}
+}}@1|@747601|932744|768000|953000|114000|116000|3051|T2T TPT Mode Extract Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|116|0|302|0|{@{}@819000|943000|11000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|117|0|305|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -3563,15 +3560,15 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|118|0|307|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|119|0|312|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_TABLE_ERROR_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$USE_TPT|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@1170647|972894|1181000|979000|50000|47000|3052|T2T TPT Mode Load Errors|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|120|0|314|0|{@{}@1194000|969000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@1136647|937894|1157000|958000|114000|116000|3052|T2T TPT Mode Load Errors|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|120|0|314|0|{@{}@1203000|948000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|121|0|318|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -3588,7 +3585,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|122|0|320|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010505005|XXGtvertex|123|0|323|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x000A|3|2|$|@{0|}}
@@ -3614,11 +3611,11 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Output_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|write_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|reject_metadata||3|8|s=|@{0|}}
-}}@1|@1131647|774894|1121000|795000|122000|60000|3078|T2T TPT Mode Trunc/Ins Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
-{2010203004|XXGoport|124|0|325|0|{@{}@1139000|854000|11000|11000|reject|0.0|@@@1168|0|}}
-{2010203004|XXGoport|125|0|328|0|{@{}@1179000|854000|11000|11000|error|0.0|@@@1176|0|}}
-{2010203004|XXGoport|126|0|331|0|{@{}@1219000|854000|11000|11000|log|0.0|@@@1176|0|}}
-{2010202004|XXGiport|127|0|334|0|{@{}@1111000|819000|11000|11000|write|0.0|@@@1936|0|}}
+}}@1|@1136647|772894|1157000|793000|123000|60000|3078|T2T TPT Mode Trunc/Ins Output Table|Kevin Oaks|Built-in 2.2:|1|100|0||6||32769|}}
+{2010203004|XXGoport|124|0|325|0|{@{}@1172000|852000|11000|11000|reject|0.0|@@@1168|0|}}
+{2010203004|XXGoport|125|0|328|0|{@{}@1213000|852000|11000|11000|error|0.0|@@@1176|0|}}
+{2010203004|XXGoport|126|0|331|0|{@{}@1254000|852000|11000|11000|log|0.0|@@@1176|0|}}
+{2010202004|XXGiport|127|0|334|0|{@{}@1147000|817000|11000|11000|write|0.0|@@@1936|0|}}
 {2010110002|XXGconstant|128|0|337|0|{@{}@{1|$\{TRGT_TABLE\}|}}}
 {2010110002|XXGconstant|129|0|339|0|{@{}@{1||}}}
 {2010505005|XXGtvertex|130|0|341|0|{Loads data records into a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0012|1|2|FH$|modes of access|{0|}}
@@ -4198,7 +4195,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 metadata type: error = remote("$AB_HOME/include/error-info.dml")
 metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location|@3|9|F|Place in the EME to create a dataset corresponding to this file.|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|}}
 {2010203004|XXGoport|131|0|343|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|reject|0.0|@@@1168|0|}}
 {2010203004|XXGoport|132|0|346|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -4211,8 +4208,8 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|condition|$USE_TPT|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@1310647|960894|1321000|967000|50000|47000|3053|T2T TPT Mode Load Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|136|0|359|0|{@{}@1334000|957000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@1276647|935894|1297000|956000|110000|116000|3053|T2T TPT Mode Load Log|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|136|0|359|0|{@{}@1341000|946000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|137|0|363|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -4229,15 +4226,15 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|138|0|365|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|139|0|369|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$OUTPUT_TABLE_REJECT_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$USE_TPT|3|2|$|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@1|@1024647|969894|1035000|976000|50000|47000|3054|T2T TPT Mode Load Rejects|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|140|0|371|0|{@{}@1049000|966000|21000|11000|in|0.0|@@@786|0|}}
+}}@1|@990647|934894|1011000|955000|115000|116000|3054|T2T TPT Mode Load Rejects|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|140|0|371|0|{@{}@1058000|945000|21000|11000|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|141|0|375|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
@@ -4254,7 +4251,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
 {30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|142|0|377|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|143|0|382|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|condition|$USE_TPT|3|2|$|@{0|}}
@@ -4263,9 +4260,9 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Replicate.mpc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
 {30001002|XXparameter|out_metadata||3|8|s=|@{0|}}
-}}@1|@960647|700894|971000|705000|50000|51000|3057|T2T TPT Replicate|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|144|0|384|0|{@{}@1020000|714000|11000|31000|out|0.0|@@@2068|0|}}
-{2010202004|XXGiport|145|0|389|0|{@{}@961000|719000|11000|21000|in|0.0|@@@1812|0|}}
+}}@1|@914647|647894|935000|668000|131000|68000|3057|T2T TPT Replicate|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|144|0|384|0|{@{}@1065000|686000|11000|31000|out|0.0|@@@2068|0|}}
+{2010202004|XXGiport|145|0|389|0|{@{}@925000|691000|11000|21000|in|0.0|@@@1812|0|}}
 {2010501005|XXGpvertex|146|0|393|0|{Arbitrarily combines all the data records it receives into a single flow and writes a copy of that flow to each of its output flows.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|broadcast|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|NoHidePorts|in out|3|2|H$||{0|}}
@@ -4284,7 +4281,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagate_through|metadata type: out = in
 metadata type: in = out|3|1|FHKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|147|0|395|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2068|0|}}
 {2010202004|XXGiport|148|0|398|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
@@ -4294,9 +4291,9 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|condition_interpretation|Remove completely|3|1|l|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$DW_TMP", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Run_Program.mpc|3|2|Pf$|@{0|}}
-}}@0|@25053|31666|45000|52000|133000|127000|3058|Utility Load Table Check - KSH|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
-{2010203004|XXGoport|150|0|405|0|{@{}@177000|109000|11000|11000|out|0.0|@@@2260|0|}}
-{2010202004|XXGiport|151|0|407|0|{@{}@35000|109000|11000|11000|in|0.0|@@@1732|0|}}
+}}@0|@20053|31666|40000|52000|144000|125000|3058|Utility Load Table Check - KSH|Ab Initio Software|Built-in|1|100|0||6||32769|1|{1|0|}}}
+{2010203004|XXGoport|150|0|405|0|{@{}@183000|109000|11000|11000|out|0.0|@@@2260|0|}}
+{2010202004|XXGiport|151|0|407|0|{@{}@30000|109000|11000|11000|in|0.0|@@@1732|0|}}
 {2010501005|XXGpvertex|152|0|409|0|{Executes a standard UNIX or Windows program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl||{0|}}
 {30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
 {30001002|XXparameter|commandline||16|2|RFO$|Command line of UNIX or Windows program to execute|{0|}}
@@ -4314,12 +4311,12 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|doc_operation1|out::document(in)|3|2|RH$||{0|}}
 {30001002|XXparameter|mpcmodtime|1332701740|1|1|Hl|The last modification time of this component's template|{0|}}
 {30001002|XXparameter|_propagate_through||3|1|FHKl|@{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+}}@0|@0|0|0|0|0|0|0|@@@1|10|-1|@6|@1|1|{1|0|}}}
 {2010203004|XXGoport|153|0|411|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|154|0|414|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|155|0|417|0|{@{}@{1|911440|}}}
+{2010110002|XXGconstant|155|0|417|0|{@{}@{1|3156253|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}

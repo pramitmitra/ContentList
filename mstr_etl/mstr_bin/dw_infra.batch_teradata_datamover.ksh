@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "dw_infra.batch_teradata_datamover", compiled at Thursday, April 02, 2015 14:12:01 using GDE version 3.1.4.1
+# Deployed execution script for graph "dw_infra.batch_teradata_datamover", compiled at Tuesday, August 19, 2014 16:16:41 using GDE version 3.0.3.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}dw_infra_batch_teradata_datamover
 # Begin Ab Initio shell utility functions
 
@@ -192,7 +192,7 @@ export AB_GRAPH_NAME;AB_GRAPH_NAME=dw_infra_batch_teradata_datamover
 
 # Host Setup Commands:
 . /dw/etl/mstr_cfg/etlenv.setup
-_AB_PROXY_DIR="$(pwd)"/dw_infra.batch_teradata_datamover-ProxyDir-$$
+_AB_PROXY_DIR=dw_infra.batch_teradata_datamover-ProxyDir-$$
 rm -rf "${_AB_PROXY_DIR}"
 mkdir "${_AB_PROXY_DIR}"
 print -r -- "" > "${_AB_PROXY_DIR}"'/GDE-Parameters'
@@ -786,11 +786,11 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter UTILITY_INTERFACE_ERROR_LIMIT of dw_infra_batch_teradata_datamover', interpretation 'shell'
    exit $mpjret
 fi
-export UTILITY_INTERFACE_EXTRACT_LOG_FILE;UTILITY_INTERFACE_EXTRACT_LOG_FILE=$(if [[ -d $DW_SA_LOG ]]
+export UTILITY_INTERFACE_EXTRACT_LOG_FILE;UTILITY_INTERFACE_EXTRACT_LOG_FILE=$(if [[ -d $DW_SA_TMP ]]
   then
-      print $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility.extract${UOW_APPEND}.$FILE_DATETIME.log
+      print $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.utility.extract${UOW_APPEND}.$FILE_DATETIME.log
   else
-      print $DW_LOG/$TABLE_ID.$JOB_TYPE_ID.utility.extract${UOW_APPEND}.$FILE_DATETIME.log
+      print $DW_TMP/$TABLE_ID.$JOB_TYPE_ID.utility.extract${UOW_APPEND}.$FILE_DATETIME.log
   fi
  )
 mpjret=$?
@@ -798,11 +798,11 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter UTILITY_INTERFACE_EXTRACT_LOG_FILE of dw_infra_batch_teradata_datamover', interpretation 'shell'
    exit $mpjret
 fi
-export UTILITY_INTERFACE_LOAD_LOG_FILE;UTILITY_INTERFACE_LOAD_LOG_FILE=$(if [[ -d $DW_SA_LOG ]]
+export UTILITY_INTERFACE_LOAD_LOG_FILE;UTILITY_INTERFACE_LOAD_LOG_FILE=$(if [[ -d $DW_SA_TMP ]]
   then
-      print $DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility.load${UOW_APPEND}.$FILE_DATETIME.log
+      print $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.utility.load${UOW_APPEND}.$FILE_DATETIME.log
   else
-      print $DW_LOG/$TABLE_ID.$JOB_TYPE_ID.utility.load${UOW_APPEND}.$FILE_DATETIME.log
+      print $DW_TMP/$TABLE_ID.$JOB_TYPE_ID.utility.load${UOW_APPEND}.$FILE_DATETIME.log
   fi
  )
 mpjret=$?
@@ -858,9 +858,30 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter OUTPUT_TABLE_REJECT_FILE of dw_infra_batch_teradata_datamover', interpretation 'shell'
    exit $mpjret
 fi
-. "${_AB_PROXY_DIR}"'/GDE-Parameters'
+(
+   # Parameters of move UTILITY_INTERFACE_LOG_FILE
+   commandline=$DW_MASTER_BIN/dw_infra.batch_teradata_datamover_logfile.ksh
+   mpjret=$?
+   if [ 0 -ne $mpjret ] ; then
+      print -- Error evaluating: 'parameter commandline of move_UTILITY_INTERFACE_LOG_FILE', interpretation 'shell'
+      exit $mpjret
+   fi
+   print -rn move_UTILITY_INTERFACE_LOG_FILE__commandline= >>${_AB_PROXY_DIR}/GDE-Parameters
+   __AB_QUOTEIT "${commandline}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   condition=$(if [[ $USE_TPT_EXTRACT || $TPT_APPEND || $TPT_TRUNCATE_INSERT ]]; then print "1"; else print "0"; fi)
+   mpjret=$?
+   if [ 0 -ne $mpjret ] ; then
+      print -- Error evaluating: 'parameter condition of move_UTILITY_INTERFACE_LOG_FILE', interpretation 'shell'
+      exit $mpjret
+   fi
+   print -rn move_UTILITY_INTERFACE_LOG_FILE__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
+   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
+. ./${_AB_PROXY_DIR}/GDE-Parameters
 
-#+Script Start+  ==================== 
+#+Script Start+  ==================== Edits in this section are preserved.
 m_env -v
 
 
@@ -893,8 +914,8 @@ if [ "$_ab_found_mp" = "" ] || [ "$_ab_found_mp" -ot "$_ab_expected_mp" ] || [ "
   exit 1
 fi
 if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.ksh; fi
-mv "${_AB_PROXY_DIR}" "$(pwd)"/"${AB_JOB}"'-dw_infra.batch_teradata_datamover-ProxyDir'
-_AB_PROXY_DIR="$(pwd)"/"${AB_JOB}"'-dw_infra.batch_teradata_datamover-ProxyDir'
+mv "${_AB_PROXY_DIR}" "${AB_JOB}"'-dw_infra.batch_teradata_datamover-ProxyDir'
+_AB_PROXY_DIR="${AB_JOB}"'-dw_infra.batch_teradata_datamover-ProxyDir'
 print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/T2T_API_Mode_Input_Table-3.dml'
 print -r -- 'string("\n")' > "${_AB_PROXY_DIR}"'/T2T_API_Mode_Append_Output_Table-5.dml'
 
@@ -1008,6 +1029,9 @@ AB_IS_LIVE_T2T_TPT_Mode_Load_Rejects=1
 AB_USERCOND_Utility_Load_Table_Check_KSH="$PERFORM_UTILITY_CHECK"
 AB_USERCOND_Utility_Load_Table_Check_KSH=$(__AB_COND "${AB_USERCOND_Utility_Load_Table_Check_KSH}")
 AB_IS_LIVE_Utility_Load_Table_Check_KSH=1
+AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE="$move_UTILITY_INTERFACE_LOG_FILE__condition"
+AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE=$(__AB_COND "${AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE}")
+AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE=1
 # 
 # Compute condition variables by considering the conditions of neighboring components
 # 
@@ -1239,6 +1263,11 @@ while [ $done = false ] ; do
    if [ X"${AB_IS_LIVE_Utility_Load_Table_Check_KSH}" != X"$Temp" ]; then
       done=false
    fi
+   Temp="${AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE}"
+   let AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE="AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE"
+   if [ X"${AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE}" != X"$Temp" ]; then
+      done=false
+   fi
 done
 # 
 if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
@@ -1313,6 +1342,8 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    print -r -- 'AB_IS_LIVE_T2T_TPT_Mode_Load_Rejects='"${AB_IS_LIVE_T2T_TPT_Mode_Load_Rejects}"
    print -r -- 'AB_USERCOND_Utility_Load_Table_Check_KSH='"${AB_USERCOND_Utility_Load_Table_Check_KSH}"
    print -r -- 'AB_IS_LIVE_Utility_Load_Table_Check_KSH='"${AB_IS_LIVE_Utility_Load_Table_Check_KSH}"
+   print -r -- 'AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE='"${AB_USERCOND_move_UTILITY_INTERFACE_LOG_FILE}"
+   print -r -- 'AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE='"${AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE}"
 fi
 
 # Files:
@@ -1331,12 +1362,12 @@ else
    :
 fi
 if [ X"${AB_IS_LIVE_T2F_API_Mode_Output_File}" != X0 ]; then
-   mp ofile T2F_API_Mode_Output_File "$OUTPUT_FILE" -mode 664
+   mp ofile T2F_API_Mode_Output_File "$OUTPUT_FILE"
 else
    :
 fi
 if [ X"${AB_IS_LIVE_T2F_TPT_Mode_Output_File}" != X0 ]; then
-   mp ofile T2F_TPT_Mode_Output_File "$OUTPUT_FILE" -mode 664
+   mp ofile T2F_TPT_Mode_Output_File "$OUTPUT_FILE"
 else
    :
 fi
@@ -1466,6 +1497,14 @@ if [ X"${AB_IS_LIVE_T2T_TPT_Mode_Load_Rejects}" != X0 ]; then
 else
    :
 fi
+mp checkpoint 1
+
+# Components in phase 2:
+if [ X"${AB_IS_LIVE_move_UTILITY_INTERFACE_LOG_FILE}" != X0 ]; then
+   mp filter move_UTILITY_INTERFACE_LOG_FILE $move_UTILITY_INTERFACE_LOG_FILE__commandline -layout layout1
+else
+   :
+fi
 
 # Flows for Entire Graph:
 let AB_FLOW_CONDITION="(AB_IS_LIVE_T2T_API_Mode_Extract_Log) && (AB_HAS_DATA_Flow_2)"
@@ -1570,7 +1609,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=911440
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=8940368
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
@@ -1580,7 +1619,7 @@ m_rmcatalog > /dev/null 2>&1
 export XX_CATALOG;XX_CATALOG="${SAVED_CATALOG}"
 export AB_CATALOG;AB_CATALOG="${SAVED_CATALOG}"
 
-#+Script End+  ==================== 
+#+Script End+  ==================== Edits in this section are preserved.
 #+End Script End+  ====================
 
 exit $mpjret
