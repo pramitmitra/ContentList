@@ -25,6 +25,8 @@
 # 2013-10-04    Ryan Wong              Redhat changes
 # 2014-07-17    John Hackley           Added new step to copy touch file to Ingest if
 #                                      specified in new <ETL_ID>.cfg tag
+# 2014-04-06    Ryan Wong              Secure Batch ID. Add group write perms for mkdir
+#                                      Cannot use mkdirifnotexist
 ###########################################################################################
 
 USAGE_touchw () {
@@ -238,7 +240,27 @@ then
 
    if [[ $UOW_TO_FLAG -eq 1 ]]
    then
-      mkdirifnotexist $DW_SA_WATCHFILEDIR
+
+      if [ ! -d $DW_SA_WATCHFILEDIR ]
+      then
+        set +e
+        mkdir -p $DW_SA_WATCHFILEDIR
+        mkdir_rcode=$?
+        set -e
+
+        if [ $mkdir_rcode != 0 ]
+        then
+          print "${0##*/}:  FATAL ERROR, Unable to make directory $DW_SA_WATCHFILEDIR." >&2
+          return 4
+        else
+          print "Successfuly made directory $DW_SA_WATCHFILEDIR"
+        fi
+
+        chmod g+w $DW_SA_WATCHFILEDIR
+      else
+        print "directory $DW_SA_WATCHFILEDIR already exists"
+      fi
+
       touch $DW_SA_WATCHFILE
       chmod 666 $DW_SA_WATCHFILE
    fi
@@ -269,7 +291,7 @@ then
       if [[ $UOW_TO_FLAG -eq 1 ]]
       then
          set +e
-         ssh -n $SSH_USER@$DWI_RMT_SERVER "mkdir -p $DW_SA_WATCHFILEDIR" > /dev/null
+         ssh -n $SSH_USER@$DWI_RMT_SERVER "mkdir -p $DW_SA_WATCHFILEDIR; chmod g+w $DW_SA_WATCHFILEDIR" > /dev/null
          set -e
          ssh -n $SSH_USER@$DWI_RMT_SERVER "touch $DW_SA_WATCHFILE"
       fi
@@ -316,7 +338,7 @@ then
             if [[ $UOW_TO_FLAG -eq 1 ]]
             then
                set +e
-               ssh -n $RMTUSER@$RMTSERVER "mkdir -p $DW_SA_WATCHFILEDIR" > /dev/null
+               ssh -n $RMTUSER@$RMTSERVER "mkdir -p $DW_SA_WATCHFILEDIR; chmod g+w $DW_SA_WATCHFILEDIR" > /dev/null
                set -e
                ssh -n $RMTUSER@$RMTSERVER "touch $DW_SA_WATCHFILE"
             fi

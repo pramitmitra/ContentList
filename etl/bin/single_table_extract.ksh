@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Friday, November 21, 2014 15:30:12 using GDE version 3.0.3.1
+# Deployed execution script for graph "single_table_extract", compiled at Monday, April 06, 2015 13:52:50 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -192,7 +192,7 @@ export AB_GRAPH_NAME;AB_GRAPH_NAME=single_table_extract
 
 # Host Setup Commands:
 . /dw/etl/mstr_cfg/etlenv.setup
-_AB_PROXY_DIR=single_table_extract-ProxyDir-$$
+_AB_PROXY_DIR="$(pwd)"/single_table_extract-ProxyDir-$$
 rm -rf "${_AB_PROXY_DIR}"
 mkdir "${_AB_PROXY_DIR}"
 print -r -- "" > "${_AB_PROXY_DIR}"'/GDE-Parameters'
@@ -394,6 +394,20 @@ function _AB_PARSE_ARGUMENTS {
       let _ab_index_var=_ab_index_var+1
       shift
       ;;
+     -STAGE_DB )
+      export STAGE_DB;      STAGE_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
+     -DEFAULT_DB )
+      export DEFAULT_DB;      DEFAULT_DB="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
    * )
       if [ X"${_AB_USED_ARGUMENTS[_ab_index_var]}" != X1 ]; then
          print -r -- 'Unexpected command line argument found: '"${_ab_kwd}"
@@ -553,49 +567,61 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_USER
-else
-   print 0
-fi)
+export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_USER
+    else
+      print $MSSQL_USERNAME
+    fi
+  fi
+)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $EXTRACT_TYPE = "S" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS
-   print $MSSQL_PASS
-else
-   print 0
-fi)
+export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "S" ]]
+  then
+    if [[ ! -n $MSSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_PASS
+    else
+      print $MSSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MSSQL_PASSWORD of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_USER
-else
-   print 0
-fi)
+export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_USERNAME ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_USER
+    else
+      print $MYSQL_USERNAME
+    fi
+  fi
+  )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
-export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $EXTRACT_TYPE = "M" ]]
-then
-   grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS
-   print $MYSQL_PASS
-else
-   print 0
-fi)
+export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "M" ]]
+  then
+    if [[ ! -n $MYSQL_PASSWORD ]]
+    then
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_PASS
+    else
+      print $MYSQL_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter MYSQL_PASSWORD of single_table_extract', interpretation 'shell'
@@ -1146,6 +1172,16 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter CNDTL_EXTRACT_JSON of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
+export STAGE_DB;STAGE_DB=$(case $EXTRACT_TYPE in
+       "S" ) print $(grep "^MSSQL_STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print $VALUE);;
+             * ) print $(grep "^STAGE_DB\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print ${VALUE-""});;
+esac)
+mpjret=$?
+if [ 0 -ne $mpjret ] ; then
+   print -- Error evaluating: 'parameter STAGE_DB of single_table_extract', interpretation 'shell'
+   exit $mpjret
+fi
+export DEFAULT_DB;DEFAULT_DB="$STAGE_DB"
 (
    # Parameters of Gather Extract Logs
    LogFile="$EXTRACT_LOG_FILE"
@@ -1157,8 +1193,8 @@ fi
       print -- Error evaluating: 'parameter condition of Gather_Extract_Logs', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Gather_Extract_Logs__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Gather_Extract_Logs__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1173,8 +1209,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Gather_Extract_Logs_1', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Gather_Extract_Logs_1__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Gather_Extract_Logs_1__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1189,8 +1225,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Gather_Extract_Logs_2', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Gather_Extract_Logs_2__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Gather_Extract_Logs_2__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1202,8 +1238,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Deflate', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Deflate__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Deflate__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
    conditionInputPort=in
    conditionOutputPort=out
    condition_interpretation='Replace with flow'
@@ -1213,8 +1249,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter compression of Deflate', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Deflate__compression= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${compression}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Deflate__compression= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${compression}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1242,6 +1278,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       fi
    fi
    table_spec="${INPUT_TABLE_SEL}"
+   print -r -- "${table_spec}" > "${_AB_PROXY_DIR}"'/Input_Table_Oracle-19.sql'
+   _AB_FILE_NAME__table_spec=Input_Table_Oracle-19.sql
    table_spec_kind=select
    db_is_ole=False
    ora_interface=api
@@ -1305,8 +1343,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Input_Table_Oracle__table_', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_Table_Oracle__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_Table_Oracle__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1321,8 +1359,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Gather_Extract_Logs_3', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Gather_Extract_Logs_3__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Gather_Extract_Logs_3__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1350,6 +1388,7 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       fi
    fi
    table_spec="${INPUT_TABLE_SEL}"
+   _AB_FILE_NAME__table_spec=Input_Table_Oracle-19.sql
    table_spec_kind=select
    db_is_ole=False
    odbc_interface=api
@@ -1400,8 +1439,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Input_Table_Generic_ODBC__table_', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_Table_Generic_ODBC__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_Table_Generic_ODBC__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1429,6 +1468,7 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       fi
    fi
    table_spec="${INPUT_TABLE_SEL}"
+   _AB_FILE_NAME__table_spec=Input_Table_Oracle-19.sql
    table_spec_kind=select
    db_is_ole=False
    ter_interface_new=api
@@ -1488,8 +1528,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Input_Table_Teradata_API__table_', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_Table_Teradata_API__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_Table_Teradata_API__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1504,8 +1544,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Gather_Extract_Logs_4', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Gather_Extract_Logs_4__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Gather_Extract_Logs_4__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1533,6 +1573,7 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       fi
    fi
    table_spec="${INPUT_TABLE_SEL}"
+   _AB_FILE_NAME__table_spec=Input_Table_Oracle-19.sql
    table_spec_kind=select
    db_is_ole=False
    ter_interface_new=FastExport
@@ -1595,8 +1636,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Input_Table_Teradata_Fast_Export__table_', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_Table_Teradata_Fast_Export__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_Table_Teradata_Fast_Export__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1624,6 +1665,7 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       fi
    fi
    table_spec="${INPUT_TABLE_SEL}"
+   _AB_FILE_NAME__table_spec=Input_Table_Oracle-19.sql
    table_spec_kind=select
    db_is_ole=True
    mssql_interface=api
@@ -1675,8 +1717,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Input_Table_Sqlserver__table_', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Input_Table_Sqlserver__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Input_Table_Sqlserver__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1688,16 +1730,16 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter commandline of move_FEXP_LOGFILE', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn move_FEXP_LOGFILE__commandline= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${commandline}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn move_FEXP_LOGFILE__commandline= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${commandline}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
    condition=$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 0 ]]; then print "1"; else print "0"; fi)
    mpjret=$?
    if [ 0 -ne $mpjret ] ; then
       print -- Error evaluating: 'parameter condition of move_FEXP_LOGFILE', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn move_FEXP_LOGFILE__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn move_FEXP_LOGFILE__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1709,8 +1751,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Write_JSON', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Write_JSON__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Write_JSON__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
@@ -1718,8 +1760,8 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
    # Parameters of Write JSON Reformat
    count=1
    transform0=""
-   print -r -- "${transform0}" > "${_AB_PROXY_DIR}"'/Write_JSON_Reformat-19.xfr'
-   _AB_FILE_NAME__transform0=Write_JSON_Reformat-19.xfr
+   print -r -- "${transform0}" > "${_AB_PROXY_DIR}"'/Write_JSON_Reformat-20.xfr'
+   _AB_FILE_NAME__transform0=Write_JSON_Reformat-20.xfr
    select=""
    error_group=""
    log_group=""
@@ -1728,9 +1770,9 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
    ramp_keyword2=0.0
    keyword_map='limit_keyword limit ramp_keyword ramp ramp_keyword2 ramp'
    output_index=""
-   _AB_FILE_NAME__output_index=Write_JSON_Reformat-19.xfr
+   _AB_FILE_NAME__output_index=Write_JSON_Reformat-20.xfr
    output_indexes=""
-   _AB_FILE_NAME__output_indexes=Write_JSON_Reformat-19.xfr
+   _AB_FILE_NAME__output_indexes=Write_JSON_Reformat-20.xfr
    logging=False
    condition=$CNDTL_EXTRACT_JSON
    mpjret=$?
@@ -1738,14 +1780,14 @@ if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
       print -- Error evaluating: 'parameter condition of Write_JSON_Reformat', interpretation 'shell'
       exit $mpjret
    fi
-   print -rn Write_JSON_Reformat__condition= >>${_AB_PROXY_DIR}/GDE-Parameters
-   __AB_QUOTEIT "${condition}" >> ${_AB_PROXY_DIR}/GDE-Parameters
+   print -rn Write_JSON_Reformat__condition= >>"${_AB_PROXY_DIR}"'/GDE-Parameters'
+   __AB_QUOTEIT "${condition}" >> "${_AB_PROXY_DIR}"'/GDE-Parameters'
 )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then exit $mpjret ; fi
-. ./${_AB_PROXY_DIR}/GDE-Parameters
+. "${_AB_PROXY_DIR}"'/GDE-Parameters'
 
-#+Script Start+  ==================== Edits in this section are preserved.
+#+Script Start+  ==================== 
 m_env -v
 
 
@@ -1826,8 +1868,8 @@ if [ "$_ab_found_mp" = "" ] || [ "$_ab_found_mp" -ot "$_ab_expected_mp" ] || [ "
   exit 1
 fi
 if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.ksh; fi
-mv "${_AB_PROXY_DIR}" "${AB_JOB}"'-single_table_extract-ProxyDir'
-_AB_PROXY_DIR="${AB_JOB}"'-single_table_extract-ProxyDir'
+mv "${_AB_PROXY_DIR}" "$(pwd)"/"${AB_JOB}"'-single_table_extract-ProxyDir'
+_AB_PROXY_DIR="$(pwd)"/"${AB_JOB}"'-single_table_extract-ProxyDir'
 print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Input_Table_Generic_ODBC-3.dml'
 print -r -- 'record
   string(int) json_record;
@@ -2342,18 +2384,18 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
 fi
 
 # Files:
-mp ofile Output_File "$OUTPUT_FILE"
+mp ofile Output_File "$OUTPUT_FILE" -mode 664
 if [ X"${AB_IS_LIVE_Last_Extract_Value_File_1}" != X0 ]; then
-   mp ofile Last_Extract_Value_File_1 'file:'"$LAST_EXTRACT_VALUE_FILE"
+   mp ofile Last_Extract_Value_File_1 'file:'"$LAST_EXTRACT_VALUE_FILE" -mode 664
 else
    :
 fi
 mp ifile Extract_Log_File 'file:'"$EXTRACT_LOG_FILE"
 AB_PORT_Extract_Log_File_read=Extract_Log_File.read
 AB_METADATA_Extract_Log_File_read=' -metadata metadata8'
-mp ofile Record_Count_File 'file:'"$RECORD_COUNT_FILE"
+mp ofile Record_Count_File 'file:'"$RECORD_COUNT_FILE" -mode 664
 if [ X"${AB_IS_LIVE_Last_Extract_Value_File}" != X0 ]; then
-   mp ofile Last_Extract_Value_File 'file:'"$LAST_EXTRACT_VALUE_FILE"
+   mp ofile Last_Extract_Value_File 'file:'"$LAST_EXTRACT_VALUE_FILE" -mode 664
 else
    :
 fi
@@ -2672,7 +2714,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1259329
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=5354257
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
@@ -2682,7 +2724,7 @@ m_rmcatalog > /dev/null 2>&1
 export XX_CATALOG;XX_CATALOG="${SAVED_CATALOG}"
 export AB_CATALOG;AB_CATALOG="${SAVED_CATALOG}"
 
-#+Script End+  ==================== Edits in this section are preserved.
+#+Script End+  ==================== 
 #+End Script End+  ====================
 
 exit $mpjret
