@@ -824,7 +824,7 @@ denrlookup1=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = read-lookup.vip.smf.ebay.com)
+        (Host = read-lookup.vip.slc.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=LOOKUP)))
 
