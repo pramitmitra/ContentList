@@ -10,6 +10,7 @@
 # 2013-09-08  1.2    George Xiong                    add env for Artemis
 # 2013-10-04  1.3    Ryan Wong                       Redhat changes
 # 2015-03-20  1.3    Jiankang Liu                    Fix the print: command not found bug in remote server
+# 2015-04-22  1.4    Ryan Wong                       Change apollo-cli to use apollo-devour, after decommission
 #------------------------------------------------------------------------------------------------
 
 typeset -fu processCommand
@@ -180,7 +181,7 @@ then
   	HADOOP_CLI="ares-cli.vip.ebay.com"
   elif [ $HADOOP_SYSTEM = 'apollo' ]  
   then 
-  	HADOOP_CLI="apollo-cli.vip.ebay.com"	
+  	HADOOP_CLI="apollo-devour.vip.ebay.com"	
   elif [ $HADOOP_SYSTEM = 'artemis' ]  
   then 
   	HADOOP_CLI="artemis-cli.vip.ebay.com"		
