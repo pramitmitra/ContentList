@@ -673,7 +673,7 @@ caty3stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty3stby.vip.ebay.com)
+        (HOST=caty3.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY3)))
 caty4stby=
@@ -5175,16 +5175,17 @@ Viking_map=
 (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP) (Host = viking2.vip.ebay.com) (Port = 1521)) (CONNECT_DATA = (SID=VIKING2)))
 
 media1 =
-(DESCRIPTION=
-(ADDRESS=
-(PROTOCOL=TCP)
-(HOST=peps1stby.vip.ebay.com)
-(PORT=1521))
-(CONNECT_DATA=(SID=PEPS1)))
+  (DESCRIPTION=
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=peps1stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=PEPS1)))
+
 mediastby=
-(DESCRIPTION=
-(ADDRESS=
-(PROTOCOL=TCP)
-(HOST=pepsstby.vip.ebay.com)
-(PORT=1521))
-(CONNECT_DATA=(SID=PEPS)))
+  (DESCRIPTION=
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=pepsstby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=PEPS)))
