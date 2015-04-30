@@ -12,6 +12,7 @@
 # Ryan Wong        05/02/2014      Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB
 #                                    Apply only to PARAM_LIST
 # Ryan Wong        08/12/2014      Set NO_BRACEEXPAND_NO_GLOB default=1 for consistency
+# Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -125,7 +126,6 @@ then
                  --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                  -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   fi
-
 else
   dwi_assignTagValue -p MAPRED_OUTPUT_COMPRESS -t MAPRED_OUTPUT_COMPRESS -f $ETL_CFG_FILE -s N -d 0
   if [[ $MAPRED_OUTPUT_COMPRESS -eq 0 ]]
@@ -146,6 +146,7 @@ else
                                 -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                                 -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                                 $PARAM_LIST
+    retcode=$?
     if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
     then
       set -o braceexpand
@@ -174,11 +175,13 @@ else
                  -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                  -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                  $PARAM_LIST
+    retcode=$?
     if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
     then
       set -o braceexpand
       set -o glob
     fi
   fi
+  exit $retcode
 fi
 
