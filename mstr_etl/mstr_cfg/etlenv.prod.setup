@@ -493,6 +493,8 @@ export incProtoPaypalDB=PT_INC_PAYPAL
 export incProtoEbayAdvDB=PT_INC_EBAYADV
 export incProtoPaypalAdvDB=PT_INC_PPALADV
 export incProtoIncdataDB=PT_INC_INCDATA
+export incSgmMpRtpDB=SGM_INC_MP_RTP_V
+export incSgmMpCsDB=SGM_INC_MP_CS_V
 
 # Added for Selling Team as per Jay Sun on 20140410
 export ddmslngDB=DDM_SELLING_T
