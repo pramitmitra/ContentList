@@ -337,7 +337,12 @@ export MYSQL_USERNAME MYSQL_PASSWORD
 
 
 # database configuration environment
-export ODBCINI=$DW_MASTER_CFG/odbc.ini
+if [[ -n $SUBJECT_AREA && -f $DW_CFG/odbc.ini ]]
+then
+        export ODBCINI=$DW_CFG/odbc.ini
+else
+        export ODBCINI=$DW_MASTER_CFG/odbc.ini
+fi
 export TNS_ADMIN=$DW_CFG
 export ORATAB=$TNS_ADMIN
 export LIBCURL_PATH=/var/opt/curl/lib:/usr/local/lib
