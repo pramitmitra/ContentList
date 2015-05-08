@@ -187,7 +187,7 @@ if [ $USE_DATACONVERTER_JAR = 0 ]
     while read SOURCE_FILE_TMP 
     do
       SOURCE_FILE_NAME=${SOURCE_FILE_TMP##*/}
-      RCODE=`grepCompFile "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE`
+      RCODE=`grepCompFile "$SOURCE_FILE_NAME" $MULTI_HDP_COMP_FILE`
       if [ $RCODE = 1 ]
       then
         while [ $(jobs -p | wc -l) -ge $N_WAY_PER_HOST ]
