@@ -659,7 +659,7 @@ caty1stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty1stby.vip.ebay.com)
+        (HOST=caty1.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY1)))
 caty2stby=
@@ -894,7 +894,7 @@ user10stby=
   (TDU=8192)
   (ADDRESS=
   (PROTOCOL=TCP)
-  (HOST=user10stby.vip.ebay.com)
+  (HOST=user10.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=USER10)))
 user11=
@@ -3802,7 +3802,7 @@ UCONT11STBY=
   (TDU=8192)
   (ADDRESS=
   (PROTOCOL=TCP)
-  (HOST=ucnt11stby.vip.ebay.com)
+  (HOST=ucnt11.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=UCNT11)))
 
@@ -3812,7 +3812,7 @@ UCONT12STBY=
   (TDU=8192)
   (ADDRESS=
   (PROTOCOL=TCP)
-  (HOST=ucnt12stby.vip.ebay.com)
+  (HOST=ucnt12.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=UCNT12)))
 
@@ -3820,7 +3820,7 @@ UCONT13STBY=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = ucnt13stby.vip.ebay.com)
+        (Host = ucnt13.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=UCNT13)))
 
