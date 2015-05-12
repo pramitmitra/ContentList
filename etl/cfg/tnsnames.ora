@@ -5189,3 +5189,17 @@ mediastby=
   (HOST=pepsstby.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=PEPS)))
+
+schost0= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg1primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG1)))
+schost1= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg1primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG1)))
+schost2= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg2primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG2)))
+schost3= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg2primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG2)))
+schost4= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg3primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG3)))
+schost5= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg3primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG3)))
+schost6= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg4primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG4)))
+schost7= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg4primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG4)))
+schost8= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg5primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG5)))
+schost9= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg5primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG5)))
+schost10= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg6primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG6)))
+schost11= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg6primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG6)))
+
