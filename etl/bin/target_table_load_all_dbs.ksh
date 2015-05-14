@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "target_table_load_all_dbs", compiled at Tuesday, April 07, 2015 13:19:57 using GDE version 3.1.4.1
+# Deployed execution script for graph "target_table_load_all_dbs", compiled at Wednesday, April 15, 2015 15:32:35 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}target_table_load_all_dbs
 # Begin Ab Initio shell utility functions
 
@@ -267,6 +267,13 @@ function _AB_PARSE_ARGUMENTS {
       let _ab_index_var=_ab_index_var+1
       shift
       ;;
+     -MYSQL_DEFAULTS_EXTRA_FILE )
+      export MYSQL_DEFAULTS_EXTRA_FILE;      MYSQL_DEFAULTS_EXTRA_FILE="${1}"
+      _AB_USED_ARGUMENTS[_ab_index_var]=1
+      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
+      let _ab_index_var=_ab_index_var+1
+      shift
+      ;;
      -MSSQL_USERNAME )
       export MSSQL_USERNAME;      MSSQL_USERNAME="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
@@ -427,6 +434,7 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ODBC_DATA_SOURCE_NAME of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
+export MYSQL_DEFAULTS_EXTRA_FILE;MYSQL_DEFAULTS_EXTRA_FILE="${DW_LOGINS}"'/'"${ODBC_DATA_SOURCE_NAME}"'.cnf'
 export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
@@ -642,7 +650,7 @@ mp straight-flow Flow_2 Run_SQL_Log_File.read Reformat.in -metadata metadata1
 mp straight-flow Flow_3 Reformat.out.out0 Run_SQL_Log_File_Tmp.write -metadata metadata2
 
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=3794828
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=3715070
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
