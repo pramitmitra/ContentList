@@ -18,6 +18,7 @@
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
 # George Xiong     09/30/2014      Modifications by George
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
+# Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 #
 #------------------------------------------------------------------------------------------------
 
@@ -230,11 +231,11 @@ FILE_ID=0
 while read SOURCE_FILE_TMP TARGET_FILE_TMP
 do
   SOURCE_FILE_NAME=${SOURCE_FILE_TMP##*/}
-  #RCODE=`grepCompFile "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE`
-  set +e
-  grep -s "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE > /dev/null
-  RCODE=$?
-  set -e
+  RCODE=`grepCompFile "$SOURCE_FILE_NAME" $MULTI_HDP_COMP_FILE`
+  # set +e
+  # grep -s "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE > /dev/null
+  # RCODE=$?
+  # set -e
 
   if [ $RCODE = 1 ]
   then

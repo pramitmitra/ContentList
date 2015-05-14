@@ -14,6 +14,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 #
 #------------------------------------------------------------------------------------------------
 
@@ -99,7 +100,7 @@ FILE_ID=0
 while read SOURCE_FILE_TMP TARGET_FILE_TMP
 do
   SOURCE_FILE_NAME=${SOURCE_FILE_TMP##*/}
-  RCODE=`grepCompFile "^$SOURCE_FILE_NAME\>" $MULTI_HDP_COMP_FILE`
+  RCODE=`grepCompFile "$SOURCE_FILE_NAME" $MULTI_HDP_COMP_FILE`
   if [ $RCODE = 1 ]
   then
     while [ $(jobs -p | wc -l) -ge $N_WAY_PER_HOST ]
