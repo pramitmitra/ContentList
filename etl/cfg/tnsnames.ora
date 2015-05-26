@@ -3261,16 +3261,6 @@ utrade10=
   (CONNECT_DATA=(SID=UTRADE10)))
 
   
-utrade10stby=
-        (DESCRIPTION =
-        (ADDRESS =
-        (PROTOCOL = TCP)
-        (Host = utrade10secondary.db.ebay.com)
-        (Port = 1521))
-        (CONNECT_DATA = (SID=UTRADE10)))
-
-
-  
 
 utrade11=
 
@@ -3444,6 +3434,95 @@ utrade18=
 
   (CONNECT_DATA=(SID=UTRADE18)))
 
+
+utrade10stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade10stby.vip.ebay.com)
+(Port = 1521))
+
+
+utrade11stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade11stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE11)))
+
+
+utrade12stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade12stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE12)))
+
+
+utrade13stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade13stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE13)))
+
+
+utrade14stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade14stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE14)))
+
+
+utrade15stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade15stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE15)))
+
+
+utrade16stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade16stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE16)))
+
+
+utrade17stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade17stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE17)))
+
+
+utrade18stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade18stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE18)))
+
+
+utrade19stby=
+(DESCRIPTION =
+(ADDRESS =
+(PROTOCOL = TCP)
+(Host = utrade19stby.vip.ebay.com)
+(Port = 1521))
+(CONNECT_DATA = (SID=UTRADE19)))
+
  
 
 rtms7=
@@ -3485,6 +3564,14 @@ halfcatystby=
 	(Host = halfcaty.vip.ebay.com)
 	(Port = 1600))
 	(CONNECT_DATA=(SID=HALFCATY)))
+
+halfcaty_bindstby=
+(DESCRIPTION=
+(ADDRESS=
+(PROTOCOL=TCP)
+(HOST=halfcatyphx8.vip.ebay.com)
+(PORT=1521))
+(CONNECT_DATA=(SID=HALFCATY)))
 
 rtms6=
         (DESCRIPTION =
