@@ -3557,6 +3557,14 @@ halfcatystby=
 	(Port = 1600))
 	(CONNECT_DATA=(SID=HALFCATY)))
 
+halfcaty_bindstby=
+(DESCRIPTION=
+(ADDRESS=
+(PROTOCOL=TCP)
+(HOST=halfcatyphx8.vip.ebay.com)
+(PORT=1521))
+(CONNECT_DATA=(SID=HALFCATY)))
+
 rtms6=
         (DESCRIPTION =
     (SDU=8192)
