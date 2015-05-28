@@ -318,6 +318,7 @@ apidb=
         (HOST=apidb.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(SID=APIDB)))
+
 rtms3=
   (DESCRIPTION =
   (SDU=8192)
@@ -326,7 +327,7 @@ rtms3=
   (PROTOCOL=TCP)
   (HOST=rtms3.vip.ebay.com)
   (PORT=1521))
-  (CONNECT_DATA=(SID=RTMS3)))
+  (CONNECT_DATA=(SERVICE_NAME=RTMS3)))
 
 horus =
   (DESCRIPTION =
