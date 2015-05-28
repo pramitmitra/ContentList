@@ -3441,6 +3441,7 @@ utrade10stby=
   (PROTOCOL = TCP)
   (Host = utrade10stby.vip.ebay.com)
   (Port = 1521))
+  (CONNECT_DATA = (SID=UTRADE10)))
 
 
 utrade11stby=
