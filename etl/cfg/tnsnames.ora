@@ -837,6 +837,14 @@ misc2=
         (Port = 1521))
         (CONNECT_DATA = (SID=MISC2)))
 
+misc2stby=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc2stby.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC2)))
+
 misc3=
         (DESCRIPTION =
         (ADDRESS =
