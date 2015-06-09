@@ -78,7 +78,7 @@ TARGET_FILE_TMP=`print $(eval print $TARGET_FILE)`
 #TARGET_FILE_TMP=${TARGET_FILE_TMP%%$COMPRESS_SFX}.$BATCH_SEQ_NUM$COMPRESS_SFX
 
 set +e
-ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
+ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; if [[ -f ./$SOURCE_FILE_TMP ]]; then rm -f ./$SOURCE_FILE_TMP; fi; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
 rcode=$?
 set -e
 
