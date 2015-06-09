@@ -39,6 +39,8 @@
 #										3. Group the functions with $DW_LOG, $DW_WATCH into deal_shared_files function, while the functions with $DW_ARC 
 #										$DW_IN, $DW_MFS into deal_local_files function. 
 #										4. Call deal_shared_files if archive type is shared, else call deal_local_files. 
+#
+# Kevin Oaks       05/18/2015
 #------------------------------------------------------------------------------------------------
 typeset -fu usage
 
@@ -169,6 +171,7 @@ print "[rm_dwlog_olderthan31_dir] Removing date based log dirs greater than 31 d
 set +e
 find $DW_LOG/extract/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
 find $DW_LOG/td?/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
+find $DW_LOG/hd?/*/*/ -name '20??????' -prune -type d -mtime +31 -exec rm -rf {} \;
 set -e
 }
 
