@@ -3751,41 +3751,41 @@ image01host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall1.vip.ebay.com)
+        (Host = peps.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL1)))
+        (CONNECT_DATA = (SID= PEPS)))
 
 image02host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall1.vip.ebay.com)
+        (Host = peps.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL1)))
+        (CONNECT_DATA = (SID= PEPS)))
 
 image03host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall1.vip.ebay.com)
+        (Host = peps1.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL1)))
+        (CONNECT_DATA = (SID= PEPS1)))
 
 image04host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall1.vip.ebay.com)
+        (Host = peps1.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL1)))
+        (CONNECT_DATA = (SID= PEPS1)))
 
 image05host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall1.vip.ebay.com)
+        (Host = peps1.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL1)))
+        (CONNECT_DATA = (SID= PEPS1)))
 
 image06host=
         (DESCRIPTION =
