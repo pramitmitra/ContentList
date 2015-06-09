@@ -3579,7 +3579,7 @@ halfcaty_bindstby=
   (DESCRIPTION=
   (ADDRESS=
   (PROTOCOL=TCP)
-  (HOST=halfcatyphx8.vip.ebay.com)
+  (HOST=halfcatystby.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=HALFCATY)))
 
