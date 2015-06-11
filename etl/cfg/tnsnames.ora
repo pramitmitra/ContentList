@@ -3799,41 +3799,41 @@ image07host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall2.vip.ebay.com)
+        (Host = peps2.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL2)))
+        (CONNECT_DATA = (SID= PEPS2)))
 
 image08host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall2.vip.ebay.com)
+        (Host = peps2.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL2)))
+        (CONNECT_DATA = (SID= PEPS2)))
 
 image09host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall2.vip.ebay.com)
+        (Host = peps3.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL2)))
+        (CONNECT_DATA = (SID= PEPS3)))
 
 image10host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall2.vip.ebay.com)
+        (Host = peps3.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL2)))
+        (CONNECT_DATA = (SID= PEPS3)))
 
 image11host=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = gall2.vip.ebay.com)
+        (Host = peps3.vip.ebay.com)
         (Port = 1521))
-        (CONNECT_DATA = (SID= GALL2)))
+        (CONNECT_DATA = (SID= PEPS3)))
 
 gem=
         (DESCRIPTION=
