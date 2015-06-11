@@ -13,6 +13,7 @@
 #                                    Apply only to PARAM_LIST
 # Ryan Wong        08/12/2014      Set NO_BRACEEXPAND_NO_GLOB default=1 for consistency
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
+# Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -26,6 +27,7 @@ PARAM_LIST=$*
 fi
 
 PARAM_LIST=${PARAM_LIST:-""}
+PARAM_LIST=`eval echo $PARAM_LIST`
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
