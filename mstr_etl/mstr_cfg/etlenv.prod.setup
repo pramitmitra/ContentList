@@ -522,6 +522,8 @@ export wrksgmIncPpEdwRtpDB=SGM_INC_PP_EDW_RTP_W
 export viewSgmIncMpRtpDB=SGM_INC_MP_RTP_V
 export viewMatchItgnDB=INC_MATCH_ITGN_V
 
+# Added as per Jira ticket DINT-412 20150616
+export SgmIncMpReadDB=SGM_INC_MARKETPLACES_V
 
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
