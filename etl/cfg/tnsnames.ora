@@ -5300,3 +5300,83 @@ schost9= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=al
 schost10= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg6primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG6)))
 schost11= (DESCRIPTION=         (ADDRESS=         (PROTOCOL=TCP)         (HOST=altg6primary.db.ebay.com)         (PORT=1521))         (CONNECT_DATA=(SID=ALTG6)))
 
+
+utns10stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns10stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS10)))
+
+utns11stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns11stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS11)))
+
+utns12stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns12stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS12)))
+
+utns13stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns13stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS13)))
+
+utns14stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns14stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS14)))
+
+utns15stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns15stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS15)))
+
+utns16stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns16stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS16)))
+
+utns17stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns17stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS17)))
+
+utns18stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns18stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS18)))
+
+utns19stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = utns19stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=UTNS19)))
