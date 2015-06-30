@@ -1711,6 +1711,14 @@ ctlgu=
         (PORT=1526))
         (CONNECT_DATA=(SERVER=DEDICATED)(SID=CTLGU)))
 
+ctlgustby=
+        (DESCRIPTION=
+        (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=ctlgustby.vip.ebay.com)
+        (PORT=1526))
+        (CONNECT_DATA=(SERVER=DEDICATED)(SID=CTLGU)))
+
 gbcat=
 	(DESCRIPTION=
 	(ADDRESS=
