@@ -4916,6 +4916,16 @@ ctlgu_split_2=
   (PORT=1521))
   (CONNECT_DATA=(SID=CTLGU2)))
 
+ctlgu_split_2stby=
+  (DESCRIPTION=
+  (SDU=8192)
+  (TDU=8192)
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=ctlgu2stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=CTLGU2)))
+
 invhub=
         (DESCRIPTION =
         (ADDRESS =
