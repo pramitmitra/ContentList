@@ -135,11 +135,12 @@ then
   LEFT OUTER JOIN ${LKP_DB}.${LKP_TB} b
   --ON coalesce(a.${MTN_COL},'${MTN_DEF_VAL}') = b.${LKP_TBL_CODE}
   ON a.$MTN_COL = b.${LKP_TBL_CODE}
-  WHERE b.${LKP_TBL_CODE} IS NULL a.${MTN_COL} IS NOT NULL
+  WHERE b.${LKP_TBL_CODE} IS NULL 
+  AND a.${MTN_COL} IS NOT NULL
   GROUP BY a.${MTN_COL}
   ) as t,
   (
-  SELECT MAX(${LKP_TBL_ID}) AS MAX_ID
+  SELECT coalesce(MAX(${LKP_TBL_ID}),0) AS MAX_ID
   FROM  ${LKP_DB}.${LKP_TB}
   ) MAX_ID;
   " > $MTN_SQL_FILE
