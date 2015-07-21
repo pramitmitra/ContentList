@@ -19,6 +19,7 @@
 # George Xiong     09/30/2014      Modifications by George
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
+# Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
 #
 #------------------------------------------------------------------------------------------------
 
@@ -206,9 +207,29 @@ if [[ $myName != $HD_USERNAME ]]
         print "Running ex job via user $HD_USERNAME"
 fi
 
-$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE    > /dev/null
+#$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE    > /dev/null
+for i in $(seq 1 3)
+do
+  set +e
+  HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`HADOOP_SOURCE_FILE_LIST=
+  SCODE=$?
+  set -e
+  if [[ $SCODE = 0 ]]; then
+    break
+  fi
+  set +e
+  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+  sleep 10
+  continue
+  set -e
+done
 
-for data_file_entry in `$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`
+if [[ $SCODE != 0 ]]; then
+  print "${0##*/}: INFRA_ERROR - Failure on $HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE"
+  exit 7
+fi
+
+for data_file_entry in $HADOOP_SOURCE_FILE_LIST
 do
   MOD_NUM=$(( $FILE_ID % $SRC_HOST_CNT ))
   if [ $MOD_NUM -eq $HOST_ID ]
