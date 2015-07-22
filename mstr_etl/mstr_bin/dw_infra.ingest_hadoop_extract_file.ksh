@@ -211,7 +211,7 @@ fi
 for i in $(seq 1 3)
 do
   set +e
-  HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`HADOOP_SOURCE_FILE_LIST=
+  HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'
   SCODE=$?
   set -e
   if [[ $SCODE = 0 ]]; then
