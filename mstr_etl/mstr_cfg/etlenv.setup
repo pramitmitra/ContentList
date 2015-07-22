@@ -18,7 +18,7 @@
 
 # Define initial PATH
 # export PATH=/usr/bin:/usr/sbin:/usr/ccs/bin:/usr/local/bin:/opt/sfw/bin:.
-export PATH=${PATH}:/opt/teradata/client/14.00/tbuild/bin:/usr/local/rvm/gems/ruby-1.9.3-p392@legato/bin:/usr/local/rvm/gems/ruby-1.9.3-p392@global/bin:/usr/local/rvm/rubies/ruby-1.9.3-p392/bin:/usr/local/rvm/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/bin
+export PATH=${PATH}:/opt/teradata/client/14.00/tbuild/bin:/usr/lib64/qt-3.3/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin:/bin
 
 # Setup SUBJECT_AREA and TABLE_ID if ETL_ID is defined
 export ETL_ID=${ETL_ID:-""}
