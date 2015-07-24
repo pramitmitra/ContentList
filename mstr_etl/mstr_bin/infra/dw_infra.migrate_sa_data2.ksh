@@ -155,7 +155,7 @@ T_ETL_ENV=${2:-prod}
 
 export LOG_TIME=`date +%Y%m%d%H%M%S`
 export RUN_DIR=$DW_MASTER_EXE/infra
-export LOG_FILE=$DW_MASTER_LOG/${0##*/}.${SUBJECT_AREA}.$LOG_TIME.log
+export LOG_FILE=$DW_MASTER_LOG/${0##*/}.${SUBJECT_AREA}.${servername}.$LOG_TIME.log
 
 print "ETL_ID=$ETL_ID" 2>&1 | tee -a $LOG_FILE
 print "T_ETL_ENV=$T_ETL_ENV" 2>&1 | tee -a $LOG_FILE
@@ -170,7 +170,7 @@ export DATA_OUT=/data/etl/home/${T_ETL_ENV}/out
 export DATA_ARC=/data/etl/home/${T_ETL_ENV}/arc
 export DATA_TMP=/data/etl/home/${T_ETL_ENV}/tmp
 
-env | grep DATA_ 2>&1 | tee -a $LOG_FILE
+env | grep "^DATA_" 2>&1 | tee -a $LOG_FILE
 
 print "INFO: Defining base target data structures" 2>&1 | tee -a $LOG_FILE
 
@@ -179,7 +179,7 @@ export DATA2_OUT=/data2/etl/home/${T_ETL_ENV}/out
 export DATA2_ARC=/data2/etl/home/${T_ETL_ENV}/arc
 export DATA2_TMP=/data2/etl/home/${T_ETL_ENV}/tmp
 
-env | grep DATA2_ 2>&1 | tee -a $LOG_FILE
+env | grep "^DATA2_" 2>&1 | tee -a $LOG_FILE
 
 # move existing datasets on data mount to data2 mount and then link data2 to data
 
