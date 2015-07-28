@@ -220,8 +220,8 @@ do
   set +e
   kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
   sleep 10
-  continue
   set -e
+  continue
 done
 
 if [[ $SCODE != 0 ]]; then
