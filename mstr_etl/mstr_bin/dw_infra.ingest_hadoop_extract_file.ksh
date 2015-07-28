@@ -217,11 +217,14 @@ do
   if [[ $SCODE = 0 ]]; then
     break
   fi
-  set +e
-  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
-  sleep 10
-  set -e
-  continue
+
+  if [[ $i != 3 ]]; then
+    set +e
+    sleep 10
+    kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+    set -e
+    continue
+  fi
 done
 
 if [[ $SCODE != 0 ]]; then
