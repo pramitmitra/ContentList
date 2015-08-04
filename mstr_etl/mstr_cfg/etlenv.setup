@@ -336,6 +336,29 @@ fi
 export MYSQL_USERNAME MYSQL_PASSWORD
 
 
+# Define MSSQL logon info location.
+
+if [[ -n $ETL_ID ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p MSSQL_LOGON_FILE_ID -t MSSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+else
+  MSSQL_LOGON_FILE_ID=0
+fi
+
+if [ -f $HOME/.mssqllogon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $HOME/.mssqllogon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon
+fi
+export MSSQL_USERNAME MSSQL_PASSWORD
+
+
 # database configuration environment
 if [[ -n $SUBJECT_AREA && -f $DW_CFG/odbc.ini ]]
 then
