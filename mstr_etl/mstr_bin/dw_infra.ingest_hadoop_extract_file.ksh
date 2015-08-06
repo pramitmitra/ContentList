@@ -214,7 +214,7 @@ for i in $(seq 1 3)
 do
   set +e
   HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $NF }' | sort -d | awk '{ printf $1" " }'` > $DATA_LIS_LOGFILE 2>&1
-  #SCODE=$?
+  SCODE=$?
   grep -E "failed\|Exception" $DATA_LIS_LOGFILE
   # 0 indicate error
   IS_GSS_ERROR=$?
