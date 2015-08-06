@@ -219,11 +219,11 @@ do
   # 0 indicate error
   IS_GSS_ERROR=$?
   set -e
-  #if [[ $SCODE = 0 ]]; then
+  # if [[ $SCODE = 0 ]]; then
   #   break
   # fi
   # if no GSS initiate failed and HADOOP_SOURCE_FILE_LIST non empty
-  if [[ $IS_GSS_ERROR != 0 ]] && [[ ! -z HADOOP_SOURCE_FILE_LIST ]]; then
+  if [[ $SCODE = 0 ]] && [[ $IS_GSS_ERROR != 0 ]] && [[ ! -z HADOOP_SOURCE_FILE_LIST ]]; then
     break
   fi
 
@@ -236,7 +236,7 @@ do
   fi
 done
 
-if [[ $IS_GSS_ERROR != 0 ]] && [[ ! -z HADOOP_SOURCE_FILE_LIST ]]; then
+if [[ $SCODE != 0 ]] || [[ $IS_GSS_ERROR = 0 ]] && [[ -z HADOOP_SOURCE_FILE_LIST ]]; then
   print "${0##*/}: INFRA_ERROR - Failure on $HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE"
   cat $DATA_LIS_LOGFILE
   exit 7
