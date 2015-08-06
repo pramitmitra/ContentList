@@ -66,6 +66,13 @@ then
   exit 204
 else
 
+  print "INFO: Checking ownership of $data_dir." 2>&1 | tee -a $LOG_FILE
+  if [[ ! -O $data_dir ]]
+  then
+    print "FATAL_ERROR: $myName not owner of $data_dir. Please resolve ownership issue before proceeding." 2>&1 | tee -a $LOG_FILE
+    exit 205
+  fi
+
   set +e
   mv $data_dir $data2_dir 2>&1 | tee -a $LOG_FILE
   _rcode=$?
@@ -76,7 +83,7 @@ else
     print "INFO: Successful move of $data_dir to $data2_dir." 2>&1 | tee -a $LOG_FILE
   else
     print "FATAL ERROR: Unable to move $data_dir to $data2_dir." 2>&1 | tee -a $LOG_FILE
-    exit 205
+    exit 201
   fi
 
 fi
@@ -155,7 +162,8 @@ T_ETL_ENV=${2:-prod}
 
 export LOG_TIME=`date +%Y%m%d%H%M%S`
 export RUN_DIR=$DW_MASTER_EXE/infra
-export LOG_FILE=$DW_MASTER_LOG/${0##*/}.${SUBJECT_AREA}.${servername}.$LOG_TIME.log
+export LOG_FILE=$DW_LOG/extract/$SUBJECT_AREA/${0##*/}.${SUBJECT_AREA}.${servername}.$LOG_TIME.log
+export myName=$(whoami)
 
 print "ETL_ID=$ETL_ID" 2>&1 | tee -a $LOG_FILE
 print "T_ETL_ENV=$T_ETL_ENV" 2>&1 | tee -a $LOG_FILE
