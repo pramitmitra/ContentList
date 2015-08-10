@@ -197,6 +197,8 @@ fi
 
 export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdp_ex_file_list.$RECORD_ID.$HOST_ID.dat
 
+export DATA_LIS_LOGFILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdp_ex_file_list.$RECORD_ID.$HOST_ID.log
+
 FILE_ID=0
 > $DATA_LIS_FILE
 
@@ -211,10 +213,17 @@ fi
 for i in $(seq 1 3)
 do
   set +e
-  HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`
+  HADOOP_SOURCE_FILE_LIST=`$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE | awk '{ print $NF }' | sort -d | awk '{ printf $1" " }'` > $DATA_LIS_LOGFILE 2>&1
   SCODE=$?
+  grep -E "failed\|Exception" $DATA_LIS_LOGFILE
+  # 0 indicate error
+  IS_GSS_ERROR=$?
   set -e
-  if [[ $SCODE = 0 ]]; then
+  # if [[ $SCODE = 0 ]]; then
+  #   break
+  # fi
+  # if no GSS initiate failed and HADOOP_SOURCE_FILE_LIST non empty
+  if [[ $SCODE = 0 ]] && [[ $IS_GSS_ERROR != 0 && ! -z $HADOOP_SOURCE_FILE_LIST ]]; then
     break
   fi
 
@@ -227,8 +236,9 @@ do
   fi
 done
 
-if [[ $SCODE != 0 ]]; then
+if [[ $SCODE != 0 ]] || [[ $IS_GSS_ERROR = 0 && -z $HADOOP_SOURCE_FILE_LIST ]]; then
   print "${0##*/}: INFRA_ERROR - Failure on $HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE"
+  cat $DATA_LIS_LOGFILE
   exit 7
 fi
 
