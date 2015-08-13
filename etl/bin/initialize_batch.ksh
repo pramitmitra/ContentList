@@ -42,9 +42,9 @@ then
         exit 4
 fi
 
-SUBJECT_AREA=dw_infra
-
 . /dw/etl/mstr_cfg/etlenv.setup 
+
+export SUBJECT_AREA=dw_infra
 
 CURR_DATE=$(date '+%Y%m%d')
 CURR_DATETIME=$(date '+%Y%m%d-%H%M%S')

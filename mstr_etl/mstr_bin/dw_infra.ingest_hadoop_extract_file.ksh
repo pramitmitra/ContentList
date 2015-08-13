@@ -204,9 +204,9 @@ FILE_ID=0
 
 
 if [[ $myName != $HD_USERNAME ]]
-    then
-        export HADOOP_PROXY_USER=$HD_USERNAME
-        print "Running ex job via user $HD_USERNAME"
+then
+    export HADOOP_PROXY_USER=$HD_USERNAME
+    print "Running ex job via user $HD_USERNAME"
 fi
 
 #$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE    > /dev/null
@@ -232,6 +232,10 @@ do
     sleep 10
     kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
     set -e
+    if [[ $myName != $HD_USERNAME ]]
+    then
+        export HADOOP_PROXY_USER=$HD_USERNAME
+    fi
     continue
   fi
 done
