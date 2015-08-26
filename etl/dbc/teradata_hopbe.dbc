@@ -1,0 +1,577 @@
+############################################
+## Teradata Database Configuration Information
+## 
+## You need to edit this file once, after you create
+## it. This file contains the information needed
+## to connect to your Teradata database.
+##
+## This file must always be named with the extension .dbc.
+##
+## Each line of this file must have the following form:
+## <tag>:  <value>
+##
+## Each tag must be at the start of a line and be
+## immediately followed by a colon (:). All white space
+## characters, such as blanks and tabs, are ignored.
+##
+## This file also contains information about assigning
+## and editing the values of tags.
+##
+## Pound signs at the beginning of a line denote
+## comments. The IDB database components ignore these
+## lines.
+############################################
+
+dbms: teradata
+## REQUIRED. Do not change the value of this tag from teradata.
+
+### ************ QUICK-START RECOMMENDATIONS  *************
+### ************                              *************
+### Beginning with 2.15.3, the Teradata interface
+### is character-set aware, and can exchange character data
+### with Teradata in character sets other than extended
+### ASCII.   Teradata dbc files generated with prior versions
+### of the Co>Operating System must be regenerated.
+###
+### There are a number of new tags (starting at the
+### teradata_character_set tag) which govern how dml
+### is generated from Teradata, and how the database interface should
+### exchange data with the Teradata (ODBC) api.
+###
+### Detailed information is available in the 2.15 release
+### notes, and the 'Teradata information (2.15)' section of
+### the 'Database Package' book in the 1.15 GDE online help.
+### Ideally, all users should read through this information,
+### but users using 8-bit characters or non-ascii character
+### sets are especially encouraged to read through it.
+###
+### As an aide to getting started quickly, however, we
+### provide the following two suggestions:
+###
+### 1 -- Users who primarily use the Teradata ASCII
+### session character set and use only 7-bit characters
+### (i.e., the high-order [8th] bit is always 0) can generally use
+### the default values for the new tags, with two exceptions:
+###     i) set the teradata_character_set tag to 'ascii' and,
+###     ii) set the user_gendml_charset_source tag to 'session'.
+### (In both cases, do not include the quote characters in the values).
+### These two changes should suffice for running most *** existing *** graphs.
+###
+### 2 -- For all new graph development, we suggest ALL users
+### use a separate dbc file that sets the teradata_character_set 
+### tag to utf8 (or utf16 on windows) and the 
+### user_gendml_charset_source tag to unicode.
+###
+
+
+db_home: ${TERADATA_HOME}
+## REQUIRED.  This tag must be set to the location of Teradata.
+## Location is defined as the parent directory of the
+## directory in which the serial Teradata utilities
+## are (or would be) installed.
+##
+## For TTU 13 or above, one should typically set this to something 
+## like /opt/teradata/client/13.0  (or on Windows,
+## "c:\Program Files\Teradata\Client\13.0").
+## If the directory path includes spaces, enclose the path
+## in double quotes.
+##
+
+## tpt_root:
+## OPTIONAL. The directory in which Teradata Parallel Transporter
+## is installed.  If specified, the value of this tag is equivalent to $TWB_ROOT.
+## If not specified, the Co>Operating System will assume that TPT
+## will be found in its usual location under the db_home tag.
+##     Example:  /opt/teradata/client/13.0/tbuild 
+## If the directory path includes spaces, enclose the path
+## in double quotes.
+
+## wb_bin: 
+## WARNING -- the wb_bin tag has been deprecated.
+## Please use tpt_root tag instead.
+
+odbc_init_file: ${ODBCINI}
+## OPTIONAL.  This can be used to set the location and name
+## of the odbc initialization file which is used by the
+## Teradata ODBC driver on Unix.  By default the file is named
+## .odbc.ini and is located in the user's home directory.
+## Use this tag if the file is located elsewhere or has
+## a different name.
+## Note:  In a 32-bit build, the Co>Operating System will
+## first look for and use the above filename with '_32'
+## appended (or in a 64-bit build, '_64').  If such a file
+## does not exist, then it uses a file with the exact name given.
+
+odbc_data_source_name: dwi_hopbe 
+## REQUIRED data source name (DSN) for the ODBC connection.
+## This should be the name of a data source that you have 
+## configured in your .odbc.ini file on UNIX, or via the
+## ODBC Data Sources from the Control Panel on Microsoft Windows.
+## If the name includes spaces, enclose the name
+## in double quotes.
+## For more information on configuring an ODBC connection,
+## consult the Teradata ODBC documentation.
+
+odbc_libdir: ${TERADATA_ODBC_LIB} 
+## REQUIRED.  For Unix systems only.
+## This tag specifies the location of Teradata ODBC.
+## Use a full path name to point to the relevant ODBC base directory.
+## The base directory chosen has certain implications.
+##
+## For example, a value of:
+##   /opt/teradata/client/13.0/odbc_32 implies 32-bit ODBC v13.0 only. 
+##         (The above value will NOT work with a 64-bit Co>Operating System.)
+##         [substitute odbc_64 for odbc_32 above to get 64-bit only] 
+##   /opt/teradata/client/13.0  implies v13.0 only (either 32-bit or 64-bit)
+##         The above value works with both 32-bit & 64-bit Co>Operating Systems.
+##
+##   /opt/teradata/client/ODBC_32 implies 32-bit admin-chosen version.. 
+##         Uses the version setup as the default on the client (32-bit only).
+##         (The above value will NOT work with a 64-bit Co>Operating System.)
+##         [substitute ODBC_64 for ODBC_32 above to get 64-bit only] 
+##   /opt/teradata/client implies an admin-chosen version. 
+##         The above value works with both 32-bit & 64-bit Co>Operating Systems.
+##   Note: by pointing to an admin-chosen version, the administrator 
+##   can install and switch to a new version without requiring  
+##   a change to the dbc file.  
+##
+
+db_name: hopbe
+## REQUIRED name of the Teradata database to which
+## you want to connect.  This value should be the
+## Teradata tdpid used by Teradata utilities to connect
+## to the database.  (On Unix systems, try the value 'dbc'
+## [without quotes] if you are unsure what your tdpid is.)
+## An IP address of the database is acceptable here if you
+## are unsure of your tdpid.
+
+add_PI_to_create_table: false
+## The default value (false) of this tag is correct for
+## all versions of the Teradata Database prior to 13.
+## For Teradata 13 and higher, you may want to set this
+## tag to true if your Database is setup to create tables
+## without a primary index by default.
+## If this tag is true, then any generated DDL
+## or tables will have an explicit PRIMARY INDEX
+## phrase on the first column of the table.  This behavior
+## mimics the default behavior of Teradata 12 and earlier.
+## This affects 'm_db create' and 'm_db genddl' commands.
+
+db_nodes: ${servername} 
+## REQUIRED. This must be the name (or IP address) of a node
+## where the Teradata utilities (bteq,multiload et al) run
+## AND on which the Co>Operating System(tm) is installed.
+## The value of db_nodes must contain at least one node. 
+## If db_nodes contains multiple nodes, the value(s) for db_home,
+## tpt_root, db_name, odbc_init_file, odbc_libdir and odbc_data_source_name
+## may be specified once if the value is identical for every node, or
+## should be a space-separated list with values for each node.
+##
+
+## default_database: 
+## OPTIONAL.  Specifies the database within Teradata that
+## should be used as the default database after you log on.
+##
+## This tag's value is used with the Teradata "DATABASE"
+## command.  This value is also assigned to the ODBC Data
+## Source "DefaultDatabase" attribute.
+##
+## The result of setting this tag is that any unqualified
+## table reference will be assumed to reside in this
+## database.  However, only the logtable_database tag will
+## modify an unqualified logtable reference in a utility script.
+
+logtable_database: ${tdlogDB}
+worktable_database: ${tdlogDB} 
+errortables_database: ${tdlogDB} 
+## OPTIONAL.  Specifies the 'database' within Teradata
+## that should be used when generating the log tables,
+## work tables, and/or error tables that the Teradata
+## utilities create while loading or unloading tables.
+## If these tags are not specified, the work/error tables
+## will be created either in the database specified by the
+## default_database tag (see above) if defined, or otherwise
+## in your default logon database.  Note that if
+## logtable_database is not defined, your default logon
+## database is used -- the default_database tag does not
+## apply to logtables.
+
+## db_character_set: 
+## Do not set this tag unless instructed to by customer support.
+
+teradata_character_set: ASCII 
+## REQUIRED.  Specifies the Teradata client character set
+## name.  This session character set is used to communicate
+## with Teradata.
+##
+## For Ascii, specify teradata_character_set: ASCII
+## For 8-bit UNICODE, specify teradata_character_set: UTF8
+## For 16-bit UNICODE, specify teradata_character_set: UTF16
+
+## inhibit_array_mode:
+## OPTIONAL.  If true, inhibit use of array-mode when
+## sending data to the database in api mode.  The only time
+## that one would want to set this to true is if the
+## version of the Teradata server pointed to via this dbc
+## file does not handle array-mode properly.
+
+use_ter_latin_charset: false
+## REQUIRED.  Specifies whether to equate the Teradata
+## client character set ASCII with dml character
+## set ascii (also known as iso_8859_1 or iso_latin_1)
+## or with ter_ascii.  The ter_ascii
+## character set was added in Co>Operating System 2.15.3.  It is
+## defined to correspond precisely to Teradata's definition of
+## the server LATIN character set.
+## If you want to maintain absolute equality between the
+## Teradata definition and DML, then 
+## set this tag to true.  The default value of false is
+## usually appropriate for all graphs developed prior to 2.15.3.
+## The value of this tag does not matter if you only use 7-bit
+## ASCII values.  If you use 8-bit ASCII values, then 
+## choose the value of this tag carefully.
+
+user_gendml_charset_source: session 
+## REQUIRED.  The value of this tag governs the character set
+## generated in user-visible dml for CHARACTER database columns.
+## Valid choices are 'session' or 'unicode'.
+## If the value 'unicode' is specified, then one of the
+## Unicode encodings (e.g., utf-8 or utf-16) will be used.
+## The encoding used will be governed by the value of the
+## preferred_unicode_type tag.
+##
+## If the value 'session' is specified, then the DML
+## character set that corresponds to the Teradata character
+## set specified by the teradata_character_set tag will be used.
+
+## preferred_unicode_type: 
+## OPTIONAL.  Governs the type of Unicode encoding used
+## when auto-generating user-visible database dml. (See
+## also the user_gendml_charset_source tag.)
+## If not set, defaults to 16 on Windows, 8 otherwise.
+##
+## Set this to 8 (for utf-8), 16 (utf-16, most convenient
+## endianness),  16be, 16le, 32be, or 32le  (for utf-16
+## or utf-32; big endian or little endian).
+
+use_api_legacy_retrieval: false
+## REQUIRED.  Governs api-level interaction with Teradata.
+## If false, use modern unicode mechanism if possible
+## to exchange character data.  (SQL_C_WCHAR in ODBC).
+##
+## It is recommended that all new graph development
+## be done with this tag set to false.
+##
+## Graphs developed in 2.14 or earlier that use only
+## 7-bit ASCII values in columns with CHARACTER SET LATIN
+## should also be able to run with this tag set to false.
+
+teradata_export_width: 0
+## This tag is REQUIRED for users of ODBC 12.0.0.1 or earlier.
+## Users of ODBC 12.0.0.2 or later do NOT need this tag, although
+## setting it will not cause any harm.
+## The Teradata setting of the same name governs how
+## Teradata extracts character data from the database.
+## Only the values 0, 1, or 2 are allowed.
+##
+## *****WARNING***** 
+##
+## This setting MUST match the export width setting used
+## by your Teradata database, or utility-mode Input Table
+## may fail or extract data incorrectly.
+## Unfortunately, there is no inexpensive way
+## to dynamically determine this value.  There are
+## two ways you can obtain this value.  You can either:
+##   1) ask your DBA to use the Teradata dbs control
+##      utility to find the Export Width setting, or 
+##   2) run the 'm_db test' command.  This command,
+##      besides doing some simple tests, will attempt to
+##      tell you what the value of the tag should be.
+##      If it is unable to do so, see option 1.
+
+query_band_string: ${QUERY_BAND_STRING} 
+## OPTIONAL.  Specifies query band info.
+## If this tag has no value or isn't present, no query band
+## statement will be issued by Ab Initio using this tag.
+## Otherwise, all database components using this dbc file
+## will issue a SET QUERY_BAND statement -- the tag value
+## should follow the Teradata requirements for
+## the quoted portion of the SET QUERY_BAND statement --
+## that is, the name-value pairs portion.  Optionally, you
+## may follow the quoted pairs by whitespace and the word UPDATE
+## to update the query band.  Updating requires TTU 13 or higher.
+## A special case: if the tag value is NONE, this 
+## statement is issued: SET QUERY_BAND = NONE FOR SESSION;
+
+query_band_add_comp_info: false
+## OPTIONAL.  Indicates whether to add per-component query band info.
+## This tag is a boolean (which defaults to false if
+## unspecified).  If true, a database component using this
+## dbc file will add a component-specific value to the
+## query band by doing:
+##   SET QUERY_BAND = 'GRAPH_COMPONENT=<val>;' UPDATE FOR SESSION;
+## The <val> will be limited to no more than 50 characters,
+## and will be a string intended to help identify the
+## component in a graph doing a Teradata operation.
+## Do not set this tag to true unless you have TTU 13 or higher.
+##
+## Essentially, if this tag is false, then all components
+## using this dbc file will use the same query band value
+## (see the query_band_string tag description above).
+## If this tag is true, then each component will also
+## have a unique value for the GRAPH_COMPONENT name.
+
+scan_for_odbc_escapes: false
+## OPTIONAL. If true, the ODBC layer will scan your SQL
+## statements for ODBC escape sequences.
+
+assume_unified_ttu_installation: true
+## REQUIRED. 
+## Don't set this to false unless told to do so.
+
+## session_startup_sql: 
+## When uncommented and set, the specified sql statement will be executed
+## at the time that connection is made to the database. 
+## The expected use for this tag is to execute statements
+## such as 'SET SESSION ...' 
+## which set the session environment.
+## Use multiple instances of this tag to execute multiple sql statements
+##
+## This is generally only useful for api mode operations.
+
+user: ${TD_USERNAME}
+password: ${TD_PASSWORD}
+## If your database connection requires a username and
+## password, then uncomment the preceding tags and enter
+## the appropriate values.  If a password is to be specified, 
+## it should be encrypted with the "m_password" utility and 
+## the resulting string should be given as the value to the
+## "encrypted_password" tag.  Alternatively, the password
+## can be specified in plain text with the "password" tag.
+## If both "encrypted_password" and "password" tags are 
+## specified, "encrypted_password" is ignored.  You can use
+## environment variables instead of values. Use ${} to surround
+## each environment variable. For example:
+## user:      ${MY_USERNAME}
+## encrypted_password:  ${MY_ENCRYPTED_PASSWORD}
+
+## db_acctid: 
+## If needed, enter the Teradata account identifier
+## for .LOGON information.
+
+## logon_mechanism: 
+## This tag is necessary only for alternative connection
+## methods to Teradata.  Uncomment this tag and set it
+## to the type of external authentication to be
+## used (e.g., LDAP).  The value of this tag is usually
+## used with '.logmech' or 'LogonMech=' in utility scripts,
+## or with an authentication-related parameter in api connections.
+
+## logon_mech_data: 
+## Uncomment this tag only if the external authentication
+## type in use requires logon data to be specified.
+## The value of this tag should be the data to hand
+## to the external authentication mechanism.
+## The value of this tag is usually used with '.logdata'
+## or 'LogonMechData=' in utility scripts,
+## or with a similar parameter in api connections.
+##
+## Note: Alternatively, you can encrypt this data
+## with the "m_password" utility and provide the
+## resulting string as the value to the
+## "encrypted_logon_mech_data" tag.  If both
+## "encrypted_logon_mech_data" and "logon_mech_data"
+## are specified, "encrypted_logon_mech_data" is ignored.
+
+case: lower 
+## The default value lower causes the database package to
+## generate DML in lower case. If you want the database
+## package to generate DML in upper case, change the value to
+## upper. For example:
+## case: upper
+## If you want the database package to preserve the case
+## as it is returned from the database system, change the
+## value to mixed.  For example:
+## case: mixed
+
+## column_delimiter: 
+## The default value is "\001".  If you want to change
+## the value, then uncomment the preceding tag and
+## set column_delimiter to the default value you want.
+
+## default_date_format: 
+## Use this default date format when generating DML for database types
+## which are equivalent to the DML DATE type. For example:
+## default_date_format: YYYYMMDD
+## 
+## For Teradata:  The optimum dml will be generated
+##   automatically for DATE columns when this tag is NOT specified. 
+
+## default_datetime_format: 
+## Use this default datetime format when generating DML for database types
+## which are equivalent to the DML DATETIME type. For example:
+## default_datetime_format: YYYYMMDD HH24:MI:SS
+## 
+## For Oracle:
+##   Your settings of default_datetime_format will be used for
+##   Oracle TIMESTAMP columns and default_date_format for Oracle DATE columns.
+##   If you set both tags (and AB_COMPATIBILITY is 2.14 or later) then
+##   dml for DATE columns will be based on default_date_format unless
+##   you also include this line in the dbc file:
+##      environment: AB_IDB_DATE_FORMAT_PREFERRED=false
+## 
+## For Teradata:  The optimum dml will be generated
+##   automatically for TIMESTAMP columns when this tag is NOT specified.
+##   For Teradata, either, neither, or both of the tags
+##   default_date_format and default_datetime_format may
+##   be uncommented.
+
+generate_dml_with_nulls: true
+## If the value is true, the database automatically
+## generates DML NULL() for database columns which allow NULL.
+
+## default_null_value: 
+## When delimited DML is generated, fields which can be NULL 
+## are given a default value of the empty string ("").
+## Databases which distinguish between NULL and the empty 
+## string may require a specific NULL default value other than the
+## empty string when using utility loaders or unloaders.
+
+field_type_preference: delimited
+## Identifies the rules used when generating dml for the
+## database components.  For most of the supported databases
+## only 'delimited' is supported for the utility loaders.
+## The supported values for this tag are delimited, variable and fixed.
+
+## fixed_size_dml: false
+## If the value is false, the database generates delimited
+## types whenever possible. We recommend that this value
+## remain false and that you use delimited DML for database
+## interaction, in order to represent NULLs as zero-length
+## data.
+## This tag is deprecated - please use the field_type_preference tag instead.
+
+treat_blanks_as_null: true
+## If the value is true, the itable component unloads NULLs
+## as blanks for fixed size fields when possible, and,
+## similarly, the otable component treats input with
+## all blanks as NULL when possible. Because not all databases
+## allow this type of interface, we recommend that you use
+## delimited fields instead of fixed size fields.
+
+oldstyle_emptystring_as_null: false
+## Set to true for the behavior used in older releases.
+## If the value is true when writing delimited data to a table and
+## the dml definition of the field does not include a NULL value,
+## then zero-length strings will be written to the table as NULL as
+## if the dml field definition had included '= NULL("")'.
+## This tag is ignored if AB_COMPATIBILITY is set to a value earlier 
+## than 2.12.
+## It is recommended that oldstyle_emptystring_as_null be set
+## to false when the generate_dml_with_nulls tag is set to true.
+
+fully_qualify_dml: false
+## If the value is true record formats will be generated with fully
+## qualified dml.  I.e. all fields will have an explicit character set
+## and all integer fields will have an explicit endianness.
+
+dml_with_maximum_length: false 
+## If the value is true, variable-length fields in record formats will be
+## generated with explicit maximum_length qualifiers based on size 
+## information obtained from the database for the corresponding
+## columns.
+
+interface: default
+##   WARNING: The 'interface' tag is only used with database
+##            components generated by GUI releases earlier
+##            than 1.8.25.  Beginning with GUI 1.8.25,
+##            use the interface parameter on each database
+##            component to choose an interface.
+## Each database usually provides multiple interfaces to perform
+## any one task.  For example, databases usually allow two ways
+## to load data: via a load utility, or transactional APIs.
+## The setting of this tag affects which interface will be used for all
+## IDB database components.  The default setting will typically
+## use the best performing interface for this database on a
+## component-by-component basis.
+## If you wish to have all components use the API interface
+## then set this value to api.  For example:
+## interface: api
+
+## generate_floating_decimals: 
+## Set this tag to true to cause delimited dml generated for 
+## decimal columns to be in a floating decimal point
+## format, i.e. without an implicit or explicit specification
+## of scale.  This form was standard in Co>Operating
+## System releases prior to 2.15.  The default value is false.
+
+## environment: 
+## Uncomment this tag to set or propagate environment variables
+## to all database components. Use the following form:
+## environment:  <env-var>=<value>
+
+max_data_size: ${TD_MAX_DATA_SIZE}
+## Uncomment this tag to specify the maximum expected size of the data per field.
+## This can be used for varying length fields (like VARCHAR) which
+## need an internal maximum size to allocate (defaults to 100000).
+
+## rowset_size:
+## The array size for receiving query result sets; defaults to 1000
+## for most operations.  Given a certain query result set, increasing
+## this size will decrease the number of fetches in which the results
+## will be brought to the client, cutting down on the number of
+## communication acts between the client and server.  This may lead
+## in noticeable performance improvements in the environments with
+## high network latency.
+
+## rows_per_commit: 
+## Uncomment this tag to specify a default for the commit size
+## of appropriate components.
+## We recommend leaving this commented out for most cases and
+## supplying the commit size via the component parameter.
+
+## commit_table: 
+## Uncomment this tag to set the name of the commit table to be used. This is 
+## required if rows_per_commit is non-zero.
+
+## micrograph_transaction_style: 
+## This tag is applicable only to micrographs.  Uncomment this tag to set the 
+## name of the style of transaction that database components should employ
+## in micrographs.  If not set, the default value two-phase-commit will be
+## used but note that that value is only supported by dbms types that
+## support XA transactions.  Acceptable values for this tag are:
+##       two-phase-commit                 (the default)
+##       one-phase-commit-recoverable     (requires the micrograph_commit_table
+##                                        tag to also be set)
+##       one-phase-commit-nonrecoverable  (the micrograph_commit_table tag must
+##                                        not be set)
+
+## micrograph_commit_table: 
+## This tag is applicable only to micrographs.  Uncomment this tag to set 
+## the name of the commit table to be used in micrographs that are performing 
+## one-phase-commit-recoverable transactions.
+
+array_interface_buffer_size: ${TD_ARRAY_INTERFACE_BUFFER_SIZE} 
+## Uncomment this tag to set the array size while binding input parameters
+## in prepared statements; defaults to 4096.  This is only used by Output Table
+## and (when possible) Update Table for databases that support api-level
+## batch loads and updates.
+
+## catalog_query_unconvertible_replacement_string: 
+## If set, the value of this tag is used in an internal call to the
+## string_convert_explicit dml function when it is invoked on the results
+## of calls that database components make to the database catalog.
+## Its default value is "#" (without the quotes).
+
+## catalog_sql_corrupt_replacement_string: 
+## If set, the value of this tag is used in an internal call to the
+## string_cleanse dml function when it is invoked on the results of
+## calls that database components make to the database catalog.  Its
+## default value is "!" (without the quotes).
+
+## add_false_predicate_to_select_for_describe: 
+## If set to 'true', SELECT statements used internally for finding information about table
+## columns will be modified by appending 'WHERE 1=0', in order to avoid the real selecting
+## and fetching data, which some database client libraries do in preparing a SQL statement,
+## or to pacify database monitoring software that doesn't like unqualified SELECTs from
+## large tables.

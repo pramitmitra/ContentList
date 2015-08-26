@@ -11,6 +11,7 @@
 # 2013-10-04  1.3    Ryan Wong                       Redhat changes
 # 2015-03-20  1.3    Jiankang Liu                    Fix the print: command not found bug in remote server
 # 2015-04-22  1.4    Ryan Wong                       Change apollo-cli to use apollo-devour, after decommission
+# 2015-07-07  1.5    Ryan Wong                       Add td6 and td7 to JOB_ENV check
 #------------------------------------------------------------------------------------------------
 
 typeset -fu processCommand
@@ -142,7 +143,7 @@ fi
  
  
 
-if [[ $JOB_ENV = @(td1||td2||td3||td4||td5) ]]
+if [[ $JOB_ENV = @(td1||td2||td3||td4||td5||td6||td7) ]]
 then
   export  TERADATA_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)  
   TD_JOB_ENV=$JOB_ENV
@@ -190,7 +191,7 @@ then
   SSH_USER=$TD_USERNAME
   
 else
-  print "ony support JOB_ENV:  	td1||td2||td3||td5||hd1||hd2||hd3"  >&2
+  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd1||hd2||hd3"  >&2
   exit 4  
 fi
 	
