@@ -13,6 +13,8 @@
 # 2013-09-08  1.2    George Xiong                    add env for artemis
 # 2013-10-04  1.3    Ryan Wong                       Redhat changes
 # 2013-05-30  1.4    George Xiong                    Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB(default=1)
+# 2015-07-07  1.5    Ryan Wong                       Add td6 and td7 to JOB_ENV check
+# 2015-08-26  1.6    Ryan Wong                       Add mapping for hopbatch and hopbe to hopper
 #
 ####################################################################################################
 
@@ -73,7 +75,7 @@ assignTagValue FAIL_ON_NO_IMPORT_FILE DW_BRIDGE_FAIL_ON_NO_IMPORT_FILE  $ETL_CFG
 SELECTSQL=""
 
 
-if [[ $JOB_ENV = @(td1||td2||td3||td4||td5) ]]
+if [[ $JOB_ENV = @(td1||td2||td3||td4||td5||td6||td7) ]]
 then
   TERADATA_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)  
   assignTagValue DM_BRIDGE_HADOOP_SYSTEM DM_BRIDGE_HADOOP_SYSTEM $ETL_CFG_FILE "W"
@@ -131,7 +133,7 @@ then
   fi
   
 else
-  print "ony support JOB_ENV:  	td1||td2||td3||td5||hd1||hd2||hd3"
+  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd1||hd2||hd3"
   exit 4  
 fi
  
@@ -147,6 +149,12 @@ fi
 if [[ $TERADATA_SYSTEM = "davincibe" ]]
 then
   TERADATA_SYSTEM=davinci
+fi
+
+
+if [[ $TERADATA_SYSTEM = @(hopbatch||hopbe) ]]
+then
+  TERADATA_SYSTEM=hopper
 fi
 
  
