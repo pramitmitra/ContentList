@@ -108,18 +108,18 @@ then
   
   if [[ $CURR_USER == $HD_USERNAME ]]
     then
-      /apache/hive/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
+      $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
                             --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                             -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   else
     CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
     CLASSPATH=${CLASSPATH}:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-    for jar_file in /apache/hive/lib/*.jar
+    for jar_file in $HIVE_HOME/lib/*.jar
       do
         CLASSPATH=$CLASSPATH:$jar_file
       done
-    CLASSPATH=$CLASSPATH:/apache/hive/conf
-    HIVE_CLI_JAR=`ls /apache/hive/lib/hive-cli-*.jar`
+    CLASSPATH=$CLASSPATH:$HIVE_HOME/conf
+    HIVE_CLI_JAR=`ls $HIVE_HOME/lib/hive-cli-*.jar`
 
     exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
