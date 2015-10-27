@@ -116,6 +116,8 @@ then
 	export DW_XFR=$DW_HOME/xfr/$SUBJECT_AREA
 	export DW_DML=$DW_HOME/dml/$SUBJECT_AREA
 	export DW_EXE=$DW_HOME/bin 
+  export DW_HQL=$DW_HOME/hql/$SUBJECT_AREA
+  export DW_JAR=$DW_HOME/jar/$SUBJECT_AREA
  
  	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_BIN/$SUBJECT_AREA:$DW_EXE:$DW_BIN:$PATH
@@ -126,6 +128,8 @@ else
 	export DW_XFR=$DW_HOME/xfr
 	export DW_DML=$DW_HOME/dml
 	export DW_EXE=$DW_HOME/bin
+  export DW_HQL=$DW_HOME/hql
+  export DW_JAR=$DW_HOME/jar
 	
 	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_EXE:$DW_BIN:$PATH
