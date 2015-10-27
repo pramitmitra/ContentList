@@ -5,7 +5,7 @@
 ##########                                                                             ##########
 ##########      Edits to this file MUST be reviewed and approved by a member of the    ##########
 ##########      Application Architecture Team. Please contact via email using          ##########
-##########      DL-eBay-IT-IMD-ApplArchTeam with ETLENV Setup in the subject line.     ########## 
+##########      DL-eBay-IT-IMD-ApplArchTeam with ETLENV Setup in the subject line.     ##########
 ##########      Please specify Dev or Prod in your subject line.                       ##########
 ##########                                                                             ##########
 ##########      Failure to follow this procedure may result in code deletion wthout    ##########
@@ -62,7 +62,7 @@ else
 	return 4
 fi
 
-# Define and export master level etl dirs 
+# Define and export master level etl dirs
 export DW_MASTER_BIN=$HROOT/mstr_bin
 export DW_MASTER_EXE=$HROOT/mstr_bin
 export DW_MASTER_CFG=$HROOT/mstr_cfg
@@ -110,7 +110,7 @@ export DW_ONETIME_OUT=$DW_HOME/onetime_out
 
 if [[ -n $ETL_ID ]]
 then
-  	export DW_BIN=$DW_HOME/bin 
+  export DW_BIN=$DW_HOME/bin
 	export DW_CFG=$DW_HOME/cfg/$SUBJECT_AREA
 	export DW_SQL=$DW_HOME/sql/$SUBJECT_AREA
 	export DW_XFR=$DW_HOME/xfr/$SUBJECT_AREA
@@ -118,11 +118,10 @@ then
 	export DW_EXE=$DW_HOME/bin 
   export DW_HQL=$DW_HOME/hql/$SUBJECT_AREA
   export DW_JAR=$DW_HOME/jar/$SUBJECT_AREA
- 
  	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_BIN/$SUBJECT_AREA:$DW_EXE:$DW_BIN:$PATH
 else
-  	export DW_BIN=$DW_HOME/bin
+  export DW_BIN=$DW_HOME/bin
 	export DW_CFG=$DW_HOME/cfg
 	export DW_SQL=$DW_HOME/sql
 	export DW_XFR=$DW_HOME/xfr
@@ -130,10 +129,8 @@ else
 	export DW_EXE=$DW_HOME/bin
   export DW_HQL=$DW_HOME/hql
   export DW_JAR=$DW_HOME/jar
-	
 	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_EXE:$DW_BIN:$PATH
-
 fi
 
 
@@ -154,19 +151,19 @@ export NR_CATYS=27 #-- number of caty hosts
 
 # Define modular setup file list and force exit variables
 # FORCE_EXIT is needed because a non-zero return within a loop causes the calling shell
-# to shut down rather than simply exiting setup with an error. 
+# to shut down rather than simply exiting setup with an error.
 MODULAR_SETUP_FILES_LIST=$DW_MASTER_CFG/etlenv.modular_setup_files.lis
 FORCE_EXIT=0
 
 
 # Read through modular setup files list and call each one
-# Fail with appropriate error message upon encountering an entry in the list that doesn't exist 
+# Fail with appropriate error message upon encountering an entry in the list that doesn't exist
 while read MODULAR_FILE_TYPE MODULAR_FILENAME
 do
 	DW_MODULAR_FILENAME_PATH=$(eval print $DW_MASTER_CFG/$MODULAR_FILENAME)
 	if [ -f $DW_MODULAR_FILENAME_PATH ]
 	then
-		. $DW_MODULAR_FILENAME_PATH 
+		. $DW_MODULAR_FILENAME_PATH
 	else
 		print
 		print "FATAL ERROR: $MODULAR_FILE_TYPE $DW_MODULAR_FILENAME_PATH does not exist on $servername." >&2
@@ -204,7 +201,7 @@ function parseTDLogonString
 }
 
 
-# parseLogonFile function will read the contents of a Teradata logonfile and pass it to 
+# parseLogonFile function will read the contents of a Teradata logonfile and pass it to
 # parseTDLogonString function
 function parseLogonFile
 {
@@ -221,33 +218,33 @@ function parseLogonFile
 
 ###################################
 ###################################
-# Verify SA Level OS batch ID 
+# Verify SA Level OS batch ID
 ####################################
 if [[ -n $ETL_ID ]]
 then
- 
+
   myName=$(whoami)
   OS_BATCH_SA_FILE=$DW_LOGINS/$myName.sa.logon
 
 
   dwi_assignTagValue -p ALL_LEVEL -t all -f $OS_BATCH_SA_FILE -s N -d 0
   if [[ $ALL_LEVEL != 1  ]]
-  then 
+  then
      dwi_assignTagValue -p SA_LEVEL -t $SUBJECT_AREA -f $OS_BATCH_SA_FILE -s N -d 0
      if [[ $SA_LEVEL != 1 ]]
-     then 
+     then
         dwi_assignTagValue -p ETL_LEVEL -t $ETL_ID -f $OS_BATCH_SA_FILE -s N -d 0
         if [[ $ETL_LEVEL != 1  ]]
-        then 
+        then
                 echo "This ETL job not permitted to run via OS batch account: $myName"
                 return 4
         fi
-     fi         
+     fi
   fi
 
-fi 
-  
-  
+fi
+
+
 
 # Define Teradata logon info location. This provides an override when running jobs outside of
 # batch or the scheduling tool. The existence of $HOME/.tdlogon will trigger the contents
@@ -299,7 +296,7 @@ then
 elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.hd.logon ]
 then
         read HD_USERNAME HD_QUEUE <  $DW_LOGINS/$SUBJECT_AREA.0.hd.logon
-fi   
+fi
 
 export HD_USERNAME HD_QUEUE
 
@@ -404,7 +401,7 @@ then
 	export DW_SECONDARY_DB=${DW_SECONDARY_DB}_extract
         export DW_TD1_DB=${DW_TD1_DB}_extract
 	export DW_TD2_DB=${DW_TD2_DB}_extract
-	export DW_TD3_DB=${DW_TD3_DB}_extract	
+	export DW_TD3_DB=${DW_TD3_DB}_extract
 fi
 
 
@@ -424,7 +421,8 @@ export DW_HD2_DB=apollo
 export DW_HD3_DB=artemis
 
 export HD1_NN_URL="hdfs://ares-nn.vip.ebay.com:8020"
-export HD2_NN_URL="hdfs://apollo-phx-nn.vip.ebay.com:8020"
+#export HD2_NN_URL="hdfs://apollo-phx-nn.vip.ebay.com:8020"
+export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
 export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"
 
 svr_loc=$(nslookup $servername | grep "^Name:" | cut -f2 | cut -d'.' -f2)
