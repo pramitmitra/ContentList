@@ -110,26 +110,27 @@ export DW_ONETIME_OUT=$DW_HOME/onetime_out
 
 if [[ -n $ETL_ID ]]
 then
-  	export DW_BIN=$DW_HOME/bin
+  export DW_BIN=$DW_HOME/bin
 	export DW_CFG=$DW_HOME/cfg/$SUBJECT_AREA
 	export DW_SQL=$DW_HOME/sql/$SUBJECT_AREA
 	export DW_XFR=$DW_HOME/xfr/$SUBJECT_AREA
 	export DW_DML=$DW_HOME/dml/$SUBJECT_AREA
-	export DW_EXE=$DW_HOME/bin
-
+	export DW_EXE=$DW_HOME/bin 
+  export DW_HQL=$DW_HOME/hql/$SUBJECT_AREA
+  export DW_JAR=$DW_HOME/jar/$SUBJECT_AREA
  	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_BIN/$SUBJECT_AREA:$DW_EXE:$DW_BIN:$PATH
 else
-  	export DW_BIN=$DW_HOME/bin
+  export DW_BIN=$DW_HOME/bin
 	export DW_CFG=$DW_HOME/cfg
 	export DW_SQL=$DW_HOME/sql
 	export DW_XFR=$DW_HOME/xfr
 	export DW_DML=$DW_HOME/dml
 	export DW_EXE=$DW_HOME/bin
-
+  export DW_HQL=$DW_HOME/hql
+  export DW_JAR=$DW_HOME/jar
 	# Append PATH and Function PATH
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_EXE:$DW_BIN:$PATH
-
 fi
 
 
