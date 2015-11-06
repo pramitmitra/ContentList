@@ -21,18 +21,51 @@
 typeset -fu usage
 
 function usage {
-  print "Usage: $SCRIPTNAME -[defsz] <path>
+  print "Usage: $SCRIPTNAME [-E <JOB_ENV>] [-i <INTERVAL>] -[defsz] <path>
 
-OPTIONAL:
+REQUIRED:
   -d             return success if <path> is a directory.
   -e             return success if <path> exists. And this is the default.
   -f             return success if <path> is a file.
   -s             return success if file <path> is greater than zero bytes in size.
   -z             return success if file <path> is zero bytes in size.
 
-Environment variable JOB_ENV must be set before calling into this script.
+OPTIONAL:
+  -E <JOB_ENV>   [hd1|hd2|hd3|...] specify the JOB_ENV. Overwrite export environment.
+  -i <INTERVAL>  sleep interval in minutes. Default is 1.
   "
 }
+
+export SCRIPTNAME=${0##*/}
+export OPTIONS=""
+export HDFS_FILE=""
+export INTERVAL=$((1 * 60))
+
+# Process options
+while getopts "E:i#d:e:f:s:z:" opt
+do
+  case $opt in
+    E ) export JOB_ENV=$OPTARG
+        ;;
+    i ) INTERVAL=$(($OPTARG * 60))
+        ;;
+    d ) OPTIONS="-d"
+        HDFS_FILE=$OPTARG
+        ;;
+    e ) OPTIONS="-e"
+        HDFS_FILE=$OPTARG
+        ;;
+    f ) OPTIONS="-f"
+        HDFS_FILE=$OPTARG
+        ;;
+    s ) OPTIONS="-s"
+        HDFS_FILE=$OPTARG
+        ;;
+    z ) OPTIONS="-z"
+        HDFS_FILE=$OPTARG
+        ;;
+  esac
+done
 
 # JOB_ENV is required
 if [ -z "$JOB_ENV" ]; then
@@ -44,7 +77,7 @@ fi
 # Setup env based on JOB_ENV
 . /dw/etl/mstr_cfg/etlenv.setup
 
-# Check parameters
+# Print header
 export DWI_CALLED=$0
 export DWI_CALLED_ARGS=${@:-""}
 export DWI_WHOAMI=$(whoami)
@@ -54,27 +87,7 @@ set +u
 print_header
 set -u
 
-export SCRIPTNAME=${0##*/}
-export OPTIONS=""
-export HDFS_FILE=""
-
-print "Processing Options"
-while getopts "d:e:f:s:z:" opt
-do
-  case $opt in
-    d ) OPTIONS="-d"
-        HDFS_FILE=$OPTARG;;
-    e ) OPTIONS="-e"
-        HDFS_FILE=$OPTARG;;
-    f ) OPTIONS="-f"
-        HDFS_FILE=$OPTARG;;
-    s ) OPTIONS="-s"
-        HDFS_FILE=$OPTARG;;
-    z ) OPTIONS="-z"
-        HDFS_FILE=$OPTARG;;
-  esac
-done
-
+# Check parameters
 if [ -z "$OPTIONS" ]; then
   print "FATAL ERROR: Missing options"
   usage
@@ -88,18 +101,18 @@ if [ -z "$HDFS_FILE" ]; then
 fi
 
 # Checking for HDFS file
-print "Checking for HDFS file: $HDFS_FILE"
+print "$HADOOP_HOME: Checking for HDFS file $HDFS_FILE"
 
 while true
 do
   $HADOOP_HOME/bin/hadoop fs -test $OPTIONS $HDFS_FILE
   if [[ $? == 0 ]]
   then
-    print "HDFS file check returns success $(date '+%Y%m%d-%H%M%S')"
+    print "$HADOOP_HOME: HDFS file check returns success $(date '+%Y%m%d-%H%M%S')"
     break
   else
-    print "HDFS file check failed, waiting 60 seconds $(date '+%Y%m%d-%H%M%S')"
-    sleep 60
+    print "$HADOOP_HOME: HDFS file check failed, waiting $INTERVAL seconds $(date '+%Y%m%d-%H%M%S')"
+    sleep $INTERVAL
   fi
 done
 
