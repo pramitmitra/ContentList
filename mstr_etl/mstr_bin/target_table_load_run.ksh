@@ -165,12 +165,14 @@ then
   HADOOP_JAR=$SQL_FILE
   HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
   export HADOOP_JAR_BASENAME=${HADOOP_JAR_BASENAME%.*}
+  set +u
   if [[ -n $MAIN_CLASS ]]
   then
      CLASS_APPEND=.$MAIN_CLASS
   else
      CLASS_APPEND=""
   fi
+  set -u
   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load.${HADOOP_JAR_BASENAME}${CLASS_APPEND}${UOW_APPEND}.$CURR_DATETIME.log
   if [ $RCODE = 1 ]
   then
