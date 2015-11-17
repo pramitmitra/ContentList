@@ -16,6 +16,7 @@
 # Date          Ver#   Modified By(Name)   Change and Reason for Change
 #-----------    -----  ------------------  ----------------------------------------
 # 2015-10-04    1.0    Michael Weng        Initial version
+# 2015-10-17    1.0    Michael Weng        Create a different commit due to rollout failed.
 ###################################################################################
 
 typeset -fu usage
