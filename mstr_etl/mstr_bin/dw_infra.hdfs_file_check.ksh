@@ -16,7 +16,6 @@
 # Date          Ver#   Modified By(Name)   Change and Reason for Change
 #-----------    -----  ------------------  ----------------------------------------
 # 2015-10-04    1.0    Michael Weng        Initial version
-# 2015-10-16    1.0    Michael Weng        Rollout failed. Do it again.
 ###################################################################################
 
 typeset -fu usage
