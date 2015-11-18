@@ -17,6 +17,7 @@
 #-----------    -----  ------------------  ----------------------------------------
 # 2015-10-04    1.0    Michael Weng        Initial version
 # 2015-10-17    1.0    Michael Weng        Create a different commit due to rollout failed.
+# 2015-10-18    1.0    Michael Weng        Create a new commit for DEV & QA
 ###################################################################################
 
 typeset -fu usage
