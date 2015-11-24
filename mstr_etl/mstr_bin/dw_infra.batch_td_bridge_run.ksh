@@ -119,7 +119,7 @@ then
 
       elif [ $RCODE = 0 ]
       then
-         print "Pre td_birdge job $SCRIPT $PARAMS process already complete"
+         print "Pre td_bridge job $SCRIPT $PARAMS process already complete"
 
       else
          exit $RCODE
@@ -325,9 +325,9 @@ fi
   
   
 
-assignTagValue POST_TD_BIRDGE_JOBS POST_TD_BIRDGE_JOBS $ETL_CFG_FILE W 0
+assignTagValue POST_TD_BRIDGE_JOBS POST_TD_BRIDGE_JOBS $ETL_CFG_FILE W 0
 
-if [ $POST_TD_BIRDGE_JOBS = 1 ]
+if [ $POST_TD_BRIDGE_JOBS = 1 ]
 then
    while read SCRIPT PARAMS
    do
