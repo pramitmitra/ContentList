@@ -44,8 +44,6 @@ export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
 
 JAVA=$JAVA_HOME/bin/java
-DW_JAR=$DW_HOME/jar
-DW_HQL=$DW_HOME/hql
 JAVA_CMD_OPT=`bash /dw/etl/mstr_lib/hadoop_ext/hadoop.setup`
 
 RUN_SCRIPT=$HADOOP_JAR
