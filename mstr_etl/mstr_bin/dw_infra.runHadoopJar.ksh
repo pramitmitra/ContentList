@@ -45,15 +45,6 @@ export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
 
 JAVA=$JAVA_HOME/bin/java
 JAVA_CMD_OPT=`bash /dw/etl/mstr_lib/hadoop_ext/hadoop.setup`
-
-if [ ! -d "$DW_JAR" ]; then
-  DW_JAR=$DW_HOME/jar/
-fi
-
-if [ ! -d "$DW_HQL" ]; then
-  DW_HQL=$DW_HOME/hql/
-fi
-
 RUN_SCRIPT=$HADOOP_JAR
 RUN_CLASS=${MAIN_CLASS:-"NA"}
 DATAPLATFORM_ETL_INFO="ETL_ID=${ETL_ID};UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UOW_FROM=${UOW_FROM};UOW_TO=${UOW_TO};RUN_SCRIPT=${RUN_SCRIPT};RUN_CLASS=${RUN_CLASS};"
@@ -100,6 +91,10 @@ then
          export $param
       fi
   done
+  fi
+  # TO be compatible with previous folder structure
+  if [ ! -f "$DW_HQL/$HADOOP_JAR" ]; then
+    DW_HQL=$DW_HOME/hql/
   fi
   
   print "cat <<EOF" > $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
@@ -170,6 +165,10 @@ else
     then
       set +o braceexpand
       set +o glob
+    fi
+    # TO be compatible with previous folder structure
+    if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
+      DW_JAR=$DW_HOME/jar/
     fi
     print "exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
