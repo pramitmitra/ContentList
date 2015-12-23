@@ -94,7 +94,11 @@ then
   fi
   # TO be compatible with previous folder structure
   if [ ! -f "$DW_HQL/$HADOOP_JAR" ]; then
-    DW_HQL=$DW_HOME/hql/
+    DW_HQL=$DW_HOME/hql
+    if [ ! -f "$DW_HQL/$HADOOP_JAR" ]; then
+      print "${0##*/}: ERROR, file $DW_HQL/$HADOOP_JAR cannot be found"
+      exit 4
+    fi
   fi
   
   print "cat <<EOF" > $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
@@ -106,11 +110,21 @@ then
   set -u
   mv $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp.2 $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   
+  dwi_assignTagValue -p RUN_HIVE_ON_TEZ -t RUN_HIVE_ON_TEZ -f $ETL_CFG_FILE -s N -d 0
+  HIVE_COMMON_CONFS=""
+  if [[ $RUN_HIVE_ON_TEZ -eq 0 ]]; then
+    print "Run Hive with MR"
+    HIVE_COMMON_CONFS="--hiveconf mapred.job.queue.name=$HD_QUEUE"
+  else
+    print "Run Hive with Tez"
+    HIVE_COMMON_CONFS="--hiveconf hive.execution.engine=tez --hiveconf tez.queue.name=$HD_QUEUE"
+  fi
+  HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf dataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\""
   
   if [[ $CURR_USER == $HD_USERNAME ]]
     then
-      $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
-                            --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
+      print "$HIVE_HOME/bin/hive $HIVE_COMMON_CONFS -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp"
+      $HIVE_HOME/bin/hive $HIVE_COMMON_CONFS \
                             -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   else
     CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
@@ -121,12 +135,28 @@ then
       done
     CLASSPATH=$CLASSPATH:$HIVE_HOME/conf
     HIVE_CLI_JAR=`ls $HIVE_HOME/lib/hive-cli-*.jar`
+    
+    if [[ $RUN_HIVE_ON_TEZ -ne 0 ]]; then
+      for TEZ_JAR_FILE in $TEZ_HOME/*.jar
+      do
+        CLASSPATH=$CLASSPATH:$TEZ_JAR_FILE
+      done
+      for TEZ_JAR_FILE in $TEZ_HOME/lib/*.jar
+      do
+        CLASSPATH=$CLASSPATH:$TEZ_JAR_FILE
+      done
+      CLASSPATH=$CLASSPATH:$TEZ_CONF_DIR
+    fi
 
+    print "exec \"$JAVA\" -Dproc_jar $JAVA_CMD_OPT -classpath \"$CLASSPATH\" \
+                 DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
+                 $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
+                 $HIVE_COMMON_CONFS \
+                 -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp"
     exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                  $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
-                 --hiveconf mapred.job.queue.name=$HD_QUEUE \
-                 --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
+                 $HIVE_COMMON_CONFS \
                  -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   fi
 else
@@ -168,7 +198,11 @@ else
     fi
     # TO be compatible with previous folder structure
     if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
-      DW_JAR=$DW_HOME/jar/
+      DW_JAR=$DW_HOME/jar
+      if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
+        print "${0##*/}: ERROR, file $DW_JAR/$HADOOP_JAR cannot be found"
+        exit 4
+      fi
     fi
     print "exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
                  DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
