@@ -111,6 +111,8 @@ then
   mv $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp.2 $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   
   dwi_assignTagValue -p RUN_HIVE_ON_TEZ -t RUN_HIVE_ON_TEZ -f $ETL_CFG_FILE -s N -d 0
+  dwi_assignTagValue -p ENABLE_HIVE_VECTORIZATION -t ENABLE_HIVE_VECTORIZATION -f $ETL_CFG_FILE -s N -d 0
+  dwi_assignTagValue -p ENABLE_HIVE_CBO -t ENABLE_HIVE_CBO -f $ETL_CFG_FILE -s N -d 0
   HIVE_COMMON_CONFS=""
   if [[ $RUN_HIVE_ON_TEZ -eq 0 ]]; then
     print "Run Hive with MR"
@@ -119,6 +121,21 @@ then
     print "Run Hive with Tez"
     HIVE_COMMON_CONFS="--hiveconf hive.execution.engine=tez --hiveconf tez.queue.name=$HD_QUEUE"
   fi
+
+  if [[ $ENABLE_HIVE_VECTORIZATION -ne 0 ]]; then
+    print "Enable Hive Vectorization"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.vectorized.execution.enabled=true"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.vectorized.execution.reduce.enabled=true"
+  fi
+
+  if [[ $ENABLE_HIVE_CBO -ne 0 ]]; then
+    print "Enable Hive Cost-based Optimization"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.cbo.enable=true"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.compute.query.using.stats=true"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.stats.fetch.column.stats=true"
+    HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf hive.stats.fetch.partition.stats=true"
+  fi
+
   HIVE_COMMON_CONFS="$HIVE_COMMON_CONFS --hiveconf dataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\""
   
   if [[ $CURR_USER == $HD_USERNAME ]]
