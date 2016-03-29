@@ -27,29 +27,30 @@
 # ----------  ----------------------  ---------------------------------------
 # 06/21/2010  Jacky Shen              Initial Program
 # 10/04/2013  Ryan Wong               Redhat changes
-# 11/19/2014 Jiankang Liu			  Add parameter to determine the storage type: local|shared
+# 11/19/2014  Jiankang Liu            Add parameter to determine the storage type: local|shared
+# 03/23/2016  Ryan Wong               Add option to use a custom clean up command
 ##########################################################################################################
 
 typeset -fu usage
 
 function usage {
-   	print "Usage:  $0 <STORAGE_TYPE>
-	STORAGE_TYPE =   <local|shared>"
+    print "Usage:  $0 <STORAGE_TYPE>
+    STORAGE_TYPE =   <local|shared>"
 }
 
 if [ $# -ne 1 ]
 then
-   usage 
-   exit 4
+    usage 
+    exit 4
 fi
 
 STORAGE_TYPE=$1
 
 if [ $STORAGE_TYPE = shared ]
 then
-	export STORAGE_TYPE="shared"
+    export STORAGE_TYPE="shared"
 else
-	export STORAGE_TYPE="local"
+    export STORAGE_TYPE="local"
 fi
 
 . /dw/etl/mstr_cfg/etlenv.setup 
@@ -65,8 +66,19 @@ print ""
 
 egrep -v '^#|^ *$' $DW_MASTER_CFG/dw_infra.etl_clean_up.$STORAGE_TYPE.cfg | while read DIR_NAME RET_DAY
 do
-	print "find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete"
-    find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete
+    ####################################################################################
+    # If keyword custom, then run an exception clean up command
+    ####################################################################################
+    if [[ $DIR_NAME == "custom" ]]
+    then
+        print "Running custom command:"
+        set -x
+        eval $RET_DAY
+        set +x
+    else
+        print "find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete"
+        find $(eval print $DIR_NAME) -type f -mtime +$RET_DAY -delete
+    fi
 done
 
 print ""
