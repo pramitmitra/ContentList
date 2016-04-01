@@ -127,9 +127,9 @@ then
                  $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
                  --hiveconf mapred.job.queue.name=$HD_QUEUE \
                  --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                 -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
-    retcode=$?
+                 -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp    
   fi
+  retcode=$?
 else
   dwi_assignTagValue -p MAPRED_OUTPUT_COMPRESS -t MAPRED_OUTPUT_COMPRESS -f $ETL_CFG_FILE -s N -d 0
   if [[ $MAPRED_OUTPUT_COMPRESS -eq 0 ]]
