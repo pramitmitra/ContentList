@@ -127,8 +127,9 @@ then
                  $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
                  --hiveconf mapred.job.queue.name=$HD_QUEUE \
                  --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                 -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
+                 -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp    
   fi
+  retcode=$?
 else
   dwi_assignTagValue -p MAPRED_OUTPUT_COMPRESS -t MAPRED_OUTPUT_COMPRESS -f $ETL_CFG_FILE -s N -d 0
   if [[ $MAPRED_OUTPUT_COMPRESS -eq 0 ]]
@@ -170,18 +171,16 @@ else
     if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
       DW_JAR=$DW_HOME/jar/
     fi
-    print "exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
-                 DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
-                 $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
-                 -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
-                 -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                 $PARAM_LIST"
-    exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
-                 DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
-                 $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
-                 -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
-                 -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                 $PARAM_LIST
+    CMD_STR="$JAVA -Dproc_jar $JAVA_CMD_OPT -classpath $CLASSPATH \
+        DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
+        $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
+        -Dmapred.job.queue.name=$HD_QUEUE \
+        -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
+        -Ddataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\" \
+        $PARAM_LIST"
+
+    print $CMD_STR
+    eval $CMD_STR
     retcode=$?
     if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
     then
