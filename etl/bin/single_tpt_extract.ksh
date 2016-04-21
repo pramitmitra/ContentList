@@ -17,6 +17,8 @@
 # 2013-02-21   1.2    Ryan Wong                     Fix RECORD_COUNT logfile scrape in case of one instance.
 # 2013-08-21   1.3    George Xiong                  Netstat on Redhat 
 # 2013-10-08   1.4    Ryan Wong                     Redhat changes
+# 2016-04-19   1.5    Ryan Wong                     Passing UOW_FROM and UOW_TO for SQL variables
+#
 #############################################################################################################
 
 ETL_ID=$1
@@ -168,6 +170,7 @@ fi
 
 if [[ "X$UOW_TO" != "X" ]]
 then
+  TPT_ARG="$TPT_ARG -UOW_FROM $UOW_FROM -UOW_TO $UOW_TO"
   DATA_FILENAME_SFX=${FILE_EXTN}
 else
   DATA_FILENAME_SFX=.$BATCH_SEQ_NUM${FILE_EXTN}
