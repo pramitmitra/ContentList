@@ -20,7 +20,7 @@
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 # Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
-#
+# Michael Weng     /4/21/2016      Retrieve HDFS_URL based on JOB_ENV
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -110,48 +110,8 @@ if [[ -z $HD_USERNAME ]]
     exit 4
 fi
 
-if [[ "X"$HDFS_URL != "X" ]]
-then
-  set +e
-  print $HDFS_URL | grep -i $DW_HD1_DB
-  isAres=$?
-  print $HDFS_URL | grep -i $DW_HD2_DB
-  isApollo=$?
-  print $HDFS_URL | grep -i $DW_HD3_DB
-  isArtemis=$?
-  set -e
-
-  if [ $isAres == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
-  elif [ $isApollo == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
-  elif [ $isArtemis == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD3_DB}_env.sh
-  fi
-else
-  set +e
-  print $HADOOP_HOME | grep -i $DW_HD1_DB
-  isAres=$?
-  print $HADOOP_HOME | grep -i $DW_HD2_DB
-  isApollo=$?
-  print $HADOOP_HOME | grep -i $DW_HD3_DB
-  isArtemis=$?
-  set -e
-
-  if [ $isAres == 0 ]
-  then
-    export HDFS_URL=$HD1_NN_URL
-  elif [ $isApollo == 0 ]
-  then
-    export HDFS_URL=$HD2_NN_URL
-  elif [ $isArtemis == 0 ]
-  then
-    export HDFS_URL=$HD3_NN_URL
-  fi
-fi
+# Always take value from JOB_ENV and ignore HDFS_URL from hadoop_logins.dat
+export HDFS_URL=$HADOOP_NN_URL
 
 export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin
 CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`

@@ -13,3 +13,7 @@ export DW_TD4_DB
 export DW_TD5_DB
 export DW_TD6_DB
 export DW_TD7_DB
+
+export DW_HD1_DB=ares
+export DW_HD2_DB=apollo
+export DW_HD3_DB=artemis
