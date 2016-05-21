@@ -81,7 +81,8 @@ export SQL_FILE_BASENAME=${SQL_FILE_BASENAME%.*}
 
 . /dw/etl/mstr_cfg/etlenv.setup
 
-# Check for optional UOW
+# Check for optional
+export JOB_SUB_ENV=""
 export UOW_FROM=""
 export UOW_TO=""
 export UOW_FROM_FLAG=0

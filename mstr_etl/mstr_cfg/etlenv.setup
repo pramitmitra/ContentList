@@ -420,7 +420,6 @@ then
   CLUSTER=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
   . $DW_MASTER_CFG/.${CLUSTER}_env.sh
 fi
-#set -eu
 
 # Specify which job environment, if any, where automatic deletion from partitioned Work tables should be skipped
 # If disabled on more than one instance, specify pipe-delimited list, e.g., export DISABLE_PARTITION_TABLE_CLEANUP="td2|td3"
@@ -429,4 +428,6 @@ export DISABLE_PARTITION_TABLE_CLEANUP=""
 # Specify the default retention period (in days) for partitioned Work tables
 export PARTITION_TABLE_RETENTION="7"
 
+set +eu
 export PS1="[\$(date +%H:%M)]:[${USER}@${HOSTNAME}:\${PWD##*/}]\$ "
+set -eu

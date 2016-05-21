@@ -82,7 +82,7 @@ CURR_USER=`whoami`
 
 ################################################################################
 # Function to submit hive job. Parameter: hive, tez, beeline, ......
-function run_hive_job ()
+function run_hive_job
 {
   HIVE_JOB=$1
   print "Submitting HIVE job to Cluster"
@@ -169,7 +169,7 @@ function run_hive_job ()
 
 ################################################################################
 # Function to submit user jar execution
-function run_hadoop_jar ()
+function run_hadoop_jar
 {
   dwi_assignTagValue -p MAPRED_OUTPUT_COMPRESS -t MAPRED_OUTPUT_COMPRESS -f $ETL_CFG_FILE -s N -d 0
 
@@ -214,44 +214,47 @@ function run_hadoop_jar ()
 ################################################################################
 # Submit job into hadoop cluster
 ################################################################################
-case $JOB_SUB_ENV in 
+if [[ "X$JOB_SUB_ENV" == "X" ]]
+then
+  # legacy support: no specify on jar or hql
+  print "INFRA WARNING: JOB_SUB_ENV is not set. Default to jar or hive."
+  print "Deprecated soon. Please specify JOB_SUB_ENV from calling script: "
+  print "     hive    - submit hive sql through hive cli"
+#  print "     beeline - submit hive sql through hive beeline"
+#  print "     tez     - submit hive sql through tez execution engine"
+  print "     jar     - submit user jar execution"
 
-  hive    )  # submit hive query through hive cli
+  JOB_EXT=${HADOOP_JAR##*.}
+  if [[ $JOB_EXT == "hql" ]]
+  then
     run_hive_job hive
-    ;;
-
-#  tez     )  # submit hive query through tez execution engine
-#    run_hive_job tez
-#    ;;
-
-#  beeline )  # submit hive query through beeline
-#    run_hive_job beeline
-#    ;;
-
-  jar     )  # submit user jar for execution
+  else
     run_hadoop_jar
-    ;;
+  fi
 
-  ""       )  # legacy support: no specify on jar or hql
-    print "INFRA WARNING: JOB_SUB_ENV is not set. Default to jar or hive."
-    print "Deprecated soon. Please specify JOB_SUB_ENV from calling script: "
-    print "     hive    - submit hive sql through hive cli"
-#    print "     beeline - submit hive sql through hive beeline"
-#    print "     tez     - submit hive sql through tez execution engine"
-    print "     jar     - submit user jar execution"
+elif [[ $JOB_SUB_ENV == hive ]]
+then
+  # submit hive query through hive cli
+  run_hive_job hive
 
-    JOB_EXT=${HADOOP_JAR##*.}
-    if [[ $JOB_EXT == "hql" ]]; then
-      run_hive_job hive
-    else
-      run_hadoop_jar
-    fi
-    ;;
+#elif [[ $JOB_SUB_ENV == tez ]]
+#then
+#  # submit hive query through tez execution engine
+#  run_hive_job tez
+#
+#elif [[ $JOB_SUB_ENV == beeline ]]
+#then
+#  # submit hive query through beeline
+#  run_hive_job beeline
 
-  * )
-    print "INFRA_ERROR: unsupported JOB_SUB_ENV: $JOB_SUB_ENV for running Hadoop Jobs."
-    exit 4
-    ;;
+elif [[ $JOB_SUB_ENV == jar ]]
+then
+  # submit user jar for execution
+  run_hadoop_jar
 
-esac
+else
+  print "INFRA_ERROR: unsupported JOB_SUB_ENV: $JOB_SUB_ENV for running Hadoop Jobs."
+  exit 4
+fi
+
 ################################################################################
