@@ -430,4 +430,3 @@ export PARTITION_TABLE_RETENTION="7"
 
 set +eu
 export PS1="[\$(date +%H:%M)]:[${USER}@${HOSTNAME}:\${PWD##*/}]\$ "
-set -eu
