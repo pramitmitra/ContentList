@@ -407,7 +407,7 @@ caty1 =
         (ADDRESS =
           (COMMUNITY = tcp.world)
           (PROTOCOL = TCP)
-          (Host = caty1.vip.ebay.com)
+          (Host = caty1primary.db.ebay.com)
           (Port = 1521)
         )
         (ADDRESS =
@@ -492,7 +492,7 @@ caty5 =
         (ADDRESS =
           (COMMUNITY = tcp.world)
           (PROTOCOL = TCP)
-          (Host = caty5.vip.ebay.com)
+          (Host = caty5primary.db.ebay.com)
           (Port = 1521)
         )
         (ADDRESS =
@@ -660,7 +660,7 @@ caty1stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty1.vip.ebay.com)
+        (HOST=caty1stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY1)))
 caty2stby=
@@ -674,7 +674,7 @@ caty3stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty3.vip.ebay.com)
+        (HOST=caty3stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY3)))
 caty4stby=
@@ -709,14 +709,14 @@ caty8stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty8.vip.ebay.com)
+        (HOST=caty8stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY8)))
 caty9stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty9.vip.ebay.com)
+        (HOST=caty9stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY9)))
 caty10stby=
@@ -737,7 +737,7 @@ caty12stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty12.vip.ebay.com)
+        (HOST=caty12stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(sid=CATY12)))
 caty13stby=
@@ -758,7 +758,7 @@ caty15stby=
         (DESCRIPTION=
         (ADDRESS=
         (PROTOCOL=TCP)
-        (HOST=caty15.vip.ebay.com)
+        (HOST=caty15stby.vip.ebay.com)
         (PORT=1521))
         (CONNECT_DATA=(SID=caty15)))
 caty16stby=
@@ -800,7 +800,7 @@ caty21stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = caty21.vip.ebay.com)
+        (Host = caty21stby.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=caty21)))
 
@@ -939,7 +939,7 @@ user12stby=
   (TDU=8192)
   (ADDRESS=
   (PROTOCOL=TCP)
-  (HOST=user12stby.vip.ebay.com)
+  (HOST=user12.vip.ebay.com)
   (PORT=1521))
   (CONNECT_DATA=(SID=USER12)))
 user13=
@@ -953,7 +953,7 @@ user13stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = user13stby.vip.ebay.com)
+        (Host = user13.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=USER13)))
 user14=
@@ -1034,7 +1034,7 @@ user16stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = user16stby.vip.ebay.com)
+        (Host = user16.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=USER16)))
 user17=
@@ -1062,7 +1062,7 @@ user18stby=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = user18stby.vip.ebay.com)
+        (Host = user18.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=USER18)))
 user19=
@@ -3029,7 +3029,7 @@ caty25stby=
 
         (PROTOCOL = TCP)
 
-        (Host = caty25.vip.ebay.com)
+        (Host = caty25stby.vip.ebay.com)
 
         (Port = 1521))
 
@@ -5034,12 +5034,11 @@ mpkronos=
         (Port = 1521))
         (CONNECT_DATA = (SID=MPKRONOS)))
 
-
 hermes=
         (DESCRIPTION =
         (ADDRESS =
         (PROTOCOL = TCP)
-        (Host = hermesslc.vip.ebay.com)
+        (Host = hermesrep.db.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=hermes)))
 
