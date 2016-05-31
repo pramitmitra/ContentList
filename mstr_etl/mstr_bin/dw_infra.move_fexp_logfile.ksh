@@ -7,13 +7,13 @@
 # Name             Date            Description
 # ---------------  --------------  ---------------------------------------------------
 # Ryan Wong        02/26/2014      Initial Creation
-#
+# Kevin Oaks       05/20/2016      Changed DW_SA_TMP to DW_SA_TMP_LOCAL for shared storage change
 #------------------------------------------------------------------------------------------------
 
 print "Start FastExport move utility log file"
 
 # Move FEXP_LOGFILE to $DW_SA_LOG
-if [ ${FEXP_LOGFILE%/*} = $DW_SA_TMP ]
+if [ ${FEXP_LOGFILE%/*} = $DW_SA_TMP_LOCAL ]
 then
    mv $FEXP_LOGFILE $DW_SA_LOG
    export FEXP_LOGFILE=$DW_SA_LOG/${FEXP_LOGFILE##*/}

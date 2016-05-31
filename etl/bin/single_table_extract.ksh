@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Monday, April 06, 2015 13:52:50 using GDE version 3.1.4.1
+# Deployed execution script for graph "single_table_extract", compiled at Friday, May 20, 2016 10:41:49 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -745,6 +745,7 @@ if [ 0 -ne $mpjret ] ; then
    exit $mpjret
 fi
 export DW_SA_TMP;DW_SA_TMP="$DW_TMP"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
+export DW_SA_TMP_LOCAL;DW_SA_TMP_LOCAL="$DW_TMP_LOCAL"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export FILE_DATETIME;FILE_DATETIME=${CURR_DATETIME:-$(date '+%Y%m%d-%H%M%S')}
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
@@ -1109,7 +1110,7 @@ if [ 0 -ne $mpjret ] ; then
 fi
 export FEXP_LOGFILE;FEXP_LOGFILE=$(if [[ $EXTRACT_TYPE = "T" ]]
 then
-   print $(grep "^FEXP_LOGFILE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print ${VALUE:-"$DW_SA_TMP/$TABLE_ID.extract.$FILE_ID.fast_export$UOW_APPEND.$FILE_DATETIME.log"})
+   eval print "$DW_SA_TMP_LOCAL/$TABLE_ID.extract.$FILE_ID.fast_export$UOW_APPEND.$FILE_DATETIME.log"
 fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
@@ -2714,7 +2715,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=5354257
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=6605694
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
