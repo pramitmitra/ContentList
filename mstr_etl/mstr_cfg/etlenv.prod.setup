@@ -525,6 +525,11 @@ export viewMatchItgnDB=INC_MATCH_ITGN_V
 # Added as per Jira ticket DINT-412 20150616
 export SgmIncMpReadDB=SGM_INC_MARKETPLACES_V
 
+# Added as per Jira ticket DINT-599 20160601
+odsadDB=ebay_ad_t
+odsadworkDB=ebay_ad_w
+odsadreadDB=ebay_ad_v
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment

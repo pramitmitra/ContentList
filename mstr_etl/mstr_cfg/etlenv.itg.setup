@@ -357,6 +357,11 @@ export exl_sas_workdb=app_exl_sas_w
 export odskeyworkingDB=ODW_KEYNOTE_W                
 export odskeyDB=ODW_KEYNOTE_T
 
+# Added as per Jira ticket  DINT-599 20160601
+odsadDB=ebay_ad_t
+odsadworkDB=ebay_ad_w
+odsadreadDB=ebay_ad_v
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment
