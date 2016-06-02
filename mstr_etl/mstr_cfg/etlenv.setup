@@ -88,6 +88,7 @@ export DW_MP=$DW_HOME/mp
 export DW_OUT=$DW_HOME/out
 export DW_SRC=$DW_HOME/src
 export DW_TMP=$DW_HOME/tmp
+export DW_TMP_LOCAL=$DW_HOME/tmp_local
 export DW_WATCH=$DW_HOME/watch
 
 export DW_IN02=$DW_MFS/fs02/in
