@@ -358,9 +358,9 @@ export odskeyworkingDB=ODW_KEYNOTE_W
 export odskeyDB=ODW_KEYNOTE_T
 
 # Added as per Jira ticket  DINT-599 20160601
-odsadDB=ebay_ad_t
-odsadworkDB=ebay_ad_w
-odsadreadDB=ebay_ad_v
+export odsadDB=ebay_ad_t
+export odsadworkDB=ebay_ad_w
+export odsadreadDB=ebay_ad_v
 
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
