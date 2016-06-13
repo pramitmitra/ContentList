@@ -90,6 +90,7 @@ export DW_SRC=$DW_HOME/src
 export DW_TMP=$DW_HOME/tmp
 export DW_TMP_LOCAL=$DW_HOME/tmp_local
 export DW_WATCH=$DW_HOME/watch
+export DW_KEYS=$DW_HOME/keys
 
 export DW_IN02=$DW_MFS/fs02/in
 export DW_IN04=$DW_MFS/fs04/in
@@ -143,6 +144,7 @@ export FPATH=$DW_LOGINS:$DW_MASTER_LIB:$DW_LIB
 
 # Export Infra indicator for logs
 export DWI_INFRA_IND="|INFRA|"
+export DWI_WHOAMI=$(whoami)
 
 #include master library functions
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -224,8 +226,7 @@ function parseLogonFile
 if [[ -n $ETL_ID ]]
 then
 
-  myName=$(whoami)
-  OS_BATCH_SA_FILE=$DW_LOGINS/$myName.sa.logon
+  OS_BATCH_SA_FILE=$DW_LOGINS/$DWI_WHOAMI.sa.logon
 
 
   dwi_assignTagValue -p ALL_LEVEL -t all -f $OS_BATCH_SA_FILE -s N -d 0
@@ -237,7 +238,7 @@ then
         dwi_assignTagValue -p ETL_LEVEL -t $ETL_ID -f $OS_BATCH_SA_FILE -s N -d 0
         if [[ $ETL_LEVEL != 1  ]]
         then
-                echo "This ETL job not permitted to run via OS batch account: $myName"
+                echo "This ETL job not permitted to run via OS batch account: $DWI_WHOAMI"
                 return 4
         fi
      fi
@@ -300,6 +301,13 @@ then
 fi
 
 export HD_USERNAME HD_QUEUE
+
+
+# For GPG, set default GNUPGHOME location for .gnupg
+if [ -d $DW_KEYS/$DWI_WHOAMI/.gnupg ]
+then
+  export GNUPGHOME=$DW_KEYS/$DWI_WHOAMI/.gnupg
+fi
 
 
 # Provides TNSNAMES style resolution for Teradata systems. Not yet widely used.
