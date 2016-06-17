@@ -20,7 +20,7 @@
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 # Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
-# Michael Weng     /4/21/2016      Retrieve HDFS_URL based on JOB_ENV
+# Michael Weng     /4/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -94,7 +94,7 @@ fi
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1
 
 set +e
-grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDFS_URL HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
+grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDP_CLUSTER HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
 rcode=$?
 set -e
 
@@ -110,7 +110,24 @@ if [[ -z $HD_USERNAME ]]
     exit 4
 fi
 
-# Always take value from JOB_ENV and ignore HDFS_URL from hadoop_logins.dat
+if [[ -z $HDP_CLUSTER ]]
+then
+  print "INFRA_ERROR: can't determine hadoop cluster to connect to"
+  exit 4
+fi
+
+# Hadoop env - require hadoop cluster name instead of HDFS_URL in $DW_LOGINS/hadoop_logins.dat
+HDP_CLUSTER_ENV=$DW_MASTER_CFG/.${HDP_CLUSTER}_env.sh
+
+if ! [ -f $HDP_CLUSTER_ENV ]
+then
+  print "INFRA_ERROR: missing hadoop cluster env file: $HDP_CLUSTER_ENV"
+  exit 4
+fi
+
+. $HDP_CLUSTER_ENV
+
+# Get the HDFS_URL
 export HDFS_URL=$HADOOP_NN_URL
 
 export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin

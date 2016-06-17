@@ -27,11 +27,7 @@ export HOST_ID=$6
 export SRC_HOST_CNT=$7
 export CURR_DATETIME_TMP=$8
 
-export HADOOP_HOME=/export/home/sg_adm/hadoop-0.20
-export JAVA_HOME=/export/home/sg_adm/jdk1.6.0_16
-
-export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin
-export HADOOP_COMMAND="$HADOOP_HOME/bin/hadoop"
+export HADOOP_COMMAND="hadoop"
 export JOB_TYPE_ID="hfex"
 
 . /dw/etl/mstr_cfg/etlenv.setup
@@ -61,7 +57,7 @@ fi
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1
 
 set +e
-grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDFS_URL HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
+grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDP_CLUSTER HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
 rcode=$?
 set -e
 
@@ -70,6 +66,27 @@ then
   print "${0##*/}:  ERROR, failure determining value for $HDP_CONN parameter from $DW_LOGINS/hadoop_logins.dat" >&2
   exit 4
 fi
+
+if [[ -z $HDP_CLUSTER ]]
+then
+  print "INFRA_ERROR: can't determine hadoop cluster to connect to"
+  exit 4
+fi
+
+# Hadoop env - require hadoop cluster name instead of HDFS_URL in $DW_LOGINS/hadoop_logins.dat
+HDP_CLUSTER_ENV=$DW_MASTER_CFG/.${HDP_CLUSTER}_env.sh
+
+if ! [ -f $HDP_CLUSTER_ENV ]
+then
+  print "INFRA_ERROR: missing hadoop cluster env file: $HDP_CLUSTER_ENV"
+  exit 4
+fi
+
+. $HDP_CLUSTER_ENV
+
+# Get the HDFS_URL
+export HDFS_URL=$HADOOP_NN_URL
+
 
 SOURCE_FILE=`print $(eval print $SOURCE_FILE)`
 IN_DIR=`print $(eval print $IN_DIR)`
