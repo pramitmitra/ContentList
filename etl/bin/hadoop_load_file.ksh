@@ -15,7 +15,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
-#
+# Michael Weng     06/20/2016      Remove invalid code and hadoop_logins.dat related change
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
