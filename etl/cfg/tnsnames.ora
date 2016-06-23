@@ -5405,3 +5405,11 @@ utns19stby=
  (Host = utns19stby.vip.ebay.com)
  (Port = 1521))
  (CONNECT_DATA = (SID=UTNS19)))
+
+misc3stby=
+ (DESCRIPTION =
+ (ADDRESS =
+ (PROTOCOL = TCP)
+ (Host = misc3stby.vip.ebay.com)
+ (Port = 1521))
+ (CONNECT_DATA = (SID=MISC3)))
