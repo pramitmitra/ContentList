@@ -150,6 +150,13 @@ then
   TD_JOB_ENV=$JOB_ENV
   assignTagValue DM_BRIDGE_HADOOP_SYSTEM DM_BRIDGE_HADOOP_SYSTEM $ETL_CFG_FILE "W"
   HADOOP_SYSTEM=$(JOB_ENV_UPPER=$(print $DM_BRIDGE_HADOOP_SYSTEM | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
+
+  if [ -f $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh ]
+  then
+    set +eu
+    . $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh
+  fi
+
   EXPORT_IMPORT_TYPE=IMPORT
  
   TD_BRIDGE_SQL=$DW_SQL/${ETL_ID}.td_bridge.${HADOOP_SYSTEM}_to_${TERADATA_SYSTEM}.sql

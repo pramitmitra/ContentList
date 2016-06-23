@@ -105,6 +105,10 @@ function run_hive_job
   # To be compatible with previous folder structure
   if [ ! -f "$DW_HQL/$HADOOP_JAR" ]; then
     DW_HQL=$DW_HOME/hql/
+    if [ ! -f "$DW_HQL/$HADOOP_JAR" ]; then
+      print "${0##*/}: ERROR, file $DW_HQL/$HADOOP_JAR cannot be found"
+      exit 4
+    fi
   fi
 
   print "cat <<EOF" > $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
@@ -176,6 +180,10 @@ function run_hadoop_jar
   # To be compatible with previous folder structure
   if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
     DW_JAR=$DW_HOME/jar/
+    if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
+      print "${0##*/}: ERROR, file $DW_JAR/$HADOOP_JAR cannot be found"
+      exit 4
+    fi
   fi
 
   if [[ $MAPRED_OUTPUT_COMPRESS -eq 0 ]]
@@ -196,10 +204,12 @@ function run_hadoop_jar
     export HADOOP_PROXY_USER=$HD_USERNAME
   fi
 
-  $HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
+  CMD_STR="$HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                               -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
-                              -Ddataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                              $PARAM_LIST
+                              -Ddataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\" \
+                              $PARAM_LIST"
+  print $CMD_STR
+  eval $CMD_STR
   retcode=$?
 
   if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]

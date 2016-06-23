@@ -80,6 +80,13 @@ then
   TERADATA_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
   assignTagValue DM_BRIDGE_HADOOP_SYSTEM DM_BRIDGE_HADOOP_SYSTEM $ETL_CFG_FILE "W"
   HADOOP_SYSTEM=$(JOB_ENV_UPPER=$(print $DM_BRIDGE_HADOOP_SYSTEM | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
+
+  if [ -f $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh ]
+  then
+    set +eu
+    . $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh
+  fi
+
   EXPORT_IMPORT_TYPE=IMPORT
   DATAPATH=${DATAPATH}*
 

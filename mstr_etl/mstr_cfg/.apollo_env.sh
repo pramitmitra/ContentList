@@ -29,6 +29,6 @@ fi
 # do his last as hadoop-env.sh can change $JAVA_HOME
 export PATH=$HADOOP_HOME/bin:$HBASE_HOME/bin:$HIVE_HOME/bin:$JAVA_HOME/bin:$PATH:/usr/local/sbin:/usr/local/bin:/usr/local/pssh/bin:$HOME/bin
 
-# Move HD2_NN_URL here from etlenv.setup, and change to a generic name
-export HADOOP_NN_URL="hdfs://apollo-phx-nn-ha"
+# Move all NN URLs to etlenv.<env>.teradata_target_variables.lis
+export HADOOP_NN_URL=$HD2_NN_URL
 export HADOOP_CLI_HOST="apollo-devour.vip.ebay.com"
