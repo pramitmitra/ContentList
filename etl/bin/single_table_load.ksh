@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_load", compiled at Monday, April 06, 2015 15:32:10 using GDE version 3.1.4.1
+# Deployed execution script for graph "single_table_load", compiled at Thursday, May 19, 2016 15:58:37 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_load
 # Begin Ab Initio shell utility functions
 
@@ -661,6 +661,7 @@ if [ 0 -ne $mpjret ] ; then
    exit $mpjret
 fi
 export DW_SA_TMP;DW_SA_TMP="$DW_TMP"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
+export DW_SA_TMP_LOCAL;DW_SA_TMP_LOCAL="$DW_TMP_LOCAL"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export USE_DISTR_TABLE;USE_DISTR_TABLE=$(grep "^USE_DISTR_TABLE\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print $VALUE)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
@@ -1591,7 +1592,7 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter PT_INSTANCES of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export LOAD_LOGFILE;LOAD_LOGFILE="$DW_SA_TMP"'/'"$TABLE_ID"'.ld.utility_load'"$UOW_APPEND"'.'"$FILE_DATETIME"'.log'
+export LOAD_LOGFILE;LOAD_LOGFILE="$DW_SA_TMP_LOCAL"'/'"$TABLE_ID"'.ld.utility_load'"$UOW_APPEND"'.'"$FILE_DATETIME"'.log'
 export LOAD_REJFILE;LOAD_REJFILE="$DW_SA_TMP"'/'"$TABLE_ID"'.ld.utility_load.rej'
 export LOAD_ERRFILE;LOAD_ERRFILE="$DW_SA_TMP"'/'"$TABLE_ID"'.ld.utility_load.err'
 export XFORM_REJLIMIT;XFORM_REJLIMIT=$(grep "^XFORM_REJLIMIT\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; print ${VALUE:-0})
@@ -2724,7 +2725,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=5772337
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=9855662
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

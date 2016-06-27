@@ -184,6 +184,7 @@ fi)|3|6|REk||{0|}}
 {30001002|XXparameter|DW_SA_DAT|$DW_DAT/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
 {30001002|XXparameter|DW_SA_LOG|$\{DW_SA_LOG:-$DW_LOG/$JOB_ENV/$SUBJECT_AREA\}|3|6|REk||{0|}}
 {30001002|XXparameter|DW_SA_TMP|$DW_TMP/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
+{30001002|XXparameter|DW_SA_TMP_LOCAL|$DW_TMP_LOCAL/$JOB_ENV/$SUBJECT_AREA|3|2|RE$||{0|}}
 {30001002|XXparameter|FILE_DATETIME|$\{CURR_DATETIME:-$(date '+%Y%m%d-%H%M%S')\}|3|6|REk||{0|}}
 {30001002|XXparameter|BATCH_SEQ_NUM|$(( $(<$DW_SA_DAT/$TABLE_ID.extract.batch_seq_num.dat) + 1))|3|6|REk||{0|}}
 {30001002|XXparameter|CNDTL_EXTRACT_COMPRESS_LEVEL|$(grep "^CNDTL_EXTRACT_COMPRESS_LEVEL\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-""\})|1|6|Kk|fILE COMPRESSION LEVEL (0-9)|{0|}}
@@ -363,7 +364,7 @@ fi)|3|6|REk||{0|}}
 {30001002|XXparameter|FEXP_LOGTAB|$\{TABLE_ID21:-$TABLE_ID\}_$$_L|3|6|REk||{0|}}
 {30001002|XXparameter|FEXP_LOGFILE|$(if [[ $EXTRACT_TYPE = "T" ]]
 then
-   print $(grep "^FEXP_LOGFILE\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; eval print $\{VALUE:-"$DW_SA_TMP/$TABLE_ID.extract.$FILE_ID.fast_export$UOW_APPEND.$FILE_DATETIME.log"\})
+   eval print "$DW_SA_TMP_LOCAL/$TABLE_ID.extract.$FILE_ID.fast_export$UOW_APPEND.$FILE_DATETIME.log"
 fi)|3|6|REk||{0|}}
 {30001002|XXparameter|CNDTL_EXTRACT_REFORMAT|$(grep "^CNDTL_EXTRACT_REFORMAT\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|REk||{0|}}
 {30001002|XXparameter|CNDTL_EXTRACT_PARTITION|$(grep "^CNDTL_EXTRACT_PARTITION\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-0\})|3|6|REk||{0|}}
@@ -430,7 +431,7 @@ esac)|3|6|EKk||{0|}}
 }}@0|@0|0|0|0|1894000|1246000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1893000|1246000|7|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|1|1|1|}Job 'single_table_extract' Execution Status Report
 
-Compilation of graph "single_table_extract" started at Thursday, April 02, 2015 12:16:30
+Compilation of graph "single_table_extract" started at Thursday, May 19, 2016 14:42:16
 No compilation errors
 ||m_env -v
 
@@ -483,7 +484,7 @@ then
    exit 4
 fi
 ||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHXeazbas01 - PHXdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@Phase 1:  The log file from the Input Table
 component is parsed to get the number of
@@ -510,18 +511,18 @@ $LAST_EXTRACT_VALUE_FILE for use as the
 $FROM_EXTRACT_VALUE in the next run of the loader
 system.|839906|722163|860000|742000|357000|105000|738|}}
 {2010242002|XXGface|10|0|19|0|{@{}@Courier New|16711680|90|0|}}
-{2010210004|XXGflow|11|0|21|0|{@{}@384|.5|.5|{12|249000|550000|249000|570000|164000|570000|164000|449000|79000|449000|79000|470000|}3197|19|}}
+{2010210004|XXGflow|11|0|21|0|{@{}@384|.5|.5|{12|249000|550000|249000|570000|164000|570000|164000|449000|79000|449000|79000|470000|}3257|19|}}
 {2010210004|XXGflow|12|0|23|0|{@{}@384|.5|.5|{12|506000|989000|526000|989000|536000|989000|536000|1014000|547000|1014000|568000|1014000|}3243|17|}}
 {2010210004|XXGflow|13|0|25|0|{@{}@384|.5|.5|{12|751000|154000|771000|154000|825000|154000|825000|149000|879000|149000|900000|149000|}800|20|}}
 {2010210004|XXGflow|14|0|27|0|{@{}@384|.5|.5|{12|438000|1189000|458000|1189000|471000|1189000|471000|1219000|485000|1219000|506000|1219000|}3245|17|}}
-{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|249000|170000|249000|190000|164000|190000|164000|61000|79000|61000|79000|82000|}3239|19|}}
-{2010210004|XXGflow|16|0|31|0|{@{}@384|.5|0.0|{12|288000|129000|308000|129000|308000|129000|308000|274000|417000|274000|438000|274000|}849|17|}}
-{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|234000|723000|234000|743000|157000|743000|157000|616000|79000|616000|79000|637000|}3247|19|}}
+{2010210004|XXGflow|15|0|29|0|{@{}@384|.5|.5|{12|249000|170000|249000|190000|164000|190000|164000|61000|79000|61000|79000|82000|}3254|19|}}
+{2010210004|XXGflow|16|0|31|0|{@{}@384|.5|0.0|{12|288000|129000|308000|129000|308000|129000|308000|274000|417000|274000|438000|274000|}3253|17|}}
+{2010210004|XXGflow|17|0|33|0|{@{}@384|.5|.5|{12|234000|723000|234000|743000|157000|743000|157000|616000|79000|616000|79000|637000|}3260|19|}}
 {2010210004|XXGflow|18|0|35|0|{@{}@384|.5|.5|{12|509000|289000|529000|289000|594000|289000|594000|154000|659000|154000|680000|154000|}799|17|}}
-{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|239000|897000|239000|917000|162000|917000|162000|770000|84000|770000|84000|791000|}3249|19|}}
-{2010210004|XXGflow|20|0|39|0|{@{}@384|.5|1.0|{12|281000|859000|301000|859000|417000|859000|417000|314000|417000|314000|438000|314000|}3199|17|}}
+{2010210004|XXGflow|19|0|37|0|{@{}@384|.5|.5|{12|239000|897000|239000|917000|162000|917000|162000|770000|84000|770000|84000|791000|}3263|19|}}
+{2010210004|XXGflow|20|0|39|0|{@{}@384|.5|1.0|{12|281000|859000|301000|859000|417000|859000|417000|314000|417000|314000|438000|314000|}3262|17|}}
 {2010210004|XXGflow|21|0|41|0|{@{}@384|.5|.5|{12|259000|374000|259000|394000|169000|394000|169000|250000|79000|250000|79000|271000|}3203|19|}}
-{2010210004|XXGflow|22|0|43|0|{@{}@384|.5|.6666666865348816|{12|287000|509000|307000|509000|367000|509000|367000|294000|397000|294000|438000|294000|}3196|17|}}
+{2010210004|XXGflow|22|0|43|0|{@{}@384|.5|.6666666865348816|{12|287000|509000|307000|509000|367000|509000|367000|294000|397000|294000|438000|294000|}3256|17|}}
 {2010210004|XXGflow|23|0|45|0|{@{}@384|.5116279125213623|0.0|{12|301000|334000|321000|334000|321000|334000|321000|284000|387000|284000|438000|284000|}3202|17|}}
 {2010210004|XXGflow|24|0|47|0|{@{}@384|.5|.5|{8|1232000|129000|1252000|129000|1271000|129000|1292000|129000|}3213|17|}}
 {2010210004|XXGflow|25|0|49|0|{@{}@384|.5|.5|{8|1737000|129000|1757000|129000|1807000|129000|1828000|129000|}3251|17|}}
@@ -533,7 +534,7 @@ system.|839906|722163|860000|742000|357000|105000|738|}}
 {2010210004|XXGflow|31|0|61|0|{@{}@384|.5|1.0|{8|509000|299000|529000|299000|597000|299000|628000|299000|}802|531|}}
 {2010210004|XXGflow|32|0|63|0|{@{}@384|.5|.5|{12|782000|304000|802000|304000|802000|304000|802000|334000|803000|334000|824000|334000|}3231|17|}}
 {2010210004|XXGflow|33|0|65|0|{@{}@384|.5|.5|{12|117000|1014000|137000|1014000|149000|1014000|149000|979000|161000|979000|182000|979000|}837|17|}}
-{2010210004|XXGflow|34|0|67|0|{@{}@384|1.0|.8235294222831726|{12|276000|684000|296000|684000|387000|684000|387000|304000|407000|304000|438000|304000|}3205|17|}}
+{2010210004|XXGflow|34|0|67|0|{@{}@384|1.0|.8235294222831726|{12|276000|684000|296000|684000|387000|684000|387000|304000|407000|304000|438000|304000|}3259|17|}}
 {2010210004|XXGflow|35|0|69|0|{@{}@384|.5|.5|{12|321000|979000|341000|979000|345000|979000|345000|989000|350000|989000|371000|989000|}835|17|}}
 {2010501005|XXGpvertex|36|0|71|0|{Conditional component - Changes the record format of your data by dropping fields or by using DML expressions to add fields, combine fields, or modify the data.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|$REFORMAT_TRANS_FILE|3|2|f$|@{0|}}
 {30001002|XXparameter|condition|$CNDTL_EXTRACT_REFORMAT|3|2|$|@{0|}}
@@ -898,20 +899,16 @@ metadata type: in = out|3|1|FHKl|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
-{30001002|XXparameter|sleep|$FEXP_SLEEP|3|2|$|@{0|}}
-{30001002|XXparameter|tenacity|$FEXP_TENACITY|3|2|$|@{0|}}
-{30001002|XXparameter|sessions|$FEXP_SESSION_MAX_FIRST $FEXP_SESSION_MIN_SECOND|3|2|$|@{0|}}
-{30001002|XXparameter|fexp_logfile|$FEXP_LOGFILE|3|2|f$|@{0|}}
 {30001002|XXparameter|oracle_max_kb|$ORA_MAX_KB|3|2|$|@{0|}}
-{30001002|XXparameter|dbms|mssql|3|2|$|@{0|}}
-{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "S" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
+{30001002|XXparameter|dbms|odbc|3|2|$|@{0|}}
+{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M"  \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|read_metadata|$INPUT_DML|3|2|f$|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@185867|633056|206000|653000|60000|60000|3207|Input Table-Sqlserver|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|83|0|201|0|{@{}@265000|679000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|84|0|204|0|{@{}@229000|712000|11000|11000|log|0.0|@@@1176|0|}}
+}}@0|@191102|806810|211000|827000|60000|60000|3264|Input Table-Generic ODBC|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
+{2010203004|XXGoport|83|0|201|0|{@{}@270000|854000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|84|0|204|0|{@{}@234000|886000|11000|11000|log|0.0|@@@1176|0|}}
 {2010505005|XXGtvertex|85|0|207|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
@@ -1543,7 +1540,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@197136|459691|217000|480000|60000|60000|3198|Input Table-Oracle|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
+}}@0|@197136|459691|217000|480000|60000|60000|3258|Input Table-Oracle|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
 {2010203004|XXGoport|97|0|240|0|{@{}@276000|504000|11000|11000|read|0.0|@@@2448|0|}}
 {2010203004|XXGoport|98|0|243|0|{@{}@244000|539000|11000|11000|log|0.0|@@@1176|0|}}
 {2010505005|XXGtvertex|99|0|246|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
@@ -2148,7 +2145,7 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@198353|80090|218000|100000|60000|60000|851|Input Table-Teradata Fast Export|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
+}}@0|@198353|80090|218000|100000|60000|60000|3255|Input Table-Teradata Fast Export|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
 {2010203004|XXGoport|107|0|267|0|{@{}@277000|124000|11000|11000|read|0.0|@@@2448|0|}}
 {2010203004|XXGoport|108|0|270|0|{@{}@244000|159000|11000|11000|log|0.0|@@@1176|0|}}
 {2010505005|XXGtvertex|109|0|273|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
@@ -2736,46 +2733,25 @@ end;|3|1|l|@{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
 {2010202004|XXGiport|115|0|289|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|116|0|293|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
-{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M" \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
-{30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
-{30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
-}}@0|@49000|795579|64000|802000|40000|47000|3250|Gather Extract Logs-3|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
-{2010202004|XXGiport|117|0|295|0|{@{}@79000|792000|11000|11000|in|0.0|@@@786|0|}}
-{2010501005|XXGpvertex|118|0|298|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
-{30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
-{30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
-{30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
-{30001002|XXparameter|EndText|End|3|2|RFO$|Text to include in end record|{0|}}
-{30001002|XXparameter|condition||3|2|F$||{0|}}
-{30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
-{30001002|XXparameter|conditionOutputPort||3|2|F$||{0|}}
-{30001002|XXparameter|condition_interpretation|Remove completely|15|1|Fl||{2|Replace with flow|Remove completely|}}
-{30001002|XXparameter|condition_interpretation.display_name|condition-interpretation|3|9|P|@{0|}}
-{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:.", "dollar_substitution")]]]|9|9|F|logger should run serially by default|{0|}}
-{30001002|XXparameter|continuous_analysis|publisher, fan_in_ok|3|2|H$||{0|}}
-{30001002|XXparameter|in_metadata||7|1|RFsl||{0|}}
-{30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
-{30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
-{30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
-}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
-{2010202004|XXGiport|119|0|300|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
-}}@0|0|0|0|in|0.0|@@@786|0|}}
-{2010505005|XXGtvertex|120|0|303|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
+{2010505005|XXGtvertex|116|0|292|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|config_file|$AB_IDB_CONFIG|3|2|f$|@{0|}}
 {30001002|XXparameter|table_spec|$\{INPUT_TABLE_SEL\}|3|3|c|@{0|}}
 {30001002|XXparameter|table_spec_kind|select|3|1|l|@{0|}}
 {30001002|XXparameter|field_type_preference|variable|3|1|l|@{0|}}
+{30001002|XXparameter|sleep|$FEXP_SLEEP|3|2|$|@{0|}}
+{30001002|XXparameter|tenacity|$FEXP_TENACITY|3|2|$|@{0|}}
+{30001002|XXparameter|sessions|$FEXP_SESSION_MAX_FIRST $FEXP_SESSION_MIN_SECOND|3|2|$|@{0|}}
+{30001002|XXparameter|fexp_logfile|$FEXP_LOGFILE|3|2|f$|@{0|}}
 {30001002|XXparameter|oracle_max_kb|$ORA_MAX_KB|3|2|$|@{0|}}
-{30001002|XXparameter|dbms|odbc|3|2|$|@{0|}}
-{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M"  \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
+{30001002|XXparameter|dbms|mssql|3|2|$|@{0|}}
+{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "S" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|read_metadata|$INPUT_DML|3|2|f$|@{0|}}
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Datasets/Input_Table.mdc|3|2|Pf$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@191102|806810|211000|827000|60000|60000|3201|Input Table-Generic ODBC|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
-{2010203004|XXGoport|121|0|305|0|{@{}@270000|854000|11000|11000|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|122|0|308|0|{@{}@234000|886000|11000|11000|log|0.0|@@@1176|0|}}
-{2010505005|XXGtvertex|123|0|311|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
+}}@0|@185867|633056|206000|653000|60000|60000|3261|Input Table-Sqlserver|Craig Werre|Built-in 2.2:|1|10|0||6||32769|}}
+{2010203004|XXGoport|117|0|294|0|{@{}@265000|679000|11000|11000|read|0.0|@@@2448|0|}}
+{2010203004|XXGoport|118|0|297|0|{@{}@229000|712000|11000|11000|log|0.0|@@@1176|0|}}
+{2010505005|XXGtvertex|119|0|300|0|{Unloads data records from a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mode|0x0001|1|2|FH$|modes of access|{0|}}
 {30001002|XXparameter|ims_path|generated _ab_ims_path_command page_change|3|13|FHv|List of segments from root to segment|{0|}}
 {30001002|XXparameter|ims_path.is_index|true|3|9|P|@{0|}}
 {30001002|XXparameter|ims_path.condition|param_exact dbms ims mode input|3|15|P?|@{0|}}
@@ -3331,10 +3307,35 @@ end;|3|1|l|@{0|}}
 {30001002|XXparameter|_propagation|metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|eme_dataset_location||3|2|F$|Place in the EME to create a dataset corresponding to this file.|{0|}}
 }}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|}}
-{2010203004|XXGoport|124|0|313|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|120|0|302|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|read|0.0|@@@2448|0|}}
-{2010203004|XXGoport|125|0|316|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+{2010203004|XXGoport|121|0|305|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
 }}@0|0|0|0|log|0.0|@@@1176|0|}}
+{2010501005|XXGpvertex|122|0|309|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
+{30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "M" \|\| $EXTRACT_TYPE = "G" ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
+{30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
+{30001002|XXparameter|in_metadata||3|8|s=|@{0|}}
+}}@0|@49000|795579|64000|802000|40000|47000|3250|Gather Extract Logs-3|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+{2010202004|XXGiport|123|0|311|0|{@{}@79000|792000|11000|11000|in|0.0|@@@786|0|}}
+{2010501005|XXGpvertex|124|0|314|0|{Collects the output from log ports of components for analysis of a graph after execution.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|logger|3|1|Hl||{0|}}
+{30001002|XXparameter|image__|unitool|3|2|H$||{0|}}
+{30001002|XXparameter|LogFile|@28|2|RFO$|Filename to log to|{0|}}
+{30001002|XXparameter|StartText|Start|3|2|RFO$|Text to include in start record|{0|}}
+{30001002|XXparameter|EndText|End|3|2|RFO$|Text to include in end record|{0|}}
+{30001002|XXparameter|condition||3|2|F$||{0|}}
+{30001002|XXparameter|conditionInputPort||3|2|F$||{0|}}
+{30001002|XXparameter|conditionOutputPort||3|2|F$||{0|}}
+{30001002|XXparameter|condition_interpretation|Remove completely|15|1|Fl||{2|Replace with flow|Remove completely|}}
+{30001002|XXparameter|condition_interpretation.display_name|condition-interpretation|3|9|P|@{0|}}
+{30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("file:.", "dollar_substitution")]]]|9|9|F|logger should run serially by default|{0|}}
+{30001002|XXparameter|continuous_analysis|publisher, fan_in_ok|3|2|H$||{0|}}
+{30001002|XXparameter|in_metadata||7|1|RFsl||{0|}}
+{30001002|XXparameter|doc_transform||8|2|FHs$|Document your transformation for dependency analysis|{0|}}
+{30001002|XXparameter|doc_operation1|::document(in)|3|2|RH$||{0|}}
+{30001002|XXparameter|mpcmodtime|1299550339|1|1|Hl|The last modification time of this component's template|{0|}}
+}}@0|@0|0|0|0|0|0|0|@@@1|100|-1|@6|@1|1|{1|0|}}}
+{2010202004|XXGiport|125|0|316|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|RF=||{0|}}
+}}@0|0|0|0|in|0.0|@@@786|0|}}
 {2010501005|XXGpvertex|126|0|320|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|LogFile|$[[record kind 85 subkind 0 parts [vector _interp_("$EXTRACT_LOG_FILE", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|condition|$( if [[ $EXTRACT_TYPE = "T" && $TD_USE_API = 1 ]]; then print "1"; else print "0"; fi)|3|6|k|@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Gather_Logs.mpc|3|2|Pf$|@{0|}}
@@ -4703,7 +4704,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {30001002|XXparameter|condition_interpretation|Remove completely|3|1|l|@{0|}}
 {30001002|XXparameter|Layout|$[[record kind 85 subkind 0 parts [vector _interp_("$DW_TMP", "dollar_substitution")]]]|3|9||@{0|}}
 {30001002|XXparameter|!prototype_path|$AB_COMPONENTS/Miscellaneous/Run_Program.mpc|3|2|Pf$|@{0|}}
-}}@1|@713145|930755|733000|951000|167000|89000|3189|move FEXP_LOGFILE|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
+}}@1|@713145|930755|733000|951000|167000|89000|3265|move FEXP_LOGFILE|Ab Initio Software|Built-in|1|10|0||6||32769|1|{1|0|}}}
 {2010203004|XXGoport|217|0|594|0|{@{}@899000|989000|11000|11000|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|218|0|596|0|{@{}@723000|989000|11000|11000|in|0.0|@@@1732|0|}}
 {2010501005|XXGpvertex|219|0|598|0|{Executes a standard UNIX or Windows program.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|filter|3|1|Hl||{0|}}
@@ -4728,7 +4729,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|221|0|603|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|222|0|606|0|{@{}@{1|233401|}}}
+{2010110002|XXGconstant|222|0|606|0|{@{}@{1|9815776|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
@@ -4848,9 +4849,9 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010006001|XXGobject_psameas_object|116|0|197|0|{metadata|in_metadata|1|0|}81|79|}
 {2010006001|XXGobject_psameas_object|117|0|198|0|{in_metadata|read_metadata|0|0|}76|82|}
 {2010212001|XXGvertex_oport_oport|118|0|200|0|{0|read|}82|83|}
-{2010213001|XXGoport_dst_flow|119|0|202|0|{0|}83|34|}
+{2010213001|XXGoport_dst_flow|119|0|202|0|{0|}83|20|}
 {2010212001|XXGvertex_oport_oport|120|0|203|0|{1|log|}82|84|}
-{2010213001|XXGoport_dst_flow|121|0|205|0|{0|}84|17|}
+{2010213001|XXGoport_dst_flow|121|0|205|0|{0|}84|19|}
 {2010007001|XXGobject_proto_object|122|0|206|0|{}82|85|}
 {2010212001|XXGvertex_oport_oport|123|0|208|0|{0|read|}85|86|}
 {2010006001|XXGobject_psameas_object|124|0|210|0|{metadata|read_metadata|1|0|}86|85|}
@@ -4905,24 +4906,24 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010007001|XXGobject_proto_object|173|0|286|0|{}112|114|}
 {2010211001|XXGvertex_iport_iport|174|0|288|0|{0|in|}114|115|}
 {2010006001|XXGobject_psameas_object|175|0|290|0|{metadata|in_metadata|1|0|}115|114|}
-{2010006001|XXGobject_psameas_object|176|0|291|0|{in_metadata|log_metadata|0|0|}112|82|}
-{2010601001|XXGgraph_vertex_vertex|177|0|292|0|{Gather_Extract_Logs_3|}1|116|}
-{2010211001|XXGvertex_iport_iport|178|0|294|0|{0|in|}116|117|}
-{2010214001|XXGiport_src_flow|179|0|296|0|{0|}117|19|}
-{2010007001|XXGobject_proto_object|180|0|297|0|{}116|118|}
-{2010211001|XXGvertex_iport_iport|181|0|299|0|{0|in|}118|119|}
-{2010006001|XXGobject_psameas_object|182|0|301|0|{metadata|in_metadata|1|0|}119|118|}
-{2010006001|XXGobject_psameas_object|183|0|302|0|{in_metadata|log_metadata|0|0|}116|120|}
-{2010212001|XXGvertex_oport_oport|184|0|304|0|{0|read|}120|121|}
-{2010213001|XXGoport_dst_flow|185|0|306|0|{0|}121|20|}
-{2010212001|XXGvertex_oport_oport|186|0|307|0|{1|log|}120|122|}
-{2010213001|XXGoport_dst_flow|187|0|309|0|{0|}122|19|}
-{2010007001|XXGobject_proto_object|188|0|310|0|{}120|123|}
-{2010212001|XXGvertex_oport_oport|189|0|312|0|{0|read|}123|124|}
-{2010006001|XXGobject_psameas_object|190|0|314|0|{metadata|read_metadata|1|0|}124|123|}
-{2010212001|XXGvertex_oport_oport|191|0|315|0|{1|log|}123|125|}
-{2010006001|XXGobject_psameas_object|192|0|317|0|{metadata|log_metadata|1|0|}125|123|}
-{2010006001|XXGobject_psameas_object|193|0|318|0|{Layout|Layout|0|0|}120|76|}
+{2010006001|XXGobject_psameas_object|176|0|291|0|{in_metadata|log_metadata|0|0|}112|116|}
+{2010212001|XXGvertex_oport_oport|177|0|293|0|{0|read|}116|117|}
+{2010213001|XXGoport_dst_flow|178|0|295|0|{0|}117|34|}
+{2010212001|XXGvertex_oport_oport|179|0|296|0|{1|log|}116|118|}
+{2010213001|XXGoport_dst_flow|180|0|298|0|{0|}118|17|}
+{2010007001|XXGobject_proto_object|181|0|299|0|{}116|119|}
+{2010212001|XXGvertex_oport_oport|182|0|301|0|{0|read|}119|120|}
+{2010006001|XXGobject_psameas_object|183|0|303|0|{metadata|read_metadata|1|0|}120|119|}
+{2010212001|XXGvertex_oport_oport|184|0|304|0|{1|log|}119|121|}
+{2010006001|XXGobject_psameas_object|185|0|306|0|{metadata|log_metadata|1|0|}121|119|}
+{2010006001|XXGobject_psameas_object|186|0|307|0|{Layout|Layout|0|0|}116|76|}
+{2010601001|XXGgraph_vertex_vertex|187|0|308|0|{Gather_Extract_Logs_3|}1|122|}
+{2010211001|XXGvertex_iport_iport|188|0|310|0|{0|in|}122|123|}
+{2010214001|XXGiport_src_flow|189|0|312|0|{0|}123|19|}
+{2010007001|XXGobject_proto_object|190|0|313|0|{}122|124|}
+{2010211001|XXGvertex_iport_iport|191|0|315|0|{0|in|}124|125|}
+{2010006001|XXGobject_psameas_object|192|0|317|0|{metadata|in_metadata|1|0|}125|124|}
+{2010006001|XXGobject_psameas_object|193|0|318|0|{in_metadata|log_metadata|0|0|}122|82|}
 {2010601001|XXGgraph_vertex_vertex|194|0|319|0|{Gather_Extract_Logs_4|}1|126|}
 {2010211001|XXGvertex_iport_iport|195|0|321|0|{0|in|}126|127|}
 {2010214001|XXGiport_src_flow|196|0|323|0|{0|}127|21|}
@@ -4969,9 +4970,9 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 {2010006001|XXGobject_psameas_object|237|0|388|0|{in_metadata|read_metadata|0|0|}136|82|}
 {2010006001|XXGobject_psameas_object|238|0|389|0|{out_metadata|write_metadata|0|0|}136|148|}
 {2010006001|XXGobject_psameas_object|239|0|390|0|{reject_metadata|read_metadata|0|0|}136|82|}
-{2010601001|XXGgraph_vertex_vertex|240|0|391|0|{Input_Table_Generic_ODBC|}1|120|}
+{2010601001|XXGgraph_vertex_vertex|240|0|391|0|{Input_Table_Generic_ODBC|}1|82|}
 {2010601001|XXGgraph_vertex_vertex|241|0|392|0|{Input_Table_Oracle|}1|96|}
-{2010601001|XXGgraph_vertex_vertex|242|0|393|0|{Input_Table_Sqlserver|}1|82|}
+{2010601001|XXGgraph_vertex_vertex|242|0|393|0|{Input_Table_Sqlserver|}1|116|}
 {2010601001|XXGgraph_vertex_vertex|243|0|394|0|{Input_Table_Teradata_API|}1|130|}
 {2010601001|XXGgraph_vertex_vertex|244|0|395|0|{Input_Table_Teradata_Fast_Export|}1|106|}
 {2010601001|XXGgraph_vertex_vertex|245|0|396|0|{Last_Extract_Value_File|}1|152|}
