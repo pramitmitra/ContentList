@@ -17,6 +17,7 @@
 # Date         Ver#   Modified By(Name)            Change and Reason for Change
 # ----------   -----  ---------------------------  ------------------------------
 # 2016-01-14   1.0    Kevin Oaks                   Initial Creation 
+# 2016-06-23   1.1    Kevin Oaks                   Made ETL_ENV discovery dynamic
 #
 ###################################################################################################################
 
@@ -33,7 +34,7 @@ fi
 }
 
 ARGC=$#
-if [[ $ARGC -ne 2 ]]
+if [[ $ARGC -ne 1 ]]
 then
         print "usage: ${0##*/} <SUBJECT_AREA>"
         exit 1
