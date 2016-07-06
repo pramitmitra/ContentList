@@ -9,7 +9,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        02/25/2014      Add move utility log from DW_SA_TMP to DW_SA_LOG
-#
+# Kevin Oaks       05/20/2016      Changed DW_SA_TMP to DW_SA_TMP_LOCAL to accomodate shared storage
 #------------------------------------------------------------------------------------------------
 
 print "Start FastLoad uitlity log file checking abnormal exits"
@@ -23,7 +23,7 @@ grep  -i "Normal end to loading"  $LOAD_LOGFILE|wc -l |read NORMAL_END  OTHER >/
 set -e
 
 # Move LOAD_LOGFILE to $DW_SA_LOG
-if [ ${LOAD_LOGFILE%/*} = $DW_SA_TMP ]
+if [ ${LOAD_LOGFILE%/*} = $DW_SA_TMP_LOCAL ]
 then
    mv $LOAD_LOGFILE $DW_SA_LOG
    export LOAD_LOGFILE=$DW_SA_LOG/${LOAD_LOGFILE##*/}
