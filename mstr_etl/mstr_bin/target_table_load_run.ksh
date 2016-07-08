@@ -20,6 +20,7 @@
 # 2013-07-29     1.2   Jacky Shen                   Add support for hadoop jar job
 # 2013-10-04     1.3   Ryan Wong                    Redhat changes
 # 2014-08-11     1.4   Ryan Wong                    Fix grep issue for Redhat for DB_TYPE
+# 2016-07-07     1.5   Michael Weng                 PROD is out of sync. Add a comment to trigger a re-push
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
