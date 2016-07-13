@@ -423,38 +423,12 @@ fi
 #export TPT_LD_LIBRARY_PATH="/opt/teradata/client/14.10/tbuild/lib64:/opt/teradata/client/14.10/lib64"
 #export TPT_NLSPATH="/opt/teradata/client/14.10/tbuild/msg64/%N"
 
-# Hadoop Specific Updates
-export HADOOP_CLASSPATH=""
-export DW_HD1_DB=ares
-export DW_HD2_DB=apollo
-export DW_HD3_DB=artemis
-
-export HD1_NN_URL="hdfs://ares-lvs-nn-ha:8020"
-#export HD2_NN_URL="hdfs://apollo-phx-nn.vip.ebay.com:8020"
-export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
-export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"
-
-svr_loc=$(nslookup $servername | grep "^Name:" | cut -f2 | cut -d'.' -f2)
+# Hadoop env setup
 set +eu
-if [[ $svr_loc == "phx" ]]
+if [[ -n ${JOB_ENV:-""} ]] && [[ $JOB_ENV == hd* ]]
 then
-  . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
-else
-  . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
-fi
-
-if [[ -n ${JOB_ENV:-""} ]]
-then
-  if [[ $JOB_ENV == "hd1" ]]
-  then
-    . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
-  elif [[ $JOB_ENV == "hd2" ]]
-  then
-    . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
-  elif [[ $JOB_ENV == "hd3" ]]
-  then
-    . $DW_MASTER_CFG/.${DW_HD3_DB}_env.sh
-  fi
+  CLUSTER=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
+  . $DW_MASTER_CFG/.${CLUSTER}_env.sh
 fi
 #set -eu
 

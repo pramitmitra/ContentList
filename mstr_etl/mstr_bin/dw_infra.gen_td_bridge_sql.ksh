@@ -15,7 +15,7 @@
 # 2013-05-30  1.4    George Xiong                    Add cfg option to turn off braceexpand and glob - NO_BRACEEXPAND_NO_GLOB(default=1)
 # 2015-07-07  1.5    Ryan Wong                       Add td6 and td7 to JOB_ENV check
 # 2015-08-26  1.6    Ryan Wong                       Add mapping for hopbatch and hopbe to hopper
-#
+# 2016-04-21  1.7    Michael Weng                    Check on hd* instead of specific hd1/hd2/hd3
 ####################################################################################################
 
 
@@ -80,6 +80,13 @@ then
   TERADATA_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
   assignTagValue DM_BRIDGE_HADOOP_SYSTEM DM_BRIDGE_HADOOP_SYSTEM $ETL_CFG_FILE "W"
   HADOOP_SYSTEM=$(JOB_ENV_UPPER=$(print $DM_BRIDGE_HADOOP_SYSTEM | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
+
+  if [ -f $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh ]
+  then
+    set +eu
+    . $DW_MASTER_CFG/.${HADOOP_SYSTEM}_env.sh
+  fi
+
   EXPORT_IMPORT_TYPE=IMPORT
   DATAPATH=${DATAPATH}*
 
@@ -106,7 +113,7 @@ then
   fi
 
 
-elif [[ $JOB_ENV = @(hd1||hd2||hd3) ]]
+elif [[ $JOB_ENV = hd* ]]
 then
   HADOOP_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
   assignTagValue DM_BRIDGE_TD_SYSTEM DM_BRIDGE_TD_SYSTEM $ETL_CFG_FILE "W"
@@ -133,7 +140,7 @@ then
   fi
 
 else
-  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd1||hd2||hd3"
+  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd*"
   exit 4
 fi
 
