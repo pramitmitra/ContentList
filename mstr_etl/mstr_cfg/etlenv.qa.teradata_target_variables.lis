@@ -10,6 +10,3 @@ export DW_TD101_DB=oscar
 export DW_HD1_DB=ares
 export DW_HD2_DB=apollo
 export DW_HD3_DB=artemis
-export HD1_NN_URL="hdfs://ares-lvs-nn-ha:8020"
-export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
-export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"

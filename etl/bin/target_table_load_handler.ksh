@@ -29,13 +29,12 @@
 # 2013-07-16     1.8   Ryan Wong                    Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
 # 2013-07-30     1.9   Jacky Shen                   Add hadoop jar job support
 # 2013-10-04     1.10  Ryan Wong                    Redhat changes
-# 2016-04-21     1.11  Michael Weng                 Add JOB_ENV optional sub-type for variable hadoop jobs
 ###################################################################################################################
 
 typeset -fu usage
 
 function usage {
-   print "Usage:  $0 <ETL_ID> <JOB_ENV> <SQL_FILE|JAR_FILE> [ -s <JOB_SUB_ENV> ] [ -f <UOW_FROM> -t <UOW_TO> ] [ -m <main_class> [ -p <PARAM_NAME1=PARAM_VALUE1> -p <PARAM_NAME1=PARAM_VALUE1> ... ] OR [<PARAM_NAME1=PARAM_VALUE1> <PARAM_NAME2=PARAM_VALUE2> ...]]
+   print "Usage:  $0 <ETL_ID> <JOB_ENV> <SQL_FILE|JAR_FILE> [ -f <UOW_FROM> -t <UOW_TO> ] [ -m <main_class> [ -p <PARAM_NAME1=PARAM_VALUE1> -p <PARAM_NAME1=PARAM_VALUE1> ... ] OR [<PARAM_NAME1=PARAM_VALUE1> <PARAM_NAME2=PARAM_VALUE2> ...]]
 NOTE: UOW_FROM and UOW_TO are optional but must be used in tandem if either is present."
 }
 
@@ -67,7 +66,7 @@ export SQL_FILE=$3
 # and graceful failures and messages.
 shift 3
 
-if [[ $JOB_ENV == hd* ]]
+if [[ $JOB_ENV == @(hd1|hd2) ]]
 then
 export JOB_TYPE=hadoop_tr
 export JOB_TYPE_ID=mr
@@ -81,8 +80,7 @@ export SQL_FILE_BASENAME=${SQL_FILE_BASENAME%.*}
 
 . /dw/etl/mstr_cfg/etlenv.setup
 
-# Check for optional
-export JOB_SUB_ENV=""
+# Check for optional UOW
 export UOW_FROM=""
 export UOW_TO=""
 export UOW_FROM_FLAG=0
@@ -90,13 +88,9 @@ export UOW_TO_FLAG=0
 
 # getopts loop for processing optional args including UOW
 print "Processing Options"
-while getopts "s:f:t:p:m:" opt
+while getopts "f:t:p:m:" opt
 do
    case $opt in
-      s ) 
-          JOB_SUB_ENV=$OPTARG
-          export JOB_SUB_ENV
-          ;;
       f ) if [[ $UOW_FROM_FLAG -ne 0 ]]
           then
              print "Fatal Error: -f flag specified more than once" >&2
@@ -140,7 +134,7 @@ shift $((OPTIND - 1))
 PARAM_LIST=""
 if [ $# -ge 1 ]
 then
-   if [[ $JOB_ENV == hd* ]]
+   if [[ $JOB_ENV == @(hd1|hd2) ]]
    then
      export PARAM_LIST=$*
    else
