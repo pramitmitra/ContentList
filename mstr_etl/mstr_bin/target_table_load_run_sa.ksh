@@ -19,7 +19,7 @@
 # 2011-12-20     1.1   Ryan Wong                    Change loader_cleanup to use dw_infra.loader_cleanup.ksh
 # 2013-07-29     1.2   Jacky Shen                   Add support for hadoop jar job
 # 2013-10-04     1.3   Ryan Wong                    Redhat changes
-# 2016-04-21     1.4   Michael Weng                 Check on hd* instead of specific hd1/hd2/hd3
+#
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -159,8 +159,8 @@ grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?
 set -e
 
-# Add if..else here to determin if it is a hadoop job
-if [[ $JOB_ENV == hd* ]]
+# Add if..else here to determin if it is a hadoop job or a sql job
+if [[ $JOB_ENV == @(hd1|hd2|hd3) ]]
 then
   HADOOP_JAR=$SQL_FILE
   HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
@@ -178,7 +178,7 @@ then
   then
     set +e
     PARAM_LIST=${PARAM_LIST:-""}
-    $DW_MASTER_BIN/dw_infra.runHadoopJob.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $PARAM_LIST > $LOG_FILE 2>&1
+    $DW_MASTER_BIN/dw_infra.runHadoopJar.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $PARAM_LIST > $LOG_FILE 2>&1
     rcode=$?
     set -e
     if [ $rcode != 0 ]
