@@ -17,7 +17,7 @@
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
 # George Xiong     09/30/2014      Modifications by George
-#
+# Michael Weng     04/21/2016      Retrieve HDFS_URL based on JOB_ENV if not defined
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -81,21 +81,11 @@ then
 fi
 set -e
 
-
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W ""
 
 if [[ "X"$HDFS_URL == "X" ]]
- then
-  set +e
-  print $HADOOP_HOME | grep $DW_HD2_DB
-  isAres=$?
-  set -e
-  if [ $isAres != 0 ]
-  then
-    export HDFS_URL=$HD1_NN_URL
-  else
-    export HDFS_URL=$HD2_NN_URL
-  fi
+then
+  export HDFS_URL=$HADOOP_NN_URL
 fi
 
 print "HADOOP_HOME is $HADOOP_HOME"

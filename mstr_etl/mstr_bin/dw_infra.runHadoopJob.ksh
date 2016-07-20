@@ -15,6 +15,7 @@
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 # Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
 # Michael Weng     04/21/2016      Rename and refactor to support JOB_SUB_ENV for variable hadoop jobs
+# Michael Weng     07/19/2016      handle haodop parameters
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -35,6 +36,7 @@ fi
 
 PARAM_LIST=${PARAM_LIST:-""}
 PARAM_LIST=`eval echo $PARAM_LIST`
+PARAM_LIS_TMP=""
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
@@ -70,7 +72,7 @@ then
     set +o glob
   fi
   PARAM_LIS_TMP=`eval print -- $(<$DW_CFG/$ETL_ID.param.lis)`
-  PARAM_LIST="$PARAM_LIST $PARAM_LIS_TMP"
+#  PARAM_LIST="$PARAM_LIST $PARAM_LIS_TMP"
   if [[ $NO_BRACEEXPAND_NO_GLOB -eq 1 ]]
   then
     set -o braceexpand
@@ -177,6 +179,23 @@ function run_hadoop_jar
 {
   dwi_assignTagValue -p MAPRED_OUTPUT_COMPRESS -t MAPRED_OUTPUT_COMPRESS -f $ETL_CFG_FILE -s N -d 0
 
+  # handle hadoop parameters
+  HADOOP_PARAMS=""
+  if [[ -n $PARAM_LIST ]]
+  then
+    for param in $PARAM_LIST
+    do
+      if [ ${param%=*} = $param ]
+      then
+        print "${0##*/}: ERROR, parameter definition $param is not of form <PARAM_NAME=PARAM_VALUE>"
+        exit 4
+      else
+        HADOOP_PARAMS="$HADOOP_PARAMS -Dparam"
+      fi
+    done
+  fi
+  HADOOP_PARAMS="$HADOOP_PARAMS $PARAM_LIS_TMP"
+
   # To be compatible with previous folder structure
   if [ ! -f "$DW_JAR/$HADOOP_JAR" ]; then
     DW_JAR=$DW_HOME/jar/
@@ -207,7 +226,7 @@ function run_hadoop_jar
   CMD_STR="$HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
                               -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                               -Ddataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\" \
-                              $PARAM_LIST"
+                              $HADOOP_PARAMS"
   print $CMD_STR
   eval $CMD_STR
   retcode=$?
