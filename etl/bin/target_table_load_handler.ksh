@@ -30,6 +30,7 @@
 # 2013-07-30     1.9   Jacky Shen                   Add hadoop jar job support
 # 2013-10-04     1.10  Ryan Wong                    Redhat changes
 # 2016-04-21     1.11  Michael Weng                 Add JOB_ENV optional sub-type for variable hadoop jobs
+# 2016-07-21     1.12  Michael Weng                 Update parameter handling for hadoop jobs
 ###################################################################################################################
 
 typeset -fu usage
@@ -140,24 +141,25 @@ shift $((OPTIND - 1))
 PARAM_LIST=""
 if [ $# -ge 1 ]
 then
-   if [[ $JOB_ENV == hd* ]]
-   then
-     export PARAM_LIST=$*
-   else
    for param in $*
    do
       if [ ${param%=*} = $param ]
       then
-         print "${0##*/}: ERROR, parameter definition $param is not of form <PARAM_NAME=PARAM_VALUE>"
-         usage
-         exit 4
+         if [[ $JOB_ENV == hd* ]]
+         then
+            PARAM_LIST="$PARAM_LIST $param"
+         else
+            print "${0##*/}: ERROR, parameter definition $param is not of form <PARAM_NAME=PARAM_VALUE>"
+            usage
+            exit 4
+         fi
       else
          print "Exporting $param"
          export $param
       fi
    done
-  fi
 fi
+export PARAM_LIST
 
 # Setup common definitions
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
