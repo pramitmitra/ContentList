@@ -21,6 +21,7 @@
 # 2013-10-04     1.3   Ryan Wong                    Redhat changes
 # 2014-08-11     1.4   Ryan Wong                    Fix grep issue for Redhat for DB_TYPE
 # 2016-07-13     1.5   Michael Weng                 Add a comment to create a push to PROD
+# 2016-07-19     1.6   Michael Weng                 Check on hd* and rename dw_infra.runHadoopJar.ksh
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -160,8 +161,8 @@ grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?
 set -e
 
-# Add if..else here to determin if it is a hadoop job or a sql job
-if [[ $JOB_ENV == @(hd1|hd2|hd3) ]]
+# Add if..else here to determin if it is a hadoop job
+if [[ $JOB_ENV == hd* ]]
 then
   HADOOP_JAR=$SQL_FILE
   HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
@@ -179,7 +180,7 @@ then
   then
     set +e
     PARAM_LIST=${PARAM_LIST:-""}
-    $DW_MASTER_BIN/dw_infra.runHadoopJar.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $PARAM_LIST > $LOG_FILE 2>&1
+    $DW_MASTER_BIN/dw_infra.runHadoopJob.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $PARAM_LIST > $LOG_FILE 2>&1
     rcode=$?
     set -e
     if [ $rcode != 0 ]

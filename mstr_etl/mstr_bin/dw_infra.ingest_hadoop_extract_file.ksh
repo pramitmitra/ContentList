@@ -20,7 +20,7 @@
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 # Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
-#
+# Michael Weng     /4/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -94,7 +94,7 @@ fi
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1
 
 set +e
-grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDFS_URL HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
+grep "^$HDP_CONN\>" $DW_LOGINS/hadoop_logins.dat | read HDP_CONN_NAME HDP_CLUSTER HDP_USERNAME HDP_GROUPNAME HDP_PASSWORD HDFS_PATH
 rcode=$?
 set -e
 
@@ -110,48 +110,25 @@ if [[ -z $HD_USERNAME ]]
     exit 4
 fi
 
-if [[ "X"$HDFS_URL != "X" ]]
+if [[ -z $HDP_CLUSTER ]]
 then
-  set +e
-  print $HDFS_URL | grep -i $DW_HD1_DB
-  isAres=$?
-  print $HDFS_URL | grep -i $DW_HD2_DB
-  isApollo=$?
-  print $HDFS_URL | grep -i $DW_HD3_DB
-  isArtemis=$?
-  set -e
-
-  if [ $isAres == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD1_DB}_env.sh
-  elif [ $isApollo == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD2_DB}_env.sh
-  elif [ $isArtemis == 0 ]
-  then
-   . $DW_MASTER_CFG/.${DW_HD3_DB}_env.sh
-  fi
-else
-  set +e
-  print $HADOOP_HOME | grep -i $DW_HD1_DB
-  isAres=$?
-  print $HADOOP_HOME | grep -i $DW_HD2_DB
-  isApollo=$?
-  print $HADOOP_HOME | grep -i $DW_HD3_DB
-  isArtemis=$?
-  set -e
-
-  if [ $isAres == 0 ]
-  then
-    export HDFS_URL=$HD1_NN_URL
-  elif [ $isApollo == 0 ]
-  then
-    export HDFS_URL=$HD2_NN_URL
-  elif [ $isArtemis == 0 ]
-  then
-    export HDFS_URL=$HD3_NN_URL
-  fi
+  print "INFRA_ERROR: can't determine hadoop cluster to connect to"
+  exit 4
 fi
+
+# Hadoop env - require hadoop cluster name instead of HDFS_URL in $DW_LOGINS/hadoop_logins.dat
+HDP_CLUSTER_ENV=$DW_MASTER_CFG/.${HDP_CLUSTER}_env.sh
+
+if ! [ -f $HDP_CLUSTER_ENV ]
+then
+  print "INFRA_ERROR: missing hadoop cluster env file: $HDP_CLUSTER_ENV"
+  exit 4
+fi
+
+. $HDP_CLUSTER_ENV
+
+# Get the HDFS_URL
+export HDFS_URL=$HADOOP_NN_URL
 
 export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin
 CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
