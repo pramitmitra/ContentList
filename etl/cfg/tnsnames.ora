@@ -5413,3 +5413,15 @@ misc3stby=
  (Host = misc3stby.vip.ebay.com)
  (Port = 1521))
  (CONNECT_DATA = (SID=MISC3)))
+
+usrinv10=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv10slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV10)))
+usrinv11=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv11slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV11)))
+usrinv12=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv12slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV12)))
+usrinv13=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv13slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV13)))
+usrinv14=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv14slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV14)))
+usrinv15=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv15slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV15)))
+usrinv16=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv16slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV16)))
+usrinv17=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv17slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV17)))
+usrinv18=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv18slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV18)))
+usrinv19=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv19slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV19)))
+
