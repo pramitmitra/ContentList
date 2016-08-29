@@ -1,0 +1,508 @@
+DWI_fetch_pw () {
+
+
+#
+# Description:  This function retrieves and decrypts the specified password from $DW_LOGINS
+#
+#
+# Date           Ver#   Modified By(Name)            Change and Reason for Change
+# ------------   -----  ---------------------------  ------------------------------
+# Sep 15, 2015   1      John Hackley                 New script
+#
+
+
+
+if [[ $# -lt 2 || $# -gt 3 ]]
+then
+  print ""
+  print "Usage:  DWI_fetch_pw <ETL_ID> <PASSWD_TYPE> [<INSTANCE_ID>]"
+  print ""
+  print "	Where <PASSWD_TYPE> is one of teradata, oracle, scp, mysql, mssql, odbc or sft"
+  print "          and <INSTANCE_ID> is optional and identifies a particular Oracle/MySQL/SQLServer instance, e.g., halfcaty"
+  print ""
+  return 9
+fi
+
+ETL_ID=$1
+DWI_PASSWD_TYPE=$2
+DWI_INSTANCE_ID=${3:-"none"}
+
+SUBJECT_AREA=${ETL_ID%%.*}
+
+
+# Determine if the third input parameter is an integer or not
+typeset -i DWI_ISNUMBER
+
+case $DWI_INSTANCE_ID in
+   (*[^0-9]*|'') DWI_ISNUMBER=0;;
+   (*)           DWI_ISNUMBER=1;;
+esac
+
+case $DWI_PASSWD_TYPE in
+
+  teradata)  
+    if [ $DWI_ISNUMBER == 1 ]
+    then
+      TD_LOGON_FILE_ID=$DWI_INSTANCE_ID
+    else
+      if [[ -n $ETL_ID ]]
+      then
+        if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+        then
+          export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+        else
+          export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+        fi
+        dwi_assignTagValue -p TD_LOGON_FILE_ID -t TD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+      else
+        TD_LOGON_FILE_ID=0
+      fi
+    fi
+
+    if [ -f $HOME/.tdlogon ]
+    then
+###   export TD_LOGONFILE=$HOME/.tdlogon
+###   parseLogonFile $TD_LOGONFILE
+      print " " | mailx -s "Using deprecated credential file ($HOME/.tdlogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+      print "Passwords are no longer allowed in $HOME/.tdlogon; exiting"
+      return 9
+
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon.gpg ]
+    then
+      gpg -d $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon.gpg | read TD_USERNAME TD_PASSWORD DWI_FILLER
+
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon ]
+    then
+      read TD_USERNAME TD_PASSWORD DWI_FILLER <  $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon
+
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.td.logon.gpg ]
+    then
+      gpg -d $DW_LOGINS/$SUBJECT_AREA.0.td.logon.gpg | read TD_USERNAME TD_PASSWORD DWI_FILLER
+
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.td.logon ]
+    then
+      read TD_USERNAME TD_PASSWORD DWI_FILLER <  $DW_LOGINS/$SUBJECT_AREA.0.td.logon
+
+    elif [ -f $DW_LOGINS/${SUBJECT_AREA} ]
+    then
+###   LOGINFO=$(<$DW_LOGINS/${SUBJECT_AREA})
+###   parseTDLogonString "$LOGINFO"
+      print " " | mailx -s "Using deprecated credential file ($DW_LOGINS/$SUBJECT_AREA): $ETL_ID on $servername"  "john.hackley@ebay.com"
+      print "Old format for Teradata credential file ($DW_LOGINS/$SUBJECT_AREA) is no longer supported; exiting"
+      return 9
+
+    elif [ $DWI_INSTANCE_ID == "none" ]
+    then
+      print "Unable to retrieve $DWI_PASSWD_TYPE password, but maybe its not needed; exiting"
+      return 0
+
+    elif [ -f $DW_LOGINS/teradata_logins.dat.gpg ]
+    then
+
+      set +e
+#     The whitespace within the square brackets in the next line is a space followed by a tab
+      gpg -d $DW_LOGINS/teradata_logins.dat.gpg | grep "^$DWI_INSTANCE_ID[ 	][ 	]*$SUBJECT_AREA\>" | read DWI_INSTANCE_ID_MATCH SUBJECT_AREA TD_USERNAME TD_PASSWORD DWI_FILLER 
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in teradata_logins.dat.gpg"
+        return $rcode
+      fi
+
+    elif [ -f $DW_LOGINS/teradata_logins.dat ]
+    then
+
+      set +e
+#     The whitespace within the square brackets in the next line is a space followed by a tab
+      grep "^$DWI_INSTANCE_ID[ 	][ 	]*$SUBJECT_AREA\>" $DW_LOGINS/teradata_logins.dat | read DWI_INSTANCE_MATCH SUBJECT_AREA TD_USERNAME TD_PASSWORD DWI_FILLER 
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in teradata_logins.dat"
+        return $rcode
+      fi
+
+    fi
+  ;;
+
+
+  oracle)
+# Define Oracle logon info location.
+
+    if [ $DWI_INSTANCE_ID == "none" ]
+    then
+      print "Improper call to DWI_fetch_pw; INSTANCE_ID is required when retrieving Oracle password"
+      return 9
+    fi
+
+    if [ -f $DW_LOGINS/ora_logins.dat.gpg ]
+    then
+
+      set +e
+      gpg -d $DW_LOGINS/ora_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ORA_USERNAME ORA_PASSWORD DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in oracle_logins.dat.gpg"
+        return $rcode
+      fi
+
+    else
+
+      set +e
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/ora_logins.dat | read DWI_INSTANCE_ID_MATCH ORA_USERNAME ORA_PASSWORD DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in oracle_logins.dat"
+        return $rcode
+      fi       
+
+    fi
+
+  ;;
+
+
+  scp)
+# Define SCP logon info location.
+
+    if [ $DWI_INSTANCE_ID == "none" ]
+    then
+      print "Improper call to DWI_fetch_pw; INSTANCE_ID is required when retrieving SCP password"
+      return 9
+    fi
+
+    if [ -f $DW_LOGINS/scp_logins.dat.gpg ]
+    then
+
+      set +e
+      gpg -d $DW_LOGINS/scp_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH SCP_HOST SCP_USERNAME SCP_PASSWORD REMOTE_DIR URL DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in scp_logins.dat.gpg"
+        return $rcode
+      fi
+
+    else
+
+      set +e
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/scp_logins.dat | read DWI_INSTANCE_ID_MATCH SCP_HOST SCP_USERNAME SCP_PASSWORD REMOTE_DIR URL DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in scp_logins.dat"
+        return $rcode
+      fi
+
+    fi
+
+  ;;
+
+
+  sft)
+# Define SocPArc File Transfer logon info location.
+
+    if [ $DWI_INSTANCE_ID == "none" ]
+    then
+      print "Improper call to DWI_fetch_pw; INSTANCE_ID is required when retrieving SFT password"
+      return 9
+    fi
+
+    if [ -f $DW_LOGINS/sft_logins.dat.gpg ]
+    then
+
+      set +e
+      gpg -d $DW_LOGINS/sft_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR SFT_PORT DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        RMT_SFT_PORT=$SFT_PORT
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in sft_logins.dat.gpg"
+        return $rcode
+      fi
+
+    else
+
+      set +e
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/sft_logins.dat | read DWI_INSTANCE_ID_MATCH SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR SFT_PORT DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        RMT_SFT_PORT=$SFT_PORT
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in sft_logins.dat"
+        return $rcode
+      fi
+    fi
+  ;;
+
+
+  odbc)
+# Define ODBC logon info location.
+
+    if [ $DWI_INSTANCE_ID == "none" ]
+    then
+      print "Improper call to DWI_fetch_pw; INSTANCE_ID is required when retrieving ODBC password"
+      return 9
+    fi
+
+    if [ -f $DW_LOGINS/odbc_logins.dat.gpg ]
+    then
+
+      set +e
+      gpg -d $DW_LOGINS/odbc_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in odbc_logins.dat.gpg"
+        return $rcode
+      fi
+
+    else
+
+      set +e
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/odbc_logins.dat | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
+      rcode=$?
+      set -e
+
+      if [ $rcode = 0 ]
+      then
+        return 0
+      else
+        print "${DWI_INSTANCE_ID} not found in odbc_logins.dat"
+        return $rcode
+      fi
+    fi
+  ;;
+
+
+  mysql)
+# Define MySQL logon info location.
+
+  if [ $DWI_ISNUMBER == 1 ]
+  then
+    MYSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
+  else
+    if [[ -n $ETL_ID ]]
+    then
+      if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+      then
+        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      else
+        export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+      fi
+      dwi_assignTagValue -p MYSQL_LOGON_FILE_ID -t MYSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+    else
+      MYSQL_LOGON_FILE_ID=0
+    fi
+  fi
+
+  if [ -f $HOME/.mysqllogon.gpg ]
+  then
+### gpg -d $HOME/.mysqllogon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+    print " " | mailx -s "Using deprecated credential file ($HOME/.mysqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "Passwords are no longer allowed in $HOME/.mysqllogon.gpg; exiting"
+    return 9
+
+  elif [ -f $HOME/.mysqllogon ]
+  then
+### read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $HOME/.mysqllogon
+    print " " | mailx -s "Using deprecated credential file ($HOME/.mysqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "Passwords are no longer allowed in $HOME/.mysqllogon; exiting"
+    return 9
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon.gpg ]
+  then
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon ]
+  then
+    read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon.gpg ]
+  then
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon ]
+  then
+    read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon
+
+  elif [ $DWI_INSTANCE_ID == "none" ]
+  then
+    print "Unable to retrieve $DWI_PASSWD_TYPE password, but maybe its not needed; exiting"
+    return 0
+
+  elif [ -f $DW_LOGINS/mysql_logins.dat.gpg ]
+  then
+
+    set +e
+    gpg -d $DW_LOGINS/mysql_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+    rcode=$?
+    set -e
+
+    if [ $rcode = 0 ]
+    then
+      return 0
+    else
+      print "${DWI_INSTANCE_ID} not found in mysql_logins.dat.gpg"
+      return $rcode
+    fi
+
+  elif [ -f $DW_LOGINS/mysql_logins.dat ] 
+  then
+
+    set +e
+    grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/mysql_logins.dat | read DWI_INSTANCE_ID_MATCH MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+    rcode=$?
+    set -e
+
+    if [ $rcode = 0 ]
+    then
+      return 0
+    else
+      print "${DWI_INSTANCE_ID} not found in mysql_logins.dat"
+      return $rcode
+    fi
+
+  fi
+  ;;
+
+
+  mssql)
+# Define MSSQL logon info location.
+
+  if [ $DWI_ISNUMBER == 1 ]
+  then
+    MSSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
+  else
+    if [[ -n $ETL_ID ]]
+    then
+      if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+      then
+        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      else
+        export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+      fi
+      dwi_assignTagValue -p MSSQL_LOGON_FILE_ID -t MSSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+    else
+      MSSQL_LOGON_FILE_ID=0
+    fi
+  fi
+
+  if [ -f $HOME/.mssqllogon.gpg ]
+  then
+### gpg -d $HOME/.mssqllogon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+    print " " | mailx -s "Using deprecated credential file ($HOME/.mssqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "Passwords are no longer allowed in $HOME/.mssqllogon.gpg; exiting"
+    return 9
+
+  elif [ -f $HOME/.mssqllogon ]
+  then
+### read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $HOME/.mssqllogon
+    print " " | mailx -s "Using deprecated credential file ($HOME/.mssqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "Passwords are no longer allowed in $HOME/.mssqllogon; exiting"
+    return 9
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon.gpg ]
+  then
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon ]
+  then
+    read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon.gpg ]
+  then
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon ]
+  then
+    read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon
+
+  elif [ $DWI_INSTANCE_ID == "none" ]
+  then
+    print "Unable to retrieve $DWI_PASSWD_TYPE password, but maybe its not needed; exiting"
+    return 0
+
+  elif [ -f $DW_LOGINS/mssql_logins.dat.gpg ]
+  then
+
+    set +e
+    gpg -d $DW_LOGINS/mssql_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+    rcode=$?
+    set -e
+
+    if [ $rcode = 0 ]
+    then
+      return 0
+    else
+      print "${DWI_INSTANCE_ID} not found in mssql_logins.dat.gpg"
+      return $rcode
+    fi
+
+  elif [ -f $DW_LOGINS/mssql_logins.dat ]
+  then
+
+    set +e
+    grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/mssql_logins.dat | read DWI_INSTANCE_ID_MATCH MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+    rcode=$?
+    set -e
+
+    if [ $rcode = 0 ]
+    then
+      return 0
+    else
+      print "${DWI_INSTANCE_ID} not found in mssql_logins.dat"
+      return $rcode
+    fi
+
+  fi
+  ;;
+
+
+  *) 
+    print "Improper call to DWI_fetch_pw; password type is invalid or missing:  $DWI_PASSWD_TYPE"
+    return 9
+  ;;
+
+esac
+
+
+}
+

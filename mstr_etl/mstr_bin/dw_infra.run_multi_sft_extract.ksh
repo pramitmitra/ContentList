@@ -36,15 +36,13 @@ PARENT_LOG_FILE=${_log_file}
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-set +e
-grep "^$SFT_CONN\>" $DW_LOGINS/sft_logins.dat | read SFT_NAME SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR RMT_SFT_PORT
-rcode=$?
-set -e
+DWI_fetch_pw $ETL_ID sft $SFT_CONN
+DWIrc=$?
 
-if [ $rcode != 0 ]
+if [[ -z $SFT_PASSWORD ]]
 then
-	print "${0##*/}:  ERROR, failure determining value for SCP_NAME parameter from $DW_LOGINS/sft_logins.dat" >> $ERROR_FILE
-	exit 4
+  print "Unable to retrieve SFT password, exiting; ETL_ID=$ETL_ID; SFT_CONN=$SFT_CONN"
+  exit $DWIrc
 fi
        
 ERROR_FILE="${PARENT_LOG_FILE%.log}.err"

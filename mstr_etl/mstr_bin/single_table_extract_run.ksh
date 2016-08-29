@@ -32,6 +32,7 @@
 # 2013-08-20   1.14   George Xiong                  export DBC_FILE_NAME to resolve wildcard character issue on redhad
 # 2013-10-04   1.15   Ryan Wong                     Redhat changes
 # 2013-08-20   1.16   George Xiong                  $DW_EXE/$SUBJECT_AREA scirpt support of pre/post jobs
+# 2015-09-11   1.17   John Hackley                  Password encryption changes
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1084,16 +1085,16 @@ then
       assignTagValue SFT_PUSH_CONN SFT_PUSH_CONN $ETL_CFG_FILE
       assignTagValue SFT_PUSH_NWAYS SFT_PUSH_NWAYS $ETL_CFG_FILE W 1
       assignTagValue SFT_BANDWIDTH SFT_BANDWIDTH $ETL_CFG_FILE W 32
-      set +e
-      grep "^$SFT_PUSH_CONN\>" $DW_LOGINS/sft_logins.dat | read SFT_NAME SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR RMT_SFT_PORT
-      rcode=$?
-      set -e
-      
-      if [ $rcode != 0 ]
+
+      DWI_fetch_pw $ETL_ID sft $SFT_PUSH_CONN
+      DWIrc=$?
+
+      if [[ -z $SFT_PASSWORD ]]
       then
-      	print "${0##*/}:  ERROR, failure determining value for SFT_NAME parameter from $DW_LOGINS/sft_logins.dat" >&2
-      	exit 4
+        print "Unable to retrieve SFT password, exiting; ETL_ID=$ETL_ID; SFT_PUSH_CONN=$SFT_PUSH_CONN"
+        exit $DWIrc
       fi
+
 #      BATCH_SEQ_NUM=$(<$BATCH_SEQ_NUM_FILE)
 #      export BATCH_SEQ_NUM
       if [[ -n $UOW_TO ]]
