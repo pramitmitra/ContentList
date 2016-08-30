@@ -70,7 +70,7 @@ then
   exit 4
 fi
 
-. /dw/etl/mstr_cfg/etlenv.setup
+. /dw/etl/mstr_cfg/etlenv.setup 1>/dev/null
 . /dw/etl/mstr_cfg/dw_etl_common_defs_uow.cfg
 
 if [[ "X$UOW_TO" != "X" ]]

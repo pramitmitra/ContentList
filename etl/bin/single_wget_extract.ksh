@@ -8,6 +8,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# John Hackley     09/09/2015      Password encryption changes
 #
 #------------------------------------------------------------------------------------------------
 
@@ -19,15 +20,13 @@ TARGET_FILE=$5
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-set +e
-grep "^$SCP_CONN\>" $DW_LOGINS/scp_logins.dat | read SCP_NAME SCP_HOST SCP_USERNAME SCP_PASSWORD REMOTE_DIR URL NOT_USED
-rcode=$?
-set -e
+DWI_fetch_pw $ETL_ID scp $SCP_CONN
+DWIrc=$?
 
-if [ $rcode != 0 ]
+if [[ -z $SCP_PASSWORD ]]
 then
-        print "${0##*/}:  ERROR, failure determining value for SCP_NAME parameter from $DW_LOGINS/scp_logins.dat" >&2
-        exit 4
+  print "Unable to retrieve SCP password, exiting; ETL_ID=$ETL_ID; SCP_CONN=$SCP_CONN"
+  exit $DWIrc
 fi
 
 set +e
