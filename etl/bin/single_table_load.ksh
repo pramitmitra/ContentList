@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_load", compiled at Wednesday, August 10, 2016 18:15:33 using GDE version 3.1.4.1
+# Deployed execution script for graph "single_table_load", compiled at Thursday, May 19, 2016 15:58:37 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_load
 # Begin Ab Initio shell utility functions
 
@@ -537,31 +537,13 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter TNS_NAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export ORA_USERNAME;ORA_USERNAME=$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
-    else
-      print $ORA_USERNAME
-    fi
-  fi
- )
+export ORA_USERNAME;ORA_USERNAME=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_USERNAME of single_table_load', interpretation 'shell'
    exit $mpjret
 fi
-export ORA_PASSWORD;ORA_PASSWORD=$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
-    else
-      print $ORA_PASSWORD
-    fi
-  fi
- )
+export ORA_PASSWORD;ORA_PASSWORD=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of single_table_load', interpretation 'shell'
@@ -592,7 +574,7 @@ export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $DB_TYPE == 'MYSQL' ]]
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $MYSQL_ODBC_NAME; print $MYSQL_USERNAME
+      grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
     else
       print $MYSQL_USERNAME
     fi
@@ -607,7 +589,7 @@ export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $DB_TYPE == 'MYSQL' ]]
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID $MYSQL_ODBC_NAME; print $MYSQL_PASSWORD
+      grep "^$MYSQL_ODBC_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
     else
       print $MYSQL_PASSWORD
     fi
@@ -643,7 +625,7 @@ export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $MSSQL_ODBC_NAME; print $MSSQL_USERNAME
+      grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
     else
       print $MSSQL_USERNAME
     fi
@@ -658,7 +640,7 @@ export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $MSSQL_ODBC_NAME; print $MSSQL_PASSWORD
+      grep "^$MSSQL_ODBC_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
     else
       print $MSSQL_PASSWORD
     fi
@@ -2743,7 +2725,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7812240
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=9855662
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

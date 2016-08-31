@@ -43,26 +43,8 @@ else
 fi)|3|6|Kk||{0|}}
 {30001002|XXparameter|TNS_NAME|$(grep "^db_name\\>" $DW_DBC/$AB_IDB_ORACLE_CONFIG \| read A TNS_NAME_TMP
   print $\{TNS_NAME_TMP#\@\})|3|6|Ek||{0|}}
-{30001002|XXparameter|ORA_USERNAME|$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
-    else
-      print $ORA_USERNAME
-    fi
-  fi
- )|3|6|Ek||{0|}}
-{30001002|XXparameter|ORA_PASSWORD|$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
-    else
-      print $ORA_PASSWORD
-    fi
-  fi
- )|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_USERNAME|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_PASSWORD|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)|3|6|Ek||{0|}}
 {30001002|XXparameter|AB_IDB_MYSQL_CONFIG|$( if [[ $DB_TYPE != 'MYSQL' ]] 
 then 
     print mysql_sample.dbc 
@@ -78,7 +60,7 @@ fi)|3|6|Kk||{0|}}
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $MYSQL_ODBC_NAME; print $MYSQL_USERNAME
+      grep "^$MYSQL_ODBC_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
     else
       print $MYSQL_USERNAME
     fi
@@ -88,7 +70,7 @@ fi)|3|6|Kk||{0|}}
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID $MYSQL_ODBC_NAME; print $MYSQL_PASSWORD
+      grep "^$MYSQL_ODBC_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODBC_NAME MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
     else
       print $MYSQL_PASSWORD
     fi
@@ -109,7 +91,7 @@ fi)|3|6|Kk||{0|}}
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $MSSQL_ODBC_NAME; print $MSSQL_USERNAME
+      grep "^$MSSQL_ODBC_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
     else
       print $MSSQL_USERNAME
     fi
@@ -119,7 +101,7 @@ fi)|3|6|Kk||{0|}}
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $MSSQL_ODBC_NAME; print $MSSQL_PASSWORD
+      grep "^$MSSQL_ODBC_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
     else
       print $MSSQL_PASSWORD
     fi
@@ -828,7 +810,7 @@ fi
 }}@0|@10590|52250|0|0|2236000|1868000|0|single_table_load|Craig Werre|Created 04/20/05 17:21:44|1|10|-1||6||34817|{0|}0|0|{0|}{0|}{0|}{0|}1.0|2235000|1867000|3|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|0|1|1|}Job 'single_table_load' Execution Status Report
 
-Compilation of graph "single_table_load" started at Wednesday, August 10, 2016 18:15:33
+Compilation of graph "single_table_load" started at Monday, April 06, 2015 13:53:29
 No compilation errors
 ||m_env -v
 
@@ -894,7 +876,7 @@ fi
 
 
 |@|31634943|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@Bastion-phxdpelega004 - 3.1||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHXeazbas01 - PHXdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Courier New|16711680|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@chmod $LOAD_LOGFILE will change the permissions on the $LOAD_LOGFILE to 664 once the file is found.|17235|933622|37000|954000|792000|16000|521|}}
 {2010242002|XXGface|6|0|11|0|{@{}@Courier New|16711680|100|0|}}
@@ -7131,7 +7113,7 @@ once $LOAD_LOGFILE exists.  Sleeps for 10 seconds in between looking for this fi
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|272|0|748|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|273|0|751|0|{@{}@{1|7812240|}}}
+{2010110002|XXGconstant|273|0|751|0|{@{}@{1|9855662|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
