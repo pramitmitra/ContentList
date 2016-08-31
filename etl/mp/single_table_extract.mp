@@ -63,34 +63,24 @@ then
    fi
 fi)|3|6|REk||{0|}}
 {30001002|XXparameter|ORA_USERNAME|$(if [[ $EXTRACT_TYPE = "O" ]]
-  then
-    if [[ ! -n $ORA_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
-    else
-      print $ORA_USERNAME
-    fi
-  else
-    print 0
-  fi
- )|3|6|REk||{0|}}
-{30001002|XXparameter|ORA_PASSWORD|$(if [[ $EXTRACT_TYPE = "O" ]]
-  then
-    if [[ ! -n $ORA_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
-    else
-      print $ORA_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )|3|6|REk||{0|}}
+then
+   grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USER ORA_PASS
+   print $ORA_USER
+else
+   print 0
+fi)|3|6|REk||{0|}}
+{30001002|XXparameter|ORA_PASSWORD|$(if [[ $EXTRACT_TYPE = "O" ]]
+then
+   grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USER ORA_PASS
+   print $ORA_PASS
+else
+   print 0
+fi)|3|6|REk||{0|}}
 {30001002|XXparameter|MSSQL_USERNAME|$(if [[ $EXTRACT_TYPE == "S" ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $TNS_NAME; print $MSSQL_USERNAME
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_USER
     else
       print $MSSQL_USERNAME
     fi
@@ -100,7 +90,7 @@ fi)|3|6|REk||{0|}}
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $TNS_NAME; print $MSSQL_PASSWORD
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_PASS
     else
       print $MSSQL_PASSWORD
     fi
@@ -110,7 +100,7 @@ fi)|3|6|REk||{0|}}
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $TNS_NAME; print $MYSQL_USERNAME
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_USER
     else
       print $MYSQL_USERNAME
     fi
@@ -120,7 +110,7 @@ fi)|3|6|REk||{0|}}
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $TNS_NAME; print $MYSQL_PASSWORD
+      grep "^$TNS_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_PASS
     else
       print $MYSQL_PASSWORD
     fi
@@ -332,54 +322,44 @@ fi)|3|6|REk||{0|}}
 )|3|6|REk||{0|}}
 {30001002|XXparameter|AB_IDB_MAX_ORACLE_LOB_SIZE|$(grep "^MAX_ORACLE_LOB_SIZE_OVRD\\>" $ETL_CFG_FILE \| read PARAM VALUE COMMENT; print $\{VALUE:-100000\})|3|6|Kk||{0|}}
 {30001002|XXparameter|RECORD_COUNT_FILE|$DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.record_count.dat|3|2|RE$||{0|}}
-{30001002|XXparameter|TD_USERNAME|$(if [[ $EXTRACT_TYPE = "T" ]]
-  then
-    if [[ ! -n $TD_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID teradata $TNS_NAME; print $TD_USERNAME
-    else
-      print $TD_USERNAME
-    fi
-  else
-    print 0
-  fi
- )|3|6|REKk||{0|}}
-{30001002|XXparameter|TD_PASSWORD|$(if [[ $EXTRACT_TYPE = "T" ]]
-  then
-    if [[ ! -n $TD_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID teradata $TNS_NAME; print $TD_PASSWORD
-    else
-      print $TD_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )|3|6|REKk||{0|}}
-{30001002|XXparameter|ODBC_USERNAME|$(if [[ $EXTRACT_TYPE = "G" ]]
-  then
-    if [[ ! -n $ODBC_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID odbc $TNS_NAME; print $ODBC_USERNAME
-    else
-      print $ODBC_USERNAME
-    fi
-  else
-    print 0
-  fi
- )|3|6|REk||{0|}}
-{30001002|XXparameter|ODBC_PASSWORD|$(if [[ $EXTRACT_TYPE = "G" ]]
-  then
-    if [[ ! -n $ODBC_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID odbc $TNS_NAME; print $ODBC_PASSWORD
-    else
-      print $ODBC_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )|3|6|REk||{0|}}
+{30001002|XXparameter|TD_USERNAME|$(if [[ $EXTRACT_TYPE = "T" ]]
+then
+   grep "^$TNS_NAME[    ][    ]*$SUBJECT_AREA\\>" $DW_LOGINS/teradata_logins.dat \| read TNS_NAME TNS_SUBJECT_AREA TD_USER TD_PASS
+   if [[ $? = 0 ]] 
+   then 
+     print $TD_USER
+   else
+     print $TD_USERNAME
+   fi
+else
+   print 0
+fi)|3|6|REKk||{0|}}
+{30001002|XXparameter|TD_PASSWORD|$(if [[ $EXTRACT_TYPE = "T" ]]
+then
+   grep "^$TNS_NAME[    ][      ]*$SUBJECT_AREA\\>" $DW_LOGINS/teradata_logins.dat \| read TNS_NAME TNS_SUBJECT_AREA TD_USER TD_PASS
+   if [[ $? = 0 ]] 
+   then 
+     print $TD_PASS
+   else
+     print $TD_PASSWORD
+   fi
+else
+   print 0
+fi)|3|6|REKk||{0|}}
+{30001002|XXparameter|ODBC_USERNAME|$(if [[ $EXTRACT_TYPE = "G" ]]
+then
+   grep "^$TNS_NAME\\>" $DW_LOGINS/odbc_logins.dat \| read TNS_NAME ODBC_USER ODBC_PASS
+   print $ODBC_USER
+else
+   print 0
+fi)|3|6|REk||{0|}}
+{30001002|XXparameter|ODBC_PASSWORD|$(if [[ $EXTRACT_TYPE = "G" ]]
+then
+   grep "^$TNS_NAME\\>" $DW_LOGINS/odbc_logins.dat \| read TNS_NAME ODBC_USER ODBC_PASS
+   print $ODBC_PASS
+else
+   print 0
+fi)|3|6|REk||{0|}}
 {30001002|XXparameter|TABLE_ID21|$\{TABLE_ID%$\{TABLE_ID#?????????????????????\}\}|3|6|REk||{0|}}
 {30001002|XXparameter|FEXP_LOGTAB|$\{TABLE_ID21:-$TABLE_ID\}_$$_L|3|6|REk||{0|}}
 {30001002|XXparameter|FEXP_LOGFILE|$(if [[ $EXTRACT_TYPE = "T" ]]
@@ -451,7 +431,7 @@ esac)|3|6|EKk||{0|}}
 }}@0|@0|0|0|0|1894000|1246000|0|single_table_extract|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|1893000|1246000|7|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|1|1|1|}Job 'single_table_extract' Execution Status Report
 
-Compilation of graph "single_table_extract" started at Saturday, August 13, 2016 10:40:59
+Compilation of graph "single_table_extract" started at Thursday, May 19, 2016 14:42:16
 No compilation errors
 ||m_env -v
 
@@ -504,7 +484,7 @@ then
    exit 4
 fi
 ||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@Bastion-phxdpelega004 - 3.1||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHXeazbas01 - PHXdpelega001||||15|300|0|1|1|1|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@17|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
 {2010240003|XXGlegend|5|0|9|0|{@{}@Phase 1:  The log file from the Input Table
 component is parsed to get the number of
@@ -4749,7 +4729,7 @@ metadata type: log = remote("$AB_HOME/include/log-info.dml")|3|1|HKl|@{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|221|0|603|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|222|0|606|0|{@{}@{1|1005218|}}}
+{2010110002|XXGconstant|222|0|606|0|{@{}@{1|9815776|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}

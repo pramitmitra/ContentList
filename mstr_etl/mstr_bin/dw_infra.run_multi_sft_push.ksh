@@ -36,14 +36,16 @@ export PARENT_LOG_FILE=${_log_file}
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-DWI_fetch_pw $ETL_ID sft $SFT_CONN
-DWIrc=$?
+set +e
+grep "^$SFT_CONN\>" $DW_LOGINS/sft_logins.dat | read SFT_NAME SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR RMT_SFT_PORT
+rcode=$?
+set -e
 
-if [[ -z $SFT_PASSWORD ]]
+if [ $rcode != 0 ]
 then
-  print "Unable to retrieve SFT password, exiting; ETL_ID=$ETL_ID; SFT_CONN=$SFT_CONN"
-  exit $DWIrc
-fi
+	print "${0##*/}:  ERROR, failure determining value for SFT_NAME parameter from $DW_LOGINS/sft_logins.dat" >> $ERROR_FILE
+	exit 4
+fi     
 
 ERROR_FILE="${PARENT_LOG_FILE%.log}.err"
 if [ -f $ERROR_FILE ]

@@ -8,7 +8,6 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
-# John Hackley     09/11/2015      Password encryption changes
 #
 #------------------------------------------------------------------------------------------------
 
@@ -40,15 +39,15 @@ TABLE_ID=${ETL_ID##*.}
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-DWI_fetch_pw $ETL_ID sft $SFT_CONN
-DWIrc=$?
+set +e
+grep "^$SFT_CONN\>" $DW_LOGINS/sft_logins.dat | read SFT_NAME SFT_HOST SFT_USERNAME SFT_PASSWORD REMOTE_DIR SFT_PORT 
+rcode=$?
+set -e
 
-if [[ -z $SFT_PASSWORD ]]
+if [ $rcode != 0 ]
 then
-  print "Unable to retrieve SFT password, exiting; ETL_ID=$ETL_ID; SFT_CONN=$SFT_CONN"
-  exit $DWIrc
-else
-  SFT_PORT=$RMT_SFT_PORT
+	print "${0##*/}:  ERROR, failure determining value for SFT_NAME parameter from $DW_LOGINS/sft_logins.dat" >&2
+	exit 4
 fi
 
 set +e

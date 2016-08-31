@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "single_table_extract", compiled at Saturday, August 13, 2016 10:40:59 using GDE version 3.1.4.1
+# Deployed execution script for graph "single_table_extract", compiled at Friday, May 20, 2016 10:41:49 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}single_table_extract
 # Begin Ab Initio shell utility functions
 
@@ -544,34 +544,24 @@ if [ 0 -ne $mpjret ] ; then
    exit $mpjret
 fi
 export ORA_USERNAME;ORA_USERNAME=$(if [[ $EXTRACT_TYPE = "O" ]]
-  then
-    if [[ ! -n $ORA_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
-    else
-      print $ORA_USERNAME
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USER ORA_PASS
+   print $ORA_USER
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
 export ORA_PASSWORD;ORA_PASSWORD=$(if [[ $EXTRACT_TYPE = "O" ]]
-  then
-    if [[ ! -n $ORA_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
-    else
-      print $ORA_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USER ORA_PASS
+   print $ORA_PASS
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of single_table_extract', interpretation 'shell'
@@ -581,7 +571,7 @@ export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "S" ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $TNS_NAME; print $MSSQL_USERNAME
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_USER
     else
       print $MSSQL_USERNAME
     fi
@@ -596,7 +586,7 @@ export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "S" ]]
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $TNS_NAME; print $MSSQL_PASSWORD
+      grep "^$TNS_NAME\>" $DW_LOGINS/mssql_logins.dat | read TNS_NAME MSSQL_USER MSSQL_PASS; print $MSSQL_PASS
     else
       print $MSSQL_PASSWORD
     fi
@@ -611,7 +601,7 @@ export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $EXTRACT_TYPE == "M" ]]
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $TNS_NAME; print $MYSQL_USERNAME
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_USER
     else
       print $MYSQL_USERNAME
     fi
@@ -626,7 +616,7 @@ export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $EXTRACT_TYPE == "M" ]]
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $TNS_NAME; print $MYSQL_PASSWORD
+      grep "^$TNS_NAME\>" $DW_LOGINS/mysql_logins.dat | read TNS_NAME MYSQL_USER MYSQL_PASS; print $MYSQL_PASS
     else
       print $MYSQL_PASSWORD
     fi
@@ -1049,68 +1039,58 @@ if [ 0 -ne $mpjret ] ; then
 fi
 export RECORD_COUNT_FILE;RECORD_COUNT_FILE="$DW_SA_TMP"'/'"$TABLE_ID"'.ex.'"$FILE_ID"'.record_count.dat'
 export TD_USERNAME;TD_USERNAME=$(if [[ $EXTRACT_TYPE = "T" ]]
-  then
-    if [[ ! -n $TD_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID teradata $TNS_NAME; print $TD_USERNAME
-    else
-      print $TD_USERNAME
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME[    ][    ]*$SUBJECT_AREA\>" $DW_LOGINS/teradata_logins.dat | read TNS_NAME TNS_SUBJECT_AREA TD_USER TD_PASS
+   if [[ $? = 0 ]] 
+   then 
+     print $TD_USER
+   else
+     print $TD_USERNAME
+   fi
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter TD_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
 export TD_PASSWORD;TD_PASSWORD=$(if [[ $EXTRACT_TYPE = "T" ]]
-  then
-    if [[ ! -n $TD_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID teradata $TNS_NAME; print $TD_PASSWORD
-    else
-      print $TD_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME[    ][      ]*$SUBJECT_AREA\>" $DW_LOGINS/teradata_logins.dat | read TNS_NAME TNS_SUBJECT_AREA TD_USER TD_PASS
+   if [[ $? = 0 ]] 
+   then 
+     print $TD_PASS
+   else
+     print $TD_PASSWORD
+   fi
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter TD_PASSWORD of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
 export ODBC_USERNAME;ODBC_USERNAME=$(if [[ $EXTRACT_TYPE = "G" ]]
-  then
-    if [[ ! -n $ODBC_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID odbc $TNS_NAME; print $ODBC_USERNAME
-    else
-      print $ODBC_USERNAME
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME\>" $DW_LOGINS/odbc_logins.dat | read TNS_NAME ODBC_USER ODBC_PASS
+   print $ODBC_USER
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ODBC_USERNAME of single_table_extract', interpretation 'shell'
    exit $mpjret
 fi
 export ODBC_PASSWORD;ODBC_PASSWORD=$(if [[ $EXTRACT_TYPE = "G" ]]
-  then
-    if [[ ! -n $ODBC_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID odbc $TNS_NAME; print $ODBC_PASSWORD
-    else
-      print $ODBC_PASSWORD
-    fi
-  else
-    print 0
-  fi
- )
+then
+   grep "^$TNS_NAME\>" $DW_LOGINS/odbc_logins.dat | read TNS_NAME ODBC_USER ODBC_PASS
+   print $ODBC_PASS
+else
+   print 0
+fi)
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ODBC_PASSWORD of single_table_extract', interpretation 'shell'
@@ -2735,7 +2715,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1005218
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=6605694
 mp run
 mpjret=$?
 unset AB_COMM_WAIT

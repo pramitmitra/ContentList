@@ -152,12 +152,6 @@ export DWI_WHOAMI=$(whoami)
 # Define miscellaneous
 export NR_CATYS=27 #-- number of caty hosts
 
-# For GPG, set default GNUPGHOME location for .gnupg
-if [ -d $DW_KEYS/$DWI_WHOAMI/.gnupg ]
-then
-  export GNUPGHOME=$DW_KEYS/$DWI_WHOAMI/.gnupg
-fi
-
 # Define modular setup file list and force exit variables
 # FORCE_EXIT is needed because a non-zero return within a loop causes the calling shell
 # to shut down rather than simply exiting setup with an error.
@@ -254,12 +248,40 @@ fi
 
 
 
-# Define Teradata logon info location.
+# Define Teradata logon info location. This provides an override when running jobs outside of
+# batch or the scheduling tool. The existence of $HOME/.tdlogon will trigger the contents
+# of that to be used rather than the subject area defined logon file found in $DW_LOGINS
 if [[ -n $ETL_ID ]]
 then
-  DWI_fetch_pw $ETL_ID teradata
-  export TD_USERNAME TD_PASSWORD
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p TD_LOGON_FILE_ID -t TD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+
+  if [[ -n ${TD_LOGON_FILE_OVERRIDE:-""} ]]
+  then
+    TD_LOGON_FILE_ID=$TD_LOGON_FILE_OVERRIDE
+  fi
+else
+  TD_LOGON_FILE_ID=0
 fi
+
+if [ -f $HOME/.tdlogon ]
+then
+        export TD_LOGONFILE=$HOME/.tdlogon
+        parseLogonFile $TD_LOGONFILE
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon ]
+then
+        read TD_USERNAME TD_PASSWORD FILLER <  $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.td.logon ]
+then
+        read TD_USERNAME TD_PASSWORD FILLER <  $DW_LOGINS/$SUBJECT_AREA.0.td.logon
+else
+        if [ -f $DW_LOGINS/${SUBJECT_AREA} ]
+        then
+                LOGINFO=$(<$DW_LOGINS/${SUBJECT_AREA})
+                parseTDLogonString "$LOGINFO"
+        fi
+fi
+export TD_USERNAME TD_PASSWORD
 
 # Parse hadoop batch account
 if [[ -n $ETL_ID ]]
@@ -281,6 +303,13 @@ fi
 export HD_USERNAME HD_QUEUE
 
 
+# For GPG, set default GNUPGHOME location for .gnupg
+if [ -d $DW_KEYS/$DWI_WHOAMI/.gnupg ]
+then
+  export GNUPGHOME=$DW_KEYS/$DWI_WHOAMI/.gnupg
+fi
+
+
 # Provides TNSNAMES style resolution for Teradata systems. Not yet widely used.
 if [ -f $DW_CFG/tnsnames.td ]
 then
@@ -294,15 +323,50 @@ then
 fi
 
 
-# Define MySQL and MSSQL logon info location.
+# Define MySQL logon info location.
 
 if [[ -n $ETL_ID ]]
 then
-  DWI_fetch_pw $ETL_ID mysql
-  export MYSQL_USERNAME MYSQL_PASSWORD
-  DWI_fetch_pw $ETL_ID mssql
-  export MSSQL_USERNAME MSSQL_PASSWORD
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p MYSQL_LOGON_FILE_ID -t MYSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+else
+  MYSQL_LOGON_FILE_ID=0
 fi
+
+if [ -f $HOME/.mysqllogon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $HOME/.mysqllogon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon ]
+then
+        read MYSQL_USERNAME MYSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon
+fi
+export MYSQL_USERNAME MYSQL_PASSWORD
+
+
+# Define MSSQL logon info location.
+
+if [[ -n $ETL_ID ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+  dwi_assignTagValue -p MSSQL_LOGON_FILE_ID -t MSSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
+else
+  MSSQL_LOGON_FILE_ID=0
+fi
+
+if [ -f $HOME/.mssqllogon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $HOME/.mssqllogon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon
+elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon ]
+then
+        read MSSQL_USERNAME MSSQL_PASSWORD FILLER < $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon
+fi
+export MSSQL_USERNAME MSSQL_PASSWORD
 
 
 # database configuration environment

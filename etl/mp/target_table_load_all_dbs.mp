@@ -31,33 +31,14 @@ esac)|3|6|EKk||{0|}}
 {30001002|XXparameter|DEFAULT_DB|$TRGT_DB|3|2|EK$||{0|}}
 {30001002|XXparameter|TNS_NAME|$(grep "^db_name\\>" $DW_DBC/$AB_IDB_CONFIG \| read A TNS_NAME_TMP
   print $\{TNS_NAME_TMP#\@\})|3|6|Ek||{0|}}
-{30001002|XXparameter|ORA_USERNAME|$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_USERNAME ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
-    else
-      print $ORA_USERNAME
-    fi
-  fi
- )|3|6|Ek||{0|}}
-{30001002|XXparameter|ORA_PASSWORD|$(if [[ $DB_TYPE == 'ORACLE' ]]
-  then
-    if [[ ! -n $ORA_PASSWORD ]]
-    then
-      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
-    else
-      print $ORA_PASSWORD
-    fi
-  fi
- )|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_USERNAME|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)|3|6|Ek||{0|}}
+{30001002|XXparameter|ORA_PASSWORD|$(grep "^$TNS_NAME\\>" $DW_LOGINS/ora_logins.dat \| read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)|3|6|Ek||{0|}}
 {30001002|XXparameter|ODBC_DATA_SOURCE_NAME|$(grep "^odbc_data_source_name\\>" $DW_DBC/$AB_IDB_CONFIG \| read A ODSN_TMP; print $\{ODSN_TMP:-""\})|3|6|EKk||{0|}}
-{30001002|XXparameter|MYSQL_DEFAULTS_EXTRA_FILE|$\{DW_LOGINS\}/$\{ODBC_DATA_SOURCE_NAME\}.cnf|3|2|EK$||{0|}}
 {30001002|XXparameter|MSSQL_USERNAME|$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $ODBC_DATA_SOURCE_NAME; print $MSSQL_USERNAME
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
     else
       print $MSSQL_USERNAME
     fi
@@ -67,7 +48,7 @@ esac)|3|6|EKk||{0|}}
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mssql $ODBC_DATA_SOURCE_NAME; print $MSSQL_PASSWORD
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mssql_logins.dat \| read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
     else
       print $MSSQL_PASSWORD
     fi
@@ -77,7 +58,7 @@ esac)|3|6|EKk||{0|}}
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $ODBC_DATA_SOURCE_NAME; print $MYSQL_USERNAME
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
     else
       print $MYSQL_USERNAME
     fi
@@ -87,7 +68,7 @@ esac)|3|6|EKk||{0|}}
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      DWI_fetch_pw $ETL_ID mysql $ODBC_DATA_SOURCE_NAME; print $MYSQL_PASSWORD
+      grep "^$ODBC_DATA_SOURCE_NAME\\>" $DW_LOGINS/mysql_logins.dat \| read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
     else
       print $MYSQL_PASSWORD
     fi
@@ -117,12 +98,12 @@ esac)|3|6|EKk||{0|}}
 }}@0|@0|0|0|0|508000|412000|0|target_table_load_all_dbs|Craig Werre||1|10|-1||6||2049|{0|}0|0|{0|}{0|}{0|}{0|}1.0|508000|411000|7|}}
 {2010703001|XXGgraphinfo|2|0|3|0|{@{}@1|3.1.4.1|{3|1|1|1|}Job 'target_table_load_all_dbs' Execution Status Report
 
-Compilation of graph "target_table_load_all_dbs" started at Wednesday, August 10, 2016 17:26:01
+Compilation of graph "target_table_load_all_dbs" started at Monday, April 06, 2015 13:56:15
 No compilation errors
 ||||@|31633919|}}
-{2010705002|XXGrunsettings|3|0|5|0|{@{}@Bastion-phxdpelega004 - 3.1||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
+{2010705002|XXGrunsettings|3|0|5|0|{@{}@PHX Bastion 300 - PHX Lega 001||||1|300|0|1|1|0|0|0|0|1|1|0|0|1|1|1|1|0|0|0|@16|}}
 {2010242002|XXGface|4|0|7|0|{@{}@Arial|0|100|0|}}
-{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|64000|134000|64000|154000|64000|224000|85000|224000|106000|224000|}15|17|}}
+{2010210004|XXGflow|5|0|9|0|{@{}@384|.5|.5|{10|64000|134000|64000|154000|64000|224000|85000|224000|106000|224000|}12|17|}}
 {2010210004|XXGflow|6|0|11|0|{@{}@384|.5|.5|{12|183000|224000|203000|224000|208000|224000|208000|184000|214000|184000|235000|184000|}10|17|}}
 {2010210004|XXGflow|7|0|13|0|{@{}@384|.5|.5|{12|374000|184000|394000|184000|400000|184000|400000|239000|407000|239000|428000|239000|}8|17|}}
 {2010501005|XXGpvertex|8|0|15|0|{|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|transform0|out::reformat(in) =
@@ -253,7 +234,7 @@ metadata type: log = "record string(\\"\|\\") node, timestamp, component, subcom
 {30001002|XXparameter|log_metadata|record string("\|") node, timestamp, component, subcomponent, event_type; string("\|\\n") event_text; end|3|1|l|@{0|}}
 {30001002|XXparameter|!prototype_path|C:\\Program Files\\Ab Initio\\Ab Initio GDE\\Components\\Database\\Run SQL.mpc|3|2|Pw$|@{0|}}
 {30001002|XXparameter|Layout||3|8|s=|@{0|}}
-}}@0|@11000|10000|31000|30000|92000|94000|16|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
+}}@0|@11000|10000|31000|30000|92000|94000|13|Run SQL|Ab Initio Software|Built-in 2.2:|1|10|0||6||32769|1|{1|0|}}}
 {2010203004|XXGoport|25|0|60|0|{@{}@59000|123000|11000|11000|log|0.0|@@@1176|0|}}
 {2010501005|XXGpvertex|26|0|63|0|{Executes SQL statements in a database.|{30100001|XXparameter_set|@@@@{{30001002|XXparameter|mpname|db-runsql|3|1|Hl|The name used on the mp command line for this component|{0|}}
 {30001002|XXparameter|image__|~ab_home/db/bin/db-runsql|3|2|H$|The image used if this component was a custom component|{0|}}
@@ -341,7 +322,7 @@ metadata type: write = read|3|1|FHKl|@{0|}}
 }}@0|0|0|0|out|0.0|@@@2260|0|}}
 {2010202004|XXGiport|39|0|98|0|{@{30100001|XXparameter_set|@@@@{{30001002|XXparameter|metadata||7|8|F=||{0|}}
 }}@0|0|0|0|in|0.0|@@@1732|0|}}
-{2010110002|XXGconstant|40|0|104|0|{@{}@{1|7515212|}}}
+{2010110002|XXGconstant|40|0|104|0|{@{}@{1|3749237|}}}
 {2010002001|XXGdirectory_object_object|0|1|2|0|{XXGgraph|}0|1|}
 {2010704001|XXGgraph_graphinfo_graphinfo|1|0|2|0|{}1|2|}
 {2010706001|XXGgraphinfo_runsettings_runsettings|2|0|4|0|{}2|3|}
