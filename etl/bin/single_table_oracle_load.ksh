@@ -273,18 +273,18 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter TNS_NAME of single_table_oracle_load', interpretation 'shell'
    exit $mpjret
 fi
-export ORA_USERNAME;ORA_USERNAME=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)
-mpjret=$?
-if [ 0 -ne $mpjret ] ; then
-   print -- Error evaluating: 'parameter ORA_USERNAME of single_table_oracle_load', interpretation 'shell'
-   exit $mpjret
+
+DWI_fetch_pw $ETL_ID oracle $TNS_NAME
+DWIrc=$?
+
+if [[ -n $ORA_PASSWORD ]]
+then
+  export ORA_USERNAME ORA_PASSWORD
+else
+  print "Unable to retrieve Oracle password, exiting; ETL_ID=$ETL_ID; TNS_NAME=$TNS_NAME"
+  exit $DWIrc
 fi
-export ORA_PASSWORD;ORA_PASSWORD=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)
-mpjret=$?
-if [ 0 -ne $mpjret ] ; then
-   print -- Error evaluating: 'parameter ORA_PASSWORD of single_table_oracle_load', interpretation 'shell'
-   exit $mpjret
-fi
+
 export DW_SA_ARC;DW_SA_ARC="$DW_ARC"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export DW_SA_DAT;DW_SA_DAT="$DW_DAT"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"
 export DW_SA_IN;DW_SA_IN="$DW_IN"'/'"$JOB_ENV"'/'"$SUBJECT_AREA"

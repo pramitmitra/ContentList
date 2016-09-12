@@ -38,18 +38,21 @@ case $DWI_INSTANCE_ID in
    (*)           DWI_ISNUMBER=1;;
 esac
 
-print " " | mailx -s "DWI_fetch_pw called on $servername:  $ETL_ID; $DWI_PASSWD_TYPE; $DWI_INSTANCE_ID; $UC4_JOB_NAME"  "john.hackley@ebay.com"
-
 case $DWI_PASSWD_TYPE in
 
   teradata)  
-    if [[ $DWI_ISNUMBER ]]
+    if [ $DWI_ISNUMBER == 1 ]
     then
       TD_LOGON_FILE_ID=$DWI_INSTANCE_ID
     else
       if [[ -n $ETL_ID ]]
       then
-        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+        if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+        then
+          export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+        else
+          export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+        fi
         dwi_assignTagValue -p TD_LOGON_FILE_ID -t TD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
       else
         TD_LOGON_FILE_ID=0
@@ -279,7 +282,7 @@ case $DWI_PASSWD_TYPE in
     then
 
       set +e
-      gpg -d $DW_LOGINS/odbc_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ODBC_USER ODBC_PASS DWI_FILLER
+      gpg -d $DW_LOGINS/odbc_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
       rcode=$?
       set -e
 
@@ -294,7 +297,7 @@ case $DWI_PASSWD_TYPE in
     else
 
       set +e
-      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/odbc_logins.dat | read DWI_INSTANCE_ID_MATCH ODBC_USER ODBC_PASS DWI_FILLER
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/odbc_logins.dat | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
       rcode=$?
       set -e
 
@@ -312,13 +315,18 @@ case $DWI_PASSWD_TYPE in
   mysql)
 # Define MySQL logon info location.
 
-  if [[ $DWI_ISNUMBER ]]
+  if [ $DWI_ISNUMBER == 1 ]
   then
     MYSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
   else
     if [[ -n $ETL_ID ]]
     then
-      export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+      then
+        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      else
+        export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+      fi
       dwi_assignTagValue -p MYSQL_LOGON_FILE_ID -t MYSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
     else
       MYSQL_LOGON_FILE_ID=0
@@ -399,13 +407,18 @@ case $DWI_PASSWD_TYPE in
   mssql)
 # Define MSSQL logon info location.
 
-  if [[ $DWI_ISNUMBER ]]
+  if [ $DWI_ISNUMBER == 1 ]
   then
     MSSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
   else
     if [[ -n $ETL_ID ]]
     then
-      export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+      then
+        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+      else
+        export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+      fi
       dwi_assignTagValue -p MSSQL_LOGON_FILE_ID -t MSSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
     else
       MSSQL_LOGON_FILE_ID=0

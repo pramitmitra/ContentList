@@ -1,6 +1,7 @@
 #!/bin/ksh -eu
 #
 # Ported to Redhat by koaks, 20120820
+# ETL password encryption added by jhackley, 20150825
 
 ETL_ID=$1
 FILE_ID=$2
@@ -12,15 +13,16 @@ now=`date '+20%y%m%d-%H:%M:%S'`
 SUBJECT_AREA=${ETL_ID%%.*}
 TABLE_ID=${ETL_ID##*.}
 
-set +e
-grep "^$SCP_CONN\>" $DW_LOGINS/scp_logins.dat | read SCP_NAME SCP_HOST SCP_USERNAME SCP_PASSWORD REMOTE_DIR FTP_URL 
-rcode=$?
-set -e
+# Retrieve and decrypt password
+DWI_fetch_pw $ETL_ID scp $SCP_CONN
+DWIrc=$?
 
-if [ $rcode != 0 ]
+if [[ -n $SCP_PASSWORD ]]
 then
-	print "${0##*/}:  ERROR, failure determining value for SCP_NAME parameter from $DW_LOGINS/scp_logins.dat" >&2
-	exit 4
+  FTP_URL=$URL
+else
+  print "Unable to retrieve SCP password, exiting; ETL_ID=$ETL_ID; SCP_CONN=$SCP_CONN"
+  exit $DWIrc
 fi
 
 set +e
