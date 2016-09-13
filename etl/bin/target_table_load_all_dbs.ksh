@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "target_table_load_all_dbs", compiled at Wednesday, April 15, 2015 15:32:35 using GDE version 3.1.4.1
+# Deployed execution script for graph "target_table_load_all_dbs", compiled at Wednesday, August 10, 2016 17:26:01 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}target_table_load_all_dbs
 # Begin Ab Initio shell utility functions
 
@@ -416,13 +416,31 @@ if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter TNS_NAME of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
-export ORA_USERNAME;ORA_USERNAME=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_USERNAME)
+export ORA_USERNAME;ORA_USERNAME=$(if [[ $DB_TYPE == 'ORACLE' ]]
+  then
+    if [[ ! -n $ORA_USERNAME ]]
+    then
+      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_USERNAME
+    else
+      print $ORA_USERNAME
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_USERNAME of target_table_load_all_dbs', interpretation 'shell'
    exit $mpjret
 fi
-export ORA_PASSWORD;ORA_PASSWORD=$(grep "^$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME ORA_USERNAME ORA_PASSWORD ; print $ORA_PASSWORD)
+export ORA_PASSWORD;ORA_PASSWORD=$(if [[ $DB_TYPE == 'ORACLE' ]]
+  then
+    if [[ ! -n $ORA_PASSWORD ]]
+    then
+      DWI_fetch_pw $ETL_ID oracle $TNS_NAME; print $ORA_PASSWORD
+    else
+      print $ORA_PASSWORD
+    fi
+  fi
+ )
 mpjret=$?
 if [ 0 -ne $mpjret ] ; then
    print -- Error evaluating: 'parameter ORA_PASSWORD of target_table_load_all_dbs', interpretation 'shell'
@@ -439,7 +457,7 @@ export MSSQL_USERNAME;MSSQL_USERNAME=$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_USERNAME ]]
     then
-      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_USERNAME
+      DWI_fetch_pw $ETL_ID mssql $ODBC_DATA_SOURCE_NAME; print $MSSQL_USERNAME
     else
       print $MSSQL_USERNAME
     fi
@@ -454,7 +472,7 @@ export MSSQL_PASSWORD;MSSQL_PASSWORD=$(if [[ $DB_TYPE == 'MSSQL' ]]
   then
     if [[ ! -n $MSSQL_PASSWORD ]]
     then
-      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mssql_logins.dat | read ODBC_NAME MSSQL_USERNAME MSSQL_PASSWORD ; print $MSSQL_PASSWORD
+      DWI_fetch_pw $ETL_ID mssql $ODBC_DATA_SOURCE_NAME; print $MSSQL_PASSWORD
     else
       print $MSSQL_PASSWORD
     fi
@@ -469,7 +487,7 @@ export MYSQL_USERNAME;MYSQL_USERNAME=$(if [[ $DB_TYPE == 'MYSQL' ]]
   then
     if [[ ! -n $MYSQL_USERNAME ]]
     then
-      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_USERNAME
+      DWI_fetch_pw $ETL_ID mysql $ODBC_DATA_SOURCE_NAME; print $MYSQL_USERNAME
     else
       print $MYSQL_USERNAME
     fi
@@ -484,7 +502,7 @@ export MYSQL_PASSWORD;MYSQL_PASSWORD=$(if [[ $DB_TYPE == 'MYSQL' ]]
   then
     if [[ ! -n $MYSQL_PASSWORD ]]
     then
-      grep "^$ODBC_DATA_SOURCE_NAME\>" $DW_LOGINS/mysql_logins.dat | read ODSN MYSQL_USERNAME MYSQL_PASSWORD ; print $MYSQL_PASSWORD
+      DWI_fetch_pw $ETL_ID mysql $ODBC_DATA_SOURCE_NAME; print $MYSQL_PASSWORD
     else
       print $MYSQL_PASSWORD
     fi
@@ -650,7 +668,7 @@ mp straight-flow Flow_2 Run_SQL_Log_File.read Reformat.in -metadata metadata1
 mp straight-flow Flow_3 Reformat.out.out0 Run_SQL_Log_File_Tmp.write -metadata metadata2
 
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=3715070
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=7515212
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
