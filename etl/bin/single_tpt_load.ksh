@@ -20,6 +20,7 @@
 # 2013-10-29   1.5    Ryan Wong                     Add TPT_LOAD_ERROR_LIMIT option
 # 2014-08-07   1.6    Ryan Wong                     Fix data file search by calling dw_infra.single_tpt_load_find_files.ksh
 # 2014-09-03   1.7    Ryan Wong                     Fixing dw_infra.single_tpt_load_find_files.ksh to handle NON-UOW files
+# 2016-09-20   1.8    Ryan Wong                     Fixing queryband statement
 #############################################################################################################
 
 ETL_ID=$1
@@ -106,14 +107,11 @@ fi
 
 
 
-# Check for query band
+# Check for additional query band
 eval set -A myqb $(grep TPT_LOAD_QUERY_BAND $ETL_CFG_FILE)
 export QUERY_BAND=${myqb[1]:-}
-export QUERY_BAND_STRING="UTILITYNAME=TPTLOAD;${QUERY_BAND_STRING%% *}$QUERY_BAND"
-if [[ "X$QUERY_BAND" != "X" ]]
-then
-  TPT_ARG="$TPT_ARG -QUERY_BAND \"$QUERY_BAND_STRING\""
-fi
+export QUERY_BAND_STRING="UTILITYNAME=TPTLOAD;${QUERY_BAND_STRING%% UPDATE}$QUERY_BAND"
+TPT_ARG="$TPT_ARG -QUERY_BAND \"$QUERY_BAND_STRING\""
 
 # Pull db_name from environment
 export TD_DB_NAME=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval echo \$DW_${JOB_ENV_UPPER}_DB)
