@@ -14,6 +14,7 @@
 # Ryan Wong        08/12/2014      Set NO_BRACEEXPAND_NO_GLOB default=1 for consistency
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 # Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
+# Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -42,12 +43,14 @@ export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
 export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
+export UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE:-"NA"}
+export UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY:-"NA"}
 
 JAVA=$JAVA_HOME/bin/java
 JAVA_CMD_OPT=`bash /dw/etl/mstr_lib/hadoop_ext/hadoop.setup`
 RUN_SCRIPT=$HADOOP_JAR
 RUN_CLASS=${MAIN_CLASS:-"NA"}
-DATAPLATFORM_ETL_INFO="ETL_ID=${ETL_ID};UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UOW_FROM=${UOW_FROM};UOW_TO=${UOW_TO};RUN_SCRIPT=${RUN_SCRIPT};RUN_CLASS=${RUN_CLASS};"
+DATAPLATFORM_ETL_INFO="ETL_ID=${ETL_ID};UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE};UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY};UOW_FROM=${UOW_FROM};UOW_TO=${UOW_TO};RUN_SCRIPT=${RUN_SCRIPT};RUN_CLASS=${RUN_CLASS};"
 
 # if there is too much parameters need to be passed to hadoop jar, using a parameters.lis
 dwi_assignTagValue -p USE_JAR_PARAM_LIS -t USE_JAR_PARAM_LIS -f $ETL_CFG_FILE -s N -d 0

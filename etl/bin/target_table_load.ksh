@@ -8,6 +8,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
+# Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 #
 #------------------------------------------------------------------------------------------------
 
@@ -70,7 +71,9 @@ export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
 export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
-export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID}"
+export UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE:-"NA"}
+export UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY:-"NA"}
+export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE};UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY}"
 
 
 # Adding QUERY_BAND RM PART
