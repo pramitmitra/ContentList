@@ -37,7 +37,8 @@
 # 2012-11-26   1.14   Ryan Wong                     Add UOW_[FROM/TO]_TIME
 # 2013-03-25   1.15   Jacky Shen                    Add a check to Infra_Run complete file to fail job if the complete file still exists
 # 2013-07-16   1.16   Ryan Wong                     Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
-# 2013-10-04   1.17   Rya Wong                      Redhad changes
+# 2013-10-04   1.17   Ryan Wong                     Redhat changes
+# 2016-09-16   1.18   Ryan Wong                     Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 #############################################################################################################
 
 typeset -fu usage
@@ -117,9 +118,11 @@ shift $(($OPTIND - 1))
 # read in UC4 runtime parameters, they will be used in teradata query band if it is an extract job from teradata
 export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
-export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
+export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"}
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
-export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID}"
+export UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE:-"NA"}
+export UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY:-"NA"}
+export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE};UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY}"
 
 export QUERY_BAND_STRING="SA=$SUBJECT_AREA;TBID=$TABLE_ID;$QB_STR_UC4; UPDATE"
 
