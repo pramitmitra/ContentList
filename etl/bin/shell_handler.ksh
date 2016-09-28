@@ -35,18 +35,21 @@
 #                                     -ul (unique logfile name) - include the host name as part of the log file name
 #                                     -ut (unique touchfile name) - include the host name as part of the touch file name
 #                                     -st (suppress touchfile) - skip creation of touchfile at end of job
+# Kevin Oaks       09/22/2016      Added optional input argument to avoid .complete file collisions on Tempo hosts:
+#                                     -uc (unique complete file) - include host name as part of touch file name
 #------------------------------------------------------------------------------------------------
 
 typeset -fu usage
 
 function usage {
-   print "Usage:  $0 <ETL_ID> <JOB_ENV> [ -f <UOW_FROM> -t <UOW_TO> ] [ -ul ] [ -ut ] [ -st ] <SHELL_EXE> <Param1> <Param2> <Param3> ... <ParamX>
+   print "Usage:  $0 <ETL_ID> <JOB_ENV> [ -f <UOW_FROM> -t <UOW_TO> ] [ -ul ] [ -ut ] [ -st ] [ -uc ] <SHELL_EXE> <Param1> <Param2> <Param3> ... <ParamX>
 	ETL_ID =                   <SUBJECT_AREA.TABLE_ID>
 	JOB_ENV =                  <extract|primary|secondary>
        -f and -t =                specify Unit of Work From and To dates, in YYYYMMDDHHMMSS format
        -ul (unique logfile) =     include ETL host name as part of log file name
        -ut (unique touchfile) =   include ETL host name as part of touch file name
        -st (suppress touchfile) = don't create touchfile at end of job
+       -uc (unique complete file) = include ETL host name as part of $DW_SA_TMP .complete file name
 	SHELL_EXE =                <shell executable>
 	Param[1-X] =               <parameters for shell executable>"
 }
@@ -152,6 +155,15 @@ then
    shift 1
 fi
 
+# Check for optional -uc (uniqe complete file)
+export SH_UNIQUE_COMP_FILE=0
+if [[ $SHELL_EXE = "-uc" ]]
+then
+   export SH_UNIQUE_COMP_FILE=1
+   export SHELL_EXE=$1
+   shift 1
+fi
+
 export PARAMS=""
 if [ $# -gt 0 ]
 then
@@ -220,7 +232,13 @@ if [[ -n $UC4_JOB_NAME ]]
 then
   export UC4_JOB_NAME_APPEND=".$UC4_JOB_NAME"
 fi
-HANDLER_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.handler.complete
+
+if [[ $SH_UNIQUE_COMP_FILE -eq 1 ]]
+then
+  HANDLER_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE.$servername.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.handler.complete
+else
+  HANDLER_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.handler.complete
+fi
 
 if [[ ! -f $HANDLER_COMP_FILE ]]
 then
