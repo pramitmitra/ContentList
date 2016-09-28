@@ -14,12 +14,19 @@
 # John Hackley     07/03/2014      Added options to include host name as part of log file name (for 
 #                                  uniqueness), include host name as part of touch file name (for
 #                                  uniqueness) and skip creation of touch file altogether
+# Kevin Oaks       09/22/2016      Added option to include host name as part of comp file (for uniqueness
+#                                  when using shared platform
 #
 #------------------------------------------------------------------------------------------------
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_ENV.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.complete
+if [[ $SH_UNIQUE_COMP_FILE -eq 1 ]]
+then
+   COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_ENV.$servername.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.complete
+else
+   COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_ENV.${SHELL_EXE_NAME%.ksh}${UC4_JOB_NAME_APPEND}.complete
+fi
 
 if [ ! -f $COMP_FILE ]
 then
