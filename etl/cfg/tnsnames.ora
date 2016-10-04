@@ -1446,10 +1446,15 @@ misc1=
         (Host = misc1.vip.ebay.com)
         (Port = 1521))
         (CONNECT_DATA = (SID=MISC1)))
-
  
+misc1_scndry=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = misc1secondary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=MISC1)))
 
- 
 
 read-user-sac =
 
