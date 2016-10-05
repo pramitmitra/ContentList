@@ -102,7 +102,7 @@ odbc_init_file: ${ODBCINI}
 ## appended (or in a 64-bit build, '_64').  If such a file
 ## does not exist, then it uses a file with the exact name given.
 
-odbc_data_source_name: sg_src_ace_utf8
+odbc_data_source_name: dwi_vivaldibe_utf8
 ## REQUIRED data source name (DSN) for the ODBC connection.
 ## This should be the name of a data source that you have 
 ## configured in your .odbc.ini file on UNIX, or via the
@@ -136,7 +136,7 @@ odbc_libdir: ${TERADATA_ODBC_LIB}
 ##   a change to the dbc file.  
 ##
 
-db_name: ace
+db_name: vivaldibe
 ## REQUIRED name of the Teradata database to which
 ## you want to connect.  This value should be the
 ## Teradata tdpid used by Teradata utilities to connect

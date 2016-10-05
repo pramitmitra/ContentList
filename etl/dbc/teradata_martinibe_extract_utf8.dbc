@@ -289,7 +289,7 @@ teradata_export_width: 0
 ##      tell you what the value of the tag should be.
 ##      If it is unable to do so, see option 1.
 
-## query_band_string: 
+query_band_string: ${QUERY_BAND_STRING}
 ## OPTIONAL.  Specifies query band info.
 ## If this tag has no value or isn't present, no query band
 ## statement will be issued by Ab Initio using this tag.

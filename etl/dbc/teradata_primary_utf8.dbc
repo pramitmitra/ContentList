@@ -255,11 +255,75 @@ teradata_export_width: 0
 ##      tell you what the value of the tag should be.
 ##      If it is unable to do so, see option 1.
 
+query_band_string: ${QUERY_BAND_STRING}
+## OPTIONAL.  Specifies query band info.
+## If this tag has no value or isn't present, no query band
+## statement will be issued by Ab Initio using this tag.
+## Otherwise, all database components using this dbc file
+## will issue a SET QUERY_BAND statement -- the tag value
+## should follow the Teradata requirements for
+## the quoted portion of the SET QUERY_BAND statement --
+## that is, the name-value pairs portion.  Optionally, you
+## may follow the quoted pairs by whitespace and the word UPDATE
+## to update the query band.  Updating requires TTU 13 or higher.
+## A special case: if the tag value is NONE, this
+## statement is issued: SET QUERY_BAND = NONE FOR SESSION;
+
+query_band_add_comp_info: false
+## OPTIONAL.  Indicates whether to add per-component query band info.
+## This tag is a boolean (which defaults to false if
+## unspecified).  If true, a database component using this
+## dbc file will add a component-specific value to the
+## query band by doing:
+##   SET QUERY_BAND = 'GRAPH_COMPONENT=<val>;' UPDATE FOR SESSION;
+## The <val> will be limited to no more than 50 characters,
+## and will be a string intended to help identify the
+## component in a graph doing a Teradata operation.
+## Do not set this tag to true unless you have TTU 13 or higher.
+##
+## Essentially, if this tag is false, then all components
+## using this dbc file will use the same query band value
+## (see the query_band_string tag description above).
+## If this tag is true, then each component will also
+## have a unique value for the GRAPH_COMPONENT name.
+
+query_band_string: ${QUERY_BAND_STRING}
+## OPTIONAL.  Specifies query band info.
+## If this tag has no value or isn't present, no query band
+## statement will be issued by Ab Initio using this tag.
+## Otherwise, all database components using this dbc file
+## will issue a SET QUERY_BAND statement -- the tag value
+## should follow the Teradata requirements for
+## the quoted portion of the SET QUERY_BAND statement --
+## that is, the name-value pairs portion.  Optionally, you
+## may follow the quoted pairs by whitespace and the word UPDATE
+## to update the query band.  Updating requires TTU 13 or higher.
+## A special case: if the tag value is NONE, this
+## statement is issued: SET QUERY_BAND = NONE FOR SESSION;
+
+query_band_add_comp_info: false
+## OPTIONAL.  Indicates whether to add per-component query band info.
+## This tag is a boolean (which defaults to false if
+## unspecified).  If true, a database component using this
+## dbc file will add a component-specific value to the
+## query band by doing:
+##   SET QUERY_BAND = 'GRAPH_COMPONENT=<val>;' UPDATE FOR SESSION;
+## The <val> will be limited to no more than 50 characters,
+## and will be a string intended to help identify the
+## component in a graph doing a Teradata operation.
+## Do not set this tag to true unless you have TTU 13 or higher.
+##
+## Essentially, if this tag is false, then all components
+## using this dbc file will use the same query band value
+## (see the query_band_string tag description above).
+## If this tag is true, then each component will also
+## have a unique value for the GRAPH_COMPONENT name.
+
 scan_for_odbc_escapes: false
 ## OPTIONAL. If true, the ODBC layer will scan your SQL
 ## statements for ODBC escape sequences.
 
-## session_startup_sql: 
+## session_startup_sql:
 ## When uncommented and set, the specified sql statement will be executed
 ## at the time that connection is made to the database. 
 ## The expected use for this tag is to execute statements
