@@ -15,6 +15,7 @@
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 # Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
 # Michael Weng     04/21/2016      Rename and refactor to support JOB_SUB_ENV for variable hadoop jobs
+# Michael Weng     09/09/2016      Enable use of batch account keytab
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -41,7 +42,7 @@ PARAM_LIST=`eval echo $PARAM_LIST`
 # Check if HD_USERNAME has been configured
 if [[ -z $HD_USERNAME ]]
 then
-  print "INFRA_ERROR: can't not deterine batch account the connect hadoop cluster"
+  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
   exit 4
 fi
 
@@ -78,7 +79,32 @@ then
   fi
 fi
 
-CURR_USER=`whoami`
+# Determine keytab and kerberos login
+set +e 
+myName=$(whoami)
+myPrincipal=""
+myKeytabFile=""
+
+if [[ $myName == @(sg_adm|dw_adm) ]]
+then
+  myPrincipal=sg_adm@APD.EBAY.COM
+  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
+  export HADOOP_PROXY_USER=$HD_USERNAME
+  print "Running ex job via user $HD_USERNAME"
+else
+  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
+  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
+fi
+
+if ! [ -f $myKeytabFile ]
+then
+  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
+  exit 4
+fi
+
+kinit -k -t $myKeytabFile $myPrincipal
+set -e
+
 
 ################################################################################
 # Function to submit hive job. Parameter: hive, tez, beeline, ......
@@ -123,7 +149,7 @@ function run_hive_job
   # hive sql through hive cli
   if [[ $HIVE_JOB == hive ]]
   then
-    if [[ $CURR_USER == $HD_USERNAME ]]
+    if ! [[ $myName == @(sg_adm|dw_adm) ]]
     then
       $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
@@ -139,7 +165,7 @@ function run_hive_job
       HIVE_CLI_JAR=`ls $HIVE_HOME/lib/hive-cli-*.jar`
 
       exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
-                   DataplatformRunJar sg_adm ~dw_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
+                   DataplatformRunJar sg_adm ~/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
                    $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
                    --hiveconf mapred.job.queue.name=$HD_QUEUE \
                    --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
@@ -197,11 +223,6 @@ function run_hadoop_jar
   then
     set +o braceexpand
     set +o glob
-  fi
-
-  if [[ $CURR_USER != $HD_USERNAME ]]
-  then
-    export HADOOP_PROXY_USER=$HD_USERNAME
   fi
 
   CMD_STR="$HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \

@@ -20,7 +20,8 @@
 # Jiankang Liu     01/06/2015      Deduplicate the complete file number count
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 # Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
-# Michael Weng     /4/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
+# Michael Weng     04/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
+# Michael Weng     09/09/2016      Enable use of batch account keytab
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -40,13 +41,37 @@ export UOW_FROM=${10:-""}
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
 
+# Check if HD_USERNAME has been configured
+if [[ -z $HD_USERNAME ]]
+then
+  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
+  exit 4
+fi
+
+# Determine keytab and kerberos login
 set +e 
 myName=$(whoami)
+myPrincipal=""
+myKeytabFile=""
+
 if [[ $myName == @(sg_adm|dw_adm) ]]
 then
-  myName=sg_adm
-  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+  myPrincipal=sg_adm@APD.EBAY.COM
+  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
+  export HADOOP_PROXY_USER=$HD_USERNAME
+  print "Running ex job via user $HD_USERNAME"
+else
+  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
+  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
 fi
+
+if ! [ -f $myKeytabFile ]
+then
+  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
+  exit 4
+fi
+
+kinit -k -t $myKeytabFile $myPrincipal
 set -e
 
 
@@ -134,7 +159,7 @@ export PATH=$JAVA_HOME/bin:$PATH:$HADOOP_HOME/bin
 CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
 CLASSPATH=$CLASSPATH:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
 Dataplatform_SEQ_FILE_JAR=$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-export HADOOP_COMMAND="$JAVA_HOME/bin/java -cp $CLASSPATH DataplatformRunJar sg_adm ~sg_adm/.keytabs/apd.sg_adm.keytab $HD_USERNAME"
+
 dwi_assignTagValue -p HD_SEQUENCE_FILE -t HD_SEQUENCE_FILE -f $ETL_CFG_FILE -s N -d 0
 dwi_assignTagValue -p HD_FILE_FORMAT -t HD_FILE_FORMAT -f $ETL_CFG_FILE -s N -d "F"
 
@@ -180,12 +205,6 @@ FILE_ID=0
 > $DATA_LIS_FILE
 
 
-if [[ $myName != $HD_USERNAME ]]
-then
-    export HADOOP_PROXY_USER=$HD_USERNAME
-    print "Running ex job via user $HD_USERNAME"
-fi
-
 #$HADOOP_HOME/bin/hadoop  fs -ls $HDFS_URL$HDFS_PATH/$SOURCE_FILE    > /dev/null
 for i in $(seq 1 3)
 do
@@ -207,12 +226,8 @@ do
   if [[ $i != 3 ]]; then
     set +e
     sleep 10
-    kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+    kinit -k -t $myKeytabFile $myPrincipal
     set -e
-    if [[ $myName != $HD_USERNAME ]]
-    then
-        export HADOOP_PROXY_USER=$HD_USERNAME
-    fi
     continue
   fi
 done
