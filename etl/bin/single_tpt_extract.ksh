@@ -18,7 +18,7 @@
 # 2013-08-21   1.3    George Xiong                  Netstat on Redhat 
 # 2013-10-08   1.4    Ryan Wong                     Redhat changes
 # 2016-04-19   1.5    Ryan Wong                     Passing UOW_FROM and UOW_TO for SQL variables
-#
+# 2016-09-20   1.6    Ryan Wong                     Fixing queryband statement
 #############################################################################################################
 
 ETL_ID=$1
@@ -126,11 +126,8 @@ fi
 # Check for query band
 eval set -A myqb $(grep TPT_EXTRACT_QUERY_BAND $ETL_CFG_FILE)
 export QUERY_BAND=${myqb[1]:-}
-export QUERY_BAND_STRING="UTILITYNAME=TPTEXP;${QUERY_BAND_STRING%% *}$QUERY_BAND"
-if [[ "X$QUERY_BAND" != "X" ]]
-then
-  TPT_ARG="$TPT_ARG -QUERY_BAND \"$QUERY_BAND_STRING\""
-fi
+export QUERY_BAND_STRING="UTILITYNAME=TPTEXP;${QUERY_BAND_STRING%% UPDATE}$QUERY_BAND"
+TPT_ARG="$TPT_ARG -QUERY_BAND \"$QUERY_BAND_STRING\""
 
 # Pull db_name from dbc file
 assignTagValue DB_NAME "^db_name" $DW_DBC/$DBC_FILE W ""

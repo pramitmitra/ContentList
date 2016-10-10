@@ -8,6 +8,10 @@ DWI_fetch_pw () {
 # Date           Ver#   Modified By(Name)            Change and Reason for Change
 # ------------   -----  ---------------------------  ------------------------------
 # Sep 15, 2015   1      John Hackley                 New script
+# Sep 21, 2016   1.1    Ryan Wong                    Add generic use case for any password type that follows logon pattern
+#                                                      <SUBJECT_AREA>.<DWI_INSTANCE_ID>.<DWI_PASSWD_TYPE>.logon
+# Sep 21, 2016   1.2    John Hackley                 Enhanced to support different passwords for different dual-load
+#                                                    targets via new TD#_DBC_LOGON_FILE_ID tags in the .cfg file
 #
 
 
@@ -18,7 +22,7 @@ then
   print "Usage:  DWI_fetch_pw <ETL_ID> <PASSWD_TYPE> [<INSTANCE_ID>]"
   print ""
   print "	Where <PASSWD_TYPE> is one of teradata, oracle, scp, mysql, mssql, odbc or sft"
-  print "          and <INSTANCE_ID> is optional and identifies a particular Oracle/MySQL/SQLServer instance, e.g., halfcaty"
+  print "   and <INSTANCE_ID> is optional and identifies a particular Oracle/MySQL/SQLServer instance, e.g., halfcaty"
   print ""
   return 9
 fi
@@ -29,6 +33,36 @@ DWI_INSTANCE_ID=${3:-"none"}
 
 SUBJECT_AREA=${ETL_ID%%.*}
 
+if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+then
+  export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg 
+else
+  export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+fi
+
+# print "DWI_fetch_pw called for $ETL_ID $DWI_PASSWD_TYPE $DWI_INSTANCE_ID $JOB_ENV"
+
+# Check for a tag like TD1_DBC_LOGON_FILE_ID in the .cfg file, which enables different passwords for different dual-load targets
+if [[ -n $JOB_ENV ]]
+then
+  JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]")
+
+  set +e
+  grep "^${JOB_ENV_UPPER}_DBC_LOGON_FILE_ID\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT
+  grep_rcode=$?
+  set -e
+
+  if [ $grep_rcode != 0 ]
+  then
+    DBC_LOGON_FILE_ID=none
+  else
+    DBC_LOGON_FILE_ID=$VALUE
+  fi
+
+else
+  DBC_LOGON_FILE_ID=none
+fi
+
 
 # Determine if the third input parameter is an integer or not
 typeset -i DWI_ISNUMBER
@@ -38,21 +72,31 @@ case $DWI_INSTANCE_ID in
    (*)           DWI_ISNUMBER=1;;
 esac
 
-print " " | mailx -s "DWI_fetch_pw called on $servername:  $ETL_ID; $DWI_PASSWD_TYPE; $DWI_INSTANCE_ID; $UC4_JOB_NAME"  "john.hackley@ebay.com"
-
 case $DWI_PASSWD_TYPE in
 
   teradata)  
-    if [[ $DWI_ISNUMBER ]]
+    if [ $DWI_ISNUMBER == 1 ]
     then
-      TD_LOGON_FILE_ID=$DWI_INSTANCE_ID
+      LOGON_FILE_ID=$DWI_INSTANCE_ID
     else
-      if [[ -n $ETL_ID ]]
+
+      set +e
+      grep "^TD_LOGON_FILE_ID\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT
+      grep_rcode=$?
+      set -e
+
+      if [ $grep_rcode != 0 ]
       then
-        export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
-        dwi_assignTagValue -p TD_LOGON_FILE_ID -t TD_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
-      else
         TD_LOGON_FILE_ID=0
+      else
+        TD_LOGON_FILE_ID=$VALUE
+      fi
+
+      if [ $DBC_LOGON_FILE_ID == none ]
+      then
+        LOGON_FILE_ID=$TD_LOGON_FILE_ID
+      else
+        LOGON_FILE_ID=$DBC_LOGON_FILE_ID
       fi
     fi
 
@@ -60,17 +104,17 @@ case $DWI_PASSWD_TYPE in
     then
 ###   export TD_LOGONFILE=$HOME/.tdlogon
 ###   parseLogonFile $TD_LOGONFILE
-      print " " | mailx -s "Using deprecated credential file ($HOME/.tdlogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+      print "happy birthday" | mailx -s "Using deprecated credential file ($HOME/.tdlogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
       print "Passwords are no longer allowed in $HOME/.tdlogon; exiting"
       return 9
 
-    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon.gpg ]
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.td.logon.gpg ]
     then
-      gpg -d $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon.gpg | read TD_USERNAME TD_PASSWORD DWI_FILLER
+      gpg -d $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.td.logon.gpg | read TD_USERNAME TD_PASSWORD DWI_FILLER
 
-    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon ]
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.td.logon ]
     then
-      read TD_USERNAME TD_PASSWORD DWI_FILLER <  $DW_LOGINS/$SUBJECT_AREA.$TD_LOGON_FILE_ID.td.logon
+      read TD_USERNAME TD_PASSWORD DWI_FILLER <  $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.td.logon
 
     elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.td.logon.gpg ]
     then
@@ -84,7 +128,7 @@ case $DWI_PASSWD_TYPE in
     then
 ###   LOGINFO=$(<$DW_LOGINS/${SUBJECT_AREA})
 ###   parseTDLogonString "$LOGINFO"
-      print " " | mailx -s "Using deprecated credential file ($DW_LOGINS/$SUBJECT_AREA): $ETL_ID on $servername"  "john.hackley@ebay.com"
+      print "happy birthday" | mailx -s "Using deprecated credential file ($DW_LOGINS/$SUBJECT_AREA): $ETL_ID on $servername"  "john.hackley@ebay.com"
       print "Old format for Teradata credential file ($DW_LOGINS/$SUBJECT_AREA) is no longer supported; exiting"
       return 9
 
@@ -279,7 +323,7 @@ case $DWI_PASSWD_TYPE in
     then
 
       set +e
-      gpg -d $DW_LOGINS/odbc_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ODBC_USER ODBC_PASS DWI_FILLER
+      gpg -d $DW_LOGINS/odbc_logins.dat.gpg | grep "^$DWI_INSTANCE_ID\>" | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
       rcode=$?
       set -e
 
@@ -294,7 +338,7 @@ case $DWI_PASSWD_TYPE in
     else
 
       set +e
-      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/odbc_logins.dat | read DWI_INSTANCE_ID_MATCH ODBC_USER ODBC_PASS DWI_FILLER
+      grep "^$DWI_INSTANCE_ID\>" $DW_LOGINS/odbc_logins.dat | read DWI_INSTANCE_ID_MATCH ODBC_USERNAME ODBC_PASSWORD DWI_FILLER
       rcode=$?
       set -e
 
@@ -312,40 +356,52 @@ case $DWI_PASSWD_TYPE in
   mysql)
 # Define MySQL logon info location.
 
-  if [[ $DWI_ISNUMBER ]]
+  if [ $DWI_ISNUMBER == 1 ]
   then
-    MYSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
+    LOGON_FILE_ID=$DWI_INSTANCE_ID
   else
-    if [[ -n $ETL_ID ]]
+
+    set +e
+    grep "^MYSQL_LOGON_FILE_ID\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT
+    grep_rcode=$?
+    set -e
+
+    if [ $grep_rcode != 0 ]
     then
-      export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
-      dwi_assignTagValue -p MYSQL_LOGON_FILE_ID -t MYSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
-    else
       MYSQL_LOGON_FILE_ID=0
+    else
+      MYSQL_LOGON_FILE_ID=$VALUE
+    fi
+
+    if [ $DBC_LOGON_FILE_ID == none ]
+    then
+      LOGON_FILE_ID=$MYSQL_LOGON_FILE_ID
+    else
+      LOGON_FILE_ID=$DBC_LOGON_FILE_ID
     fi
   fi
 
   if [ -f $HOME/.mysqllogon.gpg ]
   then
 ### gpg -d $HOME/.mysqllogon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
-    print " " | mailx -s "Using deprecated credential file ($HOME/.mysqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "happy birthday" | mailx -s "Using deprecated credential file ($HOME/.mysqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
     print "Passwords are no longer allowed in $HOME/.mysqllogon.gpg; exiting"
     return 9
 
   elif [ -f $HOME/.mysqllogon ]
   then
 ### read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $HOME/.mysqllogon
-    print " " | mailx -s "Using deprecated credential file ($HOME/.mysqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "happy birthday" | mailx -s "Using deprecated credential file ($HOME/.mysqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
     print "Passwords are no longer allowed in $HOME/.mysqllogon; exiting"
     return 9
 
-  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon.gpg ]
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mysql.logon.gpg ]
   then
-    gpg -d $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mysql.logon.gpg | read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER
 
-  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon ]
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mysql.logon ]
   then
-    read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$MYSQL_LOGON_FILE_ID.mysql.logon
+    read MYSQL_USERNAME MYSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mysql.logon
 
   elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mysql.logon.gpg ]
   then
@@ -399,40 +455,52 @@ case $DWI_PASSWD_TYPE in
   mssql)
 # Define MSSQL logon info location.
 
-  if [[ $DWI_ISNUMBER ]]
+  if [ $DWI_ISNUMBER == 1 ]
   then
-    MSSQL_LOGON_FILE_ID=$DWI_INSTANCE_ID
+    LOGON_FILE_ID=$DWI_INSTANCE_ID
   else
-    if [[ -n $ETL_ID ]]
+
+    set +e
+    grep "^MSSQL_LOGON_FILE_ID\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT
+    grep_rcode=$?
+    set -e
+
+    if [ $grep_rcode != 0 ]
     then
-      export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
-      dwi_assignTagValue -p MSSQL_LOGON_FILE_ID -t MSSQL_LOGON_FILE_ID -f $ETL_CFG_FILE -s N -d 0
-    else
       MSSQL_LOGON_FILE_ID=0
+    else
+      MSSQL_LOGON_FILE_ID=$VALUE
+    fi
+
+    if [ $DBC_LOGON_FILE_ID == none ]
+    then
+      LOGON_FILE_ID=$MSSQL_LOGON_FILE_ID
+    else
+      LOGON_FILE_ID=$DBC_LOGON_FILE_ID
     fi
   fi
 
   if [ -f $HOME/.mssqllogon.gpg ]
   then
 ### gpg -d $HOME/.mssqllogon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
-    print " " | mailx -s "Using deprecated credential file ($HOME/.mssqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "happy birthday" | mailx -s "Using deprecated credential file ($HOME/.mssqllogon.gpg): $ETL_ID on $servername"  "john.hackley@ebay.com"
     print "Passwords are no longer allowed in $HOME/.mssqllogon.gpg; exiting"
     return 9
 
   elif [ -f $HOME/.mssqllogon ]
   then
 ### read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $HOME/.mssqllogon
-    print " " | mailx -s "Using deprecated credential file ($HOME/.mssqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
+    print "happy birthday" | mailx -s "Using deprecated credential file ($HOME/.mssqllogon): $ETL_ID on $servername"  "john.hackley@ebay.com"
     print "Passwords are no longer allowed in $HOME/.mssqllogon; exiting"
     return 9
 
-  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon.gpg ]
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mssql.logon.gpg ]
   then
-    gpg -d $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
+    gpg -d $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mssql.logon.gpg | read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER
 
-  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon ]
+  elif [ -f $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mssql.logon ]
   then
-    read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$MSSQL_LOGON_FILE_ID.mssql.logon
+    read MSSQL_USERNAME MSSQL_PASSWORD DWI_FILLER < $DW_LOGINS/$SUBJECT_AREA.$LOGON_FILE_ID.mssql.logon
 
   elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.mssql.logon.gpg ]
   then
@@ -484,8 +552,48 @@ case $DWI_PASSWD_TYPE in
 
 
   *) 
-    print "Improper call to DWI_fetch_pw; password type is invalid or missing:  $DWI_PASSWD_TYPE"
-    return 9
+    if [ $DWI_ISNUMBER == 1 ]
+    then
+      GENERIC_LOGON_FILE_ID=$DWI_INSTANCE_ID
+    else
+      if [[ -n $ETL_ID ]]
+      then
+        if [[ ${DW_CFG%/$SUBJECT_AREA} != $DW_CFG ]]
+        then
+          export ETL_CFG_FILE=$DW_CFG/$ETL_ID.cfg
+        else
+          export ETL_CFG_FILE=$DW_CFG/$SUBJECT_AREA/$ETL_ID.cfg
+        fi
+
+        set +e
+        grep "^GENERIC_LOGON_FILE_ID\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT
+        grep_rcode=$?
+        set -e
+
+        if [ $grep_rcode != 0 ]
+        then
+          GENERIC_LOGON_FILE_ID=0
+        else
+          GENERIC_LOGON_FILE_ID=$VALUE
+        fi
+
+      else
+        GENERIC_LOGON_FILE_ID=0
+      fi
+    fi
+
+    if [ -f $DW_LOGINS/$SUBJECT_AREA.$GENERIC_LOGON_FILE_ID.$DWI_PASSWD_TYPE.logon.gpg ]
+    then
+      gpg -d $DW_LOGINS/$SUBJECT_AREA.$GENERIC_LOGON_FILE_ID.$DWI_PASSWD_TYPE.logon.gpg | read GENERIC_USERNAME GENERIC_PASSWORD DWI_FILLER
+
+    elif [ -f $DW_LOGINS/$SUBJECT_AREA.$GENERIC_LOGON_FILE_ID.$DWI_PASSWD_TYPE.logon ]
+    then
+      read GENERIC_USERNAME GENERIC_PASSWORD DWI_FILLER <  $DW_LOGINS/$SUBJECT_AREA.$GENERIC_LOGON_FILE_ID.$DWI_PASSWD_TYPE.logon
+
+    else
+      print "Improper call to DWI_fetch_pw; password type is invalid or missing:  $DWI_PASSWD_TYPE"
+      return 9
+    fi
   ;;
 
 esac

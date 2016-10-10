@@ -17,6 +17,7 @@
 # 2013-07-22   1.1    George Xiong                 Add CLOB Length condition
 # 2013-10-04   1.2    Ryan Wong                    Redhat changes
 # 2013-11-05   1.3    Ryan Wong                    Syncing grep changes on Redhat development
+# 2015-08-25   1.4    John Hackley                 ETL password encryption changes
 #############################################################################################################
 
 ETL_ID=$1
@@ -209,18 +210,16 @@ else
 	exit 4
 fi
 
+# Retrieve and decrypt password for $TNS_NAME
+DWI_fetch_pw $ETL_ID oracle $TNS_NAME
+DWIrc=$?
 
-set +e
-grep -w "$TNS_NAME\>" $DW_LOGINS/ora_logins.dat | read TNS_NAME_L ORA_USERNAME ORA_PASSWORD
-rcode=$?
-set -e
-
-if [ $rcode = 0 ]
+if [[ -n $ORA_PASSWORD ]]
 then
 	export $ORA_USERNAME $ORA_PASSWORD
 else
-	print "${TNS_NAME} not exists in oracle_logins.dat"
-	exit 4
+	print "Unable to retrieve Oracle password, exiting; ETL_ID=$ETL_ID; TNS_NAME=$TNS_NAME"
+	exit $DWIrc
 fi	 
 
 

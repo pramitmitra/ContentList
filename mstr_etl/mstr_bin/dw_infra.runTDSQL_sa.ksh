@@ -19,6 +19,7 @@
 #                                                  to allow TD Login override via etlenv.setup
 # 2013-06-18   1.5    George Xiong		   fix the issue, when queryband tag value contain "/", cause the job fail
 # 2013-10-04   1.6    Ryan Wong                    Redhat changes
+# 2016-09-16   1.7    Ryan Wong                    Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 #
 ##############################################################################################################
 
@@ -115,7 +116,9 @@ export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
 export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
-export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID}"
+export UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE:-"NA"}
+export UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY:-"NA"}
+export QB_STR_UC4="UC4_JOB_NAME=${UC4_JOB_NAME};UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME};UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME};UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID};UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE};UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY}"
 
 
 # Adding QUERY_BAND RM PART
