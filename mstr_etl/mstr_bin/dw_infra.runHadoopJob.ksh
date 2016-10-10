@@ -15,6 +15,7 @@
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 # Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
 # Michael Weng     04/21/2016      Rename and refactor to support JOB_SUB_ENV for variable hadoop jobs
+# Michael Weng     09/09/2016      Enable use of batch account keytab
 # Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 #------------------------------------------------------------------------------------------------
 
