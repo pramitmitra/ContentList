@@ -18,6 +18,7 @@
 # Ryan Wong        11/21/2013      Update hd login method, consolidate to use dw_adm
 # George Xiong     09/30/2014      Modifications by George
 # Michael Weng     04/21/2016      Retrieve HDFS_URL based on JOB_ENV if not defined
+# Michael Weng     09/09/2016      Enable use of batch account keytab
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -72,13 +73,37 @@ export JOB_TYPE_ID="ld"
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
 
+# Check if HD_USERNAME has been configured
+if [[ -z $HD_USERNAME ]]
+then
+  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
+  exit 4
+fi
+
+# Determine keytab and kerberos login
 set +e
 myName=$(whoami)
+myPrincipal=""
+myKeytabFile=""
+
 if [[ $myName == @(sg_adm|dw_adm) ]]
 then
-  myName=sg_adm
-  kinit -k -t ~/.keytabs/apd.$myName.keytab $myName@APD.EBAY.COM
+  myPrincipal=sg_adm@APD.EBAY.COM
+  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
+  export HADOOP_PROXY_USER=$HD_USERNAME
+  print "Running load job via $HD_USERNAME "
+else
+  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
+  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
 fi
+
+if ! [ -f $myKeytabFile ]
+then
+  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
+  exit 4
+fi
+
+kinit -k -t $myKeytabFile $myPrincipal
 set -e
 
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W ""
@@ -160,15 +185,6 @@ CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
 CLASSPATH=$CLASSPATH:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
 
 assignTagValue USE_DATACONVERTER_JAR USE_DATACONVERTER_JAR $ETL_CFG_FILE W 0 
-
-
-if [[ $myName != $HD_USERNAME ]]
-then
-    export HADOOP_PROXY_USER=$HD_USERNAME
-    print "Running load job via $HD_USERNAME "
-fi
-
-
 
 
 if [ $USE_DATACONVERTER_JAR = 0 ]
