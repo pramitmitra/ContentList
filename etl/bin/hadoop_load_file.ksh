@@ -16,6 +16,7 @@
 # Ryan Wong        10/04/2013      Redhat changes
 # Jiankang Liu     05/13/2015      Remove the grepCompFile extra regex 
 # Michael Weng     06/20/2016      Remove invalid code, add hadoop_logins.dat related change
+# Michael Weng     10/12/2016      Add hadoop authentication
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -32,6 +33,10 @@ export JOB_TYPE_ID="hfld"
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
+
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
+
 
 export TABLE_LIS_FILE=$DW_CFG/$ETL_ID.targets.lis
 assignTagValue OUT_DIR OUT_DIR $ETL_CFG_FILE

@@ -376,6 +376,7 @@ then
   CLUSTER=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
   . $DW_MASTER_CFG/.${CLUSTER}_env.sh
 fi
+export HADOOP_AUTHENTICATED=0
 #set -eu
 
 # Specify which job environment, if any, where automatic deletion from partitioned Work tables should be skipped

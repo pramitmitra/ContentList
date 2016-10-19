@@ -19,6 +19,7 @@
 # George Xiong     09/30/2014      Modifications by George
 # Michael Weng     04/21/2016      Retrieve HDFS_URL based on JOB_ENV if not defined
 # Michael Weng     09/09/2016      Enable use of batch account keytab
+# Michael Weng     10/12/2016      Add hadoop authentication
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -72,39 +73,9 @@ export JOB_TYPE_ID="ld"
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
 
-# Check if HD_USERNAME has been configured
-if [[ -z $HD_USERNAME ]]
-then
-  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
-  exit 4
-fi
-
-# Determine keytab and kerberos login
-set +e
-myName=$(whoami)
-myPrincipal=""
-myKeytabFile=""
-
-if [[ $myName == @(sg_adm|dw_adm) ]]
-then
-  myPrincipal=sg_adm@APD.EBAY.COM
-  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
-  export HADOOP_PROXY_USER=$HD_USERNAME
-  print "Running load job via $HD_USERNAME "
-else
-  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
-  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
-fi
-
-if ! [ -f $myKeytabFile ]
-then
-  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
-  exit 4
-fi
-
-kinit -k -t $myKeytabFile $myPrincipal
-set -e
 
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W ""
 
@@ -148,11 +119,6 @@ assignTagValue EXTRACT_PROCESS_TYPE EXTRACT_PROCESS_TYPE $ETL_CFG_FILE W "D"
 assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W "0"
 assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ".gz"
 
-if [[ -z $HD_USERNAME ]]
-  then
-    print "INFRA_ERROR: can't not deterine batch account the connect hadoop cluster"
-    exit 4
-fi
 
 export MULTI_HDP_COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.multi_hdp_ld.$HOST_ID$UOW_APPEND.complete
 if [ ! -f $MULTI_HDP_COMP_FILE ]

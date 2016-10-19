@@ -17,6 +17,7 @@
 # Michael Weng     04/21/2016      Rename and refactor to support JOB_SUB_ENV for variable hadoop jobs
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
+# Michael Weng     10/12/2016      Add hadoop authentication
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -40,12 +41,9 @@ PARAM_LIST=`eval echo $PARAM_LIST`
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-# Check if HD_USERNAME has been configured
-if [[ -z $HD_USERNAME ]]
-then
-  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
-  exit 4
-fi
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
+
 
 export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
@@ -81,33 +79,6 @@ then
     set -o glob
   fi
 fi
-
-# Determine keytab and kerberos login
-set +e 
-myName=$(whoami)
-myPrincipal=""
-myKeytabFile=""
-
-if [[ $myName == @(sg_adm|dw_adm) ]]
-then
-  myPrincipal=sg_adm@APD.EBAY.COM
-  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
-  export HADOOP_PROXY_USER=$HD_USERNAME
-  print "Running ex job via user $HD_USERNAME"
-else
-  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
-  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
-fi
-
-if ! [ -f $myKeytabFile ]
-then
-  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
-  exit 4
-fi
-
-kinit -k -t $myKeytabFile $myPrincipal
-set -e
-
 
 ################################################################################
 # Function to submit hive job. Parameter: hive, tez, beeline, ......
@@ -152,7 +123,7 @@ function run_hive_job
   # hive sql through hive cli
   if [[ $HIVE_JOB == hive ]]
   then
-    if ! [[ $myName == @(sg_adm|dw_adm) ]]
+    if ! [[ $(whoami) == @(sg_adm|dw_adm) ]]
     then
       $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
