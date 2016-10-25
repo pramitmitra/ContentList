@@ -15,6 +15,7 @@
 # Jiankang Liu     04/29/2015      Exit with the real job code to avoid override
 # Jiankang Liu     06/11/2015      Fix the escape back slash bug of PARAM_LIST
 # Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
+# Michael Weng     10/12/2016      Add hadoop authentication
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -32,12 +33,9 @@ PARAM_LIST=`eval echo $PARAM_LIST`
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-# Check if HD_USERNAME has been configured
-if [[ -z $HD_USERNAME ]]
-  then
-    print "INFRA_ERROR: can't not deterine batch account the connect hadoop cluster"
-    exit 4
-fi
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
+
 
 export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}

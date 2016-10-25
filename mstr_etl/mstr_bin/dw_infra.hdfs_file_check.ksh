@@ -16,7 +16,8 @@
 # Date          Ver#   Modified By(Name)   Change and Reason for Change
 #-----------    -----  ------------------  ----------------------------------------
 # 2015-10-04    1.0    Michael Weng        Initial version
-# 2015-10-17    1.0    Michael Weng        Create a different commit due to rollout failed.
+# 2015-10-17    1.1    Michael Weng        Create a different commit due to rollout failed.
+# 2016-10-12    1.2    Michael Weng        Add hadoop authentication
 ###################################################################################
 
 typeset -fu usage
@@ -77,6 +78,9 @@ fi
 
 # Setup env based on JOB_ENV
 . /dw/etl/mstr_cfg/etlenv.setup
+
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
 
 # Print header
 export DWI_CALLED=$0

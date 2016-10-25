@@ -22,6 +22,7 @@
 # Jiankang Liu     07/21/2015      Retry 3 times to get Hadoop file source list and safe failed
 # Michael Weng     04/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
 # Michael Weng     09/09/2016      Enable use of batch account keytab
+# Michael Weng     10/12/2016      Add hadoop authentication
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -41,38 +42,8 @@ export UOW_FROM=${10:-""}
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
 
-# Check if HD_USERNAME has been configured
-if [[ -z $HD_USERNAME ]]
-then
-  print "INFRA_ERROR: can't not determine batch account to hadoop cluster"
-  exit 4
-fi
-
-# Determine keytab and kerberos login
-set +e 
-myName=$(whoami)
-myPrincipal=""
-myKeytabFile=""
-
-if [[ $myName == @(sg_adm|dw_adm) ]]
-then
-  myPrincipal=sg_adm@APD.EBAY.COM
-  myKeytabFile=~/.keytabs/apd.sg_adm.keytab
-  export HADOOP_PROXY_USER=$HD_USERNAME
-  print "Running ex job via user $HD_USERNAME"
-else
-  myPrincipal=$HD_USERNAME@CORP.EBAY.COM
-  myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
-fi
-
-if ! [ -f $myKeytabFile ]
-then
-  print "INFRA_ERROR: missing keytab file: $myKeytabFile"
-  exit 4
-fi
-
-kinit -k -t $myKeytabFile $myPrincipal
-set -e
+# Login into hadoop
+. $DW_MASTER_CFG/hadoop.login
 
 
 export JOB_TYPE_ID="ex"
@@ -127,12 +98,6 @@ if [ $rcode != 0 ]
 then
   print "${0##*/}:  INFRA_ERROR, failure determining value for $HDP_CONN parameter from $DW_LOGINS/hadoop_logins.dat" >&2
   exit 4
-fi
-
-if [[ -z $HD_USERNAME ]]
-  then
-    print "INFRA_ERROR: can't not deterine batch account the connect hadoop cluster"
-    exit 4
 fi
 
 if [[ -z $HDP_CLUSTER ]]
@@ -226,7 +191,8 @@ do
   if [[ $i != 3 ]]; then
     set +e
     sleep 10
-    kinit -k -t $myKeytabFile $myPrincipal
+    export HADOOP_AUTHENTICATED=0
+    . $DW_MASTER_CFG/hadoop.login
     set -e
     continue
   fi
