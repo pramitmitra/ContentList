@@ -5430,3 +5430,194 @@ usrinv17=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv17slc.vip.ebay.co
 usrinv18=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv18slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV18)))
 usrinv19=(DESCRIPTION =(ADDRESS =(PROTOCOL = TCP)(Host = usrinv19slc.vip.ebay.com)(Port = 1521))(CONNECT_DATA = (SID=USRINV19)))
 
+Checkout00Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout10primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout10)))
+ 
+Checkout01Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout10primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout10)))
+ 
+Checkout02Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout11primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout11)))
+ 
+Checkout03Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout11primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout11)))
+ 
+Checkout04Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout12primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout12)))
+ 
+Checkout05Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout12primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout12)))
+ 
+Checkout06Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout13primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout13)))
+ 
+Checkout07Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout13primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout13)))
+ 
+Checkout08Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout14primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout14)))
+ 
+Checkout09Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout14primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout14)))
+ 
+Checkout10Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout15primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout15)))
+ 
+Checkout11Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout15primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout15)))
+ 
+Checkout12Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout16primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout16)))
+ 
+Checkout13Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout16primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout16)))
+ 
+Checkout14Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout17primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout17)))
+ 
+Checkout15Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout17primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout17)))
+ 
+Checkout16Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout18primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout18)))
+ 
+Checkout17Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout18primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout18)))
+ 
+Checkout18Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout19primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout19)))
+ 
+Checkout19Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout19primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout19)))
+ 
+Checkout20Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout20primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout20)))
+ 
+Checkout21Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout20primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout20)))
+ 
+Checkout22Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout21primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout21)))
+ 
+Checkout23Host=
+        (DESCRIPTION =
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = chkout21primary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID=chkout21)))
