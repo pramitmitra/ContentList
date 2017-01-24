@@ -18,6 +18,12 @@ do
     do
         mkdirifnotexist $(eval print $DIR)
     done < $DW_MASTER_CFG/dw_etl_sub_dirs_secure_dw_adm.lis
+
+    while read DIR
+    do
+        chmod g+s $(eval echo $DIR)
+    done < $DW_MASTER_CFG/dw_etl_sub_dirs_secure_dw_adm_sft.lis
+
 done < $DW_MASTER_CFG/dw_etl_job_env.lis
 
 ln -s $DW_HOME/cfg/tnsnames.ora $DW_HOME/cfg/$SUBJECT_AREA/tnsnames.ora
