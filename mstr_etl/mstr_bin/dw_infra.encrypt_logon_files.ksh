@@ -23,6 +23,7 @@
 # 2016-06-28  1.2    Ryan Wong                    Add symlink check (it is a regular file)
 # 2016-06-30  1.3    Ryan Wong                    Add exception for .hd.logon files
 # 2016-08-11  1.4    Ryan Wong                    Enhance tool to only work for dw_infra, dw_adm, or etl_* batch accounts
+# 2016-10-10  1.5    John Hackley                 Delete cleartext file after it's successfully encrypted
 #
 ####################################################################################################
 
@@ -186,7 +187,10 @@ do
     if [[ $RCODE -ne 0 ]]
     then
       print "FATAL ERROR:  Gpg return code is nonzero, $RCODE"
+      rm $DWI_OUTPUTFILE
       exit 8
+    else
+      rm $DWI_INPUTFILE
     fi
     print ""
   elif [[ "$DWI_WHOAMI" == "dw_infra" ]]
@@ -204,7 +208,10 @@ do
     if [[ $RCODE -ne 0 ]]
     then
       print "FATAL ERROR:  Gpg return code is nonzero, $RCODE"
+      sudo rm $DWI_OUTPUTFILE
       exit 8
+    else
+      sudo rm $DWI_INPUTFILE
     fi
     print ""
   else
