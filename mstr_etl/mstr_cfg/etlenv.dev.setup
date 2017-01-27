@@ -538,6 +538,9 @@ export ddmmblworkingDB=DDM_MBL_W
 export ddmubisojworkDB=DDM_UBI_SOJ_W
 export ddmubisojDB=DDM_UBI_SOJ_T
 
+# Added as per Jira ticket DINT-709 20170125
+export trfcDB=DDM_TRFC_T
+export trfcwrkDB=DDM_TRFC_W
 
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
