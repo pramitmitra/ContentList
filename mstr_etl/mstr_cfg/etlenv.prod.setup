@@ -530,6 +530,10 @@ export odsadDB=ebay_ad_t
 export odsadworkDB=ebay_ad_w
 export odsadreadDB=ebay_ad_v
 
+# Added as per Jira ticket DINT-709 20170131
+export trfcDB=DDM_TRFC_T
+export trfcwrkDB=DDM_TRFC_W
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment
