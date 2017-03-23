@@ -278,13 +278,13 @@ fi
 
 if [ -f $DW_LOGINS/$SUBJECT_AREA.$HD_LOGON_FILE_ID.hd.logon ]
 then
-        read HD_USERNAME HD_QUEUE <  $DW_LOGINS/$SUBJECT_AREA.$HD_LOGON_FILE_ID.hd.logon
+        read HD_USERNAME HD_QUEUE HD_DOMAIN <  $DW_LOGINS/$SUBJECT_AREA.$HD_LOGON_FILE_ID.hd.logon
 elif [ -f $DW_LOGINS/$SUBJECT_AREA.0.hd.logon ]
 then
-        read HD_USERNAME HD_QUEUE <  $DW_LOGINS/$SUBJECT_AREA.0.hd.logon
+        read HD_USERNAME HD_QUEUE HD_DOMAIN <  $DW_LOGINS/$SUBJECT_AREA.0.hd.logon
 fi
 
-export HD_USERNAME HD_QUEUE
+export HD_USERNAME HD_QUEUE HD_DOMAIN
 
 
 # Provides TNSNAMES style resolution for Teradata systems. Not yet widely used.
