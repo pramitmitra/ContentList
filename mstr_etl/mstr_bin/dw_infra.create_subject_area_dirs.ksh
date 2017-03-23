@@ -13,6 +13,7 @@
 # 2012-09-01   1.0    Kevin Oaks                    Ported to RedHat from original:
 #                                                    - now using /bin/ksh rather than /usr/bin/ksh
 #                                                    - converted echo statements to print
+# 2016-12-13   1.1    Ryan Wong                     Add group sticky for secure file transfer
 #
 ##############################################################################################################
 
@@ -34,6 +35,13 @@ do
     do
         mkdirifnotexist $(eval echo $DIR)
     done < $DW_MASTER_CFG/dw_etl_sub_dirs.lis
+
+    while read DIR
+    do
+        chmod 775 $(eval echo $DIR)
+        chmod g+s $(eval echo $DIR)
+    done < $DW_MASTER_CFG/dw_etl_sub_dirs_sft.lis
+
 done < $DW_MASTER_CFG/dw_etl_job_env.lis
 
 ln -s $DW_HOME/cfg/tnsnames.ora  $DW_HOME/cfg/$SUBJECT_AREA/tnsnames.ora
