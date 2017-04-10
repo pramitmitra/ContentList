@@ -5622,4 +5622,19 @@ Checkout23Host=
         (Port = 1521))
         (CONNECT_DATA = (SID=chkout21)))
  
- 
+gbpgwrptpd=
+  (DESCRIPTION=
+    (ADDRESS=
+      (PROTOCOL=TCP)
+      (HOST=gbpgwrpt.vip.ebay.com)
+      (PORT=1521))
+      (CONNECT_DATA=(SID=GBPGW)))
+
+GBSAS =
+        (DESCRIPTION=
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = gbsas.vip.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = GBSAS)))
+

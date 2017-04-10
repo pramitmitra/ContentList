@@ -2,6 +2,7 @@
 #
 # Ported to Redhat by koaks, 20120820
 # ETL password encryption added by jhackley, 20150825
+# Add SCP_PUSH_PORT cfg parameter to add port option for scp, 20170331
 
 ETL_ID=$1
 FILE_ID=$2
@@ -33,6 +34,20 @@ set -e
 if [ $rcode != 0 ]
 then
    export TRANSFER_PROCESS_TYPE=S
+fi
+
+set +e
+grep "^SCP_PUSH_PORT\>" $DW_CFG/$ETL_ID.cfg | read PARAM VALUE COMMENT
+rcode=$?
+set -e
+
+if [ $rcode != 0 ]
+then
+   print "${0##*/}: INFO, no value for SCP_PUSH_PORT parameter from $DW_CFG/$ETL_ID.cfg, defaulting to 22" >&2
+   SCP_PUSH_PORT=22
+else
+   print "${0##*/}: INFO, found SCP_PUSH_PORT parameter from $DW_CFG/$ETL_ID.cfg, value is $VALUE" >&2
+   SCP_PUSH_PORT=$VALUE
 fi
 
 set +e
@@ -82,7 +97,7 @@ then
       SCP_INCOMPLETE_SUFFIX=.$SCP_INCOMPLETE_SUFFIX
     fi
      
-    scp -v -B $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX >&2
+    scp -v -B -P $SCP_PUSH_PORT $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX >&2
 	 
     if [ ! -z "$SCP_INCOMPLETE_SUFFIX" ]
     then
@@ -106,7 +121,7 @@ then
 
 elif [ $TRANSFER_PROCESS_TYPE = F ] 
 then
-    scp -v -B $DW_SA_OUT/$SOURCE_FILE_TMP $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP >&2
+    scp -v -B -P $SCP_PUSH_PORT $DW_SA_OUT/$SOURCE_FILE_TMP $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP >&2
 
     print $FTP_URL | sed 's#[|:;>@/]# #g' | read dummy _ext_user _ext_pwd _ext_host _ext_path  
 

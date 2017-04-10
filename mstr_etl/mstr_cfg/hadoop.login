@@ -4,7 +4,7 @@
 # Description:  Login into hadoop using kerberos authentication
 # Developer:
 # Created on:
-# Location:     $DW_MASTER_BIN
+# Location:     $DW_MASTER_CFG
 # Logic:
 #
 # Revision History:
@@ -12,6 +12,7 @@
 # Name             Date            Description
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/13/2016      Initial Creation
+# Michael Weng     01/12/2017      Default Kerberos domain and exit on kinit failure
 #------------------------------------------------------------------------------------------------
 
 
@@ -30,14 +31,23 @@ then
   myName=$(whoami)
   myPrincipal=""
   myKeytabFile=""
+  myDomain=$HD_DOMAIN
+
+  if [[ -z $myDomain ]] || [[ X$myDomain == X ]]
+  then
+    myDomain=APD.EBAY.COM
+  fi
 
   if [[ $myName == @(sg_adm|dw_adm) ]]
   then
-    myPrincipal=sg_adm@APD.EBAY.COM
+    myPrincipal=sg_adm@$myDomain
     myKeytabFile=~/.keytabs/apd.sg_adm.keytab
-    export HADOOP_PROXY_USER=$HD_USERNAME
+    if ! [[ $HD_USERNAME == sg_adm ]]
+    then
+      export HADOOP_PROXY_USER=$HD_USERNAME
+    fi
   else
-    myPrincipal=$HD_USERNAME@CORP.EBAY.COM
+    myPrincipal=$HD_USERNAME@$myDomain
     myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
   fi
 
@@ -48,6 +58,14 @@ then
   fi
 
   kinit -k -t $myKeytabFile $myPrincipal
+
+  if [[ $? == 0 ]]
+  then
+    print "INFRA_INFO: successfully login as $myPrincipal using keytab file: $myKeytabFile"
+  else
+    print "INFRA_ERROR: login failed for $myPrincipal using keytab file: $myKeytabFile"
+    exit 4
+  fi
 
   HADOOP_AUTHENTICATED=1
   export HADOOP_AUTHENTICATED
