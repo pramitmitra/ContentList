@@ -8,7 +8,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
-#
+# Michael Weng     02/09/2017      Enable SSL Web Proxy Authentication
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -77,7 +77,7 @@ TARGET_FILE_TMP=`print $(eval print $TARGET_FILE)`
 
 cd $IN_DIR/
 set +e
-wget --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP "$URL/$SOURCE_FILE_TMP" >&2
+$DW_ETL_WGET --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP "$URL/$SOURCE_FILE_TMP" >&2
 rcode=$?
 set -e
 
