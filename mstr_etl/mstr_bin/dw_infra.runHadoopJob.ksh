@@ -18,6 +18,7 @@
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 # Michael Weng     10/12/2016      Add hadoop authentication
+# Pramit Mitra     04/17/2017      Commenting out proxy hive user configuration
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -123,28 +124,28 @@ function run_hive_job
   # hive sql through hive cli
   if [[ $HIVE_JOB == hive ]]
   then
-    if ! [[ $(whoami) == @(sg_adm|dw_adm) ]]
-    then
+#    if ! [[ $(whoami) == @(sg_adm|dw_adm) ]]
+#    then
       $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                           -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
-    else
-      CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
-      CLASSPATH=${CLASSPATH}:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
-      for jar_file in $HIVE_HOME/lib/*.jar
-      do
-        CLASSPATH=$CLASSPATH:$jar_file
-      done
-      CLASSPATH=$CLASSPATH:$HIVE_HOME/conf
-      HIVE_CLI_JAR=`ls $HIVE_HOME/lib/hive-cli-*.jar`
+#    else
+#      CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
+#      CLASSPATH=${CLASSPATH}:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
+#      for jar_file in $HIVE_HOME/lib/*.jar
+#      do
+#        CLASSPATH=$CLASSPATH:$jar_file
+#      done
+#      CLASSPATH=$CLASSPATH:$HIVE_HOME/conf
+#      HIVE_CLI_JAR=`ls $HIVE_HOME/lib/hive-cli-*.jar`
 
-      exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
-                   DataplatformRunJar sg_adm ~/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
-                   $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
-                   --hiveconf mapred.job.queue.name=$HD_QUEUE \
-                   --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                   -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
-    fi
+#      exec "$JAVA" -Dproc_jar $JAVA_CMD_OPT -classpath "$CLASSPATH" \
+#                   DataplatformRunJar sg_adm ~/.keytabs/apd.sg_adm.keytab $HD_USERNAME \
+#                   $HIVE_CLI_JAR org.apache.hadoop.hive.cli.CliDriver \
+#                   --hiveconf mapred.job.queue.name=$HD_QUEUE \
+#                   --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
+#                   -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
+#    fi
     retcode=$?
 
 #  # hive sql through tez execution engine
