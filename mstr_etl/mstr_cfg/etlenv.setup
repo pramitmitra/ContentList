@@ -379,6 +379,26 @@ fi
 export HADOOP_AUTHENTICATED=0
 #set -eu
 
+# Certificate, private key, keystore and password used for web proxy
+export DW_ETL_CRT=$DW_KEYS/$DWI_WHOAMI/cer/$DWI_WHOAMI.cer
+export DW_ETL_KEY=$DW_KEYS/$DWI_WHOAMI/key/$DWI_WHOAMI.key
+export DW_ETL_KEYSTORE=$DW_KEYS/$DWI_WHOAMI/cer/$DWI_WHOAMI.keystore.jks
+export DW_ETL_TRUSTSTORE=$DW_KEYS/$DWI_WHOAMI/cer/$DWI_WHOAMI.truststore.jks
+export DW_ETL_CA_BUNDLE=$DW_KEYS/$DWI_WHOAMI/ca-trust/$DWI_WHOAMI.ca-bundle.crt
+
+export DW_ETL_CURL="/usr/bin/curl"
+export DW_ETL_WGET="/usr/bin/wget"
+
+if [[ -n $ETL_ID ]]
+then
+  dwi_assignTagValue -p USE_WEB_PROXY -t USE_WEB_PROXY -f $ETL_CFG_FILE -s N -d 1
+  if [[ $USE_WEB_PROXY == 1 ]]
+  then
+    export DW_ETL_CURL="/usr/bin/curl -k --cert $DW_ETL_CRT --key $DW_ETL_KEY"
+    export DW_ETL_WGET="/usr/bin/wget --secure-protocol=auto --ca-certificate=$DW_ETL_CA_BUNDLE --certificate=$DW_ETL_CRT --private-key=$DW_ETL_KEY"
+  fi
+fi
+
 # Specify which job environment, if any, where automatic deletion from partitioned Work tables should be skipped
 # If disabled on more than one instance, specify pipe-delimited list, e.g., export DISABLE_PARTITION_TABLE_CLEANUP="td2|td3"
 export DISABLE_PARTITION_TABLE_CLEANUP=""

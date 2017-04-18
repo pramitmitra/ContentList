@@ -117,7 +117,7 @@ elif [ $TRANSFER_PROCESS_TYPE = W ]
 then
 
     TARGET_FILE_TMP_SYM=`print $TARGET_FILE_TMP | sed 's/\%\%amp\%\%/\&/g'`
-    wget -d --delete-after -o $DW_SA_LOG/$TABLE_ID.$SOURCE_FILE.wget.$CURR_DATETIME.log --post-file=$DW_SA_OUT/$SOURCE_FILE_TMP "$FTP_URL$TARGET_FILE_TMP_SYM"
+    $DW_ETL_WGET -d --delete-after -o $DW_SA_LOG/$TABLE_ID.$SOURCE_FILE.wget.$CURR_DATETIME.log --post-file=$DW_SA_OUT/$SOURCE_FILE_TMP "$FTP_URL$TARGET_FILE_TMP_SYM"
 
 elif [ $TRANSFER_PROCESS_TYPE = F ] 
 then

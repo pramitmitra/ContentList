@@ -9,7 +9,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        10/23/2014      Changed wget command to not reference full path to binary
-#
+# Michael Weng     02/09/2017      Enable SSL Web Proxy Authentication
 #------------------------------------------------------------------------------------------------
  
 print "Running dw_infra.wget_report_refresh.ksh for JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
@@ -103,7 +103,7 @@ print "Wget command is being executed from $ETL_ENV, see log $MSTR_REFRESH_LOG "
 
   
 set +e
-	wget ${WGET_CMD} > $MSTR_REFRESH_LOG 2>&1;  
+	$DW_ETL_WGET ${WGET_CMD} > $MSTR_REFRESH_LOG 2>&1;  
 	RCODE=$?
 set -e
  
