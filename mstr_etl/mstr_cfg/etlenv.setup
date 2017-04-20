@@ -379,7 +379,7 @@ fi
 export HADOOP_AUTHENTICATED=0
 #set -eu
 
-# Certificate, private key, keystore and password used for web proxy
+# Certificate, private key, keystore, truststore and ca-bundle used for web proxy
 export DW_ETL_CRT=$DW_KEYS/$DWI_WHOAMI/cer/$DWI_WHOAMI.cer
 export DW_ETL_KEY=$DW_KEYS/$DWI_WHOAMI/key/$DWI_WHOAMI.key
 export DW_ETL_KEYSTORE=$DW_KEYS/$DWI_WHOAMI/cer/$DWI_WHOAMI.keystore.jks

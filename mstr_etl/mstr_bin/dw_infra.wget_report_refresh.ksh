@@ -10,6 +10,7 @@
 # Ryan Wong        10/04/2013      Redhat changes
 # Ryan Wong        10/23/2014      Changed wget command to not reference full path to binary
 # Michael Weng     02/09/2017      Enable SSL Web Proxy Authentication
+# Michael Weng     04/19/2017      Trigger code release due to previous rollout failure
 #------------------------------------------------------------------------------------------------
  
 print "Running dw_infra.wget_report_refresh.ksh for JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
