@@ -3,6 +3,7 @@
 # Ported to Redhat by koaks, 20120820
 # ETL password encryption added by jhackley, 20150825
 # Add SCP_PUSH_PORT cfg parameter to add port option for scp, 20170331
+# Enable Site Https access through Web Proxy, 20170419
 
 ETL_ID=$1
 FILE_ID=$2

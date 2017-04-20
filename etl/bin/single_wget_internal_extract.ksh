@@ -9,6 +9,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # Michael Weng     02/09/2017      Enable SSL Web Proxy Authentication
+# Michael Weng     04/19/2017      Trigger code release due to previous rollout failure
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
