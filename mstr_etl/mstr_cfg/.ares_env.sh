@@ -32,3 +32,7 @@ export PATH=$HADOOP_HOME/bin:$HBASE_HOME/bin:$HIVE_HOME/bin:$JAVA_HOME/bin:$PATH
 # Move all NN URLs to etlenv.<env>.teradata_target_variables.lis
 export HADOOP_NN_URL=$HD1_NN_URL
 export HADOOP_CLI_HOST="ares-cli.vip.ebay.com"
+
+# HiveServer2
+export HS2_DB_URL="jdbc:hive2://lvsaishdc3hn0002.lvs.ebay.com:10000/"
+export HS2_PRINCIPAL="hadoop/lvsaishdc3hn0002-be.lvs.ebay.com@APD.EBAY.COM”
