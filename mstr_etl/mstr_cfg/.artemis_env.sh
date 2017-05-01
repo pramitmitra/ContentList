@@ -32,3 +32,7 @@ export PATH=$HADOOP_HOME/bin:$HBASE_HOME/bin:$HIVE_HOME/bin:$JAVA_HOME/bin:$PATH
 # Move all NN URLs to etlenv.<env>.teradata_target_variables.lis
 export HADOOP_NN_URL=$HD3_NN_URL
 export HADOOP_CLI_HOST="artemis-cli.vip.ebay.com"
+
+# HiveServer2
+export HS2_DB_URL=""
+export HS2_PRINCIPAL=""

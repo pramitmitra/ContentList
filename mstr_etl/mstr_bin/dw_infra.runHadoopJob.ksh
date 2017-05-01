@@ -19,6 +19,7 @@
 # Ryan Wong        09/16/2016      Adding Queryband name-value-pairs UC4_JOB_BATCH_MODE and UC4_JOB_PRIORITY
 # Michael Weng     10/12/2016      Add hadoop authentication
 # Pramit Mitra     04/17/2017      Commenting out proxy hive user configuration
+# Michael Weng     04/27/2017      Add HiveServer2 beeline support
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -113,6 +114,7 @@ function run_hive_job
   fi
 
   print "cat <<EOF" > $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
+  print "\nset mapreduce.job.queuename=$HD_QUEUE;\n" >> $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   cat $DW_HQL/$HADOOP_JAR >> $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   print "\nEOF" >> $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
   chmod +x $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
@@ -154,15 +156,28 @@ function run_hive_job
 #    # TO TO BE ADDED
 #    retcode=$?
 
-#  # hive sql through beeline
-#  elif [[ $HIVE_JOB == beeline ]]
-#  then
-#    $HIVE_HOME/bin/beeline -u "$HS2_DB_URL; \
-#                               principal=$HS2_PRINCIPAL; \
-#                               hive.server2.proxy.user=$HD_USERNAME?tez.queue.name=$HD_QUEUE;" \
-#                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-#                           -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
-#    retcode=$?
+  # hive sql through beeline
+  elif [[ $HIVE_JOB == beeline ]]
+  then
+    if [[ "X$HS2_DB_URL" == "X" ]] || [[ "X$HS2_PRINCIPAL" == "X" ]]
+    then
+      print "INFRA ERROR: beeline is not setup or supported on $JOB_ENV."
+      exit 4
+    fi
+
+    # Kerberos error if HADOOP_PROXY_USER is set
+    unset HADOOP_PROXY_USER
+
+    CONN_STR="$HS2_DB_URL;principal=$HS2_PRINCIPAL"
+    if [[ $(whoami) == @(sg_adm|dw_adm) ]] && ! [[ $HD_USERNAME == sg_adm ]]
+    then
+      CONN_STR="$CONN_STR;hive.server2.proxy.user=$HD_USERNAME"
+    fi
+
+    $HIVE_HOME/bin/beeline -u "$CONN_STR;" \
+                   --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
+                   -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
+    retcode=$?
 
   else
     print "INFRA ERROR: $HIVE_JOB is not yet implemented."
@@ -226,7 +241,7 @@ then
   print "INFRA WARNING: JOB_SUB_ENV is not set. Default to jar or hive."
   print "Deprecated soon. Please specify JOB_SUB_ENV from calling script: "
   print "     hive    - submit hive sql through hive cli"
-#  print "     beeline - submit hive sql through hive beeline"
+  print "     beeline - submit hive sql through hive beeline"
 #  print "     tez     - submit hive sql through tez execution engine"
   print "     jar     - submit user jar execution"
 
@@ -247,11 +262,11 @@ then
 #then
 #  # submit hive query through tez execution engine
 #  run_hive_job tez
-#
-#elif [[ $JOB_SUB_ENV == beeline ]]
-#then
-#  # submit hive query through beeline
-#  run_hive_job beeline
+
+elif [[ $JOB_SUB_ENV == beeline ]]
+then
+  # submit hive query through beeline
+  run_hive_job beeline
 
 elif [[ $JOB_SUB_ENV == jar ]]
 then
