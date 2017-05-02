@@ -35,4 +35,4 @@ export HADOOP_CLI_HOST="ares-cli.vip.ebay.com"
 
 # HiveServer2
 export HS2_DB_URL="jdbc:hive2://lvsaishdc3hn0002.lvs.ebay.com:10000/"
-export HS2_PRINCIPAL="hadoop/lvsaishdc3hn0002-be.lvs.ebay.com@APD.EBAY.COM”
+export HS2_PRINCIPAL="hadoop/lvsaishdc3hn0002-be.lvs.ebay.com@APD.EBAY.COM"
