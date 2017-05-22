@@ -18,6 +18,9 @@ export AB_AGENT_ERROR_DELAY=60
 export AB_EXPORT=${AB_AGENT_ERROR_DELAY:-$AB_EXPORT}
 export AB_ALLOW_FILE_LOCK_ON_REMOTE_FILE_SYSTEM=true
 
+# For MySQL, default uses delete command, set this value to use truncate instead
+export AB_IDB_USE_ODBC_TRUNCATE_FOR_TRUNCATE=true
+
 # DBC File Parameters
 export TD_MAX_DATA_SIZE=5000000
 export TD_ARRAY_INTERFACE_BUFFER_SIZE=500
