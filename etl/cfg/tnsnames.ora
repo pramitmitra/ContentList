@@ -5638,3 +5638,39 @@ GBSAS =
         (Port = 1521))
         (CONNECT_DATA = (SID = GBSAS)))
 
+baas_pcc =
+        (DESCRIPTION =
+        (ADDRESS_LIST =
+        (ADDRESS =
+        (COMMUNITY = SAP.WORLD)
+        (PROTOCOL = TCP)
+        (HOST = baasslc.vip.ebay.com)
+        (PORT = 1522)))
+        (CONNECT_DATA =
+        (SID = PCC)
+        (GLOBAL_NAME = PCC.WORLD)))
+
+billhub =
+        (DESCRIPTION=
+        (ADDRESS =
+        (PROTOCOL = TCP)
+        (Host = billhubprimary.db.ebay.com)
+        (Port = 1521))
+        (CONNECT_DATA = (SID = BILLHUB)))
+ 
+media2stby =
+  (DESCRIPTION=
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=peps2stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=PEPS2)))
+  
+media3stby =
+  (DESCRIPTION=
+  (ADDRESS=
+  (PROTOCOL=TCP)
+  (HOST=peps3stby.vip.ebay.com)
+  (PORT=1521))
+  (CONNECT_DATA=(SID=PEPS3)))
+
