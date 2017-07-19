@@ -14,18 +14,12 @@
 #
 #  Date         Ver#   Modified By(Name)            Change and Reason for Change
 # ----------    -----  ---------------------------  ----------------------------------------------------------
-# 2011-10-10     1.0   Ryan Wong                    Split main code to target_table_load_run.ksh
-#                                                   Allow use of time and a redirect for log
-# 2011-12-20     1.1   Ryan Wong                    Change loader_cleanup to use dw_infra.loader_cleanup.ksh
-# 2013-07-29     1.2   Jacky Shen                   Add support for hadoop jar job
-# 2013-10-04     1.3   Ryan Wong                    Redhat changes
-# 2014-08-11     1.4   Ryan Wong                    Fix grep issue for Redhat for DB_TYPE
-# 2016-07-13     1.5   Michael Weng                 Add a comment to create a push to PROD
-# 2016-07-19     1.6   Michael Weng                 Check on hd* and rename dw_infra.runHadoopJar.ksh
 # 2017-03-01     2.0   Pramit Mitra                 Extended the code for Spark Submit added JOB_ENV=sp1
 # 2017-04-04     2.1   Pramit Mitra                 Deriving SQLFILE & CFG File from ETL_ID 
 # 2017-06-02     2.1   Pramit Mitra                 Watch File name according to BaseScript Name(STT / TTM)
 # 2017-06-06     2.2   Michael Weng                 Extract STT working tables back to ETL
+# 2017-06-15     2.1   Pramit Mitra                 Adding log file enhancements adpo-138
+# 2017-06-22     2.3   Pramit Mitra                 HDFS File copy back to ETL only for STT adpo-207
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -194,18 +188,38 @@ then
    then
      set +e
      PARAM_LIST=${PARAM_LIST:-""}
-     #$DW_MASTER_BIN/dw_infra.runSparkJob.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $SPARK_CONF > $LOG_FILE 2>&1
-     #$DW_MASTER_BIN/dw_infra.runSparkJob.ksh $ETL_ID $JOB_ENV > $LOG_FILE 2>&1     
      $DW_MASTER_BIN/dw_infra.runSparkJob.ksh $ETL_ID $JOB_ENV $BASENAME > $LOG_FILE 2>&1
      rcode=$?
      set -e
+     ############################################################
+     # Adding code for log enhancements https://jirap.corp.ebay.com/browse/ADPO-138
+     ############################################################
+
+     SPARK_DEFAULT_FS="hdfs://ares-lvs-nn-ha"
+     HADOOP_HISTORY_LOG="https://hdc34-lvs01-400-2908-002.stratus.lvs.ebay.com:8090/cluster/app"
+     ADPO_DEBUG_WIKI_LOG="https://wiki.vip.corp.ebay.com/display/DataServicesandSolutions/ADPO+-+Debug+Steps+for+Spark+Job"
+
+     SPARK_APP_ID=$(grep -m 1 "tracking URL" $LOG_FILE | awk -F"/" '{print $((NF-1))}')
+     SPARK_APP_ID=${SPARK_APP_ID:-"NA"}
+
+print "
+##########################################################################################################
+#
+# Target table load for ETL_ID: $ETL_ID:  Hadoop/Spark Log File Information  `date`
+#
+##########################################################################################################
+
+SQL Summary Logs: ${SPARK_DEFAULT_FS}/user/${HD_USERNAME}/
+Hadoop History Logs: ${HADOOP_HISTORY_LOG}/${SPARK_APP_ID}
+Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG}
+"
      if [ $rcode != 0 ]
      then
      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
      exit 4
      fi
 
-    print "target_table_load" >> $COMP_FILE
+    print "target_table_load_spark" >> $COMP_FILE
 
     elif [ $RCODE = 0 ]
     then
@@ -213,7 +227,6 @@ then
     else
     exit $RCODE
  fi
-####
 
 # Add if..else here to determin if it is a hadoop job
 elif [[ $JOB_ENV == hd* ]]
@@ -442,11 +455,15 @@ print "
 #  location.
 #
 ######################################################################################################
+#if [[ ${BASENAME} == single_table_transform_handler ]]
+# then
 assignTagValue STT_STAGE_TARGET STT_STAGE_TARGET $ETL_CFG_FILE W ""
 
 set +eu
 if [[ -n ${STT_STAGE_TARGET:-""} ]] && [[ $STT_STAGE_TARGET == hd* ]]
 then
+  if [[ ${BASENAME} == single_table_transform_handler ]]
+  then
   CLUSTER=$(JOB_ENV_UPPER=$(print $STT_STAGE_TARGET | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
   if ! [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
   then
@@ -503,6 +520,10 @@ then
     print "30000" > $ETL_DIR/$TABLE.record_count.dat
   done
 
+# Creating Done file after HDFS file copy 
+$DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+
+
   print "
 ##########################################################################################################
 #
@@ -511,6 +532,10 @@ then
 ##########################################################################################################"
 fi
 
+else
+    print "Warning : ADPO: HDFS file copy to ETL host can't be performed for ${BASENAME}"  >&2
+    exit 0
+fi   
 
 tcode=0
 exit

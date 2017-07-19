@@ -14,24 +14,8 @@
 #
 #  Date         Ver#   Modified By(Name)            Change and Reason for Change
 # ----------    -----  ---------------------------  ----------------------------------------------------------
-# 2011-09-02     1.0   Kevin Oaks                   Added UOW option and getops functionality while leaving
-#                                                   backwards compatibility intact.
-# 2011-09-21     1.1   Kevin Oaks                   Modified to use UOW_FROM/UOW_TO
-# 2011-10-12     1.2   Ryan Wong                    Split main code to target_table_load_run.ksh
-#                                                   Allow use of time and a redirect for log
-# 2011-12-15     1.3   Ryan Wong                    Modify DW_SA_LOG to a date dir based on CURR_DATE
-# 2012-02-13     1.4   Ryan Wong                    Fixing logic for DW_SA_LOG, check if CURR_DATE is appended
-#                                                   Adding values for UOW_FROM/TO_DATE and UOW_FROM/TO_DATE_RFMT
-#
-# 2012-10-22     1.5   Jacky Shen                   Add an additional call to etlenv.setup after assignment for ETL_ID
-# 2012-11-26     1.6   Ryan Wong                    Add UOW_[FROM/TO]_TIME, TRGT_UOW_[FROM/TO]_DATE_RFMT_CODE
-# 2013-03-25     1.7   Jacky Shen                   Add a check to Infra_Run complete file to fail job if the complete file still exists
-# 2013-07-16     1.8   Ryan Wong                    Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
-# 2013-07-30     1.9   Jacky Shen                   Add hadoop jar job support
-# 2013-10-04     1.10  Ryan Wong                    Redhat changes
-# 2016-04-21     1.11  Michael Weng                 Add JOB_ENV optional sub-type for variable hadoop jobs
-# 2016-07-21     1.12  Michael Weng                 Update parameter handling for hadoop jobs
 # 2017-03-02     2.0   Pramit Mitra                 New Interface to support Spark Submit   
+# 2017-06-23     2.1   Pramit Mitra                 ADPO-205 LogFile name changed to include STT/TTM
 ###################################################################################################################
 
 typeset -fu usage
@@ -40,9 +24,6 @@ function usage {
    print "Usage:  $0 <ETL_ID> <JOB_ENV> <SQL_FILE|JAR_FILE> [ -s <JOB_SUB_ENV> ] [ -f <UOW_FROM> -t <UOW_TO> ] [ -m <main_class> [ -p <PARAM_NAME1=PARAM_VALUE1> -p <PARAM_NAME1=PARAM_VALUE1> ... ] OR [<PARAM_NAME1=PARAM_VALUE1> <PARAM_NAME2=PARAM_VALUE2> ...]]
 NOTE: UOW_FROM and UOW_TO are optional but must be used in tandem if either is present."
 }
-
-#export ETL_ID=$1
-#export JOB_ENV=$2
 
 . /dw/etl/mstr_cfg/etlenv.setup
 
@@ -68,8 +49,21 @@ print "BaseName == ${SCRIPTNAME}"
 export ETL_ID=$1
 export JOB_ENV=$2
 export SQL_FILE=${ETL_ID}.sql
-#export SQL_FILE=$3
-#export SPARK_CONF=$4
+
+     #########################################################################################################
+     # Setting Parent Log File name based on Spark Handler type https://jirap.corp.ebay.com/browse/ADPO-205
+     ##########################################################################################################
+
+    if [[ ${BASENAME} == target_table_merge_handler ]]
+    then
+    export LOG_SUFF=ttm
+    elif [[ ${BASENAME} == single_table_transform_handler ]]
+    then
+    export LOG_SUFF=stt
+    else
+    print "Fatal Error: Spark Modules are not available for this handler type" >&2
+    exit 4
+    fi
 
 . /dw/etl/mstr_cfg/etlenv.setup
 
@@ -216,8 +210,11 @@ then
    exit 1
 fi
 
-export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$BASENAME.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.err
-export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load_run.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.log
+#export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$BASENAME.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.err
+#export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load_run.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.log
+
+export PARENT_ERROR_FILE=$DW_SA_LOG/$TABLE_ID.$LOG_SUFF.$BASENAME.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.err
+export PARENT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$LOG_SUFF.target_table_load_run.$SQL_FILE_BASENAME${UOW_APPEND}.$CURR_DATETIME.log
 
 # Comp File Handler
 export UC4_JOB_NAME=${UC4_JOB_NAME:-""}
