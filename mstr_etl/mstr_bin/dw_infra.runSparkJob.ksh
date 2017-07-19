@@ -16,6 +16,7 @@
 # Pramit Mitra     06/09/2017      Added logback.xml to overwrite log4j scope for Spark-Submit
 # Ryan Wong        06/12/2017      ADPO-141, Added dynamic gen spark conf w/default conf, yarn.queue, and app.name
 # Pramit Mitra     06/15/2017      Olympus-Sub cluster logic added based on ETL_ENV
+# Ryan Wong        06/22/2017      ADPO-204, Add error checking for not exist SQL file
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -61,7 +62,6 @@ export SPARK_SQL_SEQ=${ETL_ID}.sql.seq
 export SPARK_SQL_LST=`cat ${SQL_PATH}/${SPARK_SQL_SEQ}`
 eval JOB_SUB_ENV='spark'
 
-set +eu
 if [[ $JOB_ENV == sp* ]]
  then
       . $DW_MASTER_CFG/.olympus_env.sh
@@ -121,6 +121,7 @@ function groomSparkSQL
 
 rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}*tmp*;rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp*${ETL_ID}*;
 
+set -e
 # Cleanse SEQ File
 SEQ_FILE_TMP=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${SEQ_FILE_NAME}
 SEQ_FILE_TMP2=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${SEQ_FILE_NAME}2
@@ -134,6 +135,11 @@ sed -e '/^$/d' $SEQ_FILE_TMP > $SEQ_FILE_TMP2
 sed -e '/^#/d' $SEQ_FILE_TMP2 > $SEQ_FILE_TMP
 
    while read p; do
+       if [ ! -f ${DW_SQL}/$p ]
+       then
+         print "INFRA_ERROR:  SQL file does not exist:  ${DW_SQL}/$p"
+         exit 4
+       fi
        echo $p
        print "cat <<EOF" > ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${p}
        cat ${DW_SQL}/$p >> ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_$p
@@ -171,7 +177,7 @@ export SPARK_SQL_LST_PATH=`cat ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileL
 ################################################################################
 function groomSparkConf
 {
-
+set -e
 export SPARK_CONF_DEFAULT=${DW_MASTER_CFG}/zeta_default.conf
 export SPARK_CONF_DYNAMIC=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${SPARK_CONF}
 
@@ -269,4 +275,5 @@ else
 fi
 
 print "End of Script"
+exit 0
 ################################################################################
