@@ -5674,3 +5674,87 @@ media3stby =
   (PORT=1521))
   (CONNECT_DATA=(SID=PEPS3)))
 
+gbcust1_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust1.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST1)))
+
+gbcust2_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust2.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST2)))
+
+gbcust3_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust3.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST3)))
+
+gbcust4_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust4.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST4)))
+
+gbcust5_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust5.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST5)))
+
+gbcust6_asv=
+    (DESCRIPTION=
+    (SDU=8192)
+    (TDU=8192)
+    (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=gbcust6.vip.ebay.com)
+    (PORT=1522))
+    (CONNECT_DATA=(SID=GBCUST6)))
+
+gbcust7_asv=
+    (DESCRIPTION=
+    (SDU=8192)
+    (TDU=8192)
+    (ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=gbcust7.vip.ebay.com)
+    (PORT=1522))
+    (CONNECT_DATA=(SID=GBCUST7)))
+
+gbcust8_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust8.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST8)))
+
+gbcust9_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust9.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST9)))
+
+gbcust10_asv=
+    (DESCRIPTION =
+    (ADDRESS =
+    (PROTOCOL = TCP)
+    (Host = gbcust10.vip.ebay.com)
+    (Port = 1522))
+    (CONNECT_DATA = (SID=GBCUST10)))
+
