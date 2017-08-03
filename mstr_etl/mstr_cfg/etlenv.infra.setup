@@ -518,6 +518,12 @@ export ubierrorDB=ubi_e
 export appubiDB=APP_UBI_T 
 export appubiworkingDB=APP_UBI_W
 
+# Used for ADPO
+export workingPath=/sys/edw/zeta_dev/working
+
+# Added as part of JIRA # 926 - Pramit Mitra 20170803
+export ddmcrmDB=DDM_CRM_T
+export ddmcrmwrkDB=DDM_CRM_W
 
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
