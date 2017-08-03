@@ -33,6 +33,8 @@
 # 2013-10-04   1.15   Ryan Wong                     Redhat changes
 # 2013-08-20   1.16   George Xiong                  $DW_EXE/$SUBJECT_AREA scirpt support of pre/post jobs
 # 2015-09-11   1.17   John Hackley                  Password encryption changes
+# 2017-06-06   1.18   Michael Weng                  Load extracted data onto HDFS
+# 2017-07-20   1.19   Michael Weng                  Differentiate STE and STT, add UOW onto HDFS path
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1367,6 +1369,97 @@ print "
 # Extract for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM complete   `date`
 #
 ##########################################################################################################"
+
+
+######################################################################################################
+#
+#                                ADPO: copy data to HDFS
+#
+#  This section is specific for ADPO. If the parameter STE_STAGE_TARGET in $DW_CFG/$ETL_ID.cfg is set
+#  to [hd1|hd2|hd3|...], data files from extracting job will be also loaded into HDFS. Destination HDFS
+#  path will be $STE_STAGE_PATH/$STE_SA/$STE_STAGE_TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+#
+#    STE_STAGE_TARGET     # used to determine whether and which hadoop cluster to load
+#    STE_STAGE_TABLE      # the stage table
+#    STE_STAGE_PATH       # STE hdfs path
+#
+######################################################################################################
+assignTagValue STE_STAGE_TARGET STE_STAGE_TARGET $ETL_CFG_FILE W ""
+
+set +eu
+if [[ -n ${STE_STAGE_TARGET:-""} ]] && [[ $STE_STAGE_TARGET == hd* ]]
+then
+  CLUSTER=$(JOB_ENV_UPPER=$(print $STE_STAGE_TARGET | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
+  if [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
+  then
+    . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+    . $DW_MASTER_CFG/hadoop.login
+
+    assignTagValue STE_STAGE_PATH STE_STAGE_PATH $ETL_CFG_FILE
+    assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE
+
+    STE_SA=${SUBJECT_AREA#*_}
+    STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
+    if [[ X"$UOW_TO" != X ]]
+    then
+      STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+    fi
+    print "Copy to HDFS is started. Source: ${IN_DIR}, Destination: $STE_STAGE_PATH"
+
+    print "Cleaning up target staging table: $STE_STAGE_PATH"
+    COMMAND="hadoop fs -rmr -skipTrash $STE_STAGE_PATH"
+    set +e
+    eval $COMMAND
+    set -e
+
+    export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.ste_copy_to_hdfs$UOW_APPEND
+    > $DATA_LIS_FILE
+
+    DATA_FILE_PATTERN="$IN_DIR/$TABLE_ID.*.dat*"
+    if [[ "X$UOW_TO" != "X" ]]
+    then
+      DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
+    else
+      DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
+    fi
+
+    print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
+
+    for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
+    do
+      print "$data_file_entry" >> $DATA_LIS_FILE
+    done
+
+    while read SOURCE_FILE_TMP 
+    do
+      COMMAND="hadoop fs -mkdir -p ${STE_STAGE_PATH}; hadoop fs -copyFromLocal $SOURCE_FILE_TMP ${STE_STAGE_PATH}"
+      set +e
+      eval $COMMAND
+      retcode=$?
+      set -e
+
+      if [ $retcode != 0 ]
+      then
+        print "INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_TMP, HDFS: $STE_STAGE_PATH"
+        # exit 4 - no exit out for now not to impact teradata-based processing
+      else
+        print "Load completion of FILE: ${SOURCE_FILE_TMP}"
+      fi
+    done < $DATA_LIS_FILE
+
+    print "
+##########################################################################################################
+#
+# Load to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, HDFS: $STE_STAGE_PATH complete `date`
+#
+##########################################################################################################"
+  else
+    print "${0##*/}:  ERROR, invalid STE_STAGE_TARGET value in $ETL_CFG_FILE" >&2
+    # exit 4 - no exit out for now not to impact teradata-based processing
+  fi
+
+fi
+
 
 tcode=0
 exit

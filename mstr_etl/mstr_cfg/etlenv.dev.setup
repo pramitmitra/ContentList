@@ -542,6 +542,13 @@ export ddmubisojDB=DDM_UBI_SOJ_T
 export trfcDB=DDM_TRFC_T
 export trfcwrkDB=DDM_TRFC_W
 
+# Used for ADPO
+export workingPath=/sys/edw/zeta_dev/working
+
+# Added as part of JIRA # 926 - Pramit Mitra 20170803
+export ddmcrmDB=DDM_CRM_T
+export ddmcrmwrkDB=DDM_CRM_W
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment
