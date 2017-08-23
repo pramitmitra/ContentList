@@ -20,6 +20,8 @@
 # 2017-06-06     2.2   Michael Weng                 Extract STT working tables back to ETL
 # 2017-06-15     2.1   Pramit Mitra                 Adding log file enhancements adpo-138
 # 2017-06-22     2.3   Pramit Mitra                 HDFS File copy back to ETL only for STT adpo-207
+# 2017-07-20     2.4   Michael Weng                 Differentiate STE and STT
+# 2017-08-10     2.5   Pramit Mitra                 Sourced .olympus_env.sh to support setfacl 
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -47,6 +49,14 @@ fi
 # subject area designated email addresses.
 
 . $DW_MASTER_LIB/message_handler
+
+if [[ $JOB_ENV == sp* ]]
+ then
+      . $DW_MASTER_CFG/.olympus_env.sh
+else
+  print "INFRA_ERROR: invalid JOB_ENV: $JOB_ENV for running Hadoop Jobs."
+  exit 4
+fi
 
 # Print standard environment variables
 set +u
@@ -450,24 +460,26 @@ print "
 #
 #                                ADPO: copy result to ETL
 #
-#  If the parameter STT_STAGE_TARGET in $DW_CFG/$ETL_ID.cfg is set to [hd1|hd2|hd3|...], data files 
+#  If the parameter STT_WORKING_SOURCE in $DW_CFG/$ETL_ID.cfg is set to [hd1|hd2|hd3|...], data files 
 #  generated from STT job will be copied back to ETL in $DW_IN following the standard extract data 
 #  location.
 #
+#    STT_WORKING_SOURCE   # used to determine whether and which hadoop cluster to source from
+#    STT_WORKING_PATH     # the working table HDFS path
+#    STT_WORKING_TABLES   # the working tables
+#
 ######################################################################################################
-#if [[ ${BASENAME} == single_table_transform_handler ]]
-# then
-assignTagValue STT_STAGE_TARGET STT_STAGE_TARGET $ETL_CFG_FILE W ""
+if [[ ${BASENAME} == single_table_transform_handler ]]
+then
+assignTagValue STT_WORKING_SOURCE STT_WORKING_SOURCE $ETL_CFG_FILE W ""
 
 set +eu
-if [[ -n ${STT_STAGE_TARGET:-""} ]] && [[ $STT_STAGE_TARGET == hd* ]]
+if [[ -n ${STT_WORKING_SOURCE:-""} ]] && [[ $STT_WORKING_SOURCE == hd* ]]
 then
-  if [[ ${BASENAME} == single_table_transform_handler ]]
-  then
-  CLUSTER=$(JOB_ENV_UPPER=$(print $STT_STAGE_TARGET | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
+  CLUSTER=$(JOB_ENV_UPPER=$(print $STT_WORKING_SOURCE | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
   if ! [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
   then
-    print "${0##*/}:  ERROR, invalid STT_STAGE_TARGET value in $ETL_CFG_FILE" >&2
+    print "${0##*/}:  ERROR, invalid STT_WORKING_SOURCE value in $ETL_CFG_FILE" >&2
     exit 4;
   fi
 
@@ -476,11 +488,11 @@ then
 
   assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
   assignTagValue STT_WORKING_PATH STT_WORKING_PATH $ETL_CFG_FILE
-  assignTagValue STT_WORKING_TABLE STT_WORKING_TABLE $ETL_CFG_FILE
+  assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
 
   STT_SA=${SUBJECT_AREA#*_}
 
-  for TABLE in $(echo $STT_WORKING_TABLE | sed "s/,/ /g")
+  for TABLE in $(echo $STT_WORKING_TABLES | sed "s/,/ /g")
   do
     ETL_DIR=${IN_DIR}/extract/${SUBJECT_AREA}
     SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
@@ -497,18 +509,21 @@ then
       rm -rf $ETL_DIR/*
     fi
 
-    COMMAND="mkdir -p $ETL_DIR; hadoop fs -copyToLocal $SOURCE_PATH/* $ETL_DIR/"
+    COMMAND="mkdir -p $ETL_DIR; ${HADOOP_HOME2}/bin/hadoop fs -copyToLocal $SOURCE_PATH/* $ETL_DIR/"
     set +e
-    eval $COMMAND && (print "Extract from HDFS completed: ${SOURCE_PATH}") || (print "INFRA_ERROR - Failure extracting data from HDFS: $SOURCE_PATH")
+    eval $COMMAND
+    retcode=$?
     set -e
 
-    if [ $? != 0 ]
+    if [ $retcode != 0 ]
     then
-      print "${0##*/}: INFRA_ERROR - failed to extract data from $CLUSTER: $SOURCE_PATH"
+      print "INFRA_ERROR - Failure extracting data from HDFS: $SOURCE_PATH"
       exit 4
+    else
+      print "Extract from HDFS completed: ${SOURCE_PATH}"
     fi
 
-    print "Renaming data files in the pattern of <TABLE_ID>.#.dat"
+    print "Renaming data files in the pattern of $TABLE.#.dat"
     COUNT=0
     for FILE in $(ls $ETL_DIR)
     do
@@ -516,13 +531,13 @@ then
       COUNT=$((COUNT+1))
     done
 
-    print "Creating record count file as <TABLE_ID>.record_count.dat"
-    print "30000" > $ETL_DIR/$TABLE.record_count.dat
+    print "Creating record count file as $TABLE.record_count.dat"
+    #print "30000" > $ETL_DIR/$TABLE.record_count.dat
+    print ${COUNT} > $ETL_DIR/$TABLE.record_count.dat
   done
 
-# Creating Done file after HDFS file copy 
-$DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
-
+  # Creating Done file after HDFS file copy 
+  $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
 
   print "
 ##########################################################################################################
@@ -534,7 +549,6 @@ fi
 
 else
     print "Warning : ADPO: HDFS file copy to ETL host can't be performed for ${BASENAME}"  >&2
-    exit 0
 fi   
 
 tcode=0
