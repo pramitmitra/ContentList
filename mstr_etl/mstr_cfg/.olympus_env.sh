@@ -7,21 +7,30 @@
 #      then
 #      export SPARK_FS=aressub-lvs-nn-ha
 #      export COMPUTE_ENV=olympusqa
+      ##export COMPUTE_ENV=aresqa
+#      export STORAGE_ENV=aresqa
 #      export HADOOP_CLI_HOST="olympus-sub-lvs-cli-1.vip.ebay.com"
+#      export HDFS_NN=aressub-lvs-nn-ha
 #    else
       export SPARK_FS=ares-lvs-nn-ha
       export COMPUTE_ENV=olympus
-      export HADOOP_CLI_HOST="hdc34-lvs01-400-2908-003.stratus.lvs.ebay.com"
-#  fi
+      export STORAGE_ENV=ares
+#      export HADOOP_CLI_HOST="hdc34-lvs01-400-2908-003.stratus.lvs.ebay.com"
+      export HADOOP_CLI_HOST="ares-cli.vip.ebay.com"
+      export HDFS_NN=ares-lvs-nn-ha:8020
+#fi
 
-export JAVA_HOME=/usr/java/latest
+#export JAVA_HOME=/usr/java/latest
+export JAVA_HOME=/apache/hadoop_client/${COMPUTE_ENV}/java
 export ORIGPATH=$PATH
-export MANPATH=$MANPATH:/usr/share/man:/usr/local/man:/usr/local/pssh:/usr/local/pssh/man
+export MANPATH=${MANPATH:-""}:/usr/share/man:/usr/local/man:/usr/local/pssh:/usr/local/pssh/man
 export EDITOR=vi
 export PS1="[\$(date +%H:%M)]:[\u@\h:\W]\$ "
 export HADOOP_HOME=/apache/hadoop_client/${COMPUTE_ENV}/hadoop
+export HADOOP_HOME2=/apache/hadoop_client/${STORAGE_ENV}/hadoop
 export HIVE_HOME=/apache/hadoop_client/${COMPUTE_ENV}/hive
 export SPARK_HOME=/apache/hadoop_client/${COMPUTE_ENV}/spark
+export PARTITION_NAME=dt
 #export HADOOP_CONF_DIR=$HADOOP_HOME/conf
 #export HIVE_CONF_DIR=$HIVE_HOME/conf
 #export HADOOP_PID_DIR=$HADOOP_HOME/pids
