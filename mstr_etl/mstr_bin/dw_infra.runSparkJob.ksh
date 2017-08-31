@@ -17,6 +17,7 @@
 # Ryan Wong        06/12/2017      ADPO-141, Added dynamic gen spark conf w/default conf, yarn.queue, and app.name
 # Pramit Mitra     06/15/2017      Olympus-Sub cluster logic added based on ETL_ENV
 # Ryan Wong        06/22/2017      ADPO-204, Add error checking for not exist SQL file
+# Pramit Mitra     08/25/2017      Added Avro Jar dependency into Spark-Submit
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -93,11 +94,11 @@ print "Inside run_spark_jar function"
 set +e
 
 print "Spark Submit Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
-print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --driver-class-path ${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
+print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
 
 export SPARK_SUBMIT_OPTS="-Dlogback.configurationFile=file://${SPARK_HOME}/conf/logback.xml"
 
-${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --driver-class-path ${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
+${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
 
 rcode=$?
 
