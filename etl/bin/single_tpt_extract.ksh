@@ -140,7 +140,7 @@ fi
 # If character set not assigned, pull from dbc file.
 if [[ "X$TPT_EXTRACT_CHARSET" = "X" ]]
 then
-  assignTagValue TPT_EXTRACT_CHARSET "teradata_character_set:" $DW_DBC/$DBC_FILE W ""
+  assignTagValue TPT_EXTRACT_CHARSET "teradata_character_set" $DW_DBC/$DBC_FILE W ""
   if [[ "X$TPT_EXTRACT_CHARSET" != "X" ]]
   then
     TPT_ARG="$TPT_ARG -CHARSET $TPT_EXTRACT_CHARSET"
