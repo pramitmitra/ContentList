@@ -35,6 +35,8 @@
 # 2015-09-11   1.17   John Hackley                  Password encryption changes
 # 2017-06-06   1.18   Michael Weng                  Load extracted data onto HDFS
 # 2017-07-20   1.19   Michael Weng                  Differentiate STE and STT, add UOW onto HDFS path
+# 2017-08-28   1.20   Kevin Oaks                    Add UOW PARAM LIST to wget/iwget COMMAND
+# 2017-09-14   1.21   Michael Weng                  Support multiple HDFS copy and optional flag for copy failure
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -565,7 +567,7 @@ then
      then
    
    	set +e
-   	eval $DW_EXE/single_wget_extract.ksh $ETL_ID $FILE_ID $DBC_FILE $TABLE_NAME $DATA_FILENAME > $LOG_FILE 2>&1
+   	eval $DW_EXE/single_wget_extract.ksh $ETL_ID $FILE_ID $DBC_FILE $TABLE_NAME $DATA_FILENAME $UOW_PARAM_LIST > $LOG_FILE 2>&1
   	rcode=$?
  	set -e
 
@@ -573,7 +575,7 @@ then
      then
    
    	set +e
-   	eval $DW_EXE/single_wget_internal_extract.ksh $ETL_ID $FILE_ID $DBC_FILE $TABLE_NAME $DATA_FILENAME > $LOG_FILE 2>&1
+   	eval $DW_EXE/single_wget_internal_extract.ksh $ETL_ID $FILE_ID $DBC_FILE $TABLE_NAME $DATA_FILENAME $UOW_PARAM_LIST > $LOG_FILE 2>&1
   	rcode=$?
  	set -e
      
@@ -779,12 +781,12 @@ then
            then
               LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$DBC_FILE.run_multi_single_wget_extract${UOW_APPEND}.$CURR_DATETIME.log
               print "Running run_multi_single_extract.ksh for $EXTRACT_TYPE $FILE  `date`"
-              COMMAND="$DW_EXE/run_multi_single_extract.ksh $EXTRACT_TYPE $FILE $LOG_FILE > $LOG_FILE 2>&1"
+              COMMAND="$DW_EXE/run_multi_single_extract.ksh $EXTRACT_TYPE $FILE $LOG_FILE $UOW_PARAM_LIST > $LOG_FILE 2>&1"
            elif [ $EXTRACT_PROCESS_TYPE = "I" ]
            then
               LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$DBC_FILE.run_multi_single_wget_internal_extract${UOW_APPEND}.$CURR_DATETIME.log
               print "Running run_multi_single_internal_extract.ksh for $EXTRACT_TYPE $FILE  `date`"
-              COMMAND="$DW_EXE/run_multi_single_extract.ksh $EXTRACT_TYPE $FILE $LOG_FILE > $LOG_FILE 2>&1"
+              COMMAND="$DW_EXE/run_multi_single_extract.ksh $EXTRACT_TYPE $FILE $LOG_FILE $UOW_PARAM_LIST > $LOG_FILE 2>&1"
            elif [ $EXTRACT_PROCESS_TYPE = "S" ]
            then
               LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$DBC_FILE.run_multi_single_sft_extract${UOW_APPEND}.$CURR_DATETIME.log
@@ -1387,75 +1389,129 @@ print "
 assignTagValue STE_STAGE_TARGET STE_STAGE_TARGET $ETL_CFG_FILE W ""
 
 set +eu
-if [[ -n ${STE_STAGE_TARGET:-""} ]] && [[ $STE_STAGE_TARGET == hd* ]]
+if [[ -n ${STE_STAGE_TARGET:-""} ]]
 then
-  CLUSTER=$(JOB_ENV_UPPER=$(print $STE_STAGE_TARGET | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
-  if [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
+  assignTagValue STE_STAGE_PATH STE_STAGE_PATH $ETL_CFG_FILE
+  assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE
+
+  STE_SA=${SUBJECT_AREA#*_}
+  STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
+  if [[ X"$UOW_TO" != X ]]
   then
-    . $DW_MASTER_CFG/.${CLUSTER}_env.sh
-    . $DW_MASTER_CFG/hadoop.login
+    STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+  fi
 
-    assignTagValue STE_STAGE_PATH STE_STAGE_PATH $ETL_CFG_FILE
-    assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE
+  export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.ste_copy_to_hdfs$UOW_APPEND
+  > $DATA_LIS_FILE
 
-    STE_SA=${SUBJECT_AREA#*_}
-    STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
-    if [[ X"$UOW_TO" != X ]]
+  DATA_FILE_PATTERN="$IN_DIR/$TABLE_ID.*.dat*"
+  if [[ "X$UOW_TO" != "X" ]]
+  then
+    DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
+  else
+    DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
+  fi
+
+  print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
+
+  for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
+  do
+    print "$data_file_entry" >> $DATA_LIS_FILE
+  done
+
+  ### STE_STAGE_TARGET is comma separated for multiple hadoop cluster support. The flag is for user to
+  ### specify whether failure copying to hdfs should be ignored. Default is 0 (no ignore, meaning copy
+  ### failed makes job failed). For example,
+  ### hd1,hd2       - load data onto both hd1 and hd2. Fail the job if either copy failed.
+  ### hd1{0},hd2{1} - load data onto both hd1 and hd2. Copy to hd1 failed causes job failed but not hd2
+  jobfailed=0
+  retcode=0
+  for TARGET in $(echo $STE_STAGE_TARGET | sed "s/,/ /g")
+  do
+    HD_ENV=${TARGET%\{*}
+    HD_FLAG=0
+    if [[ "$TARGET" = *\{*\} ]]
     then
-      STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+      HD_FLAG=$(echo $TARGET | cut -d\{ -f2 | cut -d\} -f1)
     fi
-    print "Copy to HDFS is started. Source: ${IN_DIR}, Destination: $STE_STAGE_PATH"
+    CLUSTER=$(HD_ENV_UPPER=$(print $HD_ENV | tr [:lower:] [:upper:]); eval print \$DW_${HD_ENV_UPPER}_DB)
 
-    print "Cleaning up target staging table: $STE_STAGE_PATH"
-    COMMAND="hadoop fs -rmr -skipTrash $STE_STAGE_PATH"
-    set +e
-    eval $COMMAND
-    set -e
-
-    export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.ste_copy_to_hdfs$UOW_APPEND
-    > $DATA_LIS_FILE
-
-    DATA_FILE_PATTERN="$IN_DIR/$TABLE_ID.*.dat*"
-    if [[ "X$UOW_TO" != "X" ]]
+    if [[ $HD_ENV == hd* ]] && [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
     then
-      DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
-    else
-      DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
-    fi
+      . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+      . $DW_MASTER_CFG/hadoop.login
 
-    print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
+      print "Copy to HDFS is started."
+      print "    Source (${IN_DIR})"
+      print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
 
-    for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
-    do
-      print "$data_file_entry" >> $DATA_LIS_FILE
-    done
-
-    while read SOURCE_FILE_TMP 
-    do
-      COMMAND="hadoop fs -mkdir -p ${STE_STAGE_PATH}; hadoop fs -copyFromLocal $SOURCE_FILE_TMP ${STE_STAGE_PATH}"
+      ### Cleanup target stage table directory and re-create a new one on HDFS
+      print "Cleaning up target and re-creating new directory on $CLUSTER: $STE_STAGE_PATH"
       set +e
-      eval $COMMAND
+      hadoop fs -rm -r -skipTrash $STE_STAGE_PATH
+      hadoop fs -mkdir -p $STE_STAGE_PATH
       retcode=$?
       set -e
 
-      if [ $retcode != 0 ]
+      if [ $retcode = 0 ]
       then
-        print "INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_TMP, HDFS: $STE_STAGE_PATH"
-        # exit 4 - no exit out for now not to impact teradata-based processing
-      else
-        print "Load completion of FILE: ${SOURCE_FILE_TMP}"
-      fi
-    done < $DATA_LIS_FILE
+        ### Copy data files from Tempo to HDFS
+        while read SOURCE_FILE_TMP 
+        do
+          set +e
+          hadoop fs -copyFromLocal $SOURCE_FILE_TMP ${STE_STAGE_PATH}
+          retcode=$?
+          set -e
 
-    print "
+          if [ $retcode != 0 ]
+          then
+            print "WARNING - Copy to HDFS failed: "
+            print "    Source ($SOURCE_FILE_TMP)"
+            print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
+            break
+          else
+            print "Load completion of FILE: ${SOURCE_FILE_TMP}"
+          fi
+        done < $DATA_LIS_FILE
+
+      else
+        print "${0##*/}: WARNING - Failed to create directory on $CLUSTER"
+      fi
+
+      if [ $retcode = 0 ]
+      then
+        ### Create Done file for $HD_ENV (hd1 | hd2 | hd3 | ...)
+        $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $HD_ENV ${ETL_ID}.ste_hdfs_load_success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+
+        print "
 ##########################################################################################################
-#
-# Load to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, HDFS: $STE_STAGE_PATH complete `date`
-#
+# Loaded data to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`
+#   HDFS - $CLUSTER: $STE_STAGE_PATH
 ##########################################################################################################"
-  else
-    print "${0##*/}:  ERROR, invalid STE_STAGE_TARGET value in $ETL_CFG_FILE" >&2
-    # exit 4 - no exit out for now not to impact teradata-based processing
+      fi
+
+    else
+      print "WARNING - invalid STE_STAGE_TARGET value ($TARGET) in $ETL_CFG_FILE"
+      retcode=1
+    fi
+
+    if [ $retcode != 0 ]
+    then
+      if [ $HD_FLAG = 0 ]
+      then
+        print "${0##*/}: INFRA_ERROR - Failed to load data to HDFS ($HD_ENV):"
+        jobfailed=1
+      else
+        print "WARNING - Failed to load data to HDFS:"
+      fi
+      print "    Source (${IN_DIR})"
+      print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
+    fi
+  done
+
+  if [ $jobfailed != 0 ]
+  then
+    exit 4
   fi
 
 fi
