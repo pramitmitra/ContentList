@@ -39,8 +39,8 @@ export HADOOP_NN_URL=$(eval print \$${JOB_ENV_UPPER}_NN_URL)
 export HADOOP_CLI_HOST="ares-devour.vip.ebay.com"
 
 # HiveServer2
-export HS2_DB_URL=""
-export HS2_PRINCIPAL=""
+export HS2_DB_URL="jdbc:hive2://lvsaishdc3hn0002.lvs.ebay.com:10000/"
+export HS2_PRINCIPAL="hadoop/lvsaishdc3hn0002-be.lvs.ebay.com@APD.EBAY.COM"
 
 # For spark-submit log enhancements https://jirap.corp.ebay.com/browse/ADPO-138
 export SPARK_DEFAULT_FS=$SPARK_FS
