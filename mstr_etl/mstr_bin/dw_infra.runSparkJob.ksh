@@ -5,7 +5,7 @@
 # Revision History:
 #
 # Name             Date            Description
-# ---------------  --------------  ---------------------------------------------------
+# ---------------  --------------  ------------------------------------------------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Pramit Mitra     03/01/2017      Extending the framework for Spark-Submit.
 # Pramit Mitra     04/03/2017      Change Input parameter numbers and derive SQLFile and CONFFile from ETL_ID 
@@ -17,8 +17,11 @@
 # Ryan Wong        06/12/2017      ADPO-141, Added dynamic gen spark conf w/default conf, yarn.queue, and app.name
 # Pramit Mitra     06/15/2017      Olympus-Sub cluster logic added based on ETL_ENV
 # Ryan Wong        06/22/2017      ADPO-204, Add error checking for not exist SQL file
+# Pramit Mitra     07/26/2017      Implemented SetFacl (File Mast update) logic for HDFS files on Ares/AresQA
 # Pramit Mitra     08/25/2017      Added Avro Jar dependency into Spark-Submit
-#------------------------------------------------------------------------------------------------
+# Pramit Mitra     09/07/2017      Data Lineage Log generated per DSS request
+# Pramit Mitra     09/20/2017      ADPO-976, Combine spark-defaults.conf from SPARK_HOME when running job on different clusters
+#--------------------------------------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
 JOB_ENV=$2
@@ -38,7 +41,7 @@ PARAM_LIST=`eval echo $PARAM_LIST`
 . $DW_MASTER_CFG/hadoop.login
 
 export SA_DIR=`echo ${ETL_ID} | awk -F'.' '{ print $1; }'`
-export SQL_PATH=${DW_SQL}/${SA_DIR}
+export TABLE_ID=`echo ${ETL_ID} | awk -F'.' '{ print $2; }'`
 export SEQ_FILE_NAME0=${ETL_ID}
 print "Value of SEQ_FILE_NAME0 = "${ETL_ID}
 
@@ -60,16 +63,7 @@ fi
 print "Value of SEQ_FILE_NAME = " ${SPARK_CONF_SUFF}.sql.seq
 
 export SPARK_SQL_SEQ=${ETL_ID}.sql.seq
-export SPARK_SQL_LST=`cat ${SQL_PATH}/${SPARK_SQL_SEQ}`
 eval JOB_SUB_ENV='spark'
-
-if [[ $JOB_ENV == sp* ]]
- then
-      . $DW_MASTER_CFG/.olympus_env.sh
-else
-  print "INFRA_ERROR: invalid JOB_ENV: $JOB_ENV for running Hadoop Jobs."
-  exit 4
-fi
 
 export UC4_JOB_NAME=${UC4_JOB_NAME:-"NA"}
 export UC4_PRNT_CNTR_NAME=${UC4_PRNT_CNTR_NAME:-"NA"}
@@ -94,11 +88,11 @@ print "Inside run_spark_jar function"
 set +e
 
 print "Spark Submit Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
-print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
+print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
 
 export SPARK_SUBMIT_OPTS="-Dlogback.configurationFile=file://${SPARK_HOME}/conf/logback.xml"
 
-${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=hdfs://${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
+${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
 
 rcode=$?
 
@@ -166,6 +160,27 @@ sed 's/,$//' ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList_withPath.lst.t
 export SPARK_SQL_LST1=`cat ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList.lst.tmp`
 export SPARK_SQL_LST_PATH=`cat ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList_withPath.lst.tmp`
 
+################################################################################
+#  Data Lineage related addition log generation
+###############################################################################
+export HOSTNAME=`hostname`
+print "#  Data Lineage related details for ETL_ID : ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "UC4_JOB_NAME : ${UC4_JOB_NAME}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "HD_USERNAME : ${HD_USERNAME}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "HD_QUEUE : ${HD_QUEUE}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "HD_DOMAIN: ${HD_DOMAIN}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "Batch account submitting this SQL : ${HD_USERNAME}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "ETL Hostname : ${HOSTNAME}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+echo "Job Execution Time: ${CURR_DATETIME}" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+print "\n\n" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+
+for SQLSCRIPT in $(echo $SPARK_SQL_LST1 | sed "s/,/ /g")
+  do
+   echo "SQL File Content of :${SQLSCRIPT}" | sed "s/tmp_//" >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+   cat  ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${SQLSCRIPT} >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+   print "\n " >> ${PARENT_LOG_FILE%.log}.data_lineage.log
+done
+
 }
 
 ################################################################################
@@ -176,11 +191,27 @@ export SPARK_SQL_LST_PATH=`cat ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileL
 #       spark.app.name=ETL_ID.[stt|ttm]
 # (3) If properties not exists, use defaults found in SPARK_CONF_DEFAULT
 ################################################################################
+
+################################################################################
+#         JIRA # https://jirap.corp.ebay.com/browse/DINT-976
+# Adding logic to Combine spark-defaults.conf from SPARK_HOME when running job on different clusters
+# It's an additional step after "SPARK_CONF_DYNAMIC" file is generated by framework.
+# The process will look for additional parameters from ${SPARK_HOME}/conf/spark-defaults.conf and append only
+# additional values into SPARK_CONF_DYNAMIC file.
+#################################################################################
 function groomSparkConf
 {
 set -e
 export SPARK_CONF_DEFAULT=${DW_MASTER_CFG}/zeta_default.conf
 export SPARK_CONF_DYNAMIC=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${SPARK_CONF}
+
+## Added as part of DINT-976 on 09/20/2017 by pmitra
+export SPARK_CONF_CLUSTER=${SPARK_HOME}/conf/spark-defaults.conf
+export tmp_read=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_read_${ETL_ID}
+export TMP_SPARK_CONF_CLUSTER=${DW_TMP}/${JOB_ENV}/${SA_DIR}/TMP_SPARK_CONF_CLUSTER_${ETL_ID}
+export TMP2_SPARK_CONF_CLUSTER=${DW_TMP}/${JOB_ENV}/${SA_DIR}/TMP2_SPARK_CONF_CLUSTER_${ETL_ID}
+export TMP3_SPARK_CONF_CLUSTER=${DW_TMP}/${JOB_ENV}/${SA_DIR}/TMP3_SPARK_CONF_CLUSTER_${ETL_ID}
+export TMP4_SPARK_CONF_CLUSTER=${DW_TMP}/${JOB_ENV}/${SA_DIR}/TMP4_SPARK_CONF_CLUSTER_${ETL_ID}
 
 print "Dynamic Gen Spark Conf:  Start"
 
@@ -254,10 +285,98 @@ while read scd; do
    fi
 done < $SPARK_CONF_DEFAULT
 
+## Additional logic added by pmitra on 09/20/2017 as part of JIRA #DINT-976
+
+# Remove empty lines and any starting with hash
+sed -e '/^$/d' $SPARK_CONF_CLUSTER > $TMP_SPARK_CONF_CLUSTER
+sed -e '/^#/d' $TMP_SPARK_CONF_CLUSTER > $TMP2_SPARK_CONF_CLUSTER
+
+rm -f ${TMP3_SPARK_CONF_CLUSTER} ${TMP4_SPARK_CONF_CLUSTER}
+
+ while read T2; do
+    echo $T2 > ${tmp_read}
+    read name value < ${tmp_read}
+    echo $name"="$value>>${TMP3_SPARK_CONF_CLUSTER}
+ done < ${TMP2_SPARK_CONF_CLUSTER}
+
+echo "End of Spark Conf file modification Process"
+
+print "Starting Dynamic Generation of conf : Adding Cluster Default Properties"
+
+
+while read T3; do
+  T3_NAME_FOUND=0
+    while read scd1; do
+      if [[ ${T3%%=*} == ${scd1%%=*} ]]
+      then
+      T3_NAME_FOUND=1
+      break
+      fi
+    done < $SPARK_CONF_DYNAMIC
+
+    if [[ $T3_NAME_FOUND -eq 0 ]]
+      then
+      print ${T3} >> ${TMP4_SPARK_CONF_CLUSTER}
+    fi
+done < $TMP3_SPARK_CONF_CLUSTER
+
+## Appending the content generated from cluster specific spark-default.conf into user specific config
+cat ${TMP4_SPARK_CONF_CLUSTER} >> $SPARK_CONF_DYNAMIC
+
+
 print "Dynamic Gen Spark Conf:  Copy Conf to Log ${PARENT_LOG_FILE%.log}.spark_conf_dynamic.log"
 cat $SPARK_CONF_DYNAMIC > ${PARENT_LOG_FILE%.log}.spark_conf_dynamic.log
 
 print "Dynamic Gen Spark Conf:  Success"
+
+}
+
+function hdfsFileMaskUpdate
+{
+  set +e
+  print "Inside hdfsFileMaskUpdate function"
+  export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
+  export HADOOP_PROXY_USER=${HD_USERNAME}
+  export HDFS_PATH_TO=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${SA_DIR}/snapshot/${PARTITION_NAME}=${UOW_TO_DATE}
+  export HDFS_PATH_FROM=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${SA_DIR}/snapshot/${PARTITION_NAME}=${UOW_FROM_DATE}
+
+  ${HADOOP_HOME2}/bin/hadoop fs -ls hdfs://${HDFS_NN}/${HDFS_PATH_FROM}
+  val_from=$?
+  echo "Return code for UOW_FROM = $val_from" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  if [[ $val_from -eq 0 ]]
+      then
+      echo "HDFS Directory ${HDFS_PATH_FROM} is present" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      ${HADOOP_HOME2}/bin/hadoop fs -setfacl -R -m mask::rwx hdfs://${HDFS_NN}/${HDFS_PATH_FROM}
+      echo "SelFacl applied successfully on ${HDFS_PATH_FROM}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      export rcode=0
+  else
+      ${HADOOP_HOME2}/bin/hadoop fs -ls hdfs://${HDFS_NN}/${HDFS_PATH_TO}
+      val_to=$?
+      echo "Return code for UOW_TO = $val_to" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  if [[ $val_to -eq 0 ]]
+      then
+      echo "HDFS Directory ${HDFS_PATH_TO} is present" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      ${HADOOP_HOME2}/bin/hadoop fs -setfacl -R -m mask::rwx hdfs://${HDFS_NN}/${HDFS_PATH_TO}
+      echo "SelFacl applied successfully on ${HDFS_PATH_TO}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      export rcode=0
+      echo "Value of rcode = $rcode" >>${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  else
+     echo "HDFS Directory doen't exist" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+     export rcode=1
+     echo "Value of rcode = $rcode" >>${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  fi
+fi
+  set -e
+
+
+if [ $rcode != 0 ]
+   then
+    print "Inside Error Handler"
+    print "Value of Return Code ="$rcode
+    exit 4
+ else
+   print "hdfsFileMaskUpdate process complete"
+fi
 
 }
 
@@ -270,6 +389,7 @@ print "Call Spark Submit Module"
     groomSparkSQL
     groomSparkConf
     run_spark_jar
+#    hdfsFileMaskUpdate
 else
   print "INFRA_ERROR: unsupported JOB_SUB_ENV: $JOB_SUB_ENV for running Hadoop Jobs."
   exit 4

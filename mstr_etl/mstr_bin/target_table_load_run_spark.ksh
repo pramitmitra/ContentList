@@ -21,7 +21,8 @@
 # 2017-06-15     2.1   Pramit Mitra                 Adding log file enhancements adpo-138
 # 2017-06-22     2.3   Pramit Mitra                 HDFS File copy back to ETL only for STT adpo-207
 # 2017-07-20     2.4   Michael Weng                 Differentiate STE and STT
-# 2017-08-10     2.5   Pramit Mitra                 Sourced .olympus_env.sh to support setfacl 
+# 2017-08-24     2.5   Pramit Mitra                 Removing .<cluster>_env.sh as part of new design for STM 
+# 2017-09-13     2.6   Michael Weng                 Add second touch file for hd#
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -49,14 +50,6 @@ fi
 # subject area designated email addresses.
 
 . $DW_MASTER_LIB/message_handler
-
-if [[ $JOB_ENV == sp* ]]
- then
-      . $DW_MASTER_CFG/.olympus_env.sh
-else
-  print "INFRA_ERROR: invalid JOB_ENV: $JOB_ENV for running Hadoop Jobs."
-  exit 4
-fi
 
 # Print standard environment variables
 set +u
@@ -178,9 +171,8 @@ grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?
 set -e
 
-### Added Condition for Spark Job Submission - pmitra - 2017/03/01
-if [[ $JOB_ENV == sp* ]]
-then
+## Consolidate SP* and HD* JOB_ENV as per new design - pmitra - 08/24/2017
+   
    HADOOP_JAR=$SQL_FILE
    HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
    export HADOOP_JAR_BASENAME=${HADOOP_JAR_BASENAME%.*}
@@ -204,11 +196,6 @@ then
      ############################################################
      # Adding code for log enhancements https://jirap.corp.ebay.com/browse/ADPO-138
      ############################################################
-
-     SPARK_DEFAULT_FS="hdfs://ares-lvs-nn-ha"
-     HADOOP_HISTORY_LOG="https://hdc34-lvs01-400-2908-002.stratus.lvs.ebay.com:8090/cluster/app"
-     ADPO_DEBUG_WIKI_LOG="https://wiki.vip.corp.ebay.com/display/DataServicesandSolutions/ADPO+-+Debug+Steps+for+Spark+Job"
-
      SPARK_APP_ID=$(grep -m 1 "tracking URL" $LOG_FILE | awk -F"/" '{print $((NF-1))}')
      SPARK_APP_ID=${SPARK_APP_ID:-"NA"}
 
@@ -219,9 +206,9 @@ print "
 #
 ##########################################################################################################
 
-SQL Summary Logs: ${SPARK_DEFAULT_FS}/user/${HD_USERNAME}/
-Hadoop History Logs: ${HADOOP_HISTORY_LOG}/${SPARK_APP_ID}
-Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG}
+SQL Summary Logs: ${SPARK_DEFAULT_FS:-"NA"}/user/${HD_USERNAME}/
+Hadoop History Logs: ${HADOOP_HISTORY_LOG:-"NA"}/${SPARK_APP_ID}
+Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG:-"NA"}
 "
      if [ $rcode != 0 ]
      then
@@ -237,106 +224,6 @@ Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG}
     else
     exit $RCODE
  fi
-
-# Add if..else here to determin if it is a hadoop job
-elif [[ $JOB_ENV == hd* ]]
-then
-  HADOOP_JAR=$SQL_FILE
-  HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
-  export HADOOP_JAR_BASENAME=${HADOOP_JAR_BASENAME%.*}
-  set +u
-  if [[ -n $MAIN_CLASS ]]
-  then
-    CLASS_APPEND=.$MAIN_CLASS
-  else
-    CLASS_APPEND=""
-  fi
-  set -u
-  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load.${HADOOP_JAR_BASENAME}${CLASS_APPEND}${UOW_APPEND}.$CURR_DATETIME.log
-
-  if [ $RCODE = 1 ]
-  then
-  set +e
-  PARAM_LIST=${PARAM_LIST:-""}
-  $DW_MASTER_BIN/dw_infra.runHadoopJob.ksh $ETL_ID $JOB_ENV $HADOOP_JAR $PARAM_LIST > $LOG_FILE 2>&1
-  rcode=$?
-  set -e
-  if [ $rcode != 0 ]
-  then
-  print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-  exit 4
-  fi
-
-  print "target_table_load" >> $COMP_FILE
-
-  elif [ $RCODE = 0 ]
-    then
-    print "target_table_load process already complete"
-  else
-    exit $RCODE
-  fi
- else
-# determine which database we are using through the DBC file
-export JOB_ENV_UPPER
-CFG_DBC_PARAM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print ${JOB_ENV_UPPER}_DBC)
-DEFAULT_DB_NAME=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print teradata_\$DW_${JOB_ENV_UPPER}_DB)
-
-set +e
-DB_NAME=$(grep "^$CFG_DBC_PARAM\>" $DW_CFG/${ETL_ID}.cfg | read PARAM VALUE PARAM_COMMENT; eval print ${VALUE:-$DEFAULT_DB_NAME})
-rcode=$?
-set -e
-if [ $rcode != 0 ]
-then
-     DB_NAME=$DEFAULT_DB_NAME
-   fi
-
-   set +e
-   DB_TYPE=$(grep "^dbms\>" $DW_DBC/${DB_NAME}.dbc | tr [:lower:] [:upper:] | read PARAM VALUE PARAM_COMMENT; print ${VALUE:-0})
-   rcode=$?
-   set -e
-
-   if [ $rcode != 0 ]
-   then
-   print "${0##*/}:  ERROR, Failure determining dbms value from $DW_DBC/${DB_NAME}.dbc" >&2
-   exit 4
-   fi
-
-   if [ $RCODE = 1 ]
-   then
-   print "Processing target table load for TABLE_ID: $TABLE_ID  `date`"
-
-   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.target_table_load.${SQL_FILE_BASENAME}${UOW_APPEND}.$CURR_DATETIME.log
-
-       if [[ $DB_TYPE == "ORACLE" || $DB_TYPE == "MSSQL" || $DB_TYPE == "MYSQL" ]]
-       then
-         # target_table_load_all_dbs.ksh is produced from graph target_table_load.ksh
-         set +e
-         $DW_EXE/target_table_load_all_dbs.ksh $ETL_ID $JOB_ENV $SQL_FILE > $LOG_FILE 2>&1
-         rcode=$?
-         set -e
-         else
-         set +e
-         $DW_MASTER_BIN/dw_infra.runTDSQL.ksh $ETL_ID $JOB_ENV $SQL_FILE $UOW_PARAM_LIST > $LOG_FILE 2>&1
-         rcode=$?
-         set -e
-      fi
-
-      if [ $rcode != 0 ]
-      then
-        print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-        exit 4
-      fi
-
-     print "target_table_load" >> $COMP_FILE
-
-elif [ $RCODE = 0 ]
-then
-  print "target_table_load process already complete"
-else
-  exit $RCODE
-fi
-
-fi
 
 ######################################################################################################
 #
@@ -534,17 +421,18 @@ then
     print "Creating record count file as $TABLE.record_count.dat"
     #print "30000" > $ETL_DIR/$TABLE.record_count.dat
     print ${COUNT} > $ETL_DIR/$TABLE.record_count.dat
+
+    print "
+###############################################################################
+# Copy from HDFS for ETL_ID: $ETL_ID - `date`
+#   HDFS  - $CLUSTER:$SOURCE_PATH
+#   LOCAL - $ETL_DIR
+###############################################################################"
   done
 
   # Creating Done file after HDFS file copy 
-  $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+  $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $STT_WORKING_SOURCE ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
 
-  print "
-##########################################################################################################
-#
-# Copy from HDFS for ETL_ID: $ETL_ID, HDFS: $SOURCE_PATH complete `date`
-#
-##########################################################################################################"
 fi
 
 else
