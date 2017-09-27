@@ -371,9 +371,12 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 # Hadoop env setup
 set +eu
-if [[ -n ${JOB_ENV:-""} ]] && [[ $JOB_ENV == hd* ]]
+if [[ -n ${JOB_ENV:-""} ]] && [[ $JOB_ENV == hd* || $JOB_ENV == sp* ]]
 then
-  CLUSTER=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
+  export JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:])
+  export COMPUTE_ENV=$(eval print \$${JOB_ENV_UPPER}_COMPUTE)
+  export STORAGE_ENV=$(eval print \$${JOB_ENV_UPPER}_STORAGE)
+  CLUSTER=$(eval print \$DW_${JOB_ENV_UPPER}_DB)
   . $DW_MASTER_CFG/.${CLUSTER}_env.sh
 fi
 export HADOOP_AUTHENTICATED=0
