@@ -1,27 +1,29 @@
-export DW_TD1_DB=sandcat3
-export DW_TD2_DB=sandcat3
-export DW_TD3_DB=oscar2
-export DW_TD4_DB=crazy
-export DW_TD5_DB=oscar2
-export DW_TD6_DB=oscar2
-export DW_TD7_DB=sandcat3
-export DW_TD100_DB=ming
-export DW_TD101_DB=bach
+DW_TD1_DB=martinibe
+DW_TD2_DB=mozartbe
+DW_TD3_DB=davincibe
+DW_TD4_DB=fermat
+DW_TD5_DB=vivaldibe
+DW_TD6_DB=mozartbe
+DW_TD7_DB=hopbe
+
+export DW_TD1_DB
+export DW_TD2_DB
+export DW_TD3_DB
+export DW_TD4_DB
+export DW_TD5_DB
+export DW_TD6_DB
+export DW_TD7_DB
+
+export DW_SP1_DB=olympus
+
 export DW_HD1_DB=ares
 export DW_HD2_DB=apollo
 export DW_HD3_DB=artemis
-export DW_HD4_DB=apolloqa
 export DW_HD5_DB=juno
-export DW_HD6_DB=aresqa
-export DW_HD7_DB=artemisqa
-export DW_SP1_DB=olympus
-export HD1_NN_URL="hdfs://ares-lvs-nn-ha"
+export HD1_NN_URL="hdfs://ares-lvs-nn-ha:8020"
 export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
 export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"
-export HD4_NN_URL="hdfs://apolloqa-phx-nn-ha"
 export HD5_NN_URL="hdfs://sd-lvs-nn-ha"
-export HD6_NN_URL="hdfs://aressub-lvs-nn-ha"
-export HD7_NN_URL="hdfs://artemis-sub-nn-ha"
 export SP1_NN_URL="hdfs://olympus"
 export HD1_COMPUTE=$DW_HD1_DB
 export HD1_STORAGE=$DW_HD1_DB
@@ -38,12 +40,6 @@ export HD4_STORAGE_NN_URL=$HD4_NN_URL
 export HD5_COMPUTE=$DW_HD5_DB
 export HD5_STORAGE=$DW_HD5_DB
 export HD5_STORAGE_NN_URL=$HD5_NN_URL
-export HD6_COMPUTE=$DW_HD6_DB
-export HD6_STORAGE=$DW_HD6_DB
-export HD6_STORAGE_NN_URL=$HD6_NN_URL
-export HD7_COMPUTE=$DW_HD7_DB
-export HD7_STORAGE=$DW_HD7_DB
-export HD7_STORAGE_NN_URL=$HD7_NN_URL
 export SP1_COMPUTE=olympus
 export SP1_STORAGE=ares
 export SP1_STORAGE_NN_URL="hdfs://ares-lvs-nn-ha"
