@@ -5758,3 +5758,4 @@ gbcust10_asv=
     (Port = 1522))
     (CONNECT_DATA = (SID=GBCUST10)))
 
+affdbprd=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=affdb.vip.ebay.com)(PORT=1521))(CONNECT_DATA=(SID=AFFDBPRD)))
