@@ -13,6 +13,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/13/2016      Initial Creation
 # Michael Weng     01/12/2017      Default Kerberos domain and exit on kinit failure
+# Michael Weng     09/04/2017      Log HD_USERNAME, HD_QUEUE and HD_DOMAIN
 #------------------------------------------------------------------------------------------------
 
 
@@ -62,6 +63,7 @@ then
   if [[ $? == 0 ]]
   then
     print "INFRA_INFO: successfully login as $myPrincipal using keytab file: $myKeytabFile"
+    print "            hadoop user ($HD_USERNAME), queue ($HD_QUEUE), domain ($HD_DOMAIN)"
   else
     print "INFRA_ERROR: login failed for $myPrincipal using keytab file: $myKeytabFile"
     exit 4
