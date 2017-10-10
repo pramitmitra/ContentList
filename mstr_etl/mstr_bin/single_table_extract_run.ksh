@@ -37,6 +37,8 @@
 # 2017-07-20   1.19   Michael Weng                  Differentiate STE and STT, add UOW onto HDFS path
 # 2017-08-28   1.20   Kevin Oaks                    Add UOW PARAM LIST to wget/iwget COMMAND
 # 2017-09-14   1.21   Michael Weng                  Support multiple HDFS copy and optional flag for copy failure
+# 2017-10-04   1.22   Michael Weng                  Add restart logic for hdfs load
+# 2017-10-10   1.23   Michael Weng                  Add support for sp* on loading data to hdfs
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1361,9 +1363,6 @@ fi
 
 print "HA DR synching complete `date`"
 
-print "Removing the complete file  `date`"
-rm -f $COMP_FILE
-
 
 print "
 ##########################################################################################################
@@ -1436,8 +1435,17 @@ then
     fi
     CLUSTER=$(HD_ENV_UPPER=$(print $HD_ENV | tr [:lower:] [:upper:]); eval print \$DW_${HD_ENV_UPPER}_DB)
 
-    if [[ $HD_ENV == hd* ]] && [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
+    if [[ $HD_ENV == @(hd*|sp*) ]] && [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
     then
+      PROCESS=ste_hdfs_load_${HD_ENV}
+      RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+      if [ $RCODE = 0 ]
+      then
+        print "$PROCESS already complete"
+        continue
+      fi
+
       . $DW_MASTER_CFG/.${CLUSTER}_env.sh
       . $DW_MASTER_CFG/hadoop.login
 
@@ -1488,6 +1496,8 @@ then
 # Loaded data to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`
 #   HDFS - $CLUSTER: $STE_STAGE_PATH
 ##########################################################################################################"
+
+        print "$PROCESS" >> $COMP_FILE
       fi
 
     else
@@ -1515,6 +1525,9 @@ then
   fi
 
 fi
+
+print "Removing the complete file  `date`"
+rm -f $COMP_FILE
 
 
 tcode=0
