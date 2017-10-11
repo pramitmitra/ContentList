@@ -23,6 +23,8 @@
 # 2017-07-20     2.4   Michael Weng                 Differentiate STE and STT
 # 2017-08-24     2.5   Pramit Mitra                 Removing .<cluster>_env.sh as part of new design for STM 
 # 2017-09-13     2.6   Michael Weng                 Add second touch file for hd#
+# 2017-09-27     2.7   Pramit Mitra                 DINT-993: COUNT Logic modification, Complete file scope extension
+# 2017-10-10     2.8   Michael Weng                 Add support for sp* on hdfs copy back to ETL
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -332,15 +334,6 @@ fi
   exit $RCODE
 fi
 
-print "Removing the complete file  `date`"
-rm -f $COMP_FILE
-
-print "
-##########################################################################################################
-#
-# Target table load for ETL_ID: $ETL_ID complete   `date`
-#
-##########################################################################################################"
 
 
 ######################################################################################################
@@ -356,71 +349,77 @@ print "
 #    STT_WORKING_TABLES   # the working tables
 #
 ######################################################################################################
-if [[ ${BASENAME} == single_table_transform_handler ]]
-then
-assignTagValue STT_WORKING_SOURCE STT_WORKING_SOURCE $ETL_CFG_FILE W ""
+PROCESS=hdfs_etl_copy
+RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
-set +eu
-if [[ -n ${STT_WORKING_SOURCE:-""} ]] && [[ $STT_WORKING_SOURCE == hd* ]]
-then
-  CLUSTER=$(JOB_ENV_UPPER=$(print $STT_WORKING_SOURCE | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
-  if ! [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
-  then
-    print "${0##*/}:  ERROR, invalid STT_WORKING_SOURCE value in $ETL_CFG_FILE" >&2
-    exit 4;
-  fi
-
-  . $DW_MASTER_CFG/.${CLUSTER}_env.sh
-  . $DW_MASTER_CFG/hadoop.login
-
-  assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
-  assignTagValue STT_WORKING_PATH STT_WORKING_PATH $ETL_CFG_FILE
-  assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
-
-  STT_SA=${SUBJECT_AREA#*_}
-
-  for TABLE in $(echo $STT_WORKING_TABLES | sed "s/,/ /g")
-  do
-    ETL_DIR=${IN_DIR}/extract/${SUBJECT_AREA}
-    SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
-
-    if [[ X"$UOW_TO" != X ]]
+if [ $RCODE -eq 1 ]
+   then
+    if [[ ${BASENAME} == single_table_transform_handler ]]
     then
-      ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
-    fi
-    print "Copy from HDFS is started. Source: ${SOURCE_PATH}, Destination: ${ETL_DIR}"
+      assignTagValue STT_WORKING_SOURCE STT_WORKING_SOURCE $ETL_CFG_FILE W ""
 
-    if [[ -d $ETL_DIR ]]
-    then
-      print "Cleanup destination folder on ETL: $ETL_DIR"
-      rm -rf $ETL_DIR/*
-    fi
+      set +eu
+      if [[ -n ${STT_WORKING_SOURCE:-""} ]] && [[ $STT_WORKING_SOURCE == @(hd*|sp*) ]]
+          then
+          CLUSTER=$(JOB_ENV_UPPER=$(print $STT_WORKING_SOURCE | tr [:lower:] [:upper:]); eval print \$DW_${JOB_ENV_UPPER}_DB)
+            if ! [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
+            then
+            print "${0##*/}:  ERROR, invalid STT_WORKING_SOURCE value in $ETL_CFG_FILE" >&2
+            exit 4;
+            fi
 
-    COMMAND="mkdir -p $ETL_DIR; ${HADOOP_HOME2}/bin/hadoop fs -copyToLocal $SOURCE_PATH/* $ETL_DIR/"
-    set +e
-    eval $COMMAND
-    retcode=$?
-    set -e
+          . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+          . $DW_MASTER_CFG/hadoop.login
 
-    if [ $retcode != 0 ]
-    then
-      print "INFRA_ERROR - Failure extracting data from HDFS: $SOURCE_PATH"
-      exit 4
-    else
-      print "Extract from HDFS completed: ${SOURCE_PATH}"
-    fi
+          assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
+          assignTagValue STT_WORKING_PATH STT_WORKING_PATH $ETL_CFG_FILE
+          assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
+
+          STT_SA=${SUBJECT_AREA#*_}
+
+          for TABLE in $(echo $STT_WORKING_TABLES | sed "s/,/ /g")
+          do
+          ETL_DIR=${IN_DIR}/extract/${SUBJECT_AREA}
+          SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
+
+            if [[ X"$UOW_TO" != X ]]
+            then
+            ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+            fi
+            print "Copy from HDFS is started. Source: ${SOURCE_PATH}, Destination: ${ETL_DIR}"
+
+            if [[ -d $ETL_DIR ]]
+            then
+            print "Cleanup destination folder on ETL: $ETL_DIR"
+            rm -rf $ETL_DIR/*
+            fi
+
+            COMMAND="mkdir -p $ETL_DIR; ${HADOOP_HOME2}/bin/hadoop fs -copyToLocal $SOURCE_PATH/* $ETL_DIR/"
+            set +e
+            eval $COMMAND
+            retcode=$?
+            set -e
+
+          if [ $retcode != 0 ]
+            then
+            print "INFRA_ERROR - Failure extracting data from HDFS: $SOURCE_PATH"
+            exit 4
+          else
+          print "Extract from HDFS completed: ${SOURCE_PATH}"
+        fi
 
     print "Renaming data files in the pattern of $TABLE.#.dat"
+    REC_COUNT=0
     COUNT=0
     for FILE in $(ls $ETL_DIR)
     do
       mv $ETL_DIR/$FILE $ETL_DIR/$TABLE.$COUNT.dat
+      FILE_COUNT=$(ls -l $ETL_DIR/$TABLE.$COUNT.dat | cut -d " " -f 5)
+      REC_COUNT=$REC_COUNT+$FILE_COUNT
       COUNT=$((COUNT+1))
     done
-
     print "Creating record count file as $TABLE.record_count.dat"
-    #print "30000" > $ETL_DIR/$TABLE.record_count.dat
-    print ${COUNT} > $ETL_DIR/$TABLE.record_count.dat
+    print $((REC_COUNT/100)) > $ETL_DIR/$TABLE.record_count.dat
 
     print "
 ###############################################################################
@@ -432,12 +431,32 @@ then
 
   # Creating Done file after HDFS file copy 
   $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $STT_WORKING_SOURCE ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+    else
+      print "Warning : ADPO: HDFS file copy not done as STT_WORKING_SOURCE value is not hd " 
+    fi
 
+  else
+    print "Warning : ADPO: HDFS file copy to ETL host can't be performed for ${BASENAME}" 
+  fi   
+
+print $PROCESS >> $COMP_FILE
+
+ elif [ $RCODE -eq 0 ]
+    then
+    print "$PROCESS already complete"
+  else
+   exit $RCODE
 fi
 
-else
-    print "Warning : ADPO: HDFS file copy to ETL host can't be performed for ${BASENAME}"  >&2
-fi   
+print "Removing the complete file  `date`"
+rm -f $COMP_FILE
+
+print "
+##########################################################################################################
+#
+# Target table load for ETL_ID: $ETL_ID complete   `date`
+#
+##########################################################################################################"
 
 tcode=0
 exit
