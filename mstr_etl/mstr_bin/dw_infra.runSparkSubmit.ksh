@@ -11,10 +11,11 @@
 # Called by:    UC4/Unix
 #
 # Date           Ver#   Modified By(Name)            Change and Reason for Change
-#-----------    -----  ---------------------------  ------------------------------
+#-----------    -----  ---------------------------  ---------------------------------------------------------------------------------------------------------------
 # 2017-08-21       .1   Ryan Wong                    Initial
 # 2017-09-21       .2   Pramit Mitra                 ADPO-976, Combine spark-defaults.conf from SPARK_HOME when running job on different clusters
-####################################################################################################
+# 2017-10-11       .3   Pramit Mitra                 DINT-1018, Conditional Copy logic added to ensure no copy is attempted when user specify ALL spark properties
+#####################################################################################################################################################################
 
 ETL_ID=$1
 JOB_ENV=$2
@@ -235,8 +236,14 @@ while read T3; do
     fi
 done < $TMP3_SPARK_CONF_CLUSTER
 
-## Appending the content generated from cluster specific spark-default.conf into user specific config
-cat ${TMP4_SPARK_CONF_CLUSTER} >> $SPARK_CONF_DYNAMIC
+# DINT-1018 : Adding conditional copy logic. Ignore file copy is user has already specified all properties at ETL_ID level
+if [[ -f ${TMP4_SPARK_CONF_CLUSTER} ]]
+then
+  print "Appending the content generated from cluster specific spark-default.conf into user specific config"
+  cat ${TMP4_SPARK_CONF_CLUSTER} >> $SPARK_CONF_DYNAMIC
+else
+  print "User has specified all parameters, present on cluster specific config file : Nothing to copy"
+fi
 
 print "Dynamic Gen Spark Conf:  Copy Conf to Log ${PARENT_LOG_FILE%.log}.spark_conf_dynamic.log"
 cat $SPARK_CONF_DYNAMIC > ${PARENT_LOG_FILE%.log}.spark_conf_dynamic.log
