@@ -15,6 +15,7 @@ export DW_TD6_DB
 export DW_TD7_DB
 
 export DW_SP1_DB=olympus
+export DW_SP2_DB=hercules
 
 export DW_HD1_DB=ares
 export DW_HD2_DB=apollo
@@ -25,6 +26,7 @@ export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
 export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"
 export HD5_NN_URL="hdfs://sd-lvs-nn-ha"
 export SP1_NN_URL="hdfs://olympus"
+export SP2_NN_URL="hdfs://hercules"
 export HD1_COMPUTE=$DW_HD1_DB
 export HD1_STORAGE=$DW_HD1_DB
 export HD1_STORAGE_NN_URL=$HD1_NN_URL
@@ -40,3 +42,6 @@ export HD5_STORAGE_NN_URL=$HD5_NN_URL
 export SP1_COMPUTE=olympus
 export SP1_STORAGE=ares
 export SP1_STORAGE_NN_URL="hdfs://ares-lvs-nn-ha"
+export SP2_COMPUTE=$DW_SP2_DB
+export SP2_STORAGE=$DW_SP2_DB
+export SP2_STORAGE_NN_URL=$SP2_NN_URL
