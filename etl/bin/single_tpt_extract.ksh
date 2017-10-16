@@ -19,6 +19,7 @@
 # 2013-10-08   1.4    Ryan Wong                     Redhat changes
 # 2016-04-19   1.5    Ryan Wong                     Passing UOW_FROM and UOW_TO for SQL variables
 # 2016-09-20   1.6    Ryan Wong                     Fixing queryband statement
+# 2017-10-12   1.7    Ryan Wong                     Fixing port utilized check
 #############################################################################################################
 
 ETL_ID=$1
@@ -102,26 +103,43 @@ fi
 if [[ "X${TPT_EXTRACT_PORT:-}" = "X" ]]
 then
   # if not set use random
-  TPT_EXTRACT_PORT=$((6000+$RANDOM%2000))
-  TPT_ARG="$TPT_ARG -PORT $TPT_EXTRACT_PORT"
+  RANDOM_ATTEMPT_MAX=5
+  RANDOM_ATTEMPT=0
+  # Random seed with pid
+  RANDOM=$$
+  while [ $RANDOM_ATTEMPT -lt $RANDOM_ATTEMPT_MAX ]
+  do
+    TPT_EXTRACT_PORT=$((6000+$RANDOM%2000))
+    print "Generate random number for port: $TPT_EXTRACT_PORT"
+
+    set +e
+    netstat  -t --numeric-ports | awk '{print $4}' | grep $TPT_EXTRACT_PORT
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      TPT_ARG="$TPT_ARG -PORT $TPT_EXTRACT_PORT"
+      print "Assigning Random Port: $TPT_EXTRACT_PORT"
+      break
+    fi
+
+    ((RANDOM_ATTEMPT++))
+    print "WARNING: Port number $TPT_EXTRACT_PORT is already in use. Attempt Number $RANDOM_ATTEMPT of $RANDOM_ATTEMPT_MAX. Sleep for 60 sec"
+    sleep 60
+  done
+
+  if [ $RANDOM_ATTEMPT -ge $RANDOM_ATTEMPT_MAX ]
+  then
+   print "FATAL ERROR: Tried to get an unused port, attempted this many times $RANDOM_ATTEMPT_MAX, but failed." >&2
+   exit 4                                                                        	
+  fi
 fi
+
 
 # Set MASTER_NODE
 export MASTER_NODE=$servername
 TPT_ARG="$TPT_ARG -MASTER_NODE $MASTER_NODE"
-
-
-
-set +e
- netstat  -t|awk '{print $4}'|grep ${MASTER_NODE%%.*}|grep TPT_EXTRACT_PORT
- rcode=$?
-set -e
-
-if [ $rcode = 0 ]
-then
- print "FATAL ERROR: Port number $TPT_EXTRACT_PORT is already in use" >&2       	
- exit 4                                                                        	
-fi
 
 # Check for query band
 eval set -A myqb $(grep TPT_EXTRACT_QUERY_BAND $ETL_CFG_FILE)
