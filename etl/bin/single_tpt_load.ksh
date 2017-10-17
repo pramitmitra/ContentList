@@ -21,6 +21,7 @@
 # 2014-08-07   1.6    Ryan Wong                     Fix data file search by calling dw_infra.single_tpt_load_find_files.ksh
 # 2014-09-03   1.7    Ryan Wong                     Fixing dw_infra.single_tpt_load_find_files.ksh to handle NON-UOW files
 # 2016-09-20   1.8    Ryan Wong                     Fixing queryband statement
+# 2017-10-13   1.9    Ryan Wong                     Fixing port utilized check
 #############################################################################################################
 
 ETL_ID=$1
@@ -84,28 +85,43 @@ fi
 # If TPT_LOAD_PORT is not assigned, then use random number
 if [[ "X${TPT_LOAD_PORT:-}" = "X" ]]
 then
-  # if not set use random
-  TPT_LOAD_PORT=$((6000+$RANDOM%2000))
-  TPT_ARG="$TPT_ARG -PORT $TPT_LOAD_PORT"
+  RANDOM_ATTEMPT_MAX=5
+  RANDOM_ATTEMPT=0
+  # Random seed with pid
+  RANDOM=$$
+  while [ $RANDOM_ATTEMPT -lt $RANDOM_ATTEMPT_MAX ]
+  do
+    TPT_LOAD_PORT=$((6000+$RANDOM%2000))
+    print "Generate random number for port: $TPT_LOAD_PORT"
+
+    set +e
+    netstat  -t --numeric-ports | awk '{print $4}' | grep $TPT_LOAD_PORT
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      TPT_ARG="$TPT_ARG -PORT $TPT_LOAD_PORT"
+      print "Assigning Random Port: $TPT_LOAD_PORT"
+      break
+    fi
+
+    ((RANDOM_ATTEMPT++))
+    print "WARNING: Port number $TPT_LOAD_PORT is already in use. Attempt Number $RANDOM_ATTEMPT of $RANDOM_ATTEMPT_MAX. Sleep for 60 sec"
+    sleep 60
+  done
+
+  if [ $RANDOM_ATTEMPT -ge $RANDOM_ATTEMPT_MAX ]
+  then
+   print "FATAL ERROR: Tried to get an unused port, attempted this many times $RANDOM_ATTEMPT_MAX, but failed." >&2
+   exit 4
+  fi
 fi
+
 
 # Set MASTER_NODE
 export MASTER_NODE=$servername
 TPT_ARG="$TPT_ARG -MASTER_NODE $MASTER_NODE"
-
-# Check whether the port number already in use to initiate the instances or fail the extract
-set +e
- netstat  -t|awk '{print $4}'|grep ${MASTER_NODE%%.*}|grep TPT_EXTRACT_PORT
- rcode=$?
-set -e
-
-if [ $rcode = 0 ]
-then
- print "FATAL ERROR: Port number $TPT_EXTRACT_PORT is already in use" >&2       	
- exit 4                                                                        	
-fi
-
-
 
 # Check for additional query band
 eval set -A myqb $(grep TPT_LOAD_QUERY_BAND $ETL_CFG_FILE)
@@ -125,7 +141,7 @@ fi
 DBC_FILE=$(JOB_ENV_LOWER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); echo teradata_${JOB_ENV_LOWER}.dbc)
 if [[ "X$TPT_LOAD_CHARSET" = "X" ]]
 then
-  assignTagValue TPT_LOAD_CHARSET "teradata_character_set:" $DW_DBC/$DBC_FILE W ""
+  assignTagValue TPT_LOAD_CHARSET "teradata_character_set" $DW_DBC/$DBC_FILE W ""
   if [[ "X$TPT_LOAD_CHARSET" != "X" ]]
   then
     TPT_ARG="$TPT_ARG -CHARSET $TPT_LOAD_CHARSET"
