@@ -20,6 +20,7 @@
 # Michael Weng     10/12/2016      Add hadoop authentication
 # Pramit Mitra     04/17/2017      Commenting out proxy hive user configuration
 # Michael Weng     04/27/2017      Add HiveServer2 beeline support
+# Michael Weng     10/18/2017      Add support for sp*
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -27,7 +28,7 @@ JOB_ENV=$2
 HADOOP_JAR=$3
 shift 3
 
-if ! [[ $JOB_ENV == hd* ]]
+if ! [[ $JOB_ENV == @(hd*|sp*) ]]
 then
   print "INFRA_ERROR: invalid JOB_ENV: $JOB_ENV for running Hadoop Jobs."
   exit 4

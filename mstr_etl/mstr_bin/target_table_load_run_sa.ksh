@@ -21,6 +21,7 @@
 # 2013-10-04     1.3   Ryan Wong                    Redhat changes
 # 2016-07-13     1.4   Michael Weng                 Add a comment to create a push to PROD
 # 2016-07-19     1.5   Michael Weng                 Check on hd* and rename dw_infra.runHadoopJar.ksh
+# 2017-10-18     1.7   Michael Weng                 Add support for sp*
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -161,7 +162,7 @@ RCODE=$?
 set -e
 
 # Add if..else here to determin if it is a hadoop job
-if [[ $JOB_ENV == hd* ]]
+if [[ $JOB_ENV == @(hd*|sp*) ]]
 then
   HADOOP_JAR=$SQL_FILE
   HADOOP_JAR_BASENAME=${HADOOP_JAR##*/}
