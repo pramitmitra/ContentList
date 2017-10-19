@@ -29,13 +29,15 @@
 # 2013-07-16     1.8   Ryan Wong                    Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
 # 2013-07-30     1.9   Jacky Shen                   Add hadoop jar job support
 # 2013-10-04     1.10  Ryan Wong                    Redhat changes
-# 2017-10-18     1.11  Michael Weng                 Add support for sp*
+# 2016-04-21     1.11  Michael Weng                 Add JOB_ENV optional sub-type for variable hadoop jobs
+# 2016-07-21     1.12  Michael Weng                 Update parameter handling for hadoop jobs
+# 2017-10-18     1.13  Michael Weng                 Out of sync between PROD and Github, also add support for sp*
 ###################################################################################################################
 
 typeset -fu usage
 
 function usage {
-   print "Usage:  $0 <ETL_ID> <JOB_ENV> <SQL_FILE|JAR_FILE> [ -f <UOW_FROM> -t <UOW_TO> ] [ -m <main_class> [ -p <PARAM_NAME1=PARAM_VALUE1> -p <PARAM_NAME1=PARAM_VALUE1> ... ] OR [<PARAM_NAME1=PARAM_VALUE1> <PARAM_NAME2=PARAM_VALUE2> ...]]
+   print "Usage:  $0 <ETL_ID> <JOB_ENV> <SQL_FILE|JAR_FILE> [ -s <JOB_SUB_ENV> ] [ -f <UOW_FROM> -t <UOW_TO> ] [ -m <main_class> [ -p <PARAM_NAME1=PARAM_VALUE1> -p <PARAM_NAME1=PARAM_VALUE1> ... ] OR [<PARAM_NAME1=PARAM_VALUE1> <PARAM_NAME2=PARAM_VALUE2> ...]]
 NOTE: UOW_FROM and UOW_TO are optional but must be used in tandem if either is present."
 }
 
@@ -81,7 +83,8 @@ export SQL_FILE_BASENAME=${SQL_FILE_BASENAME%.*}
 
 . /dw/etl/mstr_cfg/etlenv.setup
 
-# Check for optional UOW
+# Check for optional
+export JOB_SUB_ENV=""
 export UOW_FROM=""
 export UOW_TO=""
 export UOW_FROM_FLAG=0
@@ -89,9 +92,13 @@ export UOW_TO_FLAG=0
 
 # getopts loop for processing optional args including UOW
 print "Processing Options"
-while getopts "f:t:p:m:" opt
+while getopts "s:f:t:p:m:" opt
 do
    case $opt in
+      s ) 
+          JOB_SUB_ENV=$OPTARG
+          export JOB_SUB_ENV
+          ;;
       f ) if [[ $UOW_FROM_FLAG -ne 0 ]]
           then
              print "Fatal Error: -f flag specified more than once" >&2
@@ -135,24 +142,25 @@ shift $((OPTIND - 1))
 PARAM_LIST=""
 if [ $# -ge 1 ]
 then
-   if [[ $JOB_ENV == @(hd1|hd2) ]]
-   then
-     export PARAM_LIST=$*
-   else
    for param in $*
    do
       if [ ${param%=*} = $param ]
       then
-         print "${0##*/}: ERROR, parameter definition $param is not of form <PARAM_NAME=PARAM_VALUE>"
-         usage
-         exit 4
+         if [[ $JOB_ENV == @(hd*|sp*) ]]
+         then
+            PARAM_LIST="$PARAM_LIST $param"
+         else
+            print "${0##*/}: ERROR, parameter definition $param is not of form <PARAM_NAME=PARAM_VALUE>"
+            usage
+            exit 4
+         fi
       else
          print "Exporting $param"
          export $param
       fi
    done
-  fi
 fi
+export PARAM_LIST
 
 # Setup common definitions
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
