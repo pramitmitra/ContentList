@@ -16,6 +16,7 @@
 # 2015-07-07  1.5    Ryan Wong                       Add td6 and td7 to JOB_ENV check
 # 2015-08-26  1.6    Ryan Wong                       Add mapping for hopbatch and hopbe to hopper
 # 2016-04-21  1.7    Michael Weng                    Check on hd* and set hadoop env for td*
+# 2017-10-18  1.7    Michael Weng                    Add support for sp*
 ####################################################################################################
 
 
@@ -113,7 +114,7 @@ then
   fi
 
 
-elif [[ $JOB_ENV = hd* ]]
+elif [[ $JOB_ENV = @(hd*|sp*) ]]
 then
   HADOOP_SYSTEM=$(JOB_ENV_UPPER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print \$DW_${JOB_ENV_UPPER}_DB)
   assignTagValue DM_BRIDGE_TD_SYSTEM DM_BRIDGE_TD_SYSTEM $ETL_CFG_FILE "W"
@@ -140,7 +141,7 @@ then
   fi
 
 else
-  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd*"
+  print "ony support JOB_ENV:  	td1||td2||td3||td5||td6||td7||hd*||sp*"
   exit 4
 fi
 
