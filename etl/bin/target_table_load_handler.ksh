@@ -29,6 +29,7 @@
 # 2013-07-16     1.8   Ryan Wong                    Update UOW variable definition to use $DW_MASTER_EXE/dw_etl_common_defs_uow.cfg
 # 2013-07-30     1.9   Jacky Shen                   Add hadoop jar job support
 # 2013-10-04     1.10  Ryan Wong                    Redhat changes
+# 2017-10-18     1.11  Michael Weng                 Add support for sp*
 ###################################################################################################################
 
 typeset -fu usage
@@ -66,7 +67,7 @@ export SQL_FILE=$3
 # and graceful failures and messages.
 shift 3
 
-if [[ $JOB_ENV == @(hd1|hd2) ]]
+if [[ $JOB_ENV == @(hd*|sp*) ]]
 then
 export JOB_TYPE=hadoop_tr
 export JOB_TYPE_ID=mr
