@@ -378,8 +378,10 @@ set +eu
 if [[ -n ${JOB_ENV:-""} ]] && [[ $JOB_ENV == hd* || $JOB_ENV == sp* ]]
 then
   export JOB_ENV_UPPER=$(print $JOB_ENV | tr [:lower:] [:upper:])
-  export COMPUTE_ENV=$(eval print \$${JOB_ENV_UPPER}_COMPUTE)
-  export STORAGE_ENV=$(eval print \$${JOB_ENV_UPPER}_STORAGE)
+  export COMPUTE_ENV_UPPER=$(print $(eval print \$${JOB_ENV_UPPER}_COMPUTE) | tr [:lower:] [:upper:])
+  export COMPUTE_ENV=$(eval print \$DW_${COMPUTE_ENV_UPPER}_DB)
+  export STORAGE_ENV_UPPER=$(print $(eval print \$${JOB_ENV_UPPER}_STORAGE) | tr [:lower:] [:upper:])
+  export STORAGE_ENV=$(eval print \$DW_${STORAGE_ENV_UPPER}_DB)
   CLUSTER=$(eval print \$DW_${JOB_ENV_UPPER}_DB)
   . $DW_MASTER_CFG/.${CLUSTER}_env.sh
 fi
