@@ -25,6 +25,7 @@
 # 2017-09-13     2.6   Michael Weng                 Add second touch file for hd#
 # 2017-09-27     2.7   Pramit Mitra                 DINT-993: COUNT Logic modification, Complete file scope extension
 # 2017-10-10     2.8   Michael Weng                 Add support for sp* on hdfs copy back to ETL
+# 2017-10-13     2.9   Michael Weng                 Create second touch file on STORAGE_ENV
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -290,7 +291,7 @@ else
          print "$COMMAND" >> $COMP_FILE
        fi
 
-                                                                                                                                                       elif [ $rcode = 0 ]
+       elif [ $rcode = 0 ]
      then
          print "$COMMAND already complete"
          continue
@@ -299,27 +300,29 @@ else
          exit $rcode
      fi
 
-                                                                                                                                                    done < $TRGT_TBL_LD_POST_PROC_LIS
+     done < $TRGT_TBL_LD_POST_PROC_LIS
 fi
 
  PROCESS=touch_watchfile
  RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
-                                                                                                                                                   if [ $RCODE -eq 1 ]
+ if [ $RCODE -eq 1 ]
  then
 
     LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$PROCESS.${SQL_FILE_BASENAME}${UOW_APPEND}.$CURR_DATETIME.log
     TFILE_NAME=${SQL_FILE_BASENAME}.done
 
-                                                                                                                                                      print "Touching Watchfile $TFILE_NAME$UOW_APPEND"
+    print "Touching Watchfile $TFILE_NAME$UOW_APPEND"
 
    set +e
    ##$DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $TFILE_NAME $UOW_PARAM_LIST > $LOG_FILE 2>&1
    $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
    rcode=$?
+   $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $(eval print \$${JOB_ENV_UPPER}_STORAGE) ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+   rcode2=$?
    set -e
 
-   if [ $rcode -ne 0 ]
+   if [ $rcode -ne 0 || $rcode2 -ne 0 ]
    then
         print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
         exit 4
