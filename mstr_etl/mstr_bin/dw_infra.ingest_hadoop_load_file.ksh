@@ -20,6 +20,7 @@
 # Michael Weng     04/21/2016      Retrieve HDFS_URL based on JOB_ENV if not defined
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Michael Weng     10/12/2016      Add hadoop authentication
+# Michael Weng     10/10/2017      Add optional UOW to the HDFS path
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -92,6 +93,7 @@ export HADOOP_COMMAND="$HADOOP_HOME/bin/hadoop"
 export JOB_TYPE="load"
 export JOB_TYPE_ID="ld"
 
+assignTagValue HDFS_PATH HDFS_PATH $ETL_CFG_FILE W ""
 assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
 export IN_DIR=$IN_DIR/extract/$SUBJECT_AREA
 UOW_APPEND=""
@@ -110,11 +112,16 @@ then
    export UOW_TO_DATE_RFMT=$($DW_MASTER_EXE/dw_infra.reformat_date.ksh $UOW_TO_DATE $UOW_TO_DATE_RFMT_CODE)
    export IN_DIR=$IN_DIR/$TABLE_ID/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
    export UOW_DATE=$UOW_TO_DATE
+
+   assignTagValue HDFS_PATH_UOW HDFS_PATH_UOW $ETL_CFG_FILE W 0
+   if [ $HDFS_PATH_UOW != 0 ]
+   then
+     HDFS_PATH=$HDFS_PATH/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS/
+   fi
 fi
 
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1   
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W "$HDFS_URL"
-assignTagValue HDFS_PATH HDFS_PATH $ETL_CFG_FILE W ""
 assignTagValue EXTRACT_PROCESS_TYPE EXTRACT_PROCESS_TYPE $ETL_CFG_FILE W "D"
 assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W "0"
 assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ".gz"
@@ -140,10 +147,17 @@ fi
 
 print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
 
-for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
-do
-  print "$data_file_entry" >> $DATA_LIS_FILE
-done
+# Fail the job if source file is not available
+if ls $DATA_FILE_PATTERN 1> /dev/null 2>&1
+then
+  for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
+  do
+    print "$data_file_entry" >> $DATA_LIS_FILE
+  done
+else
+  print "${0##*/}: INFRA_ERROR - Failed to find source file(s) on $servername (Host Index: $HOST_ID)"
+  exit 4
+fi
 
 LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_hdfs_load.$HOST_ID.$CURR_DATETIME.log
 

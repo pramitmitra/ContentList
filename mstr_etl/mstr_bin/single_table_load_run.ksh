@@ -26,6 +26,7 @@
 # 2013-04-19   1.9    Ryan Wong                    Adding UNIT_OF_WORK_FILE for cleanup
 # 2013-10-04   1.10   Ryan Wong                    Redhat changes
 # 2016-04-21   1.11   Michael Weng                 Check on hd* instead of specific hd1/hd2/hd3
+# 2017-10-10   1.12   Michael Weng                 Add support for sp* when loading data to HDFS
 ####################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -97,7 +98,7 @@ set -A LOAD_PROCESS_TYPE_ARR `echo "$LOAD_PROCESS_TYPE"| awk -F'|' '{for(i=1; i<
 
 if [ ${#LOAD_PROCESS_TYPE_ARR[*]} = 2 ]
 then
-         if  [[ ${JOB_ENV} == hd* ]]
+         if  [[ ${JOB_ENV} == @(hd*|sp*) ]]
          then
                    if [[ ${LOAD_PROCESS_TYPE_ARR[0]} == @(H||INGEST_H) ]]
                    then
