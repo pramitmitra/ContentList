@@ -20,6 +20,7 @@
 # 2016-04-19   1.5    Ryan Wong                     Passing UOW_FROM and UOW_TO for SQL variables
 # 2016-09-20   1.6    Ryan Wong                     Fixing queryband statement
 # 2017-10-12   1.7    Ryan Wong                     Fixing port utilized check
+# 2017-10-19   1.8    Ryan Wong                     Fixing naming to use variables JOB_TYPE and JOB_TYPE_ID
 #############################################################################################################
 
 ETL_ID=$1
@@ -68,9 +69,9 @@ done
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
-EXTRACT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.extract.$FILE_ID.single_tpt_extract$UOW_APPEND.$CURR_DATETIME.log
-EXTRACT_TABLE_LOG_FILE=$DW_SA_LOG/$TABLE_ID.extract.$FILE_ID.utility_extract$UOW_APPEND.$CURR_DATETIME.log
-RECORD_COUNT_FILE=$DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.record_count.dat
+EXTRACT_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE.$FILE_ID.single_tpt_extract$UOW_APPEND.$CURR_DATETIME.log
+EXTRACT_TABLE_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE.$FILE_ID.utility_extract$UOW_APPEND.$CURR_DATETIME.log
+RECORD_COUNT_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.record_count.dat
 
 # Handle tpt configuration parameters
 # 
@@ -352,18 +353,18 @@ do
 
   if [ $MULTI_HOST = 1 ]
   then
-    print "Local launch $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG"
+    print "Local launch $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG"
 
     set +e
-    eval $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG > $EXTRACT_LOG_FILE.$instance_nbr 2>&1 &
+    eval $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG > $EXTRACT_LOG_FILE.$instance_nbr 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
 
   else 
-    print "Remote launch ssh -nq $host_name $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG"
+    print "Remote launch ssh -nq $host_name $DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG"
 
     set +e
-    ssh -nq $host_name "$DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.ex.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG" > $EXTRACT_LOG_FILE.$instance_nbr 2>&1 &
+    ssh -nq $host_name "$DW_MASTER_EXE/dw_infra.single_tpt_run.ksh -OPERATOR_TYPE 2 -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INSTANCE_NUM $instance_nbr -SQLFILE $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.sel.sql -FILENAME $IN_DIR/$DATA_FILENAME.$instance_nbr$DATA_FILENAME_SFX -LOGFILE $EXTRACT_TABLE_LOG_FILE.$instance_nbr -SERVER $DB_NAME -IN_DIR $IN_DIR $TPT_ARG" > $EXTRACT_LOG_FILE.$instance_nbr 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
 

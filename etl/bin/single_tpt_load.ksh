@@ -22,6 +22,7 @@
 # 2014-09-03   1.7    Ryan Wong                     Fixing dw_infra.single_tpt_load_find_files.ksh to handle NON-UOW files
 # 2016-09-20   1.8    Ryan Wong                     Fixing queryband statement
 # 2017-10-13   1.9    Ryan Wong                     Fixing port utilized check
+# 2017-10-19   2.0    Ryan Wong                     Fixing naming to use variable JOB_TYPE_ID
 #############################################################################################################
 
 ETL_ID=$1
@@ -52,8 +53,8 @@ done
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
 LOAD_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_tpt_load${UOW_APPEND}.$CURR_DATETIME.log
-LOAD_TABLE_LOG_FILE=$DW_SA_LOG/$TABLE_ID.ld.utility_load${UOW_APPEND}.$CURR_DATETIME.log
-export UTILITY_LOAD_TPT_CHECK_LOG_FILE=$DW_SA_LOG/$TABLE_ID.ld.utility_load_tpt_check${UOW_APPEND}.$CURR_DATETIME.log
+LOAD_TABLE_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility_load${UOW_APPEND}.$CURR_DATETIME.log
+export UTILITY_LOAD_TPT_CHECK_LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility_load_tpt_check${UOW_APPEND}.$CURR_DATETIME.log
 
 # Handle tpt configuration parameters
 # 
@@ -138,7 +139,7 @@ then
 fi
 
 # If character set not assigned, pull from dbc file.
-DBC_FILE=$(JOB_ENV_LOWER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); echo teradata_${JOB_ENV_LOWER}.dbc)
+DBC_FILE=$(JOB_ENV_LOWER=$(print $JOB_ENV | tr "[:lower:]" "[:upper:]"); eval print teradata_$\{DW_${JOB_ENV_LOWER}_DB}.dbc)
 if [[ "X$TPT_LOAD_CHARSET" = "X" ]]
 then
   assignTagValue TPT_LOAD_CHARSET "teradata_character_set" $DW_DBC/$DBC_FILE W ""
@@ -159,7 +160,18 @@ else
   FILE_EXTN=""
 fi
 
-DATA_FILE_PATTERN="$TABLE_ID.*.dat*"
+if [[ $JOB_TYPE = "merge" ]]
+then
+  assignTagValue STAGE_DB TD_MERGE_STAGE_DB $ETL_CFG_FILE
+  assignTagValue STAGE_TABLE TD_MERGE_STAGE_TABLE $ETL_CFG_FILE
+  DATA_FILE_PATTERN="$STM_MERGE_TABLE_ID.*.dat*"
+else
+  assignTagValue STAGE_DB STAGE_DB $ETL_CFG_FILE
+  assignTagValue STAGE_TABLE STAGE_TABLE $ETL_CFG_FILE
+  DATA_FILE_PATTERN="$TABLE_ID.*.dat*"
+fi
+TPT_ARG="$TPT_ARG -STAGE_DB $STAGE_DB -STAGE_TABLE $STAGE_TABLE"
+
 UOW_PARAM_LIST_FIND=""
 if [[ "X$UOW_TO" != "X" ]]
 then
@@ -172,10 +184,6 @@ fi
 
 print "IN_DIR is $IN_DIR"
 print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
-
-assignTagValue STAGE_DB STAGE_DB $ETL_CFG_FILE
-assignTagValue STAGE_TABLE STAGE_TABLE $ETL_CFG_FILE
-TPT_ARG="$TPT_ARG -STAGE_DB $STAGE_DB -STAGE_TABLE $STAGE_TABLE"
 
 #--------------------------------------------------------------------------------
 # Run tpt utility check
