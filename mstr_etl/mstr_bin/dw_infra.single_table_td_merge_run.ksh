@@ -15,7 +15,8 @@
 # 2017-08-21     .7    Kevin Oaks                   Copied and altered from single_table_merge_load_run.ksh 
 # 2017-08-22     .8    Ryan Wong                    Adding target_transform (merge) component
 # 2017-08-23     .9    Kevin Oaks                   Pre-dev testing version
-# 2018-08-29     .95   Kevin Oaks                   Added INPUT_FILE_LIST existence/empty check
+# 2017-08-29     .95   Kevin Oaks                   Added INPUT_FILE_LIST existence/empty check
+# 2017-10-19     .96   Ryan Wong                    Add Teradata TPT load option, and cleanup
 ####################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -29,7 +30,6 @@ then
 	FIRST_RUN=Y
 else
 	FIRST_RUN=N
-
 fi
 
 #-------------------------------------------------------------------------------------
@@ -51,23 +51,82 @@ print "
 ####################################################################################################################
 "
 
+assignTagValue TD_MERGE_LOAD_PROCESS_TYPE TD_MERGE_LOAD_PROCESS_TYPE $ETL_CFG_FILE W
+
+# Need to run the clean up process since this is the first run for the current processing period.
+# We will need to add an explicit path for merge in dw_infra.loader_cleanup.ksh
+# We will need to differentiate td and sp merge cleanup so they don't step on each other
 if [ $FIRST_RUN = Y ]
 then
-  # Need to run the clean up process since this is the first run for the current processing period.
-  # We will need to add an explicit path for merge in dw_infra.loader_cleanup.ksh
-  # We will need to differentiate td and sp merge cleanup so they don't step on each other
-  print "Running dw_infra.loader_cleanup.ksh for JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
-  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.loader_cleanup${UOW_APPEND}.$CURR_DATETIME.log
-
-  set +e
-  $DW_MASTER_BIN/dw_infra.loader_cleanup.ksh $JOB_ENV $JOB_TYPE_ID > $LOG_FILE 2>&1
-  rcode=$?
-  set -e
-
-  if [ $rcode != 0 ]
+  if [[ $TD_MERGE_LOAD_PROCESS_TYPE = T ]]
   then
-    print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-    exit 4
+    assignTagValue MULTI_HOST MULTI_HOST $ETL_CFG_FILE W 0
+    if [ $MULTI_HOST = 0 ]
+    then
+      HOSTS_LIST_FILE=$DW_CFG/$ETL_ID.host.lis
+      if [ ! -f $HOSTS_LIST_FILE ]
+      then
+         print "${0##*/}:  FATAL ERROR: MULTI_HOST is zero, and $HOST_LIST_FILE does not exist" >&2
+         exit 4
+      fi
+    elif [[ $MULTI_HOST = 1 ]]
+    then
+      JOB_RUN_NODE=$servername
+    elif [[ $MULTI_HOST = @(2||4||6||8||16||32) ]]
+    then
+      HOSTS_LIST_FILE=$DW_MASTER_CFG/${servername%%.*}.${MULTI_HOST}ways.host.lis
+    else
+      print "${0##*/}:  FATAL ERROR: MULTI_HOST not valid value $MULTI_HOST" >&2
+      exit 4
+    fi
+
+    if [ $MULTI_HOST = 1 ]
+    then
+      print "Running local dw_infra.loader_cleanup_multi_host.ksh for JOB_RUN_NODE: $JOB_RUN_NODE ETL_ID: $ETL_ID JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.loader_cleanup_multi_host.${JOB_RUN_NODE%%.*}${UOW_APPEND}.$CURR_DATETIME.log
+
+      set +e
+      $DW_MASTER_BIN/dw_infra.loader_cleanup_multi_host.ksh $ETL_ID $JOB_ENV $JOB_TYPE_ID $UOW_PARAM_LIST > $LOG_FILE 2>&1
+      rcode=$?
+      set -e
+
+      if [ $rcode != 0 ]
+      then
+        print "${0##*/}:  FATAL ERROR, see log file $LOG_FILE" >&2
+        exit 4
+      fi
+    else
+      while read JOB_RUN_NODE junk
+      do
+        print "Running dw_infra.loader_cleanup_multi_host.ksh for JOB_RUN_NODE: $JOB_RUN_NODE ETL_ID: $ETL_ID JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
+        LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.loader_cleanup_multi_host.${JOB_RUN_NODE%%.*}${UOW_APPEND}.$CURR_DATETIME.log
+
+        set +e
+        ssh -nq $JOB_RUN_NODE "$DW_MASTER_BIN/dw_infra.loader_cleanup_multi_host.ksh $ETL_ID $JOB_ENV $JOB_TYPE_ID $UOW_PARAM_LIST" > $LOG_FILE 2>&1
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          print "${0##*/}:  FATAL ERROR, see log file $LOG_FILE" >&2
+          exit 4
+        fi
+      done < $HOSTS_LIST_FILE
+    fi
+  else
+    print "Running dw_infra.loader_cleanup.ksh for JOB_ENV: $JOB_ENV, JOB_TYPE_ID: $JOB_TYPE_ID  `date`"
+    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.loader_cleanup${UOW_APPEND}.$CURR_DATETIME.log
+
+    set +e
+    $DW_MASTER_BIN/dw_infra.loader_cleanup.ksh $JOB_ENV $JOB_TYPE_ID > $LOG_FILE 2>&1
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+      exit 4
+    fi
   fi
 
   > $COMP_FILE
@@ -76,73 +135,93 @@ else
   print "dw_infra.loader_cleanup.ksh process already complete"
 fi
 
-###################################################################################################################
-#       Create Input File List
-#       No COMP_FILE entry - build from current dir contents on restart
-###################################################################################################################
-
-export INPUT_FILE_LIST=$DW_SA_TMP/$TABLE_ID.merge.ld.lis
-
-if [[ -f $INPUT_FILE_LIST ]]
-then
-  rm $INPUT_FILE_LIST
-fi
-
-for fn in $IN_DIR/*
-do
-  if [[ -f $fn ]]
-  then
-
-    tfn=${fn%%.dat}
-    tfn=${tfn##*.}
-   
-    if [[ $tfn != 'record_count' ]]
-    then
-      print $fn >> $INPUT_FILE_LIST
-    fi
-  fi
-done
-
-if [[ ! -s $INPUT_FILE_LIST ]]
-then
-   print "${0##*/}:  ERROR, Generated $INPUT_FILE_LIST does not exist or is empty. Check for existence of data files in $IN_DIR" >&2
-   exit 4
-fi
 
 ###################################################################################################################
-#	Data File Loading process
+#       Data File Loading process
 ###################################################################################################################
-
 PROCESS=single_table_merge_load
 RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
 if [ $RCODE = 1 ]
 then
-		
-  print "Processing single table merge load for TABLE_ID: $TABLE_ID  `date`"
-		
-  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_table_merge_load${UOW_APPEND}.$CURR_DATETIME.log
-  UTILITY_TABLE_LOGFILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility_load${UOW_APPEND}.$CURR_DATETIME.log
-
-  set +e
-  $DW_MASTER_EXE/dw_infra.single_table_td_merge_load.ksh -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INPUT_DML_FILENAME $INPUT_DML -INPUT_FILE_LIST $INPUT_FILE_LIST $UOW_PARAM_LIST_AB > $LOG_FILE 2>&1
-  rcode=$?
-  set -e
-		
-  if [ $rcode != 0 ]
+  if [[ $TD_MERGE_LOAD_PROCESS_TYPE = T ]]
   then
-    print "${0##*/}:  ERROR running $DW_MASTER_EXE/dw_infra.single_table_td_merge_load.ksh. See log file $LOG_FILE" >&2
-    exit 4
+    ################################################################################
+    # Launch TPT
+    ################################################################################
+    print "Processing single tpt load for TABLE_ID: $TABLE_ID  `date`"
+
+    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_tpt_load${UOW_APPEND}.$CURR_DATETIME.log
+
+    set +e
+    $DW_EXE/single_tpt_load.ksh $ETL_ID $JOB_ENV $UOW_PARAM_LIST_AB > $LOG_FILE 2>&1
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+      exit 4
+    fi
+  else
+    ################################################################################
+    # Create Input File List
+    # No COMP_FILE entry - build from current dir contents on restart
+    ################################################################################
+    export INPUT_FILE_LIST=$DW_SA_TMP/$TABLE_ID.merge.ld.lis
+
+    if [[ -f $INPUT_FILE_LIST ]]
+    then
+      rm $INPUT_FILE_LIST
+    fi
+
+    for fn in $IN_DIR/*
+    do
+      if [[ -f $fn ]]
+      then
+        tfn=${fn%%.dat}
+        tfn=${tfn##*.}
+
+        if [[ $tfn != 'record_count' ]]
+        then
+          print $fn >> $INPUT_FILE_LIST
+        fi
+      fi
+    done
+
+    if [[ ! -s $INPUT_FILE_LIST ]]
+    then
+       print "${0##*/}:  ERROR, Generated $INPUT_FILE_LIST does not exist or is empty. Check for existence of data files in $IN_DIR" >&2
+       exit 4
+    fi
+
+    ################################################################################
+    # Launch Serial Load Script (Ab Initio)
+    ################################################################################
+    print "Processing single table merge load for TABLE_ID: $TABLE_ID  `date`"
+    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_table_merge_load${UOW_APPEND}.$CURR_DATETIME.log
+    UTILITY_TABLE_LOGFILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.utility_load${UOW_APPEND}.$CURR_DATETIME.log
+
+    set +e
+    $DW_MASTER_EXE/dw_infra.single_table_td_merge_load.ksh -ETL_ID $ETL_ID -JOB_ENV $JOB_ENV -INPUT_DML_FILENAME $INPUT_DML -INPUT_FILE_LIST $INPUT_FILE_LIST $UOW_PARAM_LIST_AB > $LOG_FILE 2>&1
+    rcode=$?
+    set -e
+		
+    if [ $rcode != 0 ]
+    then
+      print "${0##*/}:  ERROR running $DW_MASTER_EXE/dw_infra.single_table_td_merge_load.ksh. See log file $LOG_FILE" >&2
+      exit 4
+    fi
   fi
 
-  print "$PROCESS" >> $COMP_FILE	
+  print "$PROCESS" >> $COMP_FILE
 	
 elif [ $RCODE = 0 ]
 then
-	print "$PROCESS process already complete"
+   print "$PROCESS process already complete"
 else
-	print "${0##*/}:  ERROR, Unable to grep for $PROCESS in $COMP_FILE"
-	exit $RCODE
+   print "${0##*/}:  ERROR, Unable to grep for $PROCESS in $COMP_FILE"
+   exit $RCODE
 fi
 
 ######################################################################################################
