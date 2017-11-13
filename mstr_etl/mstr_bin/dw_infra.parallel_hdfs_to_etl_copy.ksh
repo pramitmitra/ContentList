@@ -13,6 +13,9 @@
 # Date         Ver#   Modified By(Name)            Change and Reason for Change
 #---------    -----  ---------------------------  -------------
 # 2017-10-24   1.0    Ryan Wong                     Initial
+# 2017-11-07   1.1    Ryan Wong                     If hdfs file has common compression suffix propagate
+#                                                     this to etl file name;  gz, bz2, sz
+# 2017-11-08   1.2    Ryan Wong                     Enhance hdfs copy to exclude directories and hidden objects
 #############################################################################################################
 
 . /dw/etl/mstr_cfg/etlenv.setup
@@ -77,7 +80,19 @@ print "INSTANCE_TOTAL is $INSTANCE_TOTAL"
 
 # Generate master list file
 DATA_LIS_FILE_PREFIX=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdfs_to_etl_copy_list.$STT_TABLE.dat
-HADOOP_SOURCE_FILE_LIST=`${HADOOP_HOME2}/bin/hadoop fs -ls $SOURCE_PATH/* | awk '{ print $8 }' | sort -d | awk '{ printf $1" " }'`
+HADOOP_SOURCE_FILE_LIST_TMP=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdfs_to_etl_copy_list.$STT_TABLE.lis.tmp
+${HADOOP_HOME2}/bin/hadoop fs -ls $SOURCE_PATH/ | tail -n +2 | grep -v '^d' | awk '{ print $8 }' | sort -d 1>$HADOOP_SOURCE_FILE_LIST_TMP
+
+
+HADOOP_SOURCE_FILE_LIST=""
+while read data_file_entry 
+do
+  SRC_FILENAME=${data_file_entry##*/}
+  if [[ ${SRC_FILENAME:0:1} != "." ]]
+  then
+    HADOOP_SOURCE_FILE_LIST="$HADOOP_SOURCE_FILE_LIST $data_file_entry"
+  fi
+done < $HADOOP_SOURCE_FILE_LIST_TMP
 
 
 print "#############################################################################"
@@ -103,7 +118,19 @@ instance_idx=0
 for data_file_entry in $HADOOP_SOURCE_FILE_LIST
 do
   MOD_NUM=$(( $instance_idx % $INSTANCE_TOTAL ))
-  print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+  FILE_SUFFIX=${data_file_entry##*.}
+  if [[ $FILE_SUFFIX == "gz" ]]
+  then
+    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.gz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+  elif [[ $FILE_SUFFIX == "bz2" ]]
+  then
+    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.bz2" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+  elif [[ $FILE_SUFFIX == "sz" ]]
+  then
+    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.sz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+  else
+    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+  fi
   ((instance_idx++))
 done
 
