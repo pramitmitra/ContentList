@@ -3296,7 +3296,7 @@ utrade11=
 
   (PROTOCOL=TCP)
 
-  (HOST=utrade11.vip.ebay.com)
+  (HOST=utrade11stby.vip.ebay.com)
 
   (PORT=1521))
 
@@ -5759,3 +5759,11 @@ gbcust10_asv=
     (CONNECT_DATA = (SID=GBCUST10)))
 
 affdbprd=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=affdb.vip.ebay.com)(PORT=1521))(CONNECT_DATA=(SID=AFFDBPRD)))
+
+vendcat=
+(DESCRIPTION=
+(ADDRESS=
+(PROTOCOL=TCP)
+(HOST=vendcat.vip.ebay.com)
+(PORT=1521))
+(CONNECT_DATA=(SID=vendcat)(SERVER=DEDICATED)))
