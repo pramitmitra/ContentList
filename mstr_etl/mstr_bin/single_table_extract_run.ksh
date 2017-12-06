@@ -39,6 +39,7 @@
 # 2017-09-14   1.21   Michael Weng                  Support multiple HDFS copy and optional flag for copy failure
 # 2017-10-04   1.22   Michael Weng                  Add restart logic for hdfs load
 # 2017-10-10   1.23   Michael Weng                  Add support for sp* on loading data to hdfs
+# 2017-12-06   1.24   Ryan Wong                     Add LOG_FILE for touch file ste_hdfs_load_success
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1489,6 +1490,7 @@ then
       if [ $retcode = 0 ]
       then
         ### Create Done file for $HD_ENV (hd1 | hd2 | hd3 | ...)
+        LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_hdfs_load_success.$CURR_DATETIME.log
         $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $HD_ENV ${ETL_ID}.ste_hdfs_load_success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
 
         print "
