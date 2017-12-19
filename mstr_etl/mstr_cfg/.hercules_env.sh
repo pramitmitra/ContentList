@@ -39,6 +39,7 @@ export PATH=$HADOOP_HOME/bin:$HBASE_HOME/bin:$HIVE_HOME/bin:$JAVA_HOME/bin:$PATH
 
 # Move all NN URLs to etlenv.<env>.teradata_target_variables.lis
 export HADOOP_NN_URL=$(eval print \$${JOB_ENV_UPPER}_NN_URL)
+export HADOOP_CLI_HOST="hdc34-lvs01-400-2908-003.stratus.lvs.ebay.com"
 
 # For spark-submit log enhancements https://jirap.corp.ebay.com/browse/ADPO-138
 export SPARK_DEFAULT_FS=$SPARK_FS
