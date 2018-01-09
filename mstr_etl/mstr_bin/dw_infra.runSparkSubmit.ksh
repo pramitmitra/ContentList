@@ -15,6 +15,9 @@
 # 2017-08-21       .1   Ryan Wong                    Initial
 # 2017-09-21       .2   Pramit Mitra                 ADPO-976, Combine spark-defaults.conf from SPARK_HOME when running job on different clusters
 # 2017-10-11       .3   Pramit Mitra                 DINT-1018, Conditional Copy logic added to ensure no copy is attempted when user specify ALL spark properties
+# 2017-10-06       .4   Pramit Mitra                 Implemented SetFacl (File Mast update) logic for HDFS files on Storage cluster
+# 2017-10-23       .5   Pramit Mitra                 SA_DIR evaluation logic implemented as prerequisite for SetFacl implementation
+#
 #####################################################################################################################################################################
 
 ETL_ID=$1
@@ -38,6 +41,8 @@ JAVA=$JAVA_HOME/bin/java
 JAVA_CMD_OPT=`bash /dw/etl/mstr_lib/hadoop_ext/hadoop.setup`
 RUN_CLASS=${MAIN_CLASS:-"NA"}
 
+# Adding SA_DIR evaluation logic from ETL_ID as this is required for setfacl implementation
+export SA_DIR=`echo ${ETL_ID} | awk -F'.' '{ print $1; }'`
 
 ################################################################################
 # Grooming SQL
@@ -274,6 +279,61 @@ set -e
    print "Spark-SQL Submit process complete"
 fi
 
+################################################################################
+# umask / setfacl update logic on storage hadoop cluser
+################################################################################
+
+  set +e
+  print "Inside hdfsFileMaskUpdate Block"
+  export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
+  export SA_DIR_HDFS=bid
+  export HADOOP_PROXY_USER=${HD_USERNAME}
+  ##Considering 8 character UOW values
+  export UOW_TO_STM=`echo ${UOW_TO_DATE} | cut -c1-8`
+  export UOW_FROM_STM=`echo ${UOW_FROM_DATE} | cut -c1-8`
+  export HDFS_PATH_TO=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_TO_STM}
+  export HDFS_PATH_FROM=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_FROM_STM}
+
+  ${HADOOP_HOME2}/bin/hadoop fs -test -d ${HDFS_PATH_TO}
+   val_to=$?
+   echo "Return code for UOW_TO = $val_to" > ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+   echo "UOW_TO VALUE SET AS : ${HDFS_PATH_TO}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  if [[ $val_to -eq 0 ]]
+      then
+      echo "HDFS Directory ${HDFS_PATH_TO} is present" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      ${HADOOP_HOME2}/bin/hadoop fs -setfacl -R -m mask::rwx ${HDFS_PATH_TO}
+      echo "SelFacl applied successfully on ${HDFS_PATH_TO}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      export rcode=0
+  else
+      ${HADOOP_HOME2}/bin/hadoop fs -test -d ${HDFS_PATH_FROM}
+      val_from=$?
+      echo "Return code for UOW_FROM = $val_from" > ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      echo "UOW_FROM VALUE SET AS : ${HDFS_PATH_FROM}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  if [[ $val_from -eq 0 ]]
+      then
+      echo "HDFS Directory ${HDFS_PATH_FROM} is present" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      ${HADOOP_HOME2}/bin/hadoop fs -setfacl -R -m mask::rwx ${HDFS_PATH_FROM}
+      echo "SelFacl applied successfully on ${HDFS_PATH_FROM}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      export rcode=0
+      echo "Value of rcode = $rcode" >>${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  else
+     echo "HDFS Directory doen't exist" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+     export rcode=1
+     echo "Value of rcode = $rcode" >>${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+  fi
+fi
+
+ set -e
+
+
+if [ $rcode != 0 ]
+   then
+    print "hdfs filMast Update can't be completed ... exiting process !!!!"
+    print "Value of Return Code ="$rcode
+   # exit 4
+ else
+   print "hdfsFileMaskUpdate process complete"
+fi
 
 print "End of Spark Submit Script"
 exit 0

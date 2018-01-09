@@ -17,6 +17,7 @@
 # 2017-08-23     .9    Kevin Oaks                   Pre-dev testing version
 # 2017-08-29     .95   Kevin Oaks                   Added INPUT_FILE_LIST existence/empty check
 # 2017-10-19     .96   Ryan Wong                    Add Teradata TPT load option, and cleanup
+# 2017-11-29     .97   Ryan Wong                    Add touch file with standard naming ETL_ID.JOB_TYPE.done.UOW_TO
 ####################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -336,13 +337,26 @@ RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
 if [ $RCODE = 1 ]
 then
-
-   WATCH_FILE=$ETL_ID.$JOB_TYPE.$UOW_TO.done
+   WATCH_FILE=$ETL_ID.$JOB_TYPE.done
    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.$CURR_DATETIME.log
    print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST"
 
    set _e
    $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST > $LOG_FILE 2>&1
+   rcode=$?
+   set -e
+
+   if [ $rcode -ne 0 ]
+   then
+      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+      exit 4
+   fi
+
+   WATCH_FILE=$ETL_ID.$JOB_TYPE.$UOW_TO.done
+   print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST"
+
+   set _e
+   $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST >> $LOG_FILE 2>&1
    rcode=$?
    set -e
 
