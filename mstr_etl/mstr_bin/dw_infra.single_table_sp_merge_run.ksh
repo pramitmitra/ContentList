@@ -15,6 +15,8 @@
 # ----------    -----  ---------------------------  ----------------------------------------------------------
 # 2017-08-21     0.1   Ryan Wong                    Initial
 # 2017-09-12     0.2   Michael Weng                 Check and load data onto HDFS
+# 2017-10-26     0.3   Michael Weng                 Add parallel copy feature from etl to hdfs
+# 2017-11-29     0.3   Ryan Wong                    Add touch file with standard naming ETL_ID.JOB_TYPE.done.UOW_TO
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -113,44 +115,19 @@ then
         exit 4
       fi
 
-      ### Cleanup previous failure copy HDFS directory
-      ### Create HDFS directory as $STM_MERGE_TABLE_ID.incomplete
+      ### Load data into a temporary hdfs directory. Upon success, rename it.
+      LOAD_LOG_FILE=$DW_SA_LOG/$STM_MERGE_TABLE_ID.$JOB_TYPE_ID.multi_etl_to_hdfs.$ETL_ID.load.sp${UOW_APPEND}.$CURR_DATETIME.log
       set +e
-      $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash ${STM_HDFS_PATH}.incomplete
-      $HADOOP_HOME2/bin/hadoop fs -mkdir -p ${STM_HDFS_PATH}.incomplete
+      $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $IN_DIR ${STM_HDFS_PATH}.incomplete $STM_MERGE_TABLE_ID > $LOAD_LOG_FILE 2>&1
       rcode=$?
       set -e
 
       if [ $rcode = 0 ]
       then
-        ### Generate file list based on file name pattern
-        export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.stm_hdfs_check$UOW_APPEND
-        > $DATA_LIS_FILE
-
-        DATA_FILE_PATTERN="$IN_DIR/$STM_MERGE_TABLE_ID*.dat*"
-        print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
-
-        for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
-        do
-          print "$data_file_entry" >> $DATA_LIS_FILE
-        done
-
-        ### Copy files from Tempo to HDFS
-        while read SOURCE_FILE_TMP 
-        do
-          set +e
-          $HADOOP_HOME2/bin/hadoop fs -copyFromLocal $SOURCE_FILE_TMP ${STM_HDFS_PATH}.incomplete
-          rcode=$?
-          set -e
-
-          if [ $rcode = 0 ]
-          then
-            print "Load completion of FILE: ${SOURCE_FILE_TMP}"
-          else
-            print "${0##*/}: INFRA_ERROR - Failure processing FILE: $SOURCE_FILE_TMP, $STORAGE_ENV:${STM_HDFS_PATH}.incomplete"
-            exit 4
-          fi
-        done < $DATA_LIS_FILE
+        print "Successfully loaded data from Tempo:"
+        print "    Source ($IN_DIR)"
+        print "    Destination ($STORAGE_ENV:${STM_HDFS_PATH}.incomplete)"
+        print "    Log file: $LOAD_LOG_FILE"
 
         ### Rename $STM_MERGE_TABLE_ID.incomplete to $STM_MERGE_TABLE_ID
         set +e
@@ -160,16 +137,13 @@ then
 
         if [ $rcode = 0 ]
         then
-          print "Successfully load data from Tempo to HDFS"
-          print "Tempo - $IN_DIR"
-          print "HDFS  - $STORAGE_ENV:$STM_HDFS_PATH"
+          print "Successfully rename ${STM_HDFS_PATH}.incomplete to ${STM_HDFS_PATH} on $STORAGE_ENV"
         else
           print "${0##*/}: INFRA_ERROR - Failed to rename HDFS directory"
           exit 4
         fi
-
       else
-        print "${0##*/}: INFRA_ERROR - Failed to create directory on $STORAGE_ENV"
+        print "${0##*/}: INFRA_ERROR - Failed to load data from Tempo, see log file: $LOAD_LOG_FILE"
         exit 4
       fi
     fi
@@ -263,12 +237,26 @@ RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
 if [ $RCODE -eq 1 ]
  then
-   WATCH_FILE=${ETL_ID}.${SPARK_CONF_SUFF}.done
+   WATCH_FILE=$ETL_ID.$JOB_TYPE.done
    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.$PROCESS${UOW_APPEND}.$CURR_DATETIME.log
 
    print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST"
    set +e
    $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST > $LOG_FILE 2>&1
+   rcode=$?
+   set -e
+
+   if [ $rcode -ne 0 ]
+   then
+      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+      exit 4
+   fi
+
+   WATCH_FILE=${ETL_ID}.${SPARK_CONF_SUFF}.done
+
+   print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST"
+   set +e
+   $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST >> $LOG_FILE 2>&1
    rcode=$?
    set -e
 
@@ -290,6 +278,7 @@ fi
 
 print "Removing the complete file  `date`"
 rm -f $COMP_FILE
+
 
 print "${0##*/}:  INFO,
 ##########################################################################################################
