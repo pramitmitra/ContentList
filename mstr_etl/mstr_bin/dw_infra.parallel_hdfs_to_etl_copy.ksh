@@ -16,6 +16,7 @@
 # 2017-11-07   1.1    Ryan Wong                     If hdfs file has common compression suffix propagate
 #                                                     this to etl file name;  gz, bz2, sz
 # 2017-11-08   1.2    Ryan Wong                     Enhance hdfs copy to exclude directories and hidden objects
+# 2017-12-19   1.3    Ryan Wong                     Add error check, if local launch host is not in the host list
 #############################################################################################################
 
 . /dw/etl/mstr_cfg/etlenv.setup
@@ -63,10 +64,21 @@ fi
 
 if [[ $MULTI_HOST != 1 ]]
 then
+  MASTER_NODE_FOUND=0
   while read SRC_NODE junk
   do
     SRC_NODE_LIST="${SRC_NODE_LIST} ${SRC_NODE}"
+    if [[ ${servername%%.*} = ${SRC_NODE%%.*} ]]
+    then
+      MASTER_NODE_FOUND=1
+    fi
   done < $HOSTS_LIST_FILE
+
+  if [[ $MASTER_NODE_FOUND == 0 ]]
+  then
+    print "${0##*/}:  FATAL ERROR: Launch server $servername, not found in host file $HOSTS_LIST_FILE" >&2
+    exit 4
+  fi
 fi
 
 set -A SRC_HOSTS $SRC_NODE_LIST
