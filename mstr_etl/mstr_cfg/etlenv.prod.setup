@@ -541,6 +541,17 @@ export workingPath=/sys/edw/working
 export ddmcrmDB=DDM_CRM_T
 export ddmcrmwrkDB=DDM_CRM_W
 
+# Requested by K V, Manoj 20180103
+export prm_app_nps_t_DB=/sys/edw/prs_app/app_nps_t
+export prm_app_nps_w_DB=/sys/edw/working/prs_app/app_nps_w
+export prm_app_nps_cntct_pii_l2_v_DB=/sys/edw/prs_dw/prs_view/app_nps_cntct_pii_l2_v
+export prm_app_nps_l2_v_DB=/sys/edw/prs_dw/prs_view/app_nps_l2_v
+export prm_app_nps_pii_l2_v_DB=/sys/edw/prs_dw/prs_view/app_nps_pii_l2_v
+export prm_idm_nps_v_DB=/sys/edw/prs_dw/prs_view/prs_nps_v
+export prm_idm_nps_t_DB=/sys/edw/prs_idm/idm_nps_t
+export prm_idm_nps_w_DB=/sys/edw/working/prs_idm/idm_nps_w
+
+
 ##########!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!##########
 #
 # Please place all DB assignment variables above this comment
