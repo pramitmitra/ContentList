@@ -23,6 +23,8 @@
 #                                                    UOW variables since initial job call already
 #                                                    tests for those
 # 2017-09-12       .9   Michael Weng                 Check and load data onto HDFS
+# 2017-11-23       1.0  Pramit Mitra                 Hive Snapshot merge partition cleanup(DINT-1054) 
+# 2017-12-01       1.1  Pramit Mitra                 Renaming DATE_RET_DAYS to STM_DATE_RET_DAYS
 ####################################################################################################
 
 typeset -fu usage
@@ -208,21 +210,32 @@ then
    set +e
    (time $DW_MASTER_BIN/$RUN_SCRIPTNAME) > $PARENT_LOG_FILE 2>&1
    RUN_RCODE=$?
+   print "Value of RUN_RCODE for $PROCESS = $RUN_RCODE"
    export DWI_END_DATETIME=$(date '+%Y%m%d-%H%M%S')
    print "$DWI_INFRA_IND DWI_END_DATETIME=$DWI_END_DATETIME" >> $PARENT_LOG_FILE
    set -e
 
+   ## Added explicit failure logic, in case of non zero INFRA_RUN return
+   if [[ $RUN_RCODE -ne 0 ]]
+   then
+      print "$PROCESS does not complete. Please check Spark RM Log to debug"
+      exit 1;
+    fi   
+
    if [[ $RUN_RCODE -eq 0 ]]
    then
-    if [[ -f $DW_SA_TMP/$TABLE_ID.$JOB_TYPE.complete ]]
-    then
+      if [[ -f $DW_SA_TMP/$TABLE_ID.$JOB_TYPE.complete ]]
+      then
       print "$PROCESS does not complete. Please try to reset the job."
       RUN_RCODE=8
+      ######Additing exit statement to fail STM if Infra Run fails######
+      exit 4;
     else
       print "$PROCESS" >> $HANDLER_COMP_FILE
       print "$PROCESS successfully complete"
     fi
    fi
+
 elif [[ $RCODE -eq 0 ]]
 then
    print "$PROCESS already complete"
@@ -230,6 +243,57 @@ else
    exit $RCODE
 fi
 
+
+######################################################################################################
+#
+#                                Hive Snapshot merge partition cleanup
+#
+#  This secion runs Hive Snapshot merge partition cleanup.
+#  The process will look for following two values from ETL_ID.cfg file. It is exhibit following properties 
+#  ( 1 ) if 1st variable "STM_DATE_RET_DAYS" is not available then default to 0. It means all HIVE partitions will be deleted
+#  except latest UOW_TO date partion. IF "INF" value is specified as STM_DATE_RET_DAYS then Purge process will be ignored.
+#  ( 2 ) if 2nd variable "MERGE_TABLE" is not available then Purge process will be ignored.
+######################################################################################################
+
+PROCESS=Hive_Snapshot_Merge_Partition
+RCODE=`grepCompFile $PROCESS $HANDLER_COMP_FILE`
+
+RUN_RCODE=0
+if [[ $RCODE -eq 1 ]]
+then
+    print "Redirecting Hive_Snapshot_Merge_Partition output to $PARENT_LOG_FILE"
+    assignTagValue STM_DATE_RET_DAYS STM_DATE_RET_DAYS $ETL_CFG_FILE W 0
+    assignTagValue MERGE_TABLE MERGE_TABLE $ETL_CFG_FILE W NOT_ASSIGNED
+    if [[ $STM_DATE_RET_DAYS == 'INF' ]]
+        then
+        print "Use has defined STM_DATE_RET_DAYS as INF, so ignoring the purge process"
+        print "$PROCESS" >> $HANDLER_COMP_FILE
+        print "$PROCESS IGNORED!!!"
+    elif [[ $MERGE_TABLE == 'NOT_ASSIGNED' ]]
+        then
+        print "MERGE_TABLE Value is Not set, so skipping Hive_Snapshot_Merge_Partition process"
+        print "$PROCESS" >> $HANDLER_COMP_FILE
+    else
+        print "Process Eligible for Hive_Snapshot_Merge_Partition"
+        print "Value of STM_DATE_RET_DAYS == $STM_DATE_RET_DAYS"
+        print "Value of MERGE_TABLE == $MERGE_TABLE"
+    $DW_MASTER_BIN/dw_infra.hive_snapshot_merge_partition_cleanup.ksh $ETL_ID $JOB_ENV $UOW_TO $MERGE_TABLE $STM_DATE_RET_DAYS > ${PARENT_LOG_FILE}_hive_snapshot_merge_partition.log 2>&1
+        RUN_RCODE=$?
+        print "Value of RUN_RCODE=$RUN_RCODE"
+            if [[ $RUN_RCODE -eq 0 ]]
+                then
+                print "$PROCESS" >> $HANDLER_COMP_FILE
+                print "$PROCESS successfully complete"
+            else
+                print "$PROCESS does not complete. Please try to reset the job."
+            fi
+    fi
+  elif [[ $RCODE -eq 0 ]]
+      then
+      print "$PROCESS already complete"
+   else
+   exit $RCODE
+ fi
 ######################################################################################################
 #
 #                                Infra Log Copy
@@ -239,7 +303,9 @@ fi
 
 print "Start $DW_MASTER_BIN/dw_infra.handler_log_copy.ksh"
 set +e
-$DW_MASTER_BIN/dw_infra.handler_log_copy.ksh
+################
+#echo "This is commented for testing"
+#$DW_MASTER_BIN/dw_infra.handler_log_copy.ksh
 LOGCOPY_RCODE=$?
 
 if [[ $LOGCOPY_RCODE -ne 0 ]]
