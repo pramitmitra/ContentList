@@ -234,7 +234,7 @@ then
         for fn in $(<$TMP_FIND_FILE)
         do
           FILE_UNIT_OF_WORK=${fn##*/}
-          if [ $FILE_UNIT_OF_WORK -lt $MIN_LOAD_UNIT_OF_WORK ]
+          if [ $FILE_UNIT_OF_WORK -le $MIN_LOAD_UNIT_OF_WORK ]
           then
             if [ $FIRST_FILE = 1 ]
             then
