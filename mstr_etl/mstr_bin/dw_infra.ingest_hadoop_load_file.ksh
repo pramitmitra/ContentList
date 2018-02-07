@@ -21,6 +21,7 @@
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Michael Weng     10/12/2016      Add hadoop authentication
 # Michael Weng     10/10/2017      Add optional UOW to the HDFS path
+# Michael Weng     02/01/2018      Add optional cleanup before loading
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -116,6 +117,7 @@ fi
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1   
 assignTagValue HDFS_URL HDFS_URL $ETL_CFG_FILE W "$HDFS_URL"
 assignTagValue HDFS_PATH HDFS_PATH $ETL_CFG_FILE W ""
+assignTagValue HDFS_PATH_CLEANUP HDFS_PATH_CLEANUP $ETL_CFG_FILE W 0
 assignTagValue EXTRACT_PROCESS_TYPE EXTRACT_PROCESS_TYPE $ETL_CFG_FILE W "D"
 assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W "0"
 assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ".gz"
@@ -168,6 +170,11 @@ CLASSPATH=$CLASSPATH:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar
 
 assignTagValue USE_DATACONVERTER_JAR USE_DATACONVERTER_JAR $ETL_CFG_FILE W 0 
 
+if [ $HDFS_PATH_CLEANUP != 0 ]
+then
+  print "Cleaning up target folder: $HDFS_URL/${HDFS_PATH} ..."
+  ${HADOOP_COMMAND} fs -rm -r -skipTrash $HDFS_URL/${HDFS_PATH}
+fi
 
 if [ $USE_DATACONVERTER_JAR = 0 ]
   then
