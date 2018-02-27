@@ -328,9 +328,10 @@ fi
 
 if [ $rcode != 0 ]
    then
-    print "hdfs filMast Update can't be completed ... exiting process !!!!"
+    print "hdfs fileMask Update can't be completed ... exiting process !!!!"
     print "Value of Return Code ="$rcode
-   # exit 4
+    ## exit 4 is commented out to make hdfsFileMaskUpdate process Non-Fatal, as currently many ETL_ID(s) are not following directory structure standard. 
+    # exit 4
  else
    print "hdfsFileMaskUpdate process complete"
 fi
