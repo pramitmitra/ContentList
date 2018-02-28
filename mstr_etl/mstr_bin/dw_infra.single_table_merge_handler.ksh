@@ -11,7 +11,7 @@
 # Called by:    UC4/Unix
 #
 # Date           Ver#   Modified By(Name)            Change and Reason for Change
-#-----------    -----  ---------------------------  ------------------------------
+#-----------    -----  ---------------------------  ---------------------------------------------------------
 #
 # 2017-08-17       .1   Kevin Oaks                   Initial shell
 # 2017-08-18       .7   Kevin Oaks                   Completely tested sans run script call
@@ -25,7 +25,9 @@
 # 2017-09-12       .9   Michael Weng                 Check and load data onto HDFS
 # 2017-11-23       1.0  Pramit Mitra                 Hive Snapshot merge partition cleanup(DINT-1054) 
 # 2017-12-01       1.1  Pramit Mitra                 Renaming DATE_RET_DAYS to STM_DATE_RET_DAYS
-####################################################################################################
+# 2018-02-06       1.2  Pramit Mitra                 DINT-1192: Restricting STM purge strictly for JOB_ENV=sp*|hd*
+# 2018-02-20       1.3  Pramit Mitra                 DINT-1271: STM_DATE_RET_DAYS default updating to INF from 0
+###################################################################################################################
 
 typeset -fu usage
 
@@ -248,21 +250,23 @@ fi
 #
 #                                Hive Snapshot merge partition cleanup
 #
-#  This secion runs Hive Snapshot merge partition cleanup.
+#  This secion runs Hive Snapshot merge partition cleanup only for JOB_ENV=sp*||hd*.
 #  The process will look for following two values from ETL_ID.cfg file. It is exhibit following properties 
 #  ( 1 ) if 1st variable "STM_DATE_RET_DAYS" is not available then default to 0. It means all HIVE partitions will be deleted
 #  except latest UOW_TO date partion. IF "INF" value is specified as STM_DATE_RET_DAYS then Purge process will be ignored.
 #  ( 2 ) if 2nd variable "MERGE_TABLE" is not available then Purge process will be ignored.
 ######################################################################################################
 
-PROCESS=Hive_Snapshot_Merge_Partition
-RCODE=`grepCompFile $PROCESS $HANDLER_COMP_FILE`
-
-RUN_RCODE=0
-if [[ $RCODE -eq 1 ]]
+if [[ $JOB_ENV == sp* || $JOB_ENV == hd* ]]
 then
+  PROCESS=Hive_Snapshot_Merge_Partition
+  RCODE=`grepCompFile $PROCESS $HANDLER_COMP_FILE`
+
+  RUN_RCODE=0
+  if [[ $RCODE -eq 1 ]]
+  then
     print "Redirecting Hive_Snapshot_Merge_Partition output to $PARENT_LOG_FILE"
-    assignTagValue STM_DATE_RET_DAYS STM_DATE_RET_DAYS $ETL_CFG_FILE W 0
+    assignTagValue STM_DATE_RET_DAYS STM_DATE_RET_DAYS $ETL_CFG_FILE W INF
     assignTagValue MERGE_TABLE MERGE_TABLE $ETL_CFG_FILE W NOT_ASSIGNED
     if [[ $STM_DATE_RET_DAYS == 'INF' ]]
         then
@@ -293,7 +297,10 @@ then
       print "$PROCESS already complete"
    else
    exit $RCODE
- fi
+   fi
+else
+  print "Hive_Snapshot_Merge_Partition can't be performed for Non-Spark/Non-Hadoop Jobs"
+fi
 ######################################################################################################
 #
 #                                Infra Log Copy
