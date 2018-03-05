@@ -42,6 +42,7 @@ do
         chmod 775 $(eval echo $DIR)
         chmod 775 $(eval echo $DIR)/$TABLE_ID
         chmod g+s $(eval echo $DIR)
+        chmod g+s $(eval echo $DIR)/$TABLE_ID
     done < $DW_MASTER_CFG/dw_etl_sub_dirs_sft.lis
 
 done < $DW_MASTER_CFG/dw_etl_job_env.lis
