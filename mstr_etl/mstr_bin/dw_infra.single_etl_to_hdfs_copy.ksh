@@ -9,7 +9,7 @@
 # Name             Date            Description
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/26/2017      Initial
-#
+# Michael Weng     03/05/2018      Fix code error when DW_IN resides on shared storage
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -83,7 +83,7 @@ then
   FILE_ID=0
   for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
   do
-    if [[ $IS_SHARED = 0 ]] || [[ $IS_SHARED = 1 && $(($FILE_ID % $SRC_HOST_CNT)) = $instance_idx ]]
+    if [[ $IS_SHARED = 0 ]] || [[ $IS_SHARED = 1 && $(($FILE_ID % $SRC_HOST_CNT)) = $HOST_ID ]]
     then
       print "$data_file_entry" >> $DATA_LIS_FILE
     fi
