@@ -14,6 +14,7 @@
 # 2015-07-07  1.5    Ryan Wong                       Add td6 and td7 to JOB_ENV check
 # 2016-04-21  1.6    Michael Weng                    Check on hd* and set hadoop env for td*
 # 2017-10-18  1.7    Michael Weng                    Add support for sp*
+# 2018-02-07  1.8    Michael Weng                    Remove dependency on hadoop CLI
 #------------------------------------------------------------------------------------------------
 
 typeset -fu processCommand
@@ -240,23 +241,23 @@ then
   	
   elif [[ $EXPORT_IMPORT_TYPE = "EXPORT" ]]  #check hadoop fodler exits and do cleanup
   then
-  		CLENA_UP_HADOOP_TARGET_FOLDER_LOG=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.cleanup_hadoop_target_folder.$CURR_DATETIME.log
-  		print "Cleaning up Hadoop Target folder $HADOOP_TARGET_FOLDER on $HADOOP_SYSTEM, see log $CLENA_UP_HADOOP_TARGET_FOLDER_LOG"
-	 	
-		set +e
-		   print  "ssh $SSH_USER@$HADOOP_CLI \" .  ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||echo 0 \""  > $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
-		   ssh $SSH_USER@$HADOOP_CLI ". ~$SSH_USER/.profile;hadoop fs -rm $HADOOP_TARGET_FOLDER/*||echo 0"  >> $CLENA_UP_HADOOP_TARGET_FOLDER_LOG
-		   rcode=$?
-		   print $rcode
-		set -e
-		
-		if [ $rcode != 0 ]
-		then
-			print "Failed Clean up Hadoop Target folder $HADOOP_TARGET_FOLDER, Please setup auto SSH connection for ssh $TD_USERNAME@$HADOOP_CLI via $DWI_WHOAMI on `hostname`
-			and setup .profle in HOME DIR"
-			exit 4
-		fi
-  	
+    CLENA_UP_HADOOP_TARGET_FOLDER_LOG=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.cleanup_hadoop_target_folder.$CURR_DATETIME.log
+    print "Cleaning/creating Hadoop Target folder $HADOOP_TARGET_FOLDER on $HADOOP_SYSTEM"
+
+    export HD_USERNAME=$SSH_USER
+    . $DW_MASTER_CFG/hadoop.login
+
+    set +e
+    ${HADOOP_HOME2}/bin/hadoop fs -rm -r -skipTrash $HADOOP_TARGET_FOLDER
+    ${HADOOP_HOME2}/bin/hadoop fs -mkdir -p $HADOOP_TARGET_FOLDER
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      print "${0##*/}:  ERROR, Failed Clean/create Hadoop Target folder $HADOOP_TARGET_FOLDER on $HADOOP_SYSTEM."
+      exit 4
+    fi
   fi  	
   
   if [[ -f $TD_BRIDGE_SQL ]] && [[ -s ${TD_BRIDGE_SQL} ]]
@@ -290,33 +291,31 @@ fi
 if [[ $EXPORT_IMPORT_TYPE = "EXPORT" ]]
 then
 	
-	# Touch Watchfile
-	PROCESS=touch_successfile
-	grcode=`grepCompFile $PROCESS $COMP_FILE`
-	
- 	if [ $grcode != 0 ]
-	then
-	  
+  # Touch Watchfile
+  PROCESS=touch_successfile
+  grcode=`grepCompFile $PROCESS $COMP_FILE`
 
-		
-	 	print "Touching successfile $SUCCESS_FILE on $HADOOP_SYSTEM"
+  if [ $grcode != 0 ]
+  then
+    print "Touching successfile $SUCCESS_FILE on $HADOOP_SYSTEM"
+
+    export HD_USERNAME=$SSH_USER
+    . $DW_MASTER_CFG/hadoop.login
 	 	
-		set +e
-		 
-		   ssh $SSH_USER@$HADOOP_CLI ". ~$SSH_USER/.profile;hadoop fs -touchz $SUCCESS_FILE"
-		   rcode=$?
-		   print $rcode
-		set -e
-		
-		if [ $rcode != 0 ]
-		then
-			print "Failed touching file $SUCCESS_FILE on ${HADOOP_SYSTEM}, Please setup auto SSH connection for ssh $TD_USERNAME@$HADOOP_CLI via $DWI_WHOAMI on `hostname`
-			and setup .profle in HOME DIR" 
-			exit 4
-		fi
-	else
-	  print "$PROCESS already complete"
-	fi
+    set +e
+    ${HADOOP_HOME2}/bin/hadoop fs -touchz $SUCCESS_FILE
+    rcode=$?
+    set -e
+
+    if [ $rcode != 0 ]
+    then
+      print "${0##*/}:  ERROR, Failed touching file $SUCCESS_FILE on ${HADOOP_SYSTEM}"
+      exit 4
+    fi
+
+  else
+    print "$PROCESS already complete"
+  fi
 		
 
 fi  	

@@ -40,6 +40,8 @@
 # 2017-10-04   1.22   Michael Weng                  Add restart logic for hdfs load
 # 2017-10-10   1.23   Michael Weng                  Add support for sp* on loading data to hdfs
 # 2017-12-06   1.24   Ryan Wong                     Add LOG_FILE for touch file ste_hdfs_load_success
+# 2017-10-10   1.24   Ryan Wong                     Add optional hdfs copy to support post extract normalize files
+# 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1378,46 +1380,85 @@ print "
 #                                ADPO: copy data to HDFS
 #
 #  This section is specific for ADPO. If the parameter STE_STAGE_TARGET in $DW_CFG/$ETL_ID.cfg is set
-#  to [hd1|hd2|hd3|...], data files from extracting job will be also loaded into HDFS. Destination HDFS
-#  path will be $STE_STAGE_PATH/$STE_SA/$STE_STAGE_TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+#  to [hd1|hd2|hd3|...], data files from extracting job will be also loaded into HDFS.
 #
-#    STE_STAGE_TARGET     # used to determine whether and which hadoop cluster to load
-#    STE_STAGE_TABLE      # the stage table
-#    STE_STAGE_PATH       # STE hdfs path
+#    STE_STAGE_TARGET        # used to determine whether and which hadoop cluster to load
+#    STE_STAGE_PATH          # STE hdfs path
+#
+#  Set STE_STAGE_TABLE to copy extract files
+#  Destination HDFS path will be:
+#  $STE_STAGE_PATH/$STE_SA/$STE_STAGE_TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+#
+#    STE_STAGE_TABLE         # the stage table
+#
+#  Set STE_STAGE_TABLE_NORMAL and STE_STAGE_ETL_ID_NORMAL to copy post-extract normalize files (single_field_normalize.ksh)
+#  Destination HDFS path will be:
+#  $STE_STAGE_PATH/$STE_SA_NORMAL/$STE_STAGE_TABLE_NORMAL/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+#
+#    STE_STAGE_TABLE_NORMAL  # the stage table for normalized data
+#    STE_STAGE_ETL_ID_NORMAL # use this ETL_ID to locate the normalized folders
 #
 ######################################################################################################
 assignTagValue STE_STAGE_TARGET STE_STAGE_TARGET $ETL_CFG_FILE W ""
 
-set +eu
+set -eu
 if [[ -n ${STE_STAGE_TARGET:-""} ]]
 then
   assignTagValue STE_STAGE_PATH STE_STAGE_PATH $ETL_CFG_FILE
-  assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE
+  assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE W
+  assignTagValue STE_STAGE_TABLE_NORMAL STE_STAGE_TABLE_NORMAL $ETL_CFG_FILE W
 
-  STE_SA=${SUBJECT_AREA#*_}
-  STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
-  if [[ X"$UOW_TO" != X ]]
+  export UOW_TO_FLAG=0
+  STE_COPY=0
+  if [[ X"$STE_STAGE_TABLE" != X ]]
   then
-    STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+    STE_SA=${SUBJECT_AREA#*_}
+    STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
+
+    if [[ X"$UOW_TO" != X ]]
+    then
+      UOW_TO_FLAG=1
+      STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+    fi
+
+    STE_COPY=1
   fi
 
-  export DATA_LIS_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.ste_copy_to_hdfs$UOW_APPEND
-  > $DATA_LIS_FILE
-
-  DATA_FILE_PATTERN="$IN_DIR/$TABLE_ID.*.dat*"
-  if [[ "X$UOW_TO" != "X" ]]
+  STE_COPY_NORMAL=0
+  if [[ X"$STE_STAGE_TABLE_NORMAL" != X ]]
   then
-    DATA_FILE_PATTERN="$DATA_FILE_PATTERN${FILE_EXTN}"
-  else
-    DATA_FILE_PATTERN="$DATA_FILE_PATTERN.$BATCH_SEQ_NUM${FILE_EXTN}"
+    assignTagValue STE_STAGE_ETL_ID_NORMAL STE_STAGE_ETL_ID_NORMAL $ETL_CFG_FILE
+    assignTagValue STE_STAGE_PATH_NORMAL STE_STAGE_PATH $ETL_CFG_FILE
+    SUBJECT_AREA_NORMAL=${STE_STAGE_ETL_ID_NORMAL%%.*}
+    TABLE_ID_NORMAL=${STE_STAGE_ETL_ID_NORMAL##*.}
+    STE_SA_NORMAL=${SUBJECT_AREA_NORMAL#*_}
+    STE_STAGE_PATH_NORMAL=${STE_STAGE_PATH_NORMAL}/${STE_SA_NORMAL}/${STE_STAGE_TABLE_NORMAL}
+
+    # Get IN_DIR_NORMAL from STE_STAGE_ETL_ID_NORMAL cfg
+    ETL_ID_CFG_NORMAL=$DW_HOME/cfg/$SUBJECT_AREA_NORMAL/${STE_STAGE_ETL_ID_NORMAL}.cfg
+    if [ ! -f $ETL_ID_CFG_NORMAL ]
+    then
+      print "${0##*/}:  FATAL ERROR ETL_ID_CFG_NORMAL does not exist.  $ETL_ID_CFG_NORMAL" >&2
+      exit 5
+    fi
+    assignTagValue IN_DIR_NORMAL IN_DIR $ETL_ID_CFG_NORMAL W $DW_IN
+    IN_DIR_NORMAL=$IN_DIR_NORMAL/$JOB_ENV/$SUBJECT_AREA_NORMAL
+
+    if [[ X"$UOW_TO" != X ]]
+    then
+      UOW_TO_FLAG=1
+      STE_STAGE_PATH_NORMAL=${STE_STAGE_PATH_NORMAL}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+      IN_DIR_NORMAL=$IN_DIR_NORMAL/$TABLE_ID_NORMAL/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+    fi
+
+    STE_COPY_NORMAL=1
   fi
 
-  print "DATA_FILE_PATTERN is $DATA_FILE_PATTERN"
-
-  for data_file_entry in `ls $DATA_FILE_PATTERN |grep -v ".record_count."`
-  do
-    print "$data_file_entry" >> $DATA_LIS_FILE
-  done
+  if [[ $STE_COPY == 0 && $STE_COPY_NORMAL == 0 ]]
+  then
+    print "${0##*/}:  FATAL ERROR, Both STE_STAGE_TABLE and STE_STAGE_TABLE_NORMAL are not set" >&2
+    exit 8
+  fi
 
   ### STE_STAGE_TARGET is comma separated for multiple hadoop cluster support. The flag is for user to
   ### specify whether failure copying to hdfs should be ignored. Default is 0 (no ignore, meaning copy
@@ -1436,88 +1477,106 @@ then
     fi
     CLUSTER=$(HD_ENV_UPPER=$(print $HD_ENV | tr [:lower:] [:upper:]); eval print \$DW_${HD_ENV_UPPER}_DB)
 
+    STE_STAGE_TARGET_STATUS=0
     if [[ $HD_ENV == @(hd*|sp*) ]] && [[ -f $DW_MASTER_CFG/.${CLUSTER}_env.sh ]]
     then
-      PROCESS=ste_hdfs_load_${HD_ENV}
-      RCODE=`grepCompFile $PROCESS $COMP_FILE`
-
-      if [ $RCODE = 0 ]
+      STE_COPY_STATUS=0
+      if [[ $STE_COPY == 1 ]]
       then
-        print "$PROCESS already complete"
-        continue
-      fi
+        PROCESS=ste_hdfs_load_${HD_ENV}
+        RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
-      . $DW_MASTER_CFG/.${CLUSTER}_env.sh
-      . $DW_MASTER_CFG/hadoop.login
+        if [ $RCODE != 0 ]
+        then
+          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.multi_etl_to_hdfs_copy${UOW_APPEND}.$PROCESS.$CURR_DATETIME.log
+          print "Copy to HDFS is started."
+          print "    Source (${IN_DIR})"
+          print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
+          print "    Log file: $LOG_FILE"
 
-      print "Copy to HDFS is started."
-      print "    Source (${IN_DIR})"
-      print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
-
-      ### Cleanup target stage table directory and re-create a new one on HDFS
-      print "Cleaning up target and re-creating new directory on $CLUSTER: $STE_STAGE_PATH"
-      set +e
-      hadoop fs -rm -r -skipTrash $STE_STAGE_PATH
-      hadoop fs -mkdir -p $STE_STAGE_PATH
-      retcode=$?
-      set -e
-
-      if [ $retcode = 0 ]
-      then
-        ### Copy data files from Tempo to HDFS
-        while read SOURCE_FILE_TMP 
-        do
           set +e
-          hadoop fs -copyFromLocal $SOURCE_FILE_TMP ${STE_STAGE_PATH}
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR $STE_STAGE_PATH $TABLE_ID > $LOG_FILE 2>&1
           retcode=$?
           set -e
 
           if [ $retcode != 0 ]
           then
             print "WARNING - Copy to HDFS failed: "
-            print "    Source ($SOURCE_FILE_TMP)"
+            print "    Source (${IN_DIR})"
             print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
-            break
+            STE_COPY_STATUS=1
           else
-            print "Load completion of FILE: ${SOURCE_FILE_TMP}"
+            print "##########################################################################################################"
+            print "# Loaded data to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`"
+            print "#   HDFS - $CLUSTER: $STE_STAGE_PATH"
+            print "##########################################################################################################"
+            print "$PROCESS" >> $COMP_FILE
           fi
-        done < $DATA_LIS_FILE
 
-      else
-        print "${0##*/}: WARNING - Failed to create directory on $CLUSTER"
-      fi
+        else
+          print "$PROCESS already complete"
+        fi
+      fi  ### End of STE_COPY
 
-      if [ $retcode = 0 ]
+      STE_COPY_NORMAL_STATUS=0
+      if [[ $STE_COPY_NORMAL == 1 ]]
+      then
+        PROCESS=ste_hdfs_load_normal_${HD_ENV}
+        RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+        if [ $RCODE != 0 ]
+        then
+          LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.multi_etl_to_hdfs_copy${UOW_APPEND}.$PROCESS.$CURR_DATETIME.log
+          print "Copy to HDFS is started."
+          print "    Source (${IN_DIR_NORMAL})"
+          print "    Destination ($CLUSTER:$STE_STAGE_PATH_NORMAL)"
+          print "    Log file: $LOG_FILE"
+
+          set +e
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR_NORMAL $STE_STAGE_PATH_NORMAL $TABLE_ID_NORMAL > $LOG_FILE 2>&1
+          retcode=$?
+          set -e
+
+          if [ $retcode != 0 ]
+          then
+            print "WARNING - Copy to HDFS failed: "
+            print "    Source (${IN_DIR_NORMAL})"
+            print "    Destination ($CLUSTER:$STE_STAGE_PATH_NORMAL)"
+            STE_COPY_NORMAL_STATUS=1
+          else
+            print "##########################################################################################################"
+            print "# Loaded data to HDFS for Normal ETL_ID: $STE_STAGE_ETL_ID_NORMAL, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`"
+            print "#   HDFS - $CLUSTER: $STE_STAGE_PATH_NORMAL"
+            print "##########################################################################################################"
+            print "$PROCESS" >> $COMP_FILE
+          fi
+
+        else
+          print "$PROCESS already complete"
+        fi
+      fi  ### End of STE_COPY_NORMAL
+
+      if [[ $STE_COPY_STATUS == 0 && $STE_COPY_NORMAL_STATUS == 0 ]]
       then
         ### Create Done file for $HD_ENV (hd1 | hd2 | hd3 | ...)
         LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_hdfs_load_success.$CURR_DATETIME.log
         $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $HD_ENV ${ETL_ID}.ste_hdfs_load_success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
-
-        print "
-##########################################################################################################
-# Loaded data to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`
-#   HDFS - $CLUSTER: $STE_STAGE_PATH
-##########################################################################################################"
-
-        print "$PROCESS" >> $COMP_FILE
       fi
 
     else
       print "WARNING - invalid STE_STAGE_TARGET value ($TARGET) in $ETL_CFG_FILE"
-      retcode=1
+      STE_STAGE_TARGET_STATUS=1
     fi
 
-    if [ $retcode != 0 ]
+    if [[ $STE_STAGE_TARGET_STATUS == 1 || $STE_COPY_STATUS == 1 || $STE_COPY_NORMAL_STATUS == 1 ]]
     then
       if [ $HD_FLAG = 0 ]
       then
-        print "${0##*/}: INFRA_ERROR - Failed to load data to HDFS ($HD_ENV):"
+        print "${0##*/}: INFRA_ERROR - Failed to load data to HDFS ($HD_ENV)"
         jobfailed=1
       else
-        print "WARNING - Failed to load data to HDFS:"
+        print "WARNING - Failed to load data to HDFS ($HD_ENV)"
       fi
-      print "    Source (${IN_DIR})"
-      print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
     fi
   done
 

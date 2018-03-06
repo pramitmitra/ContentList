@@ -14,6 +14,7 @@
 #                                                    - now using /bin/ksh rather than /usr/bin/ksh
 #                                                    - converted echo statements to print
 # 2016-12-13   1.1    Ryan Wong                     Add group sticky for secure file transfer
+# 2018-03-05   1.2    Ryan Wong                     Add chmod 775 down to TABLE_ID level to support SFT
 #
 ##############################################################################################################
 
@@ -39,7 +40,9 @@ do
     while read DIR
     do
         chmod 775 $(eval echo $DIR)
+        chmod 775 $(eval echo $DIR)/$TABLE_ID
         chmod g+s $(eval echo $DIR)
+        chmod g+s $(eval echo $DIR)/$TABLE_ID
     done < $DW_MASTER_CFG/dw_etl_sub_dirs_sft.lis
 
 done < $DW_MASTER_CFG/dw_etl_job_env.lis

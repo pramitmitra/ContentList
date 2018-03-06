@@ -24,6 +24,7 @@
 # 2017-02-02  1.1    Ryan Wong                    Initial
 # 2017-03-07  1.2    Ryan Wong                    Add step to create sudoers drop-in file
 # 2017-03-30  1.3    Ryan Wong                    Add step to add authorized_keys file
+# 2018-02-26  1.4    Ryan Wong                    Update Dev home directory is at /home_service
 #
 ####################################################################################################
 
@@ -151,25 +152,23 @@ print "#########################################################################
 print "####################################################################################################"
 print "(1) Create home directory"
 print "####################################################################################################"
-if [[ $SFT_ENV != prod ]]
+if [[ $SFT_ENV == dev || $SFT_ENV == prod ]]
 then
-  if [[ -d $SFT_HOME ]]
+  if [[ $SFT_ENV == prod ]]
   then
-    print "INFO: Home directory already exists, skipping!!! $SFT_HOME"
-  else
-    set -x
-    sudo mkdir -v $SFT_HOME
-    sudo chown -v $SFT_USERID:$SFT_USERID $SFT_HOME
-    set +x
+    SFT_HOME_BASE=data
+  elif [[ $SFT_ENV == dev ]]
+  then
+    SFT_HOME_BASE=home_service
   fi
-else
-  if [[ -d /data/$SFT_USERID ]]
+
+  if [[ -d /$SFT_HOME_BASE/$SFT_USERID ]]
   then
-    print "INFO: Home directory already exists, skipping!!! /data/$SFT_USERID"
+    print "INFO: Home directory already exists, skipping!!! /$SFT_HOME_BASE/$SFT_USERID"
   else
     set -x
-    sudo mkdir -v /data/$SFT_USERID
-    sudo chown -v $SFT_USERID:$SFT_USERID /data/$SFT_USERID
+    sudo mkdir -v /$SFT_HOME_BASE/$SFT_USERID
+    sudo chown -v $SFT_USERID:$SFT_USERID /$SFT_HOME_BASE/$SFT_USERID
     set +x
   fi
   ####################
@@ -181,9 +180,20 @@ else
   elif [[ -e $SFT_HOME ]]
   then
     print "FATAL ERROR: Object $SFT_HOME exists and is not a symlink, please investigate" >&2
+    exit 9
   else
     set -x
-    sudo ln -vsT /data/$SFT_USERID $SFT_HOME
+    sudo ln -vsT /$SFT_HOME_BASE/$SFT_USERID $SFT_HOME
+    set +x
+  fi
+else
+  if [[ -d $SFT_HOME ]]
+  then
+    print "INFO: Home directory already exists, skipping!!! $SFT_HOME"
+  else
+    set -x
+    sudo mkdir -v $SFT_HOME
+    sudo chown -v $SFT_USERID:$SFT_USERID $SFT_HOME
     set +x
   fi
 fi
