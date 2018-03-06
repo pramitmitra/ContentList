@@ -9,6 +9,7 @@
 # ???              ??/??/????      Initial Creation
 # Ryan Wong        10/04/2013      Redhat changes
 # John Hackley     09/09/2015      Password encryption changes
+# John Hackley     02/19/2018      Enable SFTP Proxy as part of Gauls decommissioning
 #
 #------------------------------------------------------------------------------------------------
 
@@ -28,6 +29,18 @@ then
   print "Unable to retrieve SCP password, exiting; ETL_ID=$ETL_ID; SCP_CONN=$SCP_CONN"
   exit $DWIrc
 fi
+
+
+set +e
+grep "^EXTRACT_USE_EXT_WEB_PROXY\>" $DW_CFG/$ETL_ID.cfg | read PARAM VALUE COMMENT;  EXTRACT_USE_EXT_WEB_PROXY=${VALUE:-0}
+rcode=$?
+set -e
+
+if [ $rcode != 0 ]
+then
+  print "${0##*/}: WARNING, failure determining value for EXTRACT_USE_EXT_WEB_PROXY parameter from $DW_CFG/$ETL_ID.cfg" >&2
+fi
+
 
 set +e
 grep "^CNDTL_COMPRESSION\>" $DW_CFG/$ETL_ID.cfg | read PARAM VALUE COMMENT;  IS_COMPRESS=${VALUE:-0}
@@ -76,13 +89,51 @@ TARGET_FILE_TMP=`print $(eval print $TARGET_FILE)`
   fi
 #TARGET_FILE_TMP=${TARGET_FILE_TMP%%$COMPRESS_SFX}.$BATCH_SEQ_NUM$COMPRESS_SFX
 
-set +e
-ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; if [[ -f ./$SOURCE_FILE_TMP ]]; then rm -f ./$SOURCE_FILE_TMP; fi; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
-rcode=$?
-set -e
 
-if [ $rcode != 0 ]
+# Note that the name and port for the Web Proxy host are hard-coded here; a better home to hard-code would be etlenv.setup but
+# too many of us are modifying it simultaneously this month
+
+if [ $EXTRACT_USE_EXT_WEB_PROXY = 1 ]
 then
+# Only one of these proxy variables actually has to be set, depending on the external endpoint (http vs https). Keep it simple and set them both
+  EXPORT http_proxy=httpproxy.vip.ebay.com:80
+  EXPORT https_proxy=httpproxy.vip.ebay.com:80
+
+  print "${0##*/}: INFO, Will use External Web Proxy for wget call" >&2
+  print "${0##*/}: INFO, wget command line is: wget --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP $URL/$SOURCE_FILE_TMP" >&2
+
+#  print "${0##*/}: INFO, wget command line is: wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
+
+# Not sure this cd is necessary (since using -O option of wget), but it was in single_wget_internal_extract.ksh so keeping it.
+  cd $IN_DIR/
+  set +e
+# Instead of specifying --append-output, just tack >&2 onto the end of the wget call
+# wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP
+  wget --verbose --tries=5 --waitretry=2 --no-host-directories -O $IN_DIR/$TARGET_FILE_TMP $URL/$SOURCE_FILE_TMP >&2
+  rcode=$?
+  set -e
+
+  if [ $rcode != 0 ]
+  then
+    print "${0##*/}:  ERROR, failure executing wget." >&2
+#   Don't need this, per above comment
+#   print "${0##*/}:  ERROR, see $ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log for wget error message." >&2
+    exit $rcode
+  fi
+
+  ((FILE_REC_COUNT=`ls -l $IN_DIR/$TARGET_FILE_TMP | tr -s ' '| cut -d' ' -f5`/100))
+
+  print $FILE_REC_COUNT > $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.record_count.dat
+
+else
+
+  set +e
+  ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; if [[ -f ./$SOURCE_FILE_TMP ]]; then rm -f ./$SOURCE_FILE_TMP; fi; wget --verbose --append-output=$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log --tries=5 --waitretry=2 --no-host-directories $URL/$SOURCE_FILE_TMP" >&2
+  rcode=$?
+  set -e
+
+  if [ $rcode != 0 ]
+  then
         print "${0##*/}:  ERROR, failure executing wget." >&2
         print "${0##*/}:  ERROR, see ${SCP_HOST}:$REMOTE_DIR/$ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log for wget error message." >&2
         print
@@ -92,17 +143,20 @@ then
         print  
         ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; cat $ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log"
         exit 500 
-fi
+  fi
 
-scp -v -B $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/${SOURCE_FILE_TMP##*/} $IN_DIR/$TARGET_FILE_TMP >&2
+  scp -v -B $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/${SOURCE_FILE_TMP##*/} $IN_DIR/$TARGET_FILE_TMP >&2
+
  
-((FILE_REC_COUNT=`ls -l $IN_DIR/$TARGET_FILE_TMP | tr -s ' '| cut -d' ' -f5`/100))
+  ((FILE_REC_COUNT=`ls -l $IN_DIR/$TARGET_FILE_TMP | tr -s ' '| cut -d' ' -f5`/100))
 
-print $FILE_REC_COUNT > $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.record_count.dat
+  print $FILE_REC_COUNT > $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.$FILE_ID.record_count.dat
 
 # Remove file on ssh server.
-ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; rm ${SOURCE_FILE_TMP##*/}"
-ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; rm $ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log"
+  ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; rm ${SOURCE_FILE_TMP##*/}"
+  ssh "$SCP_USERNAME@$SCP_HOST" "cd $REMOTE_DIR; rm $ETL_ID.$SOURCE_FILE_LOG.$CURR_DATETIME.log"
+
+fi
 
 if [[ $LAST_EXTRACT_TYPE = "V" ]]
 then

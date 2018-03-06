@@ -4,6 +4,7 @@
 # ETL password encryption added by jhackley, 20150825
 # Add SCP_PUSH_PORT cfg parameter to add port option for scp, 20170331
 # Enable Site Https access through Web Proxy, 20170419
+# Enable SFTP Proxy as part of Gauls decommissioning, Hackley, 20180221
 
 ETL_ID=$1
 FILE_ID=$2
@@ -25,6 +26,19 @@ then
 else
   print "Unable to retrieve SCP password, exiting; ETL_ID=$ETL_ID; SCP_CONN=$SCP_CONN"
   exit $DWIrc
+fi
+
+set +e
+grep "^LOAD_USE_SFTP_PROXY\>" $DW_CFG/$ETL_ID.cfg | read PARAM LOAD_USE_SFTP_PROXY COMMENT
+rcode=$?
+set -e
+
+if [ $rcode != 0 ]
+then
+  print "${0##*/}: INFO, no value for LOAD_USE_SFTP_PROXY parameter from $DW_CFG/$ETL_ID.cfg, defaulting to 0" >&2
+  LOAD_USE_SFTP_PROXY=0
+else
+  print "${0##*/}: INFO, found LOAD_USE_SFTP_PROXY parameter from $DW_CFG/$ETL_ID.cfg, value is $LOAD_USE_SFTP_PROXY" >&2
 fi
 
 set +e
@@ -98,19 +112,39 @@ then
       SCP_INCOMPLETE_SUFFIX=.$SCP_INCOMPLETE_SUFFIX
     fi
      
-    scp -v -B -P $SCP_PUSH_PORT $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX >&2
-	 
-    if [ ! -z "$SCP_INCOMPLETE_SUFFIX" ]
+#   Note that the name and port for the SFTP Proxy host are hard-coded here; a better home to hard-code would be etlenv.setup but
+#   too many of us are modifying it simultaneously this month
+
+    if [ $LOAD_USE_SFTP_PROXY = 1 ]
     then
-      ssh $SCP_USERNAME@$SCP_HOST "mv $REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX $REMOTE_DIR/$TARGET_FILE_TMP" >&2
+      print "${0##*/}: INFO, transfer command line is: scp -v -B -P $SCP_PUSH_PORT -o 'ProxyCommand nc -X connect -x sftpproxy.vip.ebay.com:2222 %h %p' $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX" >&2
+      scp -v -B -P $SCP_PUSH_PORT -o "ProxyCommand nc -X connect -x sftpproxy.vip.ebay.com:2222 %h %p" $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX >&2
+	 
+      if [ ! -z "$SCP_INCOMPLETE_SUFFIX" ]
+      then
+        ssh -o "ProxyCommand nc -X connect -x sftpproxy.vip.ebay.com:2222 %h %p" $SCP_USERNAME@$SCP_HOST "mv $REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX $REMOTE_DIR/$TARGET_FILE_TMP" >&2
+      fi
+    else
+      print "${0##*/}: INFO, transfer command line is: scp -v -B -P $SCP_PUSH_PORT $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX" >&2
+      scp -v -B -P $SCP_PUSH_PORT $DW_SA_OUT/$SOURCE_FILE_TMP${CNDTL_SCP_COMPRESSION_SFX} $SCP_USERNAME@$SCP_HOST:$REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX >&2
+      if [ ! -z "$SCP_INCOMPLETE_SUFFIX" ]
+      then
+        ssh $SCP_USERNAME@$SCP_HOST "mv $REMOTE_DIR/$TARGET_FILE_TMP$SCP_INCOMPLETE_SUFFIX $REMOTE_DIR/$TARGET_FILE_TMP" >&2
+      fi
     fi
+
 elif [ $TRANSFER_PROCESS_TYPE = SF ] 
 then
     # Creatation of a batch file is needed in order to catch errors. stdin does not error out.
     print "cd $REMOTE_DIR" > $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM
     print "put $DW_SA_OUT/$SOURCE_FILE_TMP $TARGET_FILE_TMP" >> $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM 
 
-    sftp -b $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM $SCP_USERNAME@$SCP_HOST 
+    if [ $LOAD_USE_SFTP_PROXY = 1 ]
+    then
+      sftp -o "ProxyCommand nc -X connect -x sftpproxy.vip.ebay.com:2222 %h %p" -b $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM $SCP_USERNAME@$SCP_HOST 
+    else
+      sftp -b $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM $SCP_USERNAME@$SCP_HOST
+    fi
 
     rm $DW_SA_TMP/$ETL_ID.sftp.$SOURCE_FILE_TMP.$BATCH_SEQ_NUM
 
