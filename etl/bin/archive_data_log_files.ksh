@@ -40,7 +40,7 @@
 #										$DW_IN, $DW_MFS into deal_local_files function. 
 #										4. Call deal_shared_files if archive type is shared, else call deal_local_files. 
 #
-# Kevin Oaks       05/18/2015
+# Kevin Oaks      2018-02-16       Added function to handle DR Directory cleanup 
 #------------------------------------------------------------------------------------------------
 typeset -fu usage
 
@@ -589,6 +589,28 @@ find $DW_WATCH/extract/ -type f -mtime +30 -exec rm -f {} \;
 set -e	
 }
 
+function rm_dr_etlid_uow_dirs {
+#------------------------------------------------------------------------
+#  Remove ETL ID directories under $DW_DR_BASE older than
+#  $DW_DR_RETENTION_DAYS as defined in $DW_MASTER_CFG/etlenv.setup
+#------------------------------------------------------------------------
+
+print "Removing DR Recovery ETL ID directories older than 3 days"
+if [[ -n ${DW_DR_BASE:-""} && -n ${DW_DR_RETENTION_DAYS:-""} ]]
+then
+  print "Removing:"
+  print `find $DW_DR_BASE -mindepth 3 -maxdepth 3 -type d -mtime +${DW_DR_RETENTION_DAYS}`
+  find $DW_DR_BASE -mindepth 3 -maxdepth 3 -type d -mtime +${DW_DR_RETENTION_DAYS} | xargs /bin/rm -fR
+else
+  print "DW_DR_BASE IS NOT SET OR DW_DR_RETENTION_DAYS UNDEFINED!!! Skipping removal to avoid unintentional data loss"
+  print "Sending email to dw_infra SAE"
+  email_subject="$servername: INFO: DR Directory Deletion Failed"
+  email_body="Archive job skipped deletion of DR Dirs due to invalid DW_DR_BASE and/or DW_DR_RETENTION_DAYS setting."
+  grep "^dw_infra\>" $DW_CFG/subject_area_email_list.dat | read PARAM EMAIL_ERR_GROUP
+  print $email_body | mailx -s "$email_subject" $EMAIL_ERR_GROUP
+fi
+}
+
 function deal_shared_files {
 #------------------------------------------------------------------------
 #  deal the files under local directory
@@ -600,6 +622,7 @@ deal_dwsalog_selflogfile
 rm_dwlog_olderthan31_dir
 archive_dwlog_r4afiles
 rm_dwwatch_olderthan30_file
+rm_dr_etlid_uow_dirs
 }
 
 function deal_local_files {
