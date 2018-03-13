@@ -39,7 +39,6 @@
 # 2017-09-14   1.21   Michael Weng                  Support multiple HDFS copy and optional flag for copy failure
 # 2017-10-04   1.22   Michael Weng                  Add restart logic for hdfs load
 # 2017-10-10   1.23   Michael Weng                  Add support for sp* on loading data to hdfs
-# 2017-12-06   1.24   Ryan Wong                     Add LOG_FILE for touch file ste_hdfs_load_success
 # 2017-10-10   1.24   Ryan Wong                     Add optional hdfs copy to support post extract normalize files
 # 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
 #############################################################################################################
@@ -1178,176 +1177,40 @@ then
 fi     
 
 
-######################################################################################################
+#########################################################################################################
 #
 #                                Synch Files
 #
-#  This section determines gets the files to be synced and syncs the to the HA/DR servers.
-#  BATCH_SEQ_NUM_FILE has already been updated to the processed BATCH_SEQ_NUM.  To avoid
-#  differences on restart, re-read the BATCH_SEQ_NUM_FILE and use its value.
+#  This section calls a script that backs up extracted files to shared storage if DR_ACTIVE is set to 1.
+#  Only works when  UOW is in use.
 #
-######################################################################################################
+##########################################################################################################
 
-
-# extract synch files add on.
-if [ $HADR_ACTIVE = 1 ]
+# extract synch files add on
+if [[ $DR_ACTIVE = 1 && -n $UOW_TO ]]
 then
-   # file synching is on 
-   PROCESS=HADR_Synch 
+   # file synching is on
+   PROCESS=Local_DR_Synch
    RCODE=`grepCompFile $PROCESS $COMP_FILE`
+   LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.single_table_extract.local_to_dr${UOW_APPEND}.$CURR_DATETIME.log
 
-   # modify logic here to check specifically if mode is ON 
    if [ $RCODE = 1 ]
    then
+      print "Executing DR Process"
+     set +e
+     $DW_MASTER_EXE/dw_infra.single_table_extract.local_to_dr.ksh $SUBJECT_AREA $TABLE_ID $IN_DIR $DW_DR_BASE $DW_SA_LOG $UOW_APPEND $CURR_DATETIME > $LOG_FILE 2>&1
+     rcode=$?
+     set -e
 
-#      BATCH_SEQ_NUM=$(<$BATCH_SEQ_NUM_FILE)
-#      export BATCH_SEQ_NUM
-
-      #export HADR_SYNCH_FILE=$DW_SA_TMP/$ETL_ID.$JOB_ENV.$JOB_TYPE_ID.synch_files.$BATCH_SEQ_NUM.dat
-      if [[ -n $UOW_TO ]]
-      then
-         PCGID=$ETL_ID.$JOB_ENV.$JOB_TYPE_ID.$UOW_TO
-      else
-         PCGID=$ETL_ID.$JOB_ENV.$JOB_TYPE_ID.$BATCH_SEQ_NUM
-      fi
-      HADR_DATALIS=$DW_SA_TMP/$PCGID.synch_files.data.dat
-      HADR_STATELIS=$DW_SA_TMP/$PCGID.synch_files.state.dat
-      HADR_MFSLIS=$DW_SA_TMP/$PCGID.synch_files.mfs.dat
-
-      
-      print "${0##*/}:  INFO, HA DR Synch Data File : HADR_DATALIS = $HADR_DATALIS"
-      print "${0##*/}:  INFO, HA DR Synch State File : HADR_STATELIS = $HADR_STATELIS"
-      print "${0##*/}:  INFO, HA DR Synch MFS File : HADR_MFSLIS = $HADR_MFSLIS"
-      
-      LOG_FILE=$DW_SA_LOG/$PCGID.hadr${UOW_APPEND}.$CURR_DATETIME.log
-
-      > $HADR_DATALIS
-      > $HADR_STATELIS
-      > $HADR_MFSLIS
-
-      #get record count value - can vary due to prev logic - so pull here in case of restart
-      if [ -f $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.record_count_file.lis ]
-      then
-         assignTagValue RECORD_COUNT_FILE RECORD_COUNT_FILE $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.record_count_file.lis
-      else
-         if [[ -n $UOW_TO ]]
-         then
-            RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat
-         else
-            RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
-         fi
-      fi
-      
-      print $RECORD_COUNT_FILE >> $HADR_STATELIS
-      print $BATCH_SEQ_NUM_FILE >> $HADR_STATELIS
-
-      #get the list of extracted files
-      if [ ${IN_DIR} != ${IN_DIR%mfs*} ]; then
-         #check for distributed table
-         if [ $USE_DISTR_TABLE -eq 1 ]
-         then
-            while read FILE_ID DBC_FILE STBY_DBC_FILE
-            do
-               read TABLE_NAME DATA_FILENAME PARAM_LIST < $TABLE_LIS_FILE
-               eval DATFILE=$DATA_FILENAME
-               if [[ -n $UOW_TO ]]
-               then
-                 print $IN_DIR/.$DATFILE.mfctl >> $HADR_MFSLIS
-               else
-                 print $IN_DIR/.$DATFILE.$BATCH_SEQ_NUM.mfctl >> $HADR_MFSLIS
-               fi
-            done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
-         else
-            read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM_LIST < $TABLE_LIS_FILE
-            eval DATFILE=$DATA_FILENAME
-            if [[ -n $UOW_TO ]]
-            then
-               print $IN_DIR/.$DATFILE.mfctl > $HADR_MFSLIS
-            else
-               print $IN_DIR/.$DATFILE.$BATCH_SEQ_NUM.mfctl > $HADR_MFSLIS
-            fi
-         fi
-      else
-         # determine the file set
-          
-         if [[ -n $UOW_TO ]]
-         then
-            if [ -f $IN_DIR/$TABLE_ID.*.dat* ]
-            then
-               for HADRFN in $IN_DIR/$TABLE_ID.*.dat*
-               do
-                  if [[ $HADRFN != $RECORD_COUNT_FILE ]]; then
-                     print $HADRFN >> $HADR_DATALIS
-                  fi
-               done
-            fi
-            while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM_LIST
-            do
-               if [ -f $IN_DIR/$DATA_FILENAME* ]
-               then
-                  for HADRFN in $IN_DIR/$DATA_FILENAME*
-                  do
-                     if [[ $HADRFN != $RECORD_COUNT_FILE ]]; then
-                        print $HADRFN >> $HADR_DATALIS
-                     fi
-                  done
-               fi
-            done < $TABLE_LIS_FILE
-         else
-	    if [ $EXTRACT_PROCESS_TYPE = "T" ]
-	    then
-	      HADRFN_PATTERN=".*.$BATCH_SEQ_NUM*"
-	    else
-	      HADRFN_PATTERN=".$BATCH_SEQ_NUM*"
-	    fi
-
-            if [ -f $IN_DIR/$TABLE_ID.*.dat${HADRFN_PATTERN} ]
-            then
-               for HADRFN in $IN_DIR/$TABLE_ID.*.dat${HADRFN_PATTERN}
-               do
-                  if [[ $HADRFN != $RECORD_COUNT_FILE ]]; then
-                     print $HADRFN >> $HADR_DATALIS
-                  fi
-               done
-            fi
-            while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM_LIST
-            do
-               if [ -f $IN_DIR/$DATA_FILENAME${HADRFN_PATTERN} ]
-               then
-                  for HADRFN in $IN_DIR/$DATA_FILENAME${HADRFN_PATTERN}
-                  do
-                     if [[ $HADRFN != $RECORD_COUNT_FILE ]]; then
-                        print $HADRFN >> $HADR_DATALIS
-                     fi
-                  done
-               fi
-            done < $TABLE_LIS_FILE
-         fi
-
-      fi
-      
-      
-      if [[ -n $UOW_TO ]]
-      then
-         set +e
-         eval $DW_MASTER_BIN/dw_infra.synch_hadr_node_handler.ksh -i $ETL_ID -e $JOB_ENV -t $JOB_TYPE_ID -l /dev/null -u $UOW_TO > $LOG_FILE 2>&1
-         HADR_RCODE=$?
-         set -e
-      else
-         set +e
-         eval $DW_MASTER_BIN/dw_infra.synch_hadr_node_handler.ksh -i $ETL_ID -e $JOB_ENV -t $JOB_TYPE_ID -l /dev/null -u $BATCH_SEQ_NUM > $LOG_FILE 2>&1
-         HADR_RCODE=$?
-         set -e
-      fi
-
-      if [ $HADR_RCODE != 0 ]
-      then
-         print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-         exit 4
-      fi 
-
-      print "$PROCESS" $COMP_FILE 
-      print "$PROCESS phase complete"
+     if [ $rcode -ne 0 ]
+     then
+        print "${0##*/}:  ERROR, see log file $LOG_FILE"
+        print "Sending email to dw_infra SAE"
+        email_subject="$servername: INFO: DR Recovery Copy Failed"
+        email_body="DR Recovery Copy Failed. See log file $LOG_FILE"
+        grep "^dw_infra\>" $DW_CFG/subject_area_email_list.dat | read PARAM EMAIL_ERR_GROUP
+        print $email_body | mailx -s "$email_subject" $EMAIL_ERR_GROUP
+     fi
    elif [ $RCODE = 0 ]
    then
       print "$PROCESS phase already complete"
@@ -1355,8 +1218,8 @@ then
       exit $RCODE
    fi
 else
-   #HADR synching is not on
-   print " HA DR processing is not enabled."
+   #DR sync is not on
+   print "Copy to DR is not enabled."
 fi
 
 if [ -f $DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.record_count_file.lis ]

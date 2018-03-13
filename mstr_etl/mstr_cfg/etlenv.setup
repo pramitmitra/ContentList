@@ -154,7 +154,7 @@ else
   DR_ACTIVE=0
 fi
 
-export DR_ACTIVE
+export DR_ACTIVE=0
 
 # Export Infra indicator for logs
 export DWI_INFRA_IND="|INFRA|"
