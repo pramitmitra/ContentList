@@ -141,12 +141,20 @@ else
 	export PATH=$DW_MASTER_EXE:$DW_MASTER_BIN:$DW_EXE:$DW_BIN:$PATH
 fi
 
-
-
-
-
-
 export FPATH=$DW_LOGINS:$DW_MASTER_LIB:$DW_LIB
+
+# Export DR Specific Configurations
+export DW_DR_BASE=/datashare/etl/$ETL_ENV/dr/extract
+export DW_DR_RETENTION_DAYS=3
+
+if [[ $ETL_ENV == "prod" ]]
+then
+  DR_ACTIVE=1
+else
+  DR_ACTIVE=0
+fi
+
+export DR_ACTIVE=0
 
 # Export Infra indicator for logs
 export DWI_INFRA_IND="|INFRA|"
@@ -414,5 +422,3 @@ export DISABLE_PARTITION_TABLE_CLEANUP=""
 
 # Specify the default retention period (in days) for partitioned Work tables
 export PARTITION_TABLE_RETENTION="7"
-
-export PS1="[\$(date +%H:%M)]:[${USER}@${HOSTNAME}:\${PWD##*/}]\$ "
