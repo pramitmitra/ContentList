@@ -21,6 +21,7 @@
 # Pramit Mitra     04/17/2017      Commenting out proxy hive user configuration
 # Michael Weng     04/27/2017      Add HiveServer2 beeline support
 # Michael Weng     10/18/2017      Add support for sp*
+# Michael Weng     03/21/2018      Update queue variable for running hadoop jar
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -217,7 +218,7 @@ function run_hadoop_jar
   fi
 
   CMD_STR="$HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
-                              -Dmapred.job.queue.name=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
+                              -Dmapreduce.job.queuename=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                               -Ddataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\" \
                               $PARAM_LIST"
   print $CMD_STR
