@@ -17,6 +17,7 @@
 # 2017-10-11       .3   Pramit Mitra                 DINT-1018, Conditional Copy logic added to ensure no copy is attempted when user specify ALL spark properties
 # 2017-10-06       .4   Pramit Mitra                 Implemented SetFacl (File Mast update) logic for HDFS files on Storage cluster
 # 2017-10-23       .5   Pramit Mitra                 SA_DIR evaluation logic implemented as prerequisite for SetFacl implementation
+# 2018-04-10       .6   Pramit Mitra                 DINT-1356 - Introducing two new variables: 1. HDFS_BASE_PATH and 2. PARTITION_VALUE to construct Non-Standard HDFS 
 #
 #####################################################################################################################################################################
 
@@ -285,14 +286,21 @@ fi
 
   set +e
   print "Inside hdfsFileMaskUpdate Block"
-  export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
-  #export SA_DIR_HDFS=bid
+  #export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
+  export SA_DIR_HDFS=`echo ${SA_DIR#*_}`
   export HADOOP_PROXY_USER=${HD_USERNAME}
+
+  #DINT-1356 - Introducing two new variables: 1. HDFS_BASE_PATH and 2. PARTITION_VALUE to construct Non-Standard HDFS directory structure. 3rd variable STM_MERGE_TABLE_ID has already been evaluated outer scope and defaulted as TABLE_ID if missing.
+  assignTagValue HDFS_BASE_PATH HDFS_BASE_PATH $ETL_CFG_FILE W /sys/edw/gdw_tables
+  assignTagValue PARTITION_VALUE PARTITION_VALUE $ETL_CFG_FILE W snapshot/dt
+
   ##Considering 8 character UOW values
   export UOW_TO_STM=`echo ${UOW_TO_DATE} | cut -c1-8`
   export UOW_FROM_STM=`echo ${UOW_FROM_DATE} | cut -c1-8`
-  export HDFS_PATH_TO=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_TO_STM}
-  export HDFS_PATH_FROM=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_FROM_STM}
+  #export HDFS_PATH_TO=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_TO_STM}
+  #export HDFS_PATH_FROM=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${TABLE_ID}/snapshot/${PARTITION_NAME}=${UOW_FROM_STM}
+  export HDFS_PATH_TO=${HDFS_BASE_PATH}/${SA_DIR_HDFS}/${TABLE_ID}/${PARTITION_VALUE}=${UOW_TO_STM}
+  export HDFS_PATH_FROM=${HDFS_BASE_PATH}/${SA_DIR_HDFS}/${TABLE_ID}/${PARTITION_VALUE}=${UOW_FROM_STM}
 
   ${HADOOP_HOME2}/bin/hadoop fs -test -d ${HDFS_PATH_TO}
    val_to=$?
@@ -307,7 +315,7 @@ fi
   else
       ${HADOOP_HOME2}/bin/hadoop fs -test -d ${HDFS_PATH_FROM}
       val_from=$?
-      echo "Return code for UOW_FROM = $val_from" > ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
+      echo "Return code for UOW_FROM = $val_from" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
       echo "UOW_FROM VALUE SET AS : ${HDFS_PATH_FROM}" >> ${PARENT_LOG_FILE%.log}.hdfsFileMaskUpdate.log
   if [[ $val_from -eq 0 ]]
       then
