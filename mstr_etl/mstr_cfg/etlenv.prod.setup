@@ -536,6 +536,8 @@ export trfcwrkDB=DDM_TRFC_W
 
 # Used for ADPO
 export workingPath=/sys/edw/working
+export clsfd_working=/sys/edw/working/clsfd/clsfd_working
+export clsfd_tables=/sys/edw/clsfd/clsfd_tables
 
 # Added as part of JIRA # 926 - Pramit Mitra 20170803
 export ddmcrmDB=DDM_CRM_T
