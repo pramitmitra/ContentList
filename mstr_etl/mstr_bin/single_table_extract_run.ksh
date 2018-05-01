@@ -41,6 +41,7 @@
 # 2017-10-10   1.23   Michael Weng                  Add support for sp* on loading data to hdfs
 # 2017-10-10   1.24   Ryan Wong                     Add optional hdfs copy to support post extract normalize files
 # 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
+# 2018-04-18   1.25   Michael Weng                  Support SA variable overwrite
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1275,7 +1276,7 @@ then
   STE_COPY=0
   if [[ X"$STE_STAGE_TABLE" != X ]]
   then
-    STE_SA=${SUBJECT_AREA#*_}
+    assignTagValue STE_SA STE_STAGE_SA $ETL_CFG_FILE W "${SUBJECT_AREA#*_}"
     STE_STAGE_PATH=${STE_STAGE_PATH}/${STE_SA}/${STE_STAGE_TABLE}
 
     if [[ X"$UOW_TO" != X ]]
