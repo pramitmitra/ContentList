@@ -22,6 +22,7 @@
 # Michael Weng     04/27/2017      Add HiveServer2 beeline support
 # Michael Weng     10/18/2017      Add support for sp*
 # Michael Weng     03/21/2018      Update queue variable for running hadoop jar
+# Pramit Mitra     04/03/2018      DINT-1282: Capturing Hive Submit Statement
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -130,9 +131,16 @@ function run_hive_job
   then
 #    if ! [[ $(whoami) == @(sg_adm|dw_adm) ]]
 #    then
-      $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
+
+## DINT-1282: Capturing Hive Submit to parent log directory
+hql_var=`cat $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp`
+print "Hive Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
+#print "$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp" >> ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
+print "$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" -f $hql_var" >> ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
+
+$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
-                          -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
+                          -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp 
 #    else
 #      CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
 #      CLASSPATH=${CLASSPATH}:$DW_MASTER_LIB/hadoop_ext/DataplatformETLHandlerUtil.jar

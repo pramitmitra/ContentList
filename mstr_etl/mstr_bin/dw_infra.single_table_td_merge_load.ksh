@@ -20,7 +20,7 @@ unset GDE_EXECUTION
 
 export AB_COMPATIBILITY;AB_COMPATIBILITY=3.1.4.4
 
-# Deployed execution script for graph "dw_infra.single_table_td_merge_load", compiled at Thursday, August 24, 2017 16:46:18 using GDE version 3.1.4.1
+# Deployed execution script for graph "dw_infra.single_table_td_merge_load", compiled at Monday, April 23, 2018 13:32:58 using GDE version 3.1.4.1
 export AB_JOB;AB_JOB=${AB_JOB_PREFIX:-""}dw_infra_single_table_td_merge_load
 # Begin Ab Initio shell utility functions
 
@@ -297,13 +297,6 @@ function _AB_PARSE_ARGUMENTS {
       let _ab_index_var=_ab_index_var+1
       shift
       ;;
-     -PARALLEL_INPUT_FILE )
-      export PARALLEL_INPUT_FILE;      PARALLEL_INPUT_FILE="${1}"
-      _AB_USED_ARGUMENTS[_ab_index_var]=1
-      _AB_USED_ARGUMENTS[_ab_index_var+1]=1
-      let _ab_index_var=_ab_index_var+1
-      shift
-      ;;
      -FLOAD_ERRLIMIT )
       export FLOAD_ERRLIMIT;      FLOAD_ERRLIMIT="${1}"
       _AB_USED_ARGUMENTS[_ab_index_var]=1
@@ -498,19 +491,6 @@ if [ 0 -ne $mpjret ] ; then
    exit $mpjret
 fi
 export UTILITY_LOAD_TABLE_CHECK_LOGFILE;UTILITY_LOAD_TABLE_CHECK_LOGFILE="$DW_SA_LOG"'/'"$TABLE_ID"'.mrg.utility_load_table_check'"$UOW_APPEND"'.'"$FILE_DATETIME"'.log'
-export PARALLEL_INPUT_FILE;PARALLEL_INPUT_FILE=$(PARALLEL_INPUT_FILE_TMP=""
-  while read fn
-  do
-    PARALLEL_INPUT_FILE_TMP="$PARALLEL_INPUT_FILE_TMP $fn"
-  done < $INPUT_FILE_LIST
-
-  print $PARALLEL_INPUT_FILE_TMP
-)
-mpjret=$?
-if [ 0 -ne $mpjret ] ; then
-   print -- Error evaluating: 'parameter PARALLEL_INPUT_FILE of dw_infra_single_table_td_merge_load', interpretation 'shell'
-   exit $mpjret
-fi
 export INPUT_DML;INPUT_DML="$DW_DML"'/'"$INPUT_DML_FILENAME"
 export CNDTL_REFORMAT;CNDTL_REFORMAT=$(grep "^TD_MERGE_CNDTL_REFORMAT\>" $ETL_CFG_FILE | read PARAM VALUE COMMENT; eval print ${VALUE:-0})
 mpjret=$?
@@ -717,8 +697,15 @@ fi
 if [ -f "$AB_HOME/bin/ab_catalog_functions.ksh" ]; then . ab_catalog_functions.ksh; fi
 mv "${_AB_PROXY_DIR}" "$(pwd)"/"${AB_JOB}"'-dw_infra.single_table_td_merge_load-ProxyDir'
 _AB_PROXY_DIR="$(pwd)"/"${AB_JOB}"'-dw_infra.single_table_td_merge_load-ProxyDir'
-print -r -- 'string('"'"'\n'"'"')' > "${_AB_PROXY_DIR}"'/Load_Reformat-4.dml'
-print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Output_Table_API-6.dml'
+print -r -- 'record
+  string('"'"'\n'"'"') filename;
+end' > "${_AB_PROXY_DIR}"'/Input_File-1.dml'
+print -r -- 'filename :: get_filename(in) =
+begin
+filename :: in.filename;
+end;' > "${_AB_PROXY_DIR}"'/Read_Multiple_Files-2.xfr'
+print -r -- 'string('"'"'\n'"'"')' > "${_AB_PROXY_DIR}"'/Load_Reformat-6.dml'
+print -r -- 'record string("|") node, timestamp, component, subcomponent, event_type; string("|\n") event_text; end' > "${_AB_PROXY_DIR}"'/Output_Table_API-8.dml'
 
 mp job ${AB_JOB}
 
@@ -728,10 +715,11 @@ mp layout layout2 $OUTPUT_TABLE_LAYOUT
 mp layout layout3 file:.
 
 # Record Formats (Metadata):
-mp metadata metadata1 -file "$INPUT_DML"
-mp metadata metadata2 -file "$OUTPUT_DML"
-mp metadata metadata3 -file "${_AB_PROXY_DIR}"'/Load_Reformat-4.dml'
-mp metadata metadata4 -file "${_AB_PROXY_DIR}"'/Output_Table_API-6.dml'
+mp metadata metadata1 -file "${_AB_PROXY_DIR}"'/Input_File-1.dml'
+mp metadata metadata2 -file "$INPUT_DML"
+mp metadata metadata3 -file "$OUTPUT_DML"
+mp metadata metadata4 -file "${_AB_PROXY_DIR}"'/Load_Reformat-6.dml'
+mp metadata metadata5 -file "${_AB_PROXY_DIR}"'/Output_Table_API-8.dml'
 
 export AB_CATALOG;AB_CATALOG=${AB_CATALOG:-"${XX_CATALOG}"}
 # Catalog Usage: Creating temporary catalog using lookup files only
@@ -752,13 +740,9 @@ if [ 0 -ne $mpjret ] ; then
 fi
 AB_IS_LIVE_Input_File=1
 AB_HAS_DATA_Flow_3=1
-AB_USERCOND_Concatenate=1
-AB_IS_LIVE_Concatenate=1
+AB_USERCOND_Read_Multiple_Files=1
+AB_IS_LIVE_Read_Multiple_Files=1
 AB_HAS_DATA_Flow_5=1
-AB_USERCOND_Retain_Flow_to_Flow="$CNDTL_PARTITION"
-AB_USERCOND_Retain_Flow_to_Flow=$(__AB_COND "${AB_USERCOND_Retain_Flow_to_Flow}")
-AB_IS_LIVE_Retain_Flow_to_Flow=1
-AB_HAS_DATA_Flow_6=1
 AB_USERCOND_Load_Reformat="$CNDTL_REFORMAT"
 AB_USERCOND_Load_Reformat=$(__AB_COND "${AB_USERCOND_Load_Reformat}")
 AB_IS_LIVE_Load_Reformat=1
@@ -810,37 +794,27 @@ done=false
 while [ $done = false ] ; do
    done=true
    Temp="${AB_HAS_DATA_Flow_3}"
-   let AB_HAS_DATA_Flow_3="(AB_IS_LIVE_Concatenate) || (AB_HAS_DATA_Flow_5)"
+   let AB_HAS_DATA_Flow_3="AB_IS_LIVE_Read_Multiple_Files"
    if [ X"${AB_HAS_DATA_Flow_3}" != X"$Temp" ]; then
       done=false
    fi
-   Temp="${AB_IS_LIVE_Concatenate}"
-   let AB_IS_LIVE_Concatenate="(AB_HAS_DATA_Flow_3) && (AB_HAS_DATA_Flow_5)"
-   if [ X"${AB_IS_LIVE_Concatenate}" != X"$Temp" ]; then
+   Temp="${AB_IS_LIVE_Read_Multiple_Files}"
+   let AB_IS_LIVE_Read_Multiple_Files="(AB_HAS_DATA_Flow_3) && (AB_HAS_DATA_Flow_5)"
+   if [ X"${AB_IS_LIVE_Read_Multiple_Files}" != X"$Temp" ]; then
       done=false
    fi
    Temp="${AB_HAS_DATA_Flow_5}"
-   let AB_HAS_DATA_Flow_5="((AB_IS_LIVE_Concatenate) || (AB_HAS_DATA_Flow_3)) && ((AB_IS_LIVE_Retain_Flow_to_Flow) || (AB_HAS_DATA_Flow_6))"
+   let AB_HAS_DATA_Flow_5="(AB_IS_LIVE_Read_Multiple_Files) && ((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_1))"
    if [ X"${AB_HAS_DATA_Flow_5}" != X"$Temp" ]; then
       done=false
    fi
-   Temp="${AB_IS_LIVE_Retain_Flow_to_Flow}"
-   let AB_IS_LIVE_Retain_Flow_to_Flow="(AB_HAS_DATA_Flow_5) && ((AB_USERCOND_Retain_Flow_to_Flow) || ((((AB_HAS_DATA_Flow_5) > 1)) || (((AB_HAS_DATA_Flow_6) > 1))))"
-   if [ X"${AB_IS_LIVE_Retain_Flow_to_Flow}" != X"$Temp" ]; then
-      done=false
-   fi
-   Temp="${AB_HAS_DATA_Flow_6}"
-   let AB_HAS_DATA_Flow_6="((AB_IS_LIVE_Retain_Flow_to_Flow) || (AB_HAS_DATA_Flow_5)) && ((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_1))"
-   if [ X"${AB_HAS_DATA_Flow_6}" != X"$Temp" ]; then
-      done=false
-   fi
    Temp="${AB_IS_LIVE_Load_Reformat}"
-   let AB_IS_LIVE_Load_Reformat="((AB_HAS_DATA_Flow_6) && (((AB_HAS_DATA_Flow_1) != 0))) && ((AB_USERCOND_Load_Reformat) || ((((AB_HAS_DATA_Flow_6) > 1)) || (((AB_HAS_DATA_Flow_1) > 1))))"
+   let AB_IS_LIVE_Load_Reformat="((AB_HAS_DATA_Flow_5) && (((AB_HAS_DATA_Flow_1) != 0))) && ((AB_USERCOND_Load_Reformat) || ((((AB_HAS_DATA_Flow_5) > 1)) || (((AB_HAS_DATA_Flow_1) > 1))))"
    if [ X"${AB_IS_LIVE_Load_Reformat}" != X"$Temp" ]; then
       done=false
    fi
    Temp="${AB_HAS_DATA_Flow_1}"
-   let AB_HAS_DATA_Flow_1="((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_6)) && ((AB_IS_LIVE_Replicate) || ((AB_HAS_DATA_Flow_15) || (AB_HAS_DATA_Flow_14)))"
+   let AB_HAS_DATA_Flow_1="((AB_IS_LIVE_Load_Reformat) || (AB_HAS_DATA_Flow_5)) && ((AB_IS_LIVE_Replicate) || ((AB_HAS_DATA_Flow_15) || (AB_HAS_DATA_Flow_14)))"
    if [ X"${AB_HAS_DATA_Flow_1}" != X"$Temp" ]; then
       done=false
    fi
@@ -955,12 +929,9 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    print -r -- 'AB_USERCOND_Input_File=1'
    print -r -- 'AB_IS_LIVE_Input_File=1'
    print -r -- 'AB_HAS_DATA_Flow_3='"${AB_HAS_DATA_Flow_3}"
-   print -r -- 'AB_USERCOND_Concatenate=1'
-   print -r -- 'AB_IS_LIVE_Concatenate='"${AB_IS_LIVE_Concatenate}"
+   print -r -- 'AB_USERCOND_Read_Multiple_Files=1'
+   print -r -- 'AB_IS_LIVE_Read_Multiple_Files='"${AB_IS_LIVE_Read_Multiple_Files}"
    print -r -- 'AB_HAS_DATA_Flow_5='"${AB_HAS_DATA_Flow_5}"
-   print -r -- 'AB_USERCOND_Retain_Flow_to_Flow='"${AB_USERCOND_Retain_Flow_to_Flow}"
-   print -r -- 'AB_IS_LIVE_Retain_Flow_to_Flow='"${AB_IS_LIVE_Retain_Flow_to_Flow}"
-   print -r -- 'AB_HAS_DATA_Flow_6='"${AB_HAS_DATA_Flow_6}"
    print -r -- 'AB_USERCOND_Load_Reformat='"${AB_USERCOND_Load_Reformat}"
    print -r -- 'AB_IS_LIVE_Load_Reformat='"${AB_IS_LIVE_Load_Reformat}"
    print -r -- 'AB_HAS_DATA_Flow_1='"${AB_HAS_DATA_Flow_1}"
@@ -1001,31 +972,20 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
 fi
 
 # Files:
-mp ifile Input_File $PARALLEL_INPUT_FILE
+mp ifile Input_File "$INPUT_FILE_LIST"
 AB_PORT_Input_File_read=Input_File.read
 AB_METADATA_Input_File_read=' -metadata metadata1'
 
 # Components in phase 0:
-if [ X"${AB_IS_LIVE_Concatenate}" != X0 ]; then
-   mp concat Concatenate -layout Input_File
-   AB_PORT_Concatenate_out=Concatenate.out
-   AB_METADATA_Concatenate_out=' -metadata metadata1'
-else
-   AB_PORT_Concatenate_out="${AB_PORT_Input_File_read}"
-   AB_METADATA_Concatenate_out="${AB_METADATA_Input_File_read}"
-   :
-fi
 mp filter Utility_Load_Table_Check_KSH $DW_EXE/utility_load_table_check.ksh -layout layout1
 mp phase 0
 
 # Components in phase 1:
-if [ X"${AB_IS_LIVE_Retain_Flow_to_Flow}" != X0 ]; then
-   mp broadcast Retain_Flow_to_Flow -layout layout2
-   AB_PORT_Retain_Flow_to_Flow_out=Retain_Flow_to_Flow.out
-   AB_METADATA_Retain_Flow_to_Flow_out=' -metadata metadata1'
+if [ X"${AB_IS_LIVE_Read_Multiple_Files}" != X0 ]; then
+   mp readfiles Read_Multiple_Files "${_AB_PROXY_DIR}"'/Read_Multiple_Files-2.xfr' -limit 0 -ramp 0.0 -file-empty Ignore -file-missing Fail -file-unavailable Fail -filename-error Fail -input-error Fail -layout layout2
+   AB_PORT_Read_Multiple_Files_out=Read_Multiple_Files.out
+   AB_METADATA_Read_Multiple_Files_out=' -metadata metadata2'
 else
-   AB_PORT_Retain_Flow_to_Flow_out="${AB_PORT_Concatenate_out}"
-   AB_METADATA_Retain_Flow_to_Flow_out="${AB_METADATA_Concatenate_out}"
    :
 fi
 if [ X"${AB_IS_LIVE_Load_Reformat}" != X0 ]; then
@@ -1035,24 +995,24 @@ if [ X"${AB_IS_LIVE_Load_Reformat}" != X0 ]; then
       mp add-port Load_Reformat.out.out0 ${REFORMAT_TRANS_FILE:+"$REFORMAT_TRANS_FILE"}
    fi
    AB_PORT_Load_Reformat_out_out0=Load_Reformat.out.out0
-   AB_METADATA_Load_Reformat_out_out0=' -metadata metadata2'
+   AB_METADATA_Load_Reformat_out_out0=' -metadata metadata3'
    AB_PORT_Load_Reformat_reject_out0=Load_Reformat.reject.out0
-   AB_METADATA_Load_Reformat_reject_out0=' -metadata metadata1'
+   AB_METADATA_Load_Reformat_reject_out0=' -metadata metadata2'
    AB_PORT_Load_Reformat_error_out0=Load_Reformat.error.out0
-   AB_METADATA_Load_Reformat_error_out0=' -metadata metadata3'
+   AB_METADATA_Load_Reformat_error_out0=' -metadata metadata4'
 else
-   AB_PORT_Load_Reformat_out_out0="${AB_PORT_Retain_Flow_to_Flow_out}"
-   AB_METADATA_Load_Reformat_out_out0="${AB_METADATA_Retain_Flow_to_Flow_out}"
-   AB_PORT_Load_Reformat_reject_out0="${AB_PORT_Retain_Flow_to_Flow_out}"
-   AB_METADATA_Load_Reformat_reject_out0="${AB_METADATA_Retain_Flow_to_Flow_out}"
-   AB_PORT_Load_Reformat_error_out0="${AB_PORT_Retain_Flow_to_Flow_out}"
-   AB_METADATA_Load_Reformat_error_out0="${AB_METADATA_Retain_Flow_to_Flow_out}"
+   AB_PORT_Load_Reformat_out_out0="${AB_PORT_Read_Multiple_Files_out}"
+   AB_METADATA_Load_Reformat_out_out0="${AB_METADATA_Read_Multiple_Files_out}"
+   AB_PORT_Load_Reformat_reject_out0="${AB_PORT_Read_Multiple_Files_out}"
+   AB_METADATA_Load_Reformat_reject_out0="${AB_METADATA_Read_Multiple_Files_out}"
+   AB_PORT_Load_Reformat_error_out0="${AB_PORT_Read_Multiple_Files_out}"
+   AB_METADATA_Load_Reformat_error_out0="${AB_METADATA_Read_Multiple_Files_out}"
    :
 fi
 if [ X"${AB_IS_LIVE_Replicate}" != X0 ]; then
    mp broadcast Replicate -layout layout2
    AB_PORT_Replicate_out=Replicate.out
-   AB_METADATA_Replicate_out=' -metadata metadata2'
+   AB_METADATA_Replicate_out=' -metadata metadata3'
 else
    AB_PORT_Replicate_out="${AB_PORT_Load_Reformat_out_out0}"
    AB_METADATA_Replicate_out="${AB_METADATA_Load_Reformat_out_out0}"
@@ -1061,22 +1021,22 @@ fi
 if [ X"${AB_IS_LIVE_Output_Table_API__table_}" != X0 ]; then
    mp otable Output_Table_API__table_ "$AB_IDB_CONFIG" -flags wronly,trunc,creat -table "${STAGE_DB}"'.'"${STAGE_TABLE}" -interface api -field_type_preference variable -commitNumber 0 -no_actions_ok -limit "$LOAD_ERRLIMIT" -ramp 0.0 -layout layout2
    AB_PORT_Output_Table_API__table__reject=Output_Table_API__table_.reject
-   AB_METADATA_Output_Table_API__table__reject=' -metadata metadata2'
+   AB_METADATA_Output_Table_API__table__reject=' -metadata metadata3'
    AB_PORT_Output_Table_API__table__error=Output_Table_API__table_.error
-   AB_METADATA_Output_Table_API__table__error=' -metadata metadata3'
+   AB_METADATA_Output_Table_API__table__error=' -metadata metadata4'
    AB_PORT_Output_Table_API__table__log=Output_Table_API__table_.log
-   AB_METADATA_Output_Table_API__table__log=' -metadata metadata4'
+   AB_METADATA_Output_Table_API__table__log=' -metadata metadata5'
 else
    :
 fi
 if [ X"${AB_IS_LIVE_Output_Table_Fastload__table_}" != X0 ]; then
    mp otable Output_Table_Fastload__table_ "$AB_IDB_CONFIG" -flags wronly,append,creat -table "${STAGE_DB}"'.'"${STAGE_TABLE}" -interface Fastload -field_type_preference variable -sleep "$FLOAD_SLEEP" -tenacity "$FLOAD_TENACITY" -sessions "$FLOAD_LOAD_SESSIONS" -logtab_name "$LOG_TABLE" -np_axsmod_dir "$DW_TMP" -checkpoint 0 -worktab_name "$WORK_TABLE" -errtab_name "$ERROR_TABLE" -errlimit "$FLOAD_ERRLIMIT" -logfile "$LOAD_LOGFILE" -axsmod_tracelevel None -limit 0 -ramp 0.0 -layout layout2
    AB_PORT_Output_Table_Fastload__table__reject=Output_Table_Fastload__table_.reject
-   AB_METADATA_Output_Table_Fastload__table__reject=' -metadata metadata2'
+   AB_METADATA_Output_Table_Fastload__table__reject=' -metadata metadata3'
    AB_PORT_Output_Table_Fastload__table__error=Output_Table_Fastload__table_.error
-   AB_METADATA_Output_Table_Fastload__table__error=' -metadata metadata3'
+   AB_METADATA_Output_Table_Fastload__table__error=' -metadata metadata4'
    AB_PORT_Output_Table_Fastload__table__log=Output_Table_Fastload__table_.log
-   AB_METADATA_Output_Table_Fastload__table__log=' -metadata metadata4'
+   AB_METADATA_Output_Table_Fastload__table__log=' -metadata metadata5'
 else
    :
 fi
@@ -1120,17 +1080,13 @@ else
 fi
 
 # Flows for Entire Graph:
-let AB_FLOW_CONDITION="(AB_IS_LIVE_Concatenate) && (AB_HAS_DATA_Flow_3)"
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Read_Multiple_Files) && (AB_HAS_DATA_Flow_3)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
-   mp straight-flow Flow_3 "${AB_PORT_Input_File_read}" Concatenate.in${AB_METADATA_Input_File_read}
+   mp straight-flow Flow_3 "${AB_PORT_Input_File_read}" Read_Multiple_Files.in${AB_METADATA_Input_File_read}
 fi
-let AB_FLOW_CONDITION="(AB_IS_LIVE_Retain_Flow_to_Flow) && (AB_HAS_DATA_Flow_5)"
+let AB_FLOW_CONDITION="(AB_IS_LIVE_Load_Reformat) && (AB_HAS_DATA_Flow_5)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
-   mp fan-in-flow Flow_5 "${AB_PORT_Concatenate_out}" Retain_Flow_to_Flow.in${AB_METADATA_Concatenate_out} -compressed
-fi
-let AB_FLOW_CONDITION="(AB_IS_LIVE_Load_Reformat) && (AB_HAS_DATA_Flow_6)"
-if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
-   mp straight-flow Flow_6 "${AB_PORT_Retain_Flow_to_Flow_out}" Load_Reformat.in${AB_METADATA_Retain_Flow_to_Flow_out}
+   mp straight-flow Flow_5 "${AB_PORT_Read_Multiple_Files_out}" Load_Reformat.in${AB_METADATA_Read_Multiple_Files_out}
 fi
 let AB_FLOW_CONDITION="(AB_IS_LIVE_Replicate) && (AB_HAS_DATA_Flow_1)"
 if [ X"${AB_FLOW_CONDITION}" != X0 ]; then
@@ -1182,7 +1138,7 @@ if [ X"${AB_VERBOSE_CONDITIONS}" != X"" ]; then
    mp show
 fi
 unset AB_COMM_WAIT
-export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1837010
+export AB_TRACKING_GRAPH_THUMBPRINT;AB_TRACKING_GRAPH_THUMBPRINT=1510290
 mp run
 mpjret=$?
 unset AB_COMM_WAIT
