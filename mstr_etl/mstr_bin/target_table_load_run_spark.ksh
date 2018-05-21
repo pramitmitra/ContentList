@@ -27,6 +27,7 @@
 # 2017-10-10     2.8   Michael Weng                 Add support for sp* on hdfs copy back to ETL
 # 2017-10-13     2.9   Michael Weng                 Create second touch file on STORAGE_ENV
 # 2017-10-24     3.0   Ryan Wong                    Add parallel copy feature for hdfs copy back to ETL
+# 2018-04-26     3.3   Michael Weng                 Populate <ETL_ID>.stt.done file onto all JOB_ENVs
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -416,6 +417,13 @@ then
           # Creating Done file after HDFS file copy 
           LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.stt_hdfs_copy_success.$CURR_DATETIME.log
           $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $STT_WORKING_SOURCE ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+
+          # Per ADPO request, populate <ETL_ID>.stt.done file on all JOB_ENVs being setup - 20180426
+          for job_env in $JOB_ENVS
+          do
+            print "Create done file ${ETL_ID}.${TFILE_SUFF}.done on $job_env"
+            $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $job_env ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST >> $LOG_FILE 2>&1
+          done
       else
           print "Warning : ADPO: HDFS file copy not done as STT_WORKING_SOURCE value is not hd " 
       fi
