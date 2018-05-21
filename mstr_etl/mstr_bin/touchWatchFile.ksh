@@ -27,6 +27,7 @@
 #                                      specified in new <ETL_ID>.cfg tag
 # 2014-04-06    Ryan Wong              Secure Batch ID. Add group write perms for mkdir
 #                                      Cannot use mkdirifnotexist
+# 2018-05-03    Michael Weng           Create DW_SA_TMP directory if not there
 ###########################################################################################
 
 USAGE_touchw () {
@@ -189,6 +190,7 @@ else
 fi
 
 COMP_FILE=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE.$WATCH_FILE.watch.complete
+mkdirifnotexist $DW_SA_TMP
 mkfileifnotexist $COMP_FILE
 
 #-------------------------------------------------------------------------------------

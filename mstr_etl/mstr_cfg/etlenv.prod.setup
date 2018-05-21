@@ -588,3 +588,6 @@ then
 fi
 
 export TOUCH_PEER=0
+
+# JOB_ENVs
+export JOB_ENVS="sp1 sp2 hd1 hd2 hd3 hd5 td1 td2 td3 td4 td5 td6 td7"
