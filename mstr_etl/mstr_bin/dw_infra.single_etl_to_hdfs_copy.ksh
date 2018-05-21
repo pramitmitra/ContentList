@@ -11,6 +11,7 @@
 # Michael Weng     10/26/2017      Initial
 # Michael Weng     03/05/2018      Fix code error when DW_IN resides on shared storage
 # Michael Weng     04/24/2018      Skip TABLE_ID check on source files for UOW based
+# Michael Weng     05/02/2018      Skip TABLE_ID check for non-UOW when STE_CURRDATE_TO_UOW specified
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -57,12 +58,17 @@ fi
 . $DW_MASTER_CFG/hadoop.login
 
 assignTagValue N_WAY_PER_HOST N_WAY_PER_HOST $ETL_CFG_FILE W 1   
+assignTagValue STE_CURRDATE_TO_UOW STE_CURRDATE_TO_UOW $ETL_CFG_FILE W 0
 
 # When source lis file provided, data file pattern is not limited to HD_TABLE. Load all data files for UOW based.
 DATA_FILE_PATTERN=$ETL_DIR/*.dat*
 if [ "X$UOW_TO" = "X" ]
 then
-  DATA_FILE_PATTERN=$ETL_DIR/$HD_TABLE.*.dat*.${BATCH_SEQ_NUM}
+  DATA_FILE_PATTERN=$ETL_DIR/${HD_TABLE}*.dat*.${BATCH_SEQ_NUM}
+  if [[ $STE_CURRDATE_TO_UOW != 0 ]]
+  then
+    DATA_FILE_PATTERN=$ETL_DIR/*.dat*.${BATCH_SEQ_NUM}
+  fi
 fi
 
 export DATA_LIS_FILE=$DW_SA_TMP/$HD_TABLE.$JOB_TYPE_ID.single_etl_to_hdfs_copy.$HOST_ID.$CURR_DATETIME.dat
