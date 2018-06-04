@@ -42,6 +42,7 @@
 # 2017-10-10   1.24   Ryan Wong                     Add optional hdfs copy to support post extract normalize files
 # 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
 # 2018-04-18   1.25   Michael Weng                  Support SA variable overwrite
+# 2018-04-27   1.26   Michael Weng                  Optional construct HDFS path with UOW for non-UOW based
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -307,6 +308,12 @@ then
 
 else
    print "dw_infra.loader_cleanup.ksh process already complete"
+fi
+
+#### Save the start date for later use on non-UOW case
+if [ $FIRST_RUN = Y ]
+then
+  print "start_date $CURR_DATE" >> $COMP_FILE
 fi
 
 ######################################################################################################
@@ -1271,6 +1278,7 @@ then
   assignTagValue STE_STAGE_PATH STE_STAGE_PATH $ETL_CFG_FILE
   assignTagValue STE_STAGE_TABLE STE_STAGE_TABLE $ETL_CFG_FILE W
   assignTagValue STE_STAGE_TABLE_NORMAL STE_STAGE_TABLE_NORMAL $ETL_CFG_FILE W
+  assignTagValue STE_CURRDATE_TO_UOW STE_CURRDATE_TO_UOW $ETL_CFG_FILE W 0
 
   export UOW_TO_FLAG=0
   STE_COPY=0
@@ -1283,6 +1291,28 @@ then
     then
       UOW_TO_FLAG=1
       STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+    elif [[ $STE_CURRDATE_TO_UOW != 0 ]]
+    then
+      ## Use current date as uow_to if first run
+      UOW_TO_DATE_TMP=$CURR_DATE
+
+      ## Non-UOW case restart, retrieve start_date from $COMP_FILE
+      if [ $FIRST_RUN = N ]
+      then
+        set +e
+        grep "start_date" $COMP_FILE | read NOT_USED UOW_TO_DATE_TMP
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          print "${0##*/}:  FATAL ERROR, failure finding start_date in $COMP_FILE."
+          print "  Possible scenario: job failed before and then STE_CURRDATE_TO_UOW is enabled during restart."
+          exit 4
+        fi
+      fi
+
+      STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE_TMP/00/00/00
     fi
 
     STE_COPY=1
@@ -1352,6 +1382,34 @@ then
 
         if [ $RCODE != 0 ]
         then
+          ### For non-UOW case with optional UOW path, we expect no directory exists during first run
+          ### Or for restart case, check if folder already created during last run
+          if [ $STE_CURRDATE_TO_UOW != 0 ]
+          then
+            export HD_CLUSTER=$CLUSTER
+
+            print "Checking target folder: $CLUSTER:$STE_STAGE_PATH"
+            set +eu
+            . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+            set -eu
+
+            . $DW_MASTER_CFG/hadoop.login
+            set +e
+            $HADOOP_HOME2/bin/hadoop fs -test -d $STE_STAGE_PATH
+            retcode=$?
+            set -e
+
+            if [ $retcode = 0 ]
+            then
+              retcode=`grepCompFile $STE_STAGE_PATH $COMP_FILE`
+              if [[ $FIRST_RUN = Y ]] || [[ $retcode != 0 ]]
+              then
+                print "${0##*/}:  FATAL ERROR, STE_CURRDATE_TO_UOW is defined but target folder exists: $CLUSTER:$STE_STAGE_PATH"
+                exit 4
+              fi
+            fi
+          fi
+
           LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.multi_etl_to_hdfs_copy${UOW_APPEND}.$PROCESS.$CURR_DATETIME.log
           print "Copy to HDFS is started."
           print "    Source (${IN_DIR})"
@@ -1369,6 +1427,24 @@ then
             print "    Source (${IN_DIR})"
             print "    Destination ($CLUSTER:$STE_STAGE_PATH)"
             STE_COPY_STATUS=1
+
+            if [ $STE_CURRDATE_TO_UOW != 0 ]
+            then
+              set +eu
+              . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+              set -eu
+
+              . $DW_MASTER_CFG/hadoop.login
+              set +e
+              $HADOOP_HOME2/bin/hadoop fs -test -d $STE_STAGE_PATH
+              retcode=$?
+              set -e
+
+              if [ $recode = 0 ]
+              then
+                print "$STE_STAGE_PATH" >> $COMP_FILE
+              fi
+            fi
           else
             print "##########################################################################################################"
             print "# Loaded data to HDFS for ETL_ID: $ETL_ID, BATCH_SEQ_NUM: $BATCH_SEQ_NUM, complete `date`"
@@ -1425,6 +1501,13 @@ then
         ### Create Done file for $HD_ENV (hd1 | hd2 | hd3 | ...)
         LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_hdfs_load_success.$CURR_DATETIME.log
         $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $HD_ENV ${ETL_ID}.ste_hdfs_load_success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+
+        if [[ X"$UOW_TO" = X ]] && [[ $STE_CURRDATE_TO_UOW != 0 ]]
+        then
+          UOW_FROM_DATE_TMP=$($DW_EXE/add_days $UOW_TO_DATE_TMP -1)
+          UOW_PARAM_LIST_TMP="-f ${UOW_FROM_DATE_TMP}000000 -t ${UOW_TO_DATE_TMP}000000"
+          $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $HD_ENV ${ETL_ID}.ste_hdfs_load_success.done $UOW_PARAM_LIST_TMP >> $LOG_FILE 2>&1
+        fi
       fi
 
     else

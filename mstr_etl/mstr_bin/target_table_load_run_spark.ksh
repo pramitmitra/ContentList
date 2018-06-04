@@ -27,6 +27,9 @@
 # 2017-10-10     2.8   Michael Weng                 Add support for sp* on hdfs copy back to ETL
 # 2017-10-13     2.9   Michael Weng                 Create second touch file on STORAGE_ENV
 # 2017-10-24     3.0   Ryan Wong                    Add parallel copy feature for hdfs copy back to ETL
+# 2018-02-15     3.1   Michael Weng                 Cleanup local storage before copying back from hdfs
+# 2018-02-26     3.2   Michael Weng                 Optional local storage purge based on UOW
+# 2018-04-26     3.3   Michael Weng                 Populate <ETL_ID>.stt.done file onto all JOB_ENVs
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -375,6 +378,8 @@ then
           assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
           assignTagValue STT_WORKING_PATH STT_WORKING_PATH $ETL_CFG_FILE
           assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
+          assignTagValue STT_LOCAL_OVERWRITE STT_LOCAL_OVERWRITE $ETL_CFG_FILE W 1
+          assignTagValue STT_LOCAL_RETENTION STT_LOCAL_RETENTION $ETL_CFG_FILE W 0
 
           STT_SA=${SUBJECT_AREA#*_}
 
@@ -386,7 +391,29 @@ then
 
             if [[ X"$UOW_TO" != X ]]
             then
+              TABLE_DIR=$ETL_DIR/$TABLE
               ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+
+              if [[ $STT_LOCAL_RETENTION -gt 0 ]]
+              then
+                print "Cleanup local storage based on retention days specified: $STT_LOCAL_RETENTION on table: $TABLE"
+                DEL_DATE=$($DW_EXE/add_days $UOW_TO_DATE -${STT_LOCAL_RETENTION})
+                for FOLDER in $TABLE_DIR/{8}-([0-9])
+                do
+                  FOLDER_NUMBER=$(basename $FOLDER)
+                  if [[ -d $FOLDER ]] && [[ $FOLDER_NUMBER -lt $DEL_DATE ]]
+                  then
+                    print "Cleaning up STT UOW LOCAL WORKING TABLE: $FOLDER"
+                    rm -rf $FOLDER
+                  fi
+                done
+              fi
+            fi
+
+            if [ $STT_LOCAL_OVERWRITE != 0 ]
+            then
+              print "Cleaning up local storage before copy back from hdfs on $servername: $ETL_DIR"
+              rm -rf $ETL_DIR
             fi
 
             LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.dw_infra.parallel_hdfs_to_etl_copy${UOW_APPEND}.$STT_TABLE.$CURR_DATETIME.log
@@ -416,6 +443,14 @@ then
           # Creating Done file after HDFS file copy 
           LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.stt_hdfs_copy_success.$CURR_DATETIME.log
           $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $STT_WORKING_SOURCE ${ETL_ID}.stt_HDFS_Copy_Success.done $UOW_PARAM_LIST > $LOG_FILE 2>&1
+
+          # Per ADPO request, populate <ETL_ID>.stt.done file on all JOB_ENVs being setup - 20180426
+          for job_env in $JOB_ENVS
+          do
+            print "Create done file ${ETL_ID}.${TFILE_SUFF}.done on $job_env"
+            $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $job_env ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST >> $LOG_FILE 2>&1
+          done
+
       else
           print "Warning : ADPO: HDFS file copy not done as STT_WORKING_SOURCE value is not hd " 
       fi
