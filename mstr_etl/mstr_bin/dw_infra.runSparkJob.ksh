@@ -22,6 +22,7 @@
 # Pramit Mitra     09/07/2017      Data Lineage Log generated per DSS request
 # Pramit Mitra     09/20/2017      ADPO-976, Combine spark-defaults.conf from SPARK_HOME when running job on different clusters
 # Pramit Mitra     10/11/2017      DINT-1018, Conditional Copy logic added to ensure no copy is attempted when user specify ALL spark properties
+# Michael Weng     05/04/2018      DINT-1448 - ETL handler is looking for log4j.properties on wrong location
 #--------------------------------------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -89,11 +90,11 @@ print "Inside run_spark_jar function"
 set +e
 
 print "Spark Submit Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
-print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
+print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
 
 export SPARK_SUBMIT_OPTS="-Dlogback.configurationFile=file://${SPARK_HOME}/conf/logback.xml"
 
-${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
+${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
 
 rcode=$?
 

@@ -20,6 +20,7 @@
 # 2017-12-28     0.4   Michael Weng                 Add optional partition to HD_MERGE_WORKING_PATH
 # 2017-12-28     0.5   Michael Weng                 Additional check if HD_MERGE_WORKING_PATH is empty
 # 2018-02-15     0.6   Michael Weng                 Optional overwrite when loading from etl to hdfs
+# 2018-06-06     0.7   Michael Weng                 Sync git-repo to the version on ETL PROD
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -117,11 +118,11 @@ then
     LOAD_FROM_TEMPO=1
     if [ $rcode = 0 ]
     then
-      STM_HDFS_SIZE=$($HADOOP_HOME2/bin/hadoop fs -du -s $STM_HDFS_PATH | awk '{print $1;}')
-      if [[ $STM_HDFS_SIZE -gt 0 ]]
-      then
+      #STM_HDFS_SIZE=$($HADOOP_HOME2/bin/hadoop fs -du -s $STM_HDFS_PATH | awk '{print $1;}')
+      #if [[ $STM_HDFS_SIZE -gt 0 ]]
+      #then
         LOAD_FROM_TEMPO=0
-      fi
+      #fi
     fi
 
     HD_OVERWRITE=0
