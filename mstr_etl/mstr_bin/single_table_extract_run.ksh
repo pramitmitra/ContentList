@@ -43,6 +43,7 @@
 # 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
 # 2018-04-18   1.25   Michael Weng                  Support SA variable overwrite
 # 2018-04-27   1.26   Michael Weng                  Optional construct HDFS path with UOW for non-UOW based
+# 2018-06-11   1.27   Michael Weng                  Fix typo on "recode"
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1440,7 +1441,7 @@ then
               retcode=$?
               set -e
 
-              if [ $recode = 0 ]
+              if [ $retcode = 0 ]
               then
                 print "$STE_STAGE_PATH" >> $COMP_FILE
               fi
