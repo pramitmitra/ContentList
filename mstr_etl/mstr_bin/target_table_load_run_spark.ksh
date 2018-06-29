@@ -29,6 +29,7 @@
 # 2017-10-24     3.0   Ryan Wong                    Add parallel copy feature for hdfs copy back to ETL
 # 2018-02-15     3.1   Michael Weng                 Cleanup local storage before copying back from hdfs
 # 2018-02-26     3.2   Michael Weng                 Optional local storage purge based on UOW
+# 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -172,6 +173,181 @@ else
       done < $TRGT_TBL_LD_PRE_PROC_LIS
 fi
 
+######################################################################################################
+#
+#                                STT pull processing
+#
+#   STT_ENABLE_PULL_MODE         # Enable loading data from ETL if staging tables not existed
+#   STT_STAGING_PATH             # STT Staging Base Path on HDFS. Default is $gdw_workingPath
+#   STT_STAGE_MAPPING            # Comma separated tables list in the form of
+#                                  <dw_sa1>.<table1>:<sa1>.<stg_table1>,<dw_sa2>.<table2>:<sa2>.<stg_table2>
+#
+######################################################################################################
+if [[ ${BASENAME} == single_table_transform_handler ]]
+then
+  PROCESS=stt_copy_from_etl
+  RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+  if [ $RCODE -eq 1 ]
+  then
+    assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
+    assignTagValue STT_ENABLE_PULL_MODE STT_ENABLE_PULL_MODE $ETL_CFG_FILE W 0
+    assignTagValue STT_STAGING_PATH STT_STAGING_PATH $ETL_CFG_FILE W $gdw_workingPath
+    assignTagValue STT_STAGE_MAPPING STT_STAGE_MAPPING $ETL_CFG_FILE W ""
+
+    if [[ $STT_ENABLE_PULL_MODE != 0 ]] && [[ -n ${STT_STAGE_MAPPING:-""} ]]
+    then
+      if [[ X"$UOW_TO" = X ]]
+      then
+        print "${0##*/}:  FATAL ERROR, UOW_TO is not defined."
+        exit 4
+      fi
+
+      STT_WAIT_FOR_DATA_LIS=$DW_SA_TMP/$TABLE_ID.$BASENAME.stt_copy_from_etl.$UOW_TO.$(date '+%Y%m%d-%H%M%S')
+      > $STT_WAIT_FOR_DATA_LIS
+
+      for FIELD in $(echo $STT_STAGE_MAPPING | sed "s/,/ /g")
+      do
+        ETL_SA_DOT_TABLE=${FIELD%%:*}
+        STT_SA_DOT_TABLE=${FIELD##*:}
+        ETL_SA=${ETL_SA_DOT_TABLE%%.*}
+        ETL_TABLE=${ETL_SA_DOT_TABLE##*.}
+        STT_SA=${STT_SA_DOT_TABLE%%.*}
+        STT_TABLE=${STT_SA_DOT_TABLE##*.}
+
+        ETL_DIR=${IN_DIR}/extract/${ETL_SA}/${ETL_TABLE}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+        STT_DIR=${STT_STAGING_PATH}/${STT_SA}/${STT_TABLE}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+        STT_SA_DIR=${STT_STAGING_PATH}/${STT_SA}
+        STT_DIR_LOCK=${STT_STAGING_PATH}/${STT_SA}/${STT_TABLE}.${PROCESS}.${UOW_TO}.lock
+
+        . $DW_MASTER_CFG/hadoop.login
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mkdir -p $STT_SA_DIR
+        $HADOOP_HOME2/bin/hadoop fs -test -d $STT_DIR
+        rcode=$?
+        set -e
+
+        LOAD_FROM_TEMPO=1
+        if [ $rcode = 0 ]
+        then
+          LOAD_FROM_TEMPO=0
+        fi
+
+        if [[ $LOAD_FROM_TEMPO = 0 ]]
+        then
+          print "HDFS file already exists ($STORAGE_ENV:$STT_DIR)"
+          continue
+        fi
+
+        print "HDFS file is missing ($STORAGE_ENV:$STT_DIR)"
+        if ! [[ -d $ETL_DIR ]]
+        then
+          print "${0##*/}: INFRA_ERROR - File/path not found on Tempo ($ETL_DIR)"
+          exit 4
+        fi
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mkdir $STT_DIR_LOCK
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          print "Another job is loading data onto ($STORAGE_ENV:$STT_DIR)"
+          print $STT_DIR >> $STT_WAIT_FOR_DATA_LIS
+          continue
+        fi
+
+        print "Loading data from Tempo onto ($STORAGE_ENV:$STT_DIR)"
+
+        ### Load data into a temporary hdfs directory. Upon success, rename it.
+        UOW_TO_FLAG=1
+        LOAD_LOG_FILE=$DW_SA_LOG/$STT_SA_DOT_TABLE.$JOB_TYPE_ID.multi_etl_to_hdfs.$ETL_ID.load.sp${UOW_APPEND}.$CURR_DATETIME.log
+        set +e
+        $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $ETL_DIR $ETL_TABLE ${STT_DIR}_incomplete $STT_TABLE $UOW_TO_FLAG > $LOAD_LOG_FILE 2>&1
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash ${STT_DIR}_incomplete > /dev/null 2>&1
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+
+          print "${0##*/}: INFRA_ERROR - Failed to load data from Tempo, see log file: $LOAD_LOG_FILE"
+          exit 4
+        fi
+
+        print "Successfully loaded data from Tempo:"
+        print "    Source ($ETL_DIR)"
+        print "    Destination ($STORAGE_ENV:${STT_DIR}_incomplete)"
+        print "    Log file: $LOAD_LOG_FILE"
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mv ${STT_DIR}_incomplete ${STT_DIR}
+        rcode=$?
+        set -e
+
+        if [ $rcode = 0 ]
+        then
+          print "Successfully rename ${STT_DIR}_incomplete to ${STT_DIR} on $STORAGE_ENV"
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+        else
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash ${STT_DIR}_incomplete > /dev/null 2>&1
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+
+          print "${0##*/}: INFRA_ERROR - Failed to rename HDFS directory"
+          exit 4
+        fi
+
+      done
+
+      if [ -s $STT_WAIT_FOR_DATA_LIS ]
+      then
+        while read STT_WAIT_FOR_DATA
+        do
+          while true
+          do
+            print "Check every 60sec waiting for data to be ready: $STT_WAIT_FOR_DATA"
+
+            . $DW_MASTER_CFG/hadoop.login
+            set +e
+            $HADOOP_HOME2/bin/hadoop fs -test -d $STT_WAIT_FOR_DATA
+            rcode=$?
+            set -e
+
+            if [ $rcode = 0 ]; then break; fi
+
+            sleep 60
+          done
+        done < $STT_WAIT_FOR_DATA_LIS
+      fi
+
+      print $PROCESS >> $COMP_FILE
+
+    else
+      print "STT_ENABLE_PULL_MODE is not set, or STT_STAGE_MAPPING is empty."
+    fi
+
+  elif [ $RCODE -eq 0 ]
+  then
+    print "$PROCESS already complete"
+  else
+    exit $RCODE
+  fi
+fi
+
+######################################################################################################
+#
+#                                Launching Spark Job
+#
+######################################################################################################
 set +e
 grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?

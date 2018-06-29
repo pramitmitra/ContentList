@@ -20,6 +20,7 @@
 # 2017-12-28     0.4   Michael Weng                 Add optional partition to HD_MERGE_WORKING_PATH
 # 2017-12-28     0.5   Michael Weng                 Additional check if HD_MERGE_WORKING_PATH is empty
 # 2018-02-15     0.6   Michael Weng                 Optional overwrite when loading from etl to hdfs
+# 2018-06-12     0.8   Michael Weng                 Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -156,9 +157,10 @@ then
       set -e
 
       ### Load data into a temporary hdfs directory. Upon success, rename it.
+      UOW_TO_FLAG=1
       LOAD_LOG_FILE=$DW_SA_LOG/$STM_MERGE_TABLE_ID.$JOB_TYPE_ID.multi_etl_to_hdfs.$ETL_ID.load.sp${UOW_APPEND}.$CURR_DATETIME.log
       set +e
-      $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $IN_DIR ${STM_HDFS_PATH}.incomplete $STM_MERGE_TABLE_ID > $LOAD_LOG_FILE 2>&1
+      $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $IN_DIR $STM_MERGE_TABLE_ID ${STM_HDFS_PATH}_incomplete $STM_MERGE_TABLE_ID $UOW_TO_FLAG > $LOAD_LOG_FILE 2>&1
       rcode=$?
       set -e
 
@@ -166,18 +168,18 @@ then
       then
         print "Successfully loaded data from Tempo:"
         print "    Source ($IN_DIR)"
-        print "    Destination ($STORAGE_ENV:${STM_HDFS_PATH}.incomplete)"
+        print "    Destination ($STORAGE_ENV:${STM_HDFS_PATH}_incomplete)"
         print "    Log file: $LOAD_LOG_FILE"
 
-        ### Rename $STM_MERGE_TABLE_ID.incomplete to $STM_MERGE_TABLE_ID
+        ### Rename $STM_MERGE_TABLE_ID_incomplete to $STM_MERGE_TABLE_ID
         set +e
-        $HADOOP_HOME2/bin/hadoop fs -mv ${STM_HDFS_PATH}.incomplete ${STM_HDFS_PATH}
+        $HADOOP_HOME2/bin/hadoop fs -mv ${STM_HDFS_PATH}_incomplete ${STM_HDFS_PATH}
         rcode=$?
         set -e
 
         if [ $rcode = 0 ]
         then
-          print "Successfully rename ${STM_HDFS_PATH}.incomplete to ${STM_HDFS_PATH} on $STORAGE_ENV"
+          print "Successfully rename ${STM_HDFS_PATH}_incomplete to ${STM_HDFS_PATH} on $STORAGE_ENV"
         else
           print "${0##*/}: INFRA_ERROR - Failed to rename HDFS directory"
           exit 4

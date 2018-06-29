@@ -42,6 +42,7 @@
 # 2017-10-10   1.24   Ryan Wong                     Add optional hdfs copy to support post extract normalize files
 # 2017-10-26   1.24   Michael Weng                  Add parallel copy feature from etl to hdfs
 # 2018-04-18   1.25   Michael Weng                  Support SA variable overwrite
+# 2018-06-12   1.29   Michael Weng                  Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1359,7 +1360,7 @@ then
           print "    Log file: $LOG_FILE"
 
           set +e
-          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR $STE_STAGE_PATH $TABLE_ID > $LOG_FILE 2>&1
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR $TABLE_ID $STE_STAGE_PATH $TABLE_ID $UOW_TO_FLAG > $LOG_FILE 2>&1
           retcode=$?
           set -e
 
@@ -1397,7 +1398,7 @@ then
           print "    Log file: $LOG_FILE"
 
           set +e
-          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR_NORMAL $STE_STAGE_PATH_NORMAL $TABLE_ID_NORMAL > $LOG_FILE 2>&1
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR_NORMAL $TABLE_ID_NORMAL $STE_STAGE_PATH_NORMAL $TABLE_ID_NORMAL $UOW_TO_FLAG > $LOG_FILE 2>&1
           retcode=$?
           set -e
 

@@ -538,6 +538,7 @@ export trfcwrkDB=DDM_TRFC_W
 export workingPath=/sys/edw/working
 export clsfd_working=/sys/edw/working/clsfd/clsfd_working
 export clsfd_tables=/sys/edw/clsfd/clsfd_tables
+export gdw_workingPath=/sys/edw/working/gdw_tables
 
 # Added as part of JIRA # 926 - Pramit Mitra 20170803
 export ddmcrmDB=DDM_CRM_T
