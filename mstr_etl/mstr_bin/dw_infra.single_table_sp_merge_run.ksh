@@ -20,6 +20,7 @@
 # 2017-12-28     0.4   Michael Weng                 Add optional partition to HD_MERGE_WORKING_PATH
 # 2017-12-28     0.5   Michael Weng                 Additional check if HD_MERGE_WORKING_PATH is empty
 # 2018-02-15     0.6   Michael Weng                 Optional overwrite when loading from etl to hdfs
+# 2018-06-06     0.7   Michael Weng                 Sync git-repo to the version on ETL PROD
 # 2018-05-29     0.8   Michael Weng                 Enable optional empty folder check on HDFS
 ###################################################################################################################
 
