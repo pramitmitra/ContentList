@@ -30,6 +30,7 @@
 # 2018-02-15     3.1   Michael Weng                 Cleanup local storage before copying back from hdfs
 # 2018-02-26     3.2   Michael Weng                 Optional local storage purge based on UOW
 # 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
+# 2018-07-02     3.6   Michael Weng                 Enable STT template without transformation
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -175,6 +176,76 @@ fi
 
 ######################################################################################################
 #
+#                                STT without Transformation
+#
+#   Allow user to launch STT without real transformation. If STT_DISABLE_TRANSFORMATION is set, create
+#   UOW working table folder on ETL and link data files to the staging table. Subsequent processings
+#   will be skipped except for the post processing.
+#
+#   STT_DISABLE_TRANSFORMATION   # Any non-zero to disable the transformation. Default is 0.
+#   STT_WORKING_TABLES           # Only one working table be specifed. A 1:1 mapping to staging table.
+#
+######################################################################################################
+assignTagValue STT_DISABLE_TRANSFORMATION STT_DISABLE_TRANSFORMATION $ETL_CFG_FILE W 0
+
+if [[ ${BASENAME} == single_table_transform_handler ]] && [[ $STT_DISABLE_TRANSFORMATION != 0 ]]
+then
+  PROCESS=stt_transformation_check
+  RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+  if [ $RCODE -eq 1 ]
+  then
+    assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
+    assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE W ""
+
+    if [[ -n ${STT_WORKING_TABLES:-""} ]]
+    then
+      print "STT transformation is disabled. Create working table on ETL and link data files"
+
+      if [[ X"$UOW_TO" = X ]]
+      then
+        print "${0##*/}:  FATAL ERROR, UOW_TO is not defined."
+        exit 4
+      fi
+
+      ETL_STAGING_DIR=$IN_DIR/extract/${SUBJECT_AREA}/${TABLE_ID}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+      ETL_WORKING_DIR=$IN_DIR/extract/${SUBJECT_AREA}/${STT_WORKING_TABLES}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+
+      if ! [[ -d $ETL_STAGING_DIR ]]
+      then
+        print "${0##*/}: INFRA_ERROR - File/path not found on Tempo ($ETL_STAGING_DIR)"
+        exit 4
+      fi
+
+      mkdirifnotexist $ETL_WORKING_DIR
+      for data_file in `ls $ETL_STAGING_DIR/*.*`
+      do
+        /bin/ln $data_file $ETL_WORKING_DIR/$(basename $data_file)
+      done
+
+      # Populate <ETL_ID>.stt.done file on all JOB_ENVs being setup
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.$PROCESS.$CURR_DATETIME.log
+      for job_env in $JOB_ENVS
+      do
+        print "Create done file ${ETL_ID}.${TFILE_SUFF}.done on $job_env"
+        $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $job_env ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST >> $LOG_FILE 2>&1
+      done
+
+    else
+      print "${0##*/}:  FATAL ERROR, STT transformation is disabled but STT_WORKING_TABLES is empty."
+      exit 4
+    fi
+
+  elif [ $RCODE -eq 0 ]
+  then
+    print "$PROCESS already complete"
+  else
+    exit $RCODE
+  fi
+fi
+
+######################################################################################################
+#
 #                                STT pull processing
 #
 #   STT_ENABLE_PULL_MODE         # Enable loading data from ETL if staging tables not existed
@@ -183,7 +254,7 @@ fi
 #                                  <dw_sa1>.<table1>:<sa1>.<stg_table1>,<dw_sa2>.<table2>:<sa2>.<stg_table2>
 #
 ######################################################################################################
-if [[ ${BASENAME} == single_table_transform_handler ]]
+if [[ ${BASENAME} == single_table_transform_handler ]] && [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
 then
   PROCESS=stt_copy_from_etl
   RCODE=`grepCompFile $PROCESS $COMP_FILE`
@@ -348,6 +419,8 @@ fi
 #                                Launching Spark Job
 #
 ######################################################################################################
+if [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
+then
 set +e
 grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?
@@ -406,6 +479,7 @@ Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG:-"NA"}
     else
     exit $RCODE
  fi
+fi
 
 ######################################################################################################
 #
@@ -482,6 +556,11 @@ else
      done < $TRGT_TBL_LD_POST_PROC_LIS
 fi
 
+######################################################################################################
+#
+#                                Touch Watch Files
+#
+######################################################################################################
  PROCESS=touch_watchfile
  RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
@@ -530,6 +609,8 @@ fi
 #    STT_WORKING_TABLES   # the working tables
 #
 ######################################################################################################
+if [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
+then
 PROCESS=hdfs_etl_copy
 RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
@@ -632,6 +713,7 @@ print $PROCESS >> $COMP_FILE
     print "$PROCESS already complete"
   else
    exit $RCODE
+fi
 fi
 
 print "Removing the complete file  `date`"
