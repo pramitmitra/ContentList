@@ -60,6 +60,7 @@ export esa00refDB=esa00_reference
 export esa01partyDB=esa01_party
 export esa02locationDB=esa02_location
 export esa03marketingDB=ESA03_Marketing
+export esa03marketingtgtDB=ESA03_Marketing_T
 export esa04inventoryDB=esa04_inventory_t
 export esa05contactDB=ESA05_CONTACT_T
 export externalfeedDB=EXTERNAL_FEED_T
