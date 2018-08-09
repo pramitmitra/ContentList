@@ -19,6 +19,7 @@
 # 2017-10-23       .5   Pramit Mitra                 SA_DIR evaluation logic implemented as prerequisite for SetFacl implementation
 # 2018-04-10       .6   Pramit Mitra                 DINT-1356 - Introducing two new variables: 1. HDFS_BASE_PATH and 2. PARTITION_VALUE to construct Non-Standard HDFS 
 # 2018-05-04       .7   Michael Weng                 DINT-1448 - ETL handler is looking for log4j.properties on wrong location
+# 2018-07-17       .8   Michael Weng                 Support different version of Zeta Driver
 #
 #####################################################################################################################################################################
 
@@ -32,6 +33,7 @@ then
    exit 2
 fi
 
+. $DW_MASTER_CFG/etlenv.setup
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 
 # Login into hadoop
@@ -263,12 +265,18 @@ print "Dynamic Gen Spark Conf:  Success"
 ################################################################################
 print "Call Spark Submit Module"
 
+export DATANUCLEUS_API_JDO_JAR=$(ls $SPARK_HOME/jars/datanucleus-api-jdo-*.jar)
+export DATANUCLEUS_CORE_JAR=$(ls $SPARK_HOME/jars/datanucleus-core-*.jar)
+export DATANUCLEUS_RDBMS_JAR=$(ls $SPARK_HOME/jars/datanucleus-rdbms-*.jar)
+export AVRO_JAR=${AVRO_JAR:-avro-1.8.2.jar}
+export ZETA_DRIVER_JAR=${ZETA_DRIVER_JAR:-zeta-driver.jar}
+
 print "Spark Submit Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
-print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
+print "${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/${AVRO_JAR} --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=${AVRO_JAR} --driver-class-path ${AVRO_JAR}:${DW_LIB}/${ZETA_DRIVER_JAR}:${DATANUCLEUS_RDBMS_JAR}:${DATANUCLEUS_API_JDO_JAR}:${DATANUCLEUS_CORE_JAR} --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/${ZETA_DRIVER_JAR}  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
 
 export SPARK_SUBMIT_OPTS="-Dlogback.configurationFile=file://${SPARK_HOME}/conf/logback.xml"
 set +e
-${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/avro-1.8.2.jar --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=avro-1.8.2.jar --driver-class-path avro-1.8.2.jar:${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar:${SPARK_HOME}/jars/datanucleus-rdbms-3.2.9.jar:${SPARK_HOME}/jars/datanucleus-api-jdo-3.2.6.jar:${SPARK_HOME}/jars/datanucleus-core-3.2.10.jar --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/zeta-driver-0.0.1-SNAPSHOT-jar-with-dependencies.jar  sql -s "${SPARK_SQL_LST1}"
+${SPARK_HOME}/bin/spark-submit --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/${AVRO_JAR} --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=${AVRO_JAR} --driver-class-path ${AVRO_JAR}:${DW_LIB}/${ZETA_DRIVER_JAR}:${DATANUCLEUS_RDBMS_JAR}:${DATANUCLEUS_API_JDO_JAR}:${DATANUCLEUS_CORE_JAR} --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/${ZETA_DRIVER_JAR}  sql -s "${SPARK_SQL_LST1}"
 rcode=$?
 set -e
 
