@@ -1,10 +1,12 @@
 #############
 # this section contains exports ONLY for apollo
 #############
+export SPARK_FS=$(eval print \$${JOB_ENV_UPPER}_STORAGE_NN_URL)
 export ORIGPATH=$PATH
 export MANPATH=$MANPATH:/usr/share/man:/usr/local/man:/usr/local/pssh:/usr/local/pssh/man
 export EDITOR=vi
 export PS1="[\$(date +%H:%M)]:[\u@\h:\W]\$ "
+export SPARK_HOME=/apache/hadoop_client/apollo/spark
 export HBASE_HOME=/apache/hadoop_client/apollo/hbase
 export HADOOP_HOME=/apache/hadoop_client/apollo/hadoop
 export HADOOP_HOME2=$HADOOP_HOME
@@ -13,7 +15,7 @@ export HADOOP_CONF_DIR=$HADOOP_HOME/conf
 export HIVE_CONF_DIR=$HIVE_HOME/conf
 export HADOOP_PID_DIR=$HADOOP_HOME/pids
 export HADOOP_LOG_DIR=$HADOOP_HOME/logs
-export JAVA_HOME=/usr/java/latest
+export JAVA_HOME=${JAVA_HOME:-/usr/java/latest}
 export HISTSIZE=99999
 export HISTFILESIZE=99999
 export HISTTIMEFORMAT="%Y-%m-%d %T -> "
@@ -37,3 +39,8 @@ export HADOOP_CLI_HOST="apollo-devour.vip.ebay.com"
 # HiveServer2
 export HS2_DB_URL="jdbc:hive2://apollo-phx-oz.vip.ebay.com:10000/"
 export HS2_PRINCIPAL="hadoop/apollo-phx-oz.vip.ebay.com@APD.EBAY.COM"
+
+# For spark-submit log enhancements
+export SPARK_DEFAULT_FS=$SPARK_FS
+export HADOOP_HISTORY_LOG="https://apollo-phx-rm-1.vip.ebay.com:50030/cluster/apps/FINISHED"
+export ADPO_DEBUG_WIKI_LOG="https://wiki.vip.corp.ebay.com/display/DataServicesandSolutions/ADPO+-+Debug+Steps+for+Spark+Job"
