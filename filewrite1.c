@@ -16,6 +16,7 @@ int main()
    scanf("%d",&num);
 
    fprintf(fptr,"%d",num);
+  //fprintf(fptr, "\s"," ");
    fclose(fptr);
 
    return 0;
