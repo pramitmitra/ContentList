@@ -1,3 +1,11 @@
+// // Program to build the following shape
+
+// *
+// **
+// ***
+// ****
+// *****
+
 #include<stdio.h>
 
 int main()
