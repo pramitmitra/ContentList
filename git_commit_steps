@@ -1,9 +1,0 @@
-echo "# c" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin git@github.com:pramitmitra/c.git
-git push -u origin master
-ls -ltr
-git add *.c
-git commit -m "c commit1"
