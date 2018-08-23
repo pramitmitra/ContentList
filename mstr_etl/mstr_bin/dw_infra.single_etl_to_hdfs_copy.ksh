@@ -9,6 +9,7 @@
 # Name             Date            Description
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/26/2017      Initial
+# Michael Weng     01/18/2018      Export HD_CLUSTER for handling hadoop login
 # Michael Weng     03/05/2018      Fix code error when DW_IN resides on shared storage
 # Michael Weng     04/24/2018      Skip TABLE_ID check on source files for UOW based
 # Michael Weng     05/02/2018      Skip TABLE_ID check for non-UOW when STE_CURRDATE_TO_UOW specified
@@ -19,7 +20,7 @@
 
 export ETL_ID=$1
 export JOB_ENV=$2
-HD_CLUSTER=$3
+CLUSTER=$3
 HD_TABLE=$4
 CURR_DATETIME=$5
 SRC_HOST_CNT=$6
@@ -33,7 +34,7 @@ UOWTO_BATCHSEQNUM=${12}
 if [ $# != 12 ]
 then
   print "${0##*/}: INFRA_ERROR - Invalid command line options"
-  print "Usage: $0 <ETL_ID> <JOB_ENV> <HD_CLUSTER> <HD_TABLE> <CURR_DATETIME> <SRC_HOST_CNT> <HOST_ID> <ETL_DIR> <ETL_TABLE> <HD_PATH> <UOW_TO_FLAG> <UOWTO_BATCHSEQNUM>"
+  print "Usage: $0 <ETL_ID> <JOB_ENV> <CLUSTER> <HD_TABLE> <CURR_DATETIME> <SRC_HOST_CNT> <HOST_ID> <ETL_DIR> <ETL_TABLE> <HD_PATH> <UOW_TO_FLAG> <UOWTO_BATCHSEQNUM>"
   exit 4
 fi
 
@@ -51,6 +52,7 @@ fi
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
+export HD_CLUSTER=$CLUSTER
 
 if ! [[ -f $DW_MASTER_CFG/.${HD_CLUSTER}_env.sh ]]
 then

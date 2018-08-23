@@ -21,6 +21,7 @@
 # 2018-05-04       .7   Michael Weng                 DINT-1448 - ETL handler is looking for log4j.properties on wrong location
 # 2018-07-11       .71  Michael Weng                 UC4 variable binding
 # 2018-07-17       .8   Michael Weng                 Support different version of Zeta Driver
+# 2018-08-09       1.1  Michael Weng                 Enable custom zeta_default.conf to be used
 #
 #####################################################################################################################################################################
 
@@ -126,7 +127,7 @@ export SPARK_SQL_LST_PATH=`cat ${DW_SA_TMP}/${ETL_ID}_SQLFileList_withPath.lst.t
 # additional values into SPARK_CONF_DYNAMIC file.
 #################################################################################
 export SPARK_CONF=${ETL_ID}_${SPARK_CONF_SUFF}.cfg
-export SPARK_CONF_DEFAULT=${DW_MASTER_CFG}/zeta_default.conf
+export SPARK_CONF_DEFAULT=${SPARK_CONF_DEFAULT:-${DW_MASTER_CFG}/zeta_default.conf}
 export SPARK_CONF_DYNAMIC=${DW_SA_TMP}/${SPARK_CONF}.tmp
 
 ## Added as part of DINT-976 on 09/20/2017 by pmitra
@@ -305,7 +306,7 @@ fi
   print "Inside hdfsFileMaskUpdate Block"
   #export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
   export SA_DIR_HDFS=`echo ${SA_DIR#*_}`
-  export HADOOP_PROXY_USER=${HD_USERNAME}
+  #export HADOOP_PROXY_USER=${HD_USERNAME}
 
   #DINT-1356 - Introducing two new variables: 1. HDFS_BASE_PATH and 2. PARTITION_VALUE to construct Non-Standard HDFS directory structure. 3rd variable STM_MERGE_TABLE_ID has already been evaluated outer scope and defaulted as TABLE_ID if missing.
   assignTagValue HDFS_BASE_PATH HDFS_BASE_PATH $ETL_CFG_FILE W /sys/edw/gdw_tables

@@ -32,6 +32,7 @@
 # 2018-04-26     3.3   Michael Weng                 Populate <ETL_ID>.stt.done file onto all JOB_ENVs
 # 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
 # 2018-07-02     3.6   Michael Weng                 Enable STT template without transformation
+# 2018-07-12     3.7   Michael Weng                 Enable multi-host local retention cleanup
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -645,26 +646,17 @@ then
             export STT_TABLE=$TABLE
             export ETL_DIR=${IN_DIR}/extract/${SUBJECT_AREA}
             export SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
+            export ETL_PURGE_PARENT_DIR="NA"
+            export ETL_PURGE_DEL_DATE="00000000"
 
             if [[ X"$UOW_TO" != X ]]
             then
-              TABLE_DIR=$ETL_DIR/$TABLE
-              ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
-
               if [[ $STT_LOCAL_RETENTION -gt 0 ]]
               then
-                print "Cleanup local storage based on retention days specified: $STT_LOCAL_RETENTION on table: $TABLE"
-                DEL_DATE=$($DW_EXE/add_days $UOW_TO_DATE -${STT_LOCAL_RETENTION})
-                for FOLDER in $TABLE_DIR/{8}-([0-9])
-                do
-                  FOLDER_NUMBER=$(basename $FOLDER)
-                  if [[ -d $FOLDER ]] && [[ $FOLDER_NUMBER -lt $DEL_DATE ]]
-                  then
-                    print "Cleaning up STT UOW LOCAL WORKING TABLE: $FOLDER"
-                    rm -rf $FOLDER
-                  fi
-                done
+                ETL_PURGE_PARENT_DIR=$ETL_DIR/$TABLE
+                ETL_PURGE_DEL_DATE=$($DW_EXE/add_days $UOW_TO_DATE -${STT_LOCAL_RETENTION})
               fi
+              ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
             fi
 
             if [ $STT_LOCAL_OVERWRITE != 0 ]

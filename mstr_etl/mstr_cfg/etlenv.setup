@@ -279,6 +279,7 @@ fi
 export HD_USERNAME=
 export HD_QUEUE=
 export HD_DOMAIN=
+export HD_CLUSTER=
 
 if [[ -n $ETL_ID ]]
 then
@@ -378,10 +379,7 @@ fi
 #export TPT_NLSPATH="/opt/teradata/client/14.10/tbuild/msg64/%N"
 
 # Java could be used without talking to Hadoop
-if [[ -z $JAVA_HOME ]]
-then
-  export JAVA_HOME=/usr/java/latest
-fi
+export JAVA_HOME=${JAVA_HOME:-/usr/java/latest}
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Hadoop env setup
@@ -393,8 +391,8 @@ then
   export COMPUTE_ENV=$(eval print \$DW_${COMPUTE_ENV_UPPER}_DB)
   export STORAGE_ENV_UPPER=$(print $(eval print \$${JOB_ENV_UPPER}_STORAGE) | tr [:lower:] [:upper:])
   export STORAGE_ENV=$(eval print \$DW_${STORAGE_ENV_UPPER}_DB)
-  CLUSTER=$(eval print \$DW_${JOB_ENV_UPPER}_DB)
-  . $DW_MASTER_CFG/.${CLUSTER}_env.sh
+  export HD_CLUSTER=$(eval print \$DW_${JOB_ENV_UPPER}_DB)
+  . $DW_MASTER_CFG/.${HD_CLUSTER}_env.sh
 fi
 export HADOOP_AUTHENTICATED=0
 #set -eu
