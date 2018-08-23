@@ -18,6 +18,7 @@
 # 2013-10-04   1.2    Ryan Wong                    Redhat changes
 # 2013-11-05   1.3    Ryan Wong                    Syncing grep changes on Redhat development
 # 2015-08-25   1.4    John Hackley                 ETL password encryption changes
+# 2018-07-05   1.5    Michael Weng                 Custom array size support
 #############################################################################################################
 
 ETL_ID=$1
@@ -238,6 +239,7 @@ assignTagValue FIELD_HEX_DELIMITER ORAOCI_FIELD_HEX_DELIMITER  $ETL_CFG_FILE W  
 assignTagValue ROW_HEX_DELIMITER ORAOCI_ROW_HEX_DELIMITER  $ETL_CFG_FILE W  "0x0a"
 assignTagValue LOB_LENGTH ORAOCI_LOB_LENGTH  $ETL_CFG_FILE W  "1"
 assignTagValue REMOVE_DELIMITER_IN_CHAR ORAOCI_REMOVE_DELIMITER_IN_CHAR  $ETL_CFG_FILE W  "0"
+assignTagValue ORAOCI_ARRAY_SIZE ORAOCI_ARRAY_SIZE  $ETL_CFG_FILE W 50
 
 
 print ${host_name%%.*}
@@ -246,7 +248,7 @@ print ${servername%%.*}
  if [ ${host_name%%.*} = ${servername%%.*} ]
   then
     
-    print "Local launch eval oraexp2.bin logins=\"${ORA_USERNAME}/******@${TNS_NAME}\" sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=50 removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} " | tee $EXTRACT_LOG_FILE
+    print "Local launch eval oraexp2.bin logins=\"${ORA_USERNAME}/******@${TNS_NAME}\" sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=${ORAOCI_ARRAY_SIZE} removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} " | tee $EXTRACT_LOG_FILE
 	
 
     set +e
@@ -256,26 +258,26 @@ print ${servername%%.*}
       export NLS_LANG=AMERICAN_AMERICA.UTF8
     fi
 
-    eval $DW_MASTER_BIN/oraexp2.bin sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=50 removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH}  logins=\"${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME}\"  >> $EXTRACT_LOG_FILE 2>&1 &
+    eval $DW_MASTER_BIN/oraexp2.bin sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=${ORAOCI_ARRAY_SIZE} removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH}  logins=\"${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME}\"  >> $EXTRACT_LOG_FILE 2>&1 &
     wait $!
     rcode=$?
     set -e
 
   else 
         
-    print "Remote launch ssh -nq $host_name  $DW_MASTER_BIN/oraexp2.bin logins=\"${ORA_USERNAME}/******@${TNS_NAME}\" sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=50 removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH}" |tee  $EXTRACT_LOG_FILE
+    print "Remote launch ssh -nq $host_name  $DW_MASTER_BIN/oraexp2.bin logins=\"${ORA_USERNAME}/******@${TNS_NAME}\" sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=${ORAOCI_ARRAY_SIZE} removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH}" |tee  $EXTRACT_LOG_FILE
 
     set +e
     
     if [[ $IS_UTF8 -eq 1 ]]
     then
-        ssh -nq $host_name ". $HOME/.profile;export TNS_ADMIN=$TNS_ADMIN;export NLS_LANG=AMERICAN_AMERICA.UTF8;$DW_MASTER_BIN/oraexp2.bin  sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=50 removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} logins=${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME} " >> $EXTRACT_LOG_FILE 2>&1 &
+        ssh -nq $host_name ". $HOME/.profile;export TNS_ADMIN=$TNS_ADMIN;export NLS_LANG=AMERICAN_AMERICA.UTF8;$DW_MASTER_BIN/oraexp2.bin  sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=${ORAOCI_ARRAY_SIZE} removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} logins=${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME} " >> $EXTRACT_LOG_FILE 2>&1 &
         
         wait $!
         rcode=$?
     else 
  
-    	ssh -nq $host_name ". $HOME/.profile;export TNS_ADMIN=$TNS_ADMIN;$DW_MASTER_BIN/oraexp2.bin  sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=50 removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} logins=${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME} " >> $EXTRACT_LOG_FILE 2>&1 &           
+       ssh -nq $host_name ". $HOME/.profile;export TNS_ADMIN=$TNS_ADMIN;$DW_MASTER_BIN/oraexp2.bin  sql=$DW_SA_TMP/$TABLE_ID.${FILE_ID}.ex.$SQL_FILENAME.tmp fdel=${FIELD_HEX_DELIMITER}  rdel=${ROW_HEX_DELIMITER} file=${DATA_FILENAME_TMP} array=${ORAOCI_ARRAY_SIZE} removedelimiter=${REMOVE_DELIMITER_IN_CHAR} writelen=${LOB_LENGTH} logins=${ORA_USERNAME}/${ORA_PASSWORD}@${TNS_NAME} " >> $EXTRACT_LOG_FILE 2>&1 &
     
     	wait $!
     	rcode=$?

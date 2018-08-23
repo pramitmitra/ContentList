@@ -20,7 +20,9 @@
 # 2017-12-28     0.4   Michael Weng                 Add optional partition to HD_MERGE_WORKING_PATH
 # 2017-12-28     0.5   Michael Weng                 Additional check if HD_MERGE_WORKING_PATH is empty
 # 2018-02-15     0.6   Michael Weng                 Optional overwrite when loading from etl to hdfs
-# 2018-06-12     0.8   Michael Weng                 Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
+# 2018-06-06     0.7   Michael Weng                 Sync git-repo to the version on ETL PROD
+# 2018-05-29     0.8   Michael Weng                 Enable optional empty folder check on HDFS
+# 2018-06-12     0.9   Michael Weng                 Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -101,6 +103,7 @@ then
     # STT output directory could be partitioned
     assignTagValue STT_OUTPUT_PARTITION_COL STT_OUTPUT_PARTITION_COL $ETL_CFG_FILE W ""
     assignTagValue HD_MERGE_WORKING_OVERWRITE HD_MERGE_WORKING_OVERWRITE $ETL_CFG_FILE W ""
+    assignTagValue STM_ENABLE_EMPTY_CHECK STM_ENABLE_EMPTY_CHECK $ETL_CFG_FILE W 0
 
     if [[ -n ${STT_OUTPUT_PARTITION_COL:-""} ]]
     then
@@ -118,10 +121,14 @@ then
     LOAD_FROM_TEMPO=1
     if [ $rcode = 0 ]
     then
-      STM_HDFS_SIZE=$($HADOOP_HOME2/bin/hadoop fs -du -s $STM_HDFS_PATH | awk '{print $1;}')
-      if [[ $STM_HDFS_SIZE -gt 0 ]]
+      LOAD_FROM_TEMPO=0
+      if [ $STM_ENABLE_EMPTY_CHECK != 0 ]
       then
-        LOAD_FROM_TEMPO=0
+        STM_HDFS_SIZE=$($HADOOP_HOME2/bin/hadoop fs -du -s $STM_HDFS_PATH | awk '{print $1;}')
+        if [ $STM_HDFS_SIZE = 0 ]
+        then
+          LOAD_FROM_TEMPO=1
+        fi
       fi
     fi
 
@@ -153,7 +160,7 @@ then
 
       print "Cleaning up target HDFS folder before loading: $STORAGE_ENV:$STM_HDFS_PATH"
       set +e
-      $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash $STM_HDFS_PATH
+      $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash $STM_HDFS_PATH > /dev/null 2>&1
       set -e
 
       ### Load data into a temporary hdfs directory. Upon success, rename it.

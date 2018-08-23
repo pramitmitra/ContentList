@@ -378,7 +378,10 @@ fi
 #export TPT_NLSPATH="/opt/teradata/client/14.10/tbuild/msg64/%N"
 
 # Java could be used without talking to Hadoop
-export JAVA_HOME=/usr/java/latest
+if [[ -z $JAVA_HOME ]]
+then
+  export JAVA_HOME=/usr/java/latest
+fi
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Hadoop env setup

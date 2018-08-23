@@ -60,6 +60,7 @@ export esa00refDB=esa00_reference
 export esa01partyDB=esa01_party
 export esa02locationDB=esa02_location
 export esa03marketingDB=ESA03_Marketing
+export esa03marketingtgtDB=ESA03_Marketing_T
 export esa04inventoryDB=esa04_inventory_t
 export esa05contactDB=ESA05_CONTACT_T
 export externalfeedDB=EXTERNAL_FEED_T
@@ -589,3 +590,6 @@ then
 fi
 
 export TOUCH_PEER=0
+
+# JOB_ENVs
+export JOB_ENVS="sp1 sp2 hd1 hd2 hd3 hd5 td1 td2 td3 td4 td5 td6 td7"

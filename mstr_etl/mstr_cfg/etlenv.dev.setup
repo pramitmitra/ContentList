@@ -621,3 +621,5 @@ then
   export DW_TD5_DB=sandcat2
 fi
 
+# JOB_ENVs
+export JOB_ENVS="sp1 sp2 hd1 hd2 hd3 hd4 hd5 hd6 td1 td2 td3 td4 td5 td6 td7"

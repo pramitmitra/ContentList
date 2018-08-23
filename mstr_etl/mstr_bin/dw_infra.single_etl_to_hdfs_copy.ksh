@@ -11,7 +11,10 @@
 # Michael Weng     10/26/2017      Initial
 # Michael Weng     03/05/2018      Fix code error when DW_IN resides on shared storage
 # Michael Weng     04/24/2018      Skip TABLE_ID check on source files for UOW based
+# Michael Weng     05/02/2018      Skip TABLE_ID check for non-UOW when STE_CURRDATE_TO_UOW specified
+# Michael Weng     06/06/2018      Add TABLE_ID check for non-UOW when STE_CURRDATE_TO_UOW specified
 # Michael Weng     06/12/2018      Enable Abinitio HDFS load
+# Michael Weng     07/23/2018      Fix STE HDFS copy file pattern for non-UOW case
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
