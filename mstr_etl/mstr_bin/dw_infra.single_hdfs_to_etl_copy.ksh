@@ -13,6 +13,8 @@
 # Date         Ver#   Modified By(Name)            Change and Reason for Change
 #---------    -----  ---------------------------  -------------
 # 2017-10-24   1.0    Ryan Wong                     Initial
+# 2018-01-18   1.1    Michael Weng                  Export HD_CLUSTER for handling hadoop login
+# 2018-07-12   1.2    Michael Weng                  Enable multi-host local retention cleanup
 #############################################################################################################
 
 export ETL_ID=$1
@@ -20,10 +22,12 @@ export JOB_ENV=$2
 HDFS_CLUSTER=$3
 ETL_DIR=$4
 DATA_LIS_FILE=$5
+ETL_PURGE_PARENT_DIR=$6
+ETL_PURGE_DEL_DATE=$7
 
-if [[ $# -ne 5 ]]
+if [[ $# -ne 7 ]]
 then
-  print "FATAL ERROR: Usage: $0: <ETL_ID> <JOB_ENV> <HDFS_CLUSTER> <ETL_DIR> <DATA_LIS_FILE>"
+  print "FATAL ERROR: Usage: $0: <ETL_ID> <JOB_ENV> <HDFS_CLUSTER> <ETL_DIR> <DATA_LIS_FILE> <ETL_PURGE_PARENT_DIR> <ETL_PURGE_DEL_DATE>"
   exit 4
 fi
 
@@ -35,9 +39,24 @@ then
   exit 4
 fi
 
+export HD_CLUSTER=$HDFS_CLUSTER
 . $DW_MASTER_CFG/.${HDFS_CLUSTER}_env.sh
 . $DW_MASTER_CFG/hadoop.login
 
+### Purge older UOW data folders on ETL
+if [[ $ETL_PURGE_PARENT_DIR != "NA" ]] && [[ -d $ETL_PURGE_PARENT_DIR ]]
+then
+  print "Purge UOW data folder on ETL older than $ETL_PURGE_DEL_DATE for ($servername:$ETL_PURGE_PARENT_DIR)"
+  for FOLDER in $ETL_PURGE_PARENT_DIR/{8}-([0-9])
+  do
+    FOLDER_NUMBER=$(basename $FOLDER)
+    if [[ -d $FOLDER ]] && [[ $FOLDER_NUMBER -lt $ETL_PURGE_DEL_DATE ]]
+    then
+      print "Cleaning up STT UOW LOCAL WORKING TABLE: $FOLDER"
+      rm -rf $FOLDER
+    fi
+  done
+fi
 
 mkdir -p $ETL_DIR
 

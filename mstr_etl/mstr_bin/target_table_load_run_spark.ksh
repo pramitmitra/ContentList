@@ -30,6 +30,9 @@
 # 2018-02-15     3.1   Michael Weng                 Cleanup local storage before copying back from hdfs
 # 2018-02-26     3.2   Michael Weng                 Optional local storage purge based on UOW
 # 2018-04-26     3.3   Michael Weng                 Populate <ETL_ID>.stt.done file onto all JOB_ENVs
+# 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
+# 2018-07-02     3.6   Michael Weng                 Enable STT template without transformation
+# 2018-07-12     3.7   Michael Weng                 Enable multi-host local retention cleanup
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -173,6 +176,253 @@ else
       done < $TRGT_TBL_LD_PRE_PROC_LIS
 fi
 
+######################################################################################################
+#
+#                                STT without Transformation
+#
+#   Allow user to launch STT without real transformation. If STT_DISABLE_TRANSFORMATION is set, create
+#   UOW working table folder on ETL and link data files to the staging table. Subsequent processings
+#   will be skipped except for the post processing.
+#
+#   STT_DISABLE_TRANSFORMATION   # Any non-zero to disable the transformation. Default is 0.
+#   STT_WORKING_TABLES           # Only one working table be specifed. A 1:1 mapping to staging table.
+#
+######################################################################################################
+assignTagValue STT_DISABLE_TRANSFORMATION STT_DISABLE_TRANSFORMATION $ETL_CFG_FILE W 0
+
+if [[ ${BASENAME} == single_table_transform_handler ]] && [[ $STT_DISABLE_TRANSFORMATION != 0 ]]
+then
+  PROCESS=stt_transformation_check
+  RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+  if [ $RCODE -eq 1 ]
+  then
+    assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
+    assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE W ""
+
+    if [[ -n ${STT_WORKING_TABLES:-""} ]]
+    then
+      print "STT transformation is disabled. Create working table on ETL and link data files"
+
+      if [[ X"$UOW_TO" = X ]]
+      then
+        print "${0##*/}:  FATAL ERROR, UOW_TO is not defined."
+        exit 4
+      fi
+
+      ETL_STAGING_DIR=$IN_DIR/extract/${SUBJECT_AREA}/${TABLE_ID}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+      ETL_WORKING_DIR=$IN_DIR/extract/${SUBJECT_AREA}/${STT_WORKING_TABLES}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+
+      if ! [[ -d $ETL_STAGING_DIR ]]
+      then
+        print "${0##*/}: INFRA_ERROR - File/path not found on Tempo ($ETL_STAGING_DIR)"
+        exit 4
+      fi
+
+      mkdirifnotexist $ETL_WORKING_DIR
+      for data_file in `ls $ETL_STAGING_DIR/*.*`
+      do
+        /bin/ln $data_file $ETL_WORKING_DIR/$(basename $data_file)
+      done
+
+      # Populate <ETL_ID>.stt.done file on all JOB_ENVs being setup
+      LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.$PROCESS.$CURR_DATETIME.log
+      for job_env in $JOB_ENVS
+      do
+        print "Create done file ${ETL_ID}.${TFILE_SUFF}.done on $job_env"
+        $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $job_env ${ETL_ID}.${TFILE_SUFF}.done $UOW_PARAM_LIST >> $LOG_FILE 2>&1
+      done
+
+    else
+      print "${0##*/}:  FATAL ERROR, STT transformation is disabled but STT_WORKING_TABLES is empty."
+      exit 4
+    fi
+
+  elif [ $RCODE -eq 0 ]
+  then
+    print "$PROCESS already complete"
+  else
+    exit $RCODE
+  fi
+fi
+
+######################################################################################################
+#
+#                                STT pull processing
+#
+#   STT_ENABLE_PULL_MODE         # Enable loading data from ETL if staging tables not existed
+#   STT_STAGING_PATH             # STT Staging Base Path on HDFS. Default is $gdw_workingPath
+#   STT_STAGE_MAPPING            # Comma separated tables list in the form of
+#                                  <dw_sa1>.<table1>:<sa1>.<stg_table1>,<dw_sa2>.<table2>:<sa2>.<stg_table2>
+#
+######################################################################################################
+if [[ ${BASENAME} == single_table_transform_handler ]] && [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
+then
+  PROCESS=stt_copy_from_etl
+  RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+  if [ $RCODE -eq 1 ]
+  then
+    assignTagValue IN_DIR IN_DIR $ETL_CFG_FILE W $DW_IN
+    assignTagValue STT_ENABLE_PULL_MODE STT_ENABLE_PULL_MODE $ETL_CFG_FILE W 0
+    assignTagValue STT_STAGING_PATH STT_STAGING_PATH $ETL_CFG_FILE W $gdw_workingPath
+    assignTagValue STT_STAGE_MAPPING STT_STAGE_MAPPING $ETL_CFG_FILE W ""
+
+    if [[ $STT_ENABLE_PULL_MODE != 0 ]] && [[ -n ${STT_STAGE_MAPPING:-""} ]]
+    then
+      if [[ X"$UOW_TO" = X ]]
+      then
+        print "${0##*/}:  FATAL ERROR, UOW_TO is not defined."
+        exit 4
+      fi
+
+      STT_WAIT_FOR_DATA_LIS=$DW_SA_TMP/$TABLE_ID.$BASENAME.stt_copy_from_etl.$UOW_TO.$(date '+%Y%m%d-%H%M%S')
+      > $STT_WAIT_FOR_DATA_LIS
+
+      for FIELD in $(echo $STT_STAGE_MAPPING | sed "s/,/ /g")
+      do
+        ETL_SA_DOT_TABLE=${FIELD%%:*}
+        STT_SA_DOT_TABLE=${FIELD##*:}
+        ETL_SA=${ETL_SA_DOT_TABLE%%.*}
+        ETL_TABLE=${ETL_SA_DOT_TABLE##*.}
+        STT_SA=${STT_SA_DOT_TABLE%%.*}
+        STT_TABLE=${STT_SA_DOT_TABLE##*.}
+
+        ETL_DIR=${IN_DIR}/extract/${ETL_SA}/${ETL_TABLE}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+        STT_DIR=${STT_STAGING_PATH}/${STT_SA}/${STT_TABLE}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+        STT_SA_DIR=${STT_STAGING_PATH}/${STT_SA}
+        STT_DIR_LOCK=${STT_STAGING_PATH}/${STT_SA}/${STT_TABLE}.${PROCESS}.${UOW_TO}.lock
+
+        . $DW_MASTER_CFG/hadoop.login
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mkdir -p $STT_SA_DIR
+        $HADOOP_HOME2/bin/hadoop fs -test -d $STT_DIR
+        rcode=$?
+        set -e
+
+        LOAD_FROM_TEMPO=1
+        if [ $rcode = 0 ]
+        then
+          LOAD_FROM_TEMPO=0
+        fi
+
+        if [[ $LOAD_FROM_TEMPO = 0 ]]
+        then
+          print "HDFS file already exists ($STORAGE_ENV:$STT_DIR)"
+          continue
+        fi
+
+        print "HDFS file is missing ($STORAGE_ENV:$STT_DIR)"
+        if ! [[ -d $ETL_DIR ]]
+        then
+          print "${0##*/}: INFRA_ERROR - File/path not found on Tempo ($ETL_DIR)"
+          exit 4
+        fi
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mkdir $STT_DIR_LOCK
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          print "Another job is loading data onto ($STORAGE_ENV:$STT_DIR)"
+          print $STT_DIR >> $STT_WAIT_FOR_DATA_LIS
+          continue
+        fi
+
+        print "Loading data from Tempo onto ($STORAGE_ENV:$STT_DIR)"
+
+        ### Load data into a temporary hdfs directory. Upon success, rename it.
+        UOW_TO_FLAG=1
+        LOAD_LOG_FILE=$DW_SA_LOG/$STT_SA_DOT_TABLE.$JOB_TYPE_ID.multi_etl_to_hdfs.$ETL_ID.load.sp${UOW_APPEND}.$CURR_DATETIME.log
+        set +e
+        $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $ETL_DIR $ETL_TABLE ${STT_DIR}_incomplete $STT_TABLE $UOW_TO_FLAG > $LOAD_LOG_FILE 2>&1
+        rcode=$?
+        set -e
+
+        if [ $rcode != 0 ]
+        then
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash ${STT_DIR}_incomplete > /dev/null 2>&1
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+
+          print "${0##*/}: INFRA_ERROR - Failed to load data from Tempo, see log file: $LOAD_LOG_FILE"
+          exit 4
+        fi
+
+        print "Successfully loaded data from Tempo:"
+        print "    Source ($ETL_DIR)"
+        print "    Destination ($STORAGE_ENV:${STT_DIR}_incomplete)"
+        print "    Log file: $LOAD_LOG_FILE"
+
+        set +e
+        $HADOOP_HOME2/bin/hadoop fs -mv ${STT_DIR}_incomplete ${STT_DIR}
+        rcode=$?
+        set -e
+
+        if [ $rcode = 0 ]
+        then
+          print "Successfully rename ${STT_DIR}_incomplete to ${STT_DIR} on $STORAGE_ENV"
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+        else
+          set +e
+          $HADOOP_HOME2/bin/hadoop fs -rm -r -skipTrash ${STT_DIR}_incomplete > /dev/null 2>&1
+          $HADOOP_HOME2/bin/hadoop fs -rmdir $STT_DIR_LOCK > /dev/null 2>&1
+          set -e
+
+          print "${0##*/}: INFRA_ERROR - Failed to rename HDFS directory"
+          exit 4
+        fi
+
+      done
+
+      if [ -s $STT_WAIT_FOR_DATA_LIS ]
+      then
+        while read STT_WAIT_FOR_DATA
+        do
+          while true
+          do
+            print "Check every 60sec waiting for data to be ready: $STT_WAIT_FOR_DATA"
+
+            . $DW_MASTER_CFG/hadoop.login
+            set +e
+            $HADOOP_HOME2/bin/hadoop fs -test -d $STT_WAIT_FOR_DATA
+            rcode=$?
+            set -e
+
+            if [ $rcode = 0 ]; then break; fi
+
+            sleep 60
+          done
+        done < $STT_WAIT_FOR_DATA_LIS
+      fi
+
+      print $PROCESS >> $COMP_FILE
+
+    else
+      print "STT_ENABLE_PULL_MODE is not set, or STT_STAGE_MAPPING is empty."
+    fi
+
+  elif [ $RCODE -eq 0 ]
+  then
+    print "$PROCESS already complete"
+  else
+    exit $RCODE
+  fi
+fi
+
+######################################################################################################
+#
+#                                Launching Spark Job
+#
+######################################################################################################
+if [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
+then
 set +e
 grep -s "target_table_load" $COMP_FILE >/dev/null
 RCODE=$?
@@ -231,6 +481,7 @@ Debug Wiki Location : ${ADPO_DEBUG_WIKI_LOG:-"NA"}
     else
     exit $RCODE
  fi
+fi
 
 ######################################################################################################
 #
@@ -307,6 +558,11 @@ else
      done < $TRGT_TBL_LD_POST_PROC_LIS
 fi
 
+######################################################################################################
+#
+#                                Touch Watch Files
+#
+######################################################################################################
  PROCESS=touch_watchfile
  RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
@@ -355,6 +611,8 @@ fi
 #    STT_WORKING_TABLES   # the working tables
 #
 ######################################################################################################
+if [[ $STT_DISABLE_TRANSFORMATION = 0 ]]
+then
 PROCESS=hdfs_etl_copy
 RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
@@ -388,26 +646,17 @@ then
             export STT_TABLE=$TABLE
             export ETL_DIR=${IN_DIR}/extract/${SUBJECT_AREA}
             export SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
+            export ETL_PURGE_PARENT_DIR="NA"
+            export ETL_PURGE_DEL_DATE="00000000"
 
             if [[ X"$UOW_TO" != X ]]
             then
-              TABLE_DIR=$ETL_DIR/$TABLE
-              ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
-
               if [[ $STT_LOCAL_RETENTION -gt 0 ]]
               then
-                print "Cleanup local storage based on retention days specified: $STT_LOCAL_RETENTION on table: $TABLE"
-                DEL_DATE=$($DW_EXE/add_days $UOW_TO_DATE -${STT_LOCAL_RETENTION})
-                for FOLDER in $TABLE_DIR/{8}-([0-9])
-                do
-                  FOLDER_NUMBER=$(basename $FOLDER)
-                  if [[ -d $FOLDER ]] && [[ $FOLDER_NUMBER -lt $DEL_DATE ]]
-                  then
-                    print "Cleaning up STT UOW LOCAL WORKING TABLE: $FOLDER"
-                    rm -rf $FOLDER
-                  fi
-                done
+                ETL_PURGE_PARENT_DIR=$ETL_DIR/$TABLE
+                ETL_PURGE_DEL_DATE=$($DW_EXE/add_days $UOW_TO_DATE -${STT_LOCAL_RETENTION})
               fi
+              ETL_DIR=$ETL_DIR/$TABLE/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
             fi
 
             if [ $STT_LOCAL_OVERWRITE != 0 ]
@@ -465,6 +714,7 @@ print $PROCESS >> $COMP_FILE
     print "$PROCESS already complete"
   else
    exit $RCODE
+fi
 fi
 
 print "Removing the complete file  `date`"

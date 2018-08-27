@@ -544,6 +544,7 @@ export trfcwrkDB=DDM_TRFC_W
 
 # Used for ADPO
 export workingPath=/sys/edw/zeta_dev/working
+export gdw_workingPath=/sys/edw/working/gdw_tables
 
 # Added as part of JIRA # 926 - Pramit Mitra 20170803
 export ddmcrmDB=DDM_CRM_T

@@ -23,6 +23,7 @@
 # Michael Weng     04/21/2016      Change HDFS_URL to hadoop cluster name in hadoop_logins.dat
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Michael Weng     10/12/2016      Add hadoop authentication
+# Michael Weng     01/18/2018      Export HD_CLUSTER for handling hadoop login
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -40,10 +41,6 @@ export UOW_FROM=${10:-""}
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_CFG/dw_etl_common_defs.cfg
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
-
-
-# Login into hadoop
-. $DW_MASTER_CFG/hadoop.login
 
 
 export JOB_TYPE_ID="ex"
@@ -116,6 +113,8 @@ then
 fi
 
 . $HDP_CLUSTER_ENV
+export HD_CLUSTER=$HDP_CLUSTER
+. $DW_MASTER_CFG/hadoop.login
 
 # Get the HDFS_URL
 export HDFS_URL=$HADOOP_NN_URL

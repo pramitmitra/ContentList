@@ -25,6 +25,7 @@
 # Michael Weng     05/04/2018      DINT-1448 - ETL handler is looking for log4j.properties on wrong location
 # Michale Weng     07/11/2018      UC4 variable binding
 # Michael Weng     07/17/2018      Support different version of Zeta Driver
+# Michael Weng     08/09/2018      Enable custom zeta_default.conf to be used
 #--------------------------------------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -213,7 +214,7 @@ done
 function groomSparkConf
 {
 set -e
-export SPARK_CONF_DEFAULT=${DW_MASTER_CFG}/zeta_default.conf
+export SPARK_CONF_DEFAULT=${SPARK_CONF_DEFAULT:-${DW_MASTER_CFG}/zeta_default.conf}
 export SPARK_CONF_DYNAMIC=${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${SPARK_CONF}
 
 ## Added as part of DINT-976 on 09/20/2017 by pmitra
@@ -353,7 +354,7 @@ function hdfsFileMaskUpdate
   set +e
   print "Inside hdfsFileMaskUpdate function"
   export SA_DIR_HDFS=`echo ${SA_DIR} | awk -F'_' '{ print $2; }'`
-  export HADOOP_PROXY_USER=${HD_USERNAME}
+  #export HADOOP_PROXY_USER=${HD_USERNAME}
   export HDFS_PATH_TO=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${SA_DIR}/snapshot/${PARTITION_NAME}=${UOW_TO_DATE}
   export HDFS_PATH_FROM=/sys/edw/gdw_tables/${SA_DIR_HDFS}/${SA_DIR}/snapshot/${PARTITION_NAME}=${UOW_FROM_DATE}
 

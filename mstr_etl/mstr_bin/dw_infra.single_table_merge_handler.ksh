@@ -27,6 +27,7 @@
 # 2017-12-01       1.1  Pramit Mitra                 Renaming DATE_RET_DAYS to STM_DATE_RET_DAYS
 # 2018-02-06       1.2  Pramit Mitra                 DINT-1192: Restricting STM purge strictly for JOB_ENV=sp*|hd*
 # 2018-02-20       1.3  Pramit Mitra                 DINT-1271: STM_DATE_RET_DAYS default updating to INF from 0
+# 2018-07-31       1.4  Michael Weng                 Optional parameter to overwrite STM_MERGE_TABLE_ID on ETL
 ###################################################################################################################
 
 typeset -fu usage
@@ -156,8 +157,9 @@ export UOW_TO_DATE_RFMT=$($DW_MASTER_EXE/dw_infra.reformat_date.ksh $UOW_TO_DATE
 export UOW_DATE=$UOW_TO_DATE
 
 assignTagValue STM_MERGE_TABLE_ID STM_MERGE_TABLE_ID $ETL_CFG_FILE W $TABLE_ID
+assignTagValue STM_LOCAL_TABLE_ID STM_LOCAL_TABLE_ID $ETL_CFG_FILE W $STM_MERGE_TABLE_ID
 export STM_MERGE_TABLE_ID
-export IN_DIR=$IN_DIR/$STM_MERGE_TABLE_ID/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+export IN_DIR=$IN_DIR/$STM_LOCAL_TABLE_ID/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
 
 # export REC_CNT_IN_DIR=$REC_CNT_IN_DIR/$TABLE_ID/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
 export UOW_REC_CNT_IN_DIR=$IN_DIR

@@ -14,6 +14,8 @@
 # Michael Weng     10/13/2016      Initial Creation
 # Michael Weng     01/12/2017      Default Kerberos domain and exit on kinit failure
 # Michael Weng     09/04/2017      Log HD_USERNAME, HD_QUEUE and HD_DOMAIN
+# Michael Weng     01/18/2018      Special handling on Hercules-sub
+# Michael Weng     05/31/2018      Export KRB5CCNAME to isolate kinit session
 #------------------------------------------------------------------------------------------------
 
 
@@ -28,28 +30,42 @@ then
     exit 4
   fi
 
-  # Determine keytab and kerberos login
-  myName=$(whoami)
-  myPrincipal=""
-  myKeytabFile=""
-  myDomain=$HD_DOMAIN
+  # Check if HD_CLUSTER is valid
+  if [[ -z $HD_CLUSTER ]]
+  then
+    print "INFRA_ERROR: can't not determine the hadoop cluster"
+    exit 4
+  fi
 
+  # Determine keytab and kerberos domain
+  myDomain=$HD_DOMAIN
   if [[ -z $myDomain ]] || [[ X$myDomain == X ]]
   then
     myDomain=APD.EBAY.COM
   fi
 
-  if [[ $myName == @(sg_adm|dw_adm) ]]
+  # Substitue _sub batch user for Hercules-sub
+  DW_LOGIN=sg_adm
+  HD_LOGIN=$HD_USERNAME
+  if [[ $HD_CLUSTER = "herculesqa" ]] && [[ $HD_LOGIN = b_* ]]
   then
-    myPrincipal=sg_adm@$myDomain
-    myKeytabFile=~/.keytabs/apd.sg_adm.keytab
-    if ! [[ $HD_USERNAME == sg_adm ]]
+    DW_LOGIN=${DW_LOGIN}_sub
+    HD_LOGIN=${HD_USERNAME}_sub
+  fi
+
+  export KRB5CCNAME=/tmp/krb5cc_${DW_LOGIN}
+  myName=$(whoami)
+  myPrincipal=$HD_LOGIN@$myDomain
+  myKeytabFile=~/.keytabs/$HD_LOGIN.keytab
+
+  if [[ $myName == @(sg_adm|dw_adm|sg_adm_sub) ]]
+  then
+    myPrincipal=$DW_LOGIN@$myDomain
+    myKeytabFile=~/.keytabs/apd.$DW_LOGIN.keytab
+    if ! [[ $HD_LOGIN == $DW_LOGIN ]]
     then
-      export HADOOP_PROXY_USER=$HD_USERNAME
+      export HADOOP_PROXY_USER=$HD_LOGIN
     fi
-  else
-    myPrincipal=$HD_USERNAME@$myDomain
-    myKeytabFile=~/.keytabs/$HD_USERNAME.keytab
   fi
 
   if ! [ -f $myKeytabFile ]
@@ -63,7 +79,7 @@ then
   if [[ $? == 0 ]]
   then
     print "INFRA_INFO: successfully login as $myPrincipal using keytab file: $myKeytabFile"
-    print "            hadoop user ($HD_USERNAME), queue ($HD_QUEUE), domain ($HD_DOMAIN)"
+    print "            hadoop user ($HD_LOGIN), queue ($HD_QUEUE), domain ($HD_DOMAIN)"
   else
     print "INFRA_ERROR: login failed for $myPrincipal using keytab file: $myKeytabFile"
     exit 4

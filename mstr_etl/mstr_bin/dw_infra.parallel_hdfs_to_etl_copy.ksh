@@ -17,11 +17,16 @@
 #                                                     this to etl file name;  gz, bz2, sz
 # 2017-11-08   1.2    Ryan Wong                     Enhance hdfs copy to exclude directories and hidden objects
 # 2017-12-19   1.3    Ryan Wong                     Add error check, if local launch host is not in the host list
+# 2018-01-18   1.4    Michael Weng                  Export HD_CLUSTER for handling hadoop login
+# 2018-05-30   1.5    Michael Weng                  Add alternative file pattern for compressed files
+# 2018-07-12   1.6    Michael Weng                  Enable multi-host local retention cleanup
 #############################################################################################################
 
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
 . $DW_MASTER_CFG/.${HDFS_CLUSTER}_env.sh
+
+export HD_CLUSTER=$HDFS_CLUSTER
 . $DW_MASTER_CFG/hadoop.login
 
 
@@ -126,6 +131,7 @@ do
   ((instance_idx++))
 done
 
+assignTagValue USE_ALTERNATIVE_FILE_PATTERN USE_ALTERNATIVE_FILE_PATTERN $ETL_CFG_FILE W 0
 instance_idx=0
 for data_file_entry in $HADOOP_SOURCE_FILE_LIST
 do
@@ -133,13 +139,28 @@ do
   FILE_SUFFIX=${data_file_entry##*.}
   if [[ $FILE_SUFFIX == "gz" ]]
   then
-    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.gz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    if [ $USE_ALTERNATIVE_FILE_PATTERN != 0 ]
+    then
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.dat.$instance_idx.gz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    else
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.gz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    fi
   elif [[ $FILE_SUFFIX == "bz2" ]]
   then
-    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.bz2" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    if [ $USE_ALTERNATIVE_FILE_PATTERN != 0 ]
+    then
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.dat.$instance_idx.bz2" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    else
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.bz2" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    fi
   elif [[ $FILE_SUFFIX == "sz" ]]
   then
-    print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.sz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    if [ $USE_ALTERNATIVE_FILE_PATTERN != 0 ]
+    then
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.dat.$instance_idx.sz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    else
+      print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat.sz" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
+    fi
   else
     print "$data_file_entry $ETL_DIR/$STT_TABLE.$instance_idx.dat" >> $DATA_LIS_FILE_PREFIX.$MOD_NUM
   fi
@@ -180,13 +201,13 @@ do
   then
     print "Local launch $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx"
     set +e
-    $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx > $LOG_FILE.$instance_idx 2>&1 &
+    $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx $ETL_PURGE_PARENT_DIR $ETL_PURGE_DEL_DATE > $LOG_FILE.$instance_idx 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
   else
     print "Remote launch ssh -nq $HOST_NAME $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx"
     set +e
-    ssh -nq $HOST_NAME $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx > $LOG_FILE.$instance_idx 2>&1 &
+    ssh -nq $HOST_NAME $DW_MASTER_BIN/dw_infra.single_hdfs_to_etl_copy.ksh $ETL_ID $JOB_ENV $HDFS_CLUSTER $ETL_DIR $DATA_LIS_FILE_PREFIX.$instance_idx $ETL_PURGE_PARENT_DIR $ETL_PURGE_DEL_DATE > $LOG_FILE.$instance_idx 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
   fi

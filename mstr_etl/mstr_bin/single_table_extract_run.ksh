@@ -44,6 +44,8 @@
 # 2018-04-18   1.25   Michael Weng                  Support SA variable overwrite
 # 2018-04-27   1.26   Michael Weng                  Optional construct HDFS path with UOW for non-UOW based
 # 2018-06-11   1.27   Michael Weng                  Fix typo on "recode"
+# 2018-06-14   1.28   Michael Weng                  Construct UOW folder on ETL and link data together
+# 2018-06-12   1.29   Michael Weng                  Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1083,6 +1085,67 @@ else
    exit $RCODE
 fi
 
+
+######################################################################################################
+#
+#                                Link data with UOW path
+#
+#  This section create a UOW folder and link data files with the extracted data
+#
+######################################################################################################
+assignTagValue STE_CURRDATE_TO_UOW STE_CURRDATE_TO_UOW $ETL_CFG_FILE W 0
+
+if [[ X"$UOW_TO" = X ]] && [[ $STE_CURRDATE_TO_UOW != 0 ]]
+then
+  set +e
+  grep "start_date" $COMP_FILE | read NOT_USED UOW_TO_DATE_TMP
+  rcode=$?
+  set -e
+
+  if [ $rcode != 0 ]
+  then
+    print "${0##*/}:  FATAL ERROR, failure finding start_date in $COMP_FILE."
+    exit 4
+  fi
+
+  ETL_UOW_PATH=$IN_DIR/$TABLE_ID/$UOW_TO_DATE_TMP/00/00/00
+  mkdirifnotexist $ETL_UOW_PATH
+
+  ### Link data files
+  assignTagValue USE_DISTR_TABLE USE_DISTR_TABLE $ETL_CFG_FILE W 0
+  assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W 0
+  assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ""
+
+  if [ $CNDTL_COMPRESSION != 1 ]
+  then
+    CNDTL_COMPRESSION_SFX=""
+  fi
+
+  if [ $USE_DISTR_TABLE = 1 ]
+  then
+    read TABLE_NAME DATA_FILENAME PARAM < $DW_CFG/$ETL_ID.sources.lis
+    while read FILE_ID DBC_FILE
+    do
+      SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+      TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+      /bin/ln $SRC_FILE $TGT_FILE
+    done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
+  else
+    while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM
+    do
+      SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+      TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+      /bin/ln $SRC_FILE $TGT_FILE
+    done < $DW_CFG/$ETL_ID.sources.lis
+  fi
+
+  ### Link record count file
+  RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
+  TGT_RECORD_COUNT_FILE=$ETL_UOW_PATH/$(basename $RECORD_COUNT_FILE)
+  /bin/ln $RECORD_COUNT_FILE $TGT_RECORD_COUNT_FILE
+fi
+
+
 ######################################################################################################
 #
 #                                Run SFT if specified
@@ -1292,25 +1355,18 @@ then
     then
       UOW_TO_FLAG=1
       STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE/$UOW_TO_HH/$UOW_TO_MI/$UOW_TO_SS
+
     elif [[ $STE_CURRDATE_TO_UOW != 0 ]]
     then
-      ## Use current date as uow_to if first run
-      UOW_TO_DATE_TMP=$CURR_DATE
+      set +e
+      grep "start_date" $COMP_FILE | read NOT_USED UOW_TO_DATE_TMP
+      rcode=$?
+      set -e
 
-      ## Non-UOW case restart, retrieve start_date from $COMP_FILE
-      if [ $FIRST_RUN = N ]
+      if [ $rcode != 0 ]
       then
-        set +e
-        grep "start_date" $COMP_FILE | read NOT_USED UOW_TO_DATE_TMP
-        rcode=$?
-        set -e
-
-        if [ $rcode != 0 ]
-        then
-          print "${0##*/}:  FATAL ERROR, failure finding start_date in $COMP_FILE."
-          print "  Possible scenario: job failed before and then STE_CURRDATE_TO_UOW is enabled during restart."
-          exit 4
-        fi
+        print "${0##*/}:  FATAL ERROR, failure finding start_date in $COMP_FILE."
+        exit 4
       fi
 
       STE_STAGE_PATH=${STE_STAGE_PATH}/$UOW_TO_DATE_TMP/00/00/00
@@ -1418,7 +1474,7 @@ then
           print "    Log file: $LOG_FILE"
 
           set +e
-          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR $STE_STAGE_PATH $TABLE_ID > $LOG_FILE 2>&1
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR $TABLE_ID $STE_STAGE_PATH $TABLE_ID $UOW_TO_FLAG > $LOG_FILE 2>&1
           retcode=$?
           set -e
 
@@ -1474,7 +1530,7 @@ then
           print "    Log file: $LOG_FILE"
 
           set +e
-          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR_NORMAL $STE_STAGE_PATH_NORMAL $TABLE_ID_NORMAL > $LOG_FILE 2>&1
+          $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $CLUSTER $IN_DIR_NORMAL $TABLE_ID_NORMAL $STE_STAGE_PATH_NORMAL $TABLE_ID_NORMAL $UOW_TO_FLAG > $LOG_FILE 2>&1
           retcode=$?
           set -e
 

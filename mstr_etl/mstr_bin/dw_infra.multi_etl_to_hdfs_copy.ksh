@@ -9,24 +9,30 @@
 # Name             Date            Description
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/26/2017      Initial
+# Michael Weng     01/18/2018      Export HD_CLUSTER for handling hadoop login
+# Michael Weng     06/12/2018      Update command line parameters
 #
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
-HD_CLUSTER=$2
+CLUSTER=$2
 ETL_DIR=$3
-HD_PATH=$4
-HD_TABLE=$5
+ETL_TABLE=$4
+HD_PATH=$5
+HD_TABLE=$6
+UOW_TO_FLAG=$7
 
-if [[ $# != 5 ]]
+if [[ $# != 7 ]]
 then
   print "${0##*/}: INFRA_ERROR - Invalid command line options"
-  print "Usage: $0 <ETL_ID> <HD_CLUSTER> <ETL_DIR> <HD_PATH> <HD_TABLE>"
+  print "Usage: $0 <ETL_ID> <CLUSTER> <ETL_DIR> <ETL_TABLE> <HD_PATH> <HD_TABLE> <UOW_TO_FLAG>"
   exit 4
 fi
 
 . /dw/etl/mstr_cfg/etlenv.setup
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
+
+export HD_CLUSTER=$CLUSTER
 . $DW_MASTER_CFG/.${HD_CLUSTER}_env.sh
 . $DW_MASTER_CFG/hadoop.login
 
@@ -113,12 +119,12 @@ do
   if [[ ${HOST_NAME%%.*} == ${servername%%.*} ]]
   then
     set +e
-    $HADOOP_LOAD_JOB $ETL_ID $JOB_ENV $HD_CLUSTER $HD_TABLE $CURR_DATETIME $SRC_HOST_CNT $instance_idx $ETL_DIR $HD_PATH $UOW_TO_FLAG $UOWTO_BATCHSEQNUM > $LOG_FILE 2>&1 &
+    $HADOOP_LOAD_JOB $ETL_ID $JOB_ENV $HD_CLUSTER $HD_TABLE $CURR_DATETIME $SRC_HOST_CNT $instance_idx $ETL_DIR $ETL_TABLE $HD_PATH $UOW_TO_FLAG $UOWTO_BATCHSEQNUM > $LOG_FILE 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
   else
     set +e
-    ssh -nq $HOST_NAME $HADOOP_LOAD_JOB $ETL_ID $JOB_ENV $HD_CLUSTER $HD_TABLE $CURR_DATETIME $SRC_HOST_CNT $instance_idx $ETL_DIR $HD_PATH $UOW_TO_FLAG $UOWTO_BATCHSEQNUM > $LOG_FILE 2>&1 &
+    ssh -nq $HOST_NAME $HADOOP_LOAD_JOB $ETL_ID $JOB_ENV $HD_CLUSTER $HD_TABLE $CURR_DATETIME $SRC_HOST_CNT $instance_idx $ETL_DIR $ETL_TABLE $HD_PATH $UOW_TO_FLAG $UOWTO_BATCHSEQNUM > $LOG_FILE 2>&1 &
     pid_list[$instance_idx]=$!
     set -e
   fi

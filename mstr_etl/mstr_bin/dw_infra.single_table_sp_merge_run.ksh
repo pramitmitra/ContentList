@@ -22,6 +22,8 @@
 # 2018-02-15     0.6   Michael Weng                 Optional overwrite when loading from etl to hdfs
 # 2018-06-06     0.7   Michael Weng                 Sync git-repo to the version on ETL PROD
 # 2018-05-29     0.8   Michael Weng                 Enable optional empty folder check on HDFS
+# 2018-06-12     0.9   Michael Weng                 Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
+# 2018-06-22     1.0   Michael Weng                 Support SA variable overwrite
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -96,7 +98,7 @@ then
 
   if [[ -n ${HD_MERGE_WORKING_PATH:-""} ]]
   then
-    STM_SA=${SUBJECT_AREA#*_}
+    assignTagValue STM_SA HD_MERGE_WORKING_SA $ETL_CFG_FILE W "${SUBJECT_AREA#*_}"
     STM_HDFS_PATH=${HD_MERGE_WORKING_PATH}/${STM_SA}/${STM_MERGE_TABLE_ID}
 
     # STT output directory could be partitioned
@@ -163,9 +165,10 @@ then
       set -e
 
       ### Load data into a temporary hdfs directory. Upon success, rename it.
+      UOW_TO_FLAG=1
       LOAD_LOG_FILE=$DW_SA_LOG/$STM_MERGE_TABLE_ID.$JOB_TYPE_ID.multi_etl_to_hdfs.$ETL_ID.load.sp${UOW_APPEND}.$CURR_DATETIME.log
       set +e
-      $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $IN_DIR ${STM_HDFS_PATH}.incomplete $STM_MERGE_TABLE_ID > $LOAD_LOG_FILE 2>&1
+      $DW_MASTER_BIN/dw_infra.multi_etl_to_hdfs_copy.ksh $ETL_ID $STORAGE_ENV $IN_DIR $STM_MERGE_TABLE_ID ${STM_HDFS_PATH}_incomplete $STM_MERGE_TABLE_ID $UOW_TO_FLAG > $LOAD_LOG_FILE 2>&1
       rcode=$?
       set -e
 
@@ -173,18 +176,19 @@ then
       then
         print "Successfully loaded data from Tempo:"
         print "    Source ($IN_DIR)"
-        print "    Destination ($STORAGE_ENV:${STM_HDFS_PATH}.incomplete)"
+        print "    Destination ($STORAGE_ENV:${STM_HDFS_PATH}_incomplete)"
         print "    Log file: $LOAD_LOG_FILE"
 
-        ### Rename $STM_MERGE_TABLE_ID.incomplete to $STM_MERGE_TABLE_ID
+        ### Rename $STM_MERGE_TABLE_ID_incomplete to $STM_MERGE_TABLE_ID
+        . $DW_MASTER_CFG/hadoop.login
         set +e
-        $HADOOP_HOME2/bin/hadoop fs -mv ${STM_HDFS_PATH}.incomplete ${STM_HDFS_PATH}
+        $HADOOP_HOME2/bin/hadoop fs -mv ${STM_HDFS_PATH}_incomplete ${STM_HDFS_PATH}
         rcode=$?
         set -e
 
         if [ $rcode = 0 ]
         then
-          print "Successfully rename ${STM_HDFS_PATH}.incomplete to ${STM_HDFS_PATH} on $STORAGE_ENV"
+          print "Successfully rename ${STM_HDFS_PATH}_incomplete to ${STM_HDFS_PATH} on $STORAGE_ENV"
         else
           print "${0##*/}: INFRA_ERROR - Failed to rename HDFS directory"
           exit 4
