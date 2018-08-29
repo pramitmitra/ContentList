@@ -46,6 +46,7 @@
 # 2018-06-11   1.27   Michael Weng                  Fix typo on "recode"
 # 2018-06-14   1.28   Michael Weng                  Construct UOW folder on ETL and link data together
 # 2018-06-12   1.29   Michael Weng                  Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
+# 2018-08-28   1.30   Michael Weng                  Generate UOW base done file for STE_CURRDATE_TO_UOW
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1143,6 +1144,25 @@ then
   RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
   TGT_RECORD_COUNT_FILE=$ETL_UOW_PATH/$(basename $RECORD_COUNT_FILE)
   /bin/ln $RECORD_COUNT_FILE $TGT_RECORD_COUNT_FILE
+
+  ### Generate done file
+  UOW_FROM_DATE_TMP=$($DW_EXE/add_days $UOW_TO_DATE_TMP -1)
+  UOW_PARAM_LIST_TMP="-f ${UOW_FROM_DATE_TMP}000000 -t ${UOW_TO_DATE_TMP}000000"
+
+  WATCH_FILE=$ETL_ID.$JOB_TYPE.ste_currdate_to_uow.done
+  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_currdate_to_uow.$CURR_DATETIME.log
+  print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP"
+
+  set _e
+  $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP > $LOG_FILE 2>&1
+  rcode=$?
+  set -e
+
+  if [ $rcode -ne 0 ]
+  then
+    print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+    exit 4
+  fi
 fi
 
 

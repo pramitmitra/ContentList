@@ -16,6 +16,7 @@
 # Michael Weng     09/04/2017      Log HD_USERNAME, HD_QUEUE and HD_DOMAIN
 # Michael Weng     01/18/2018      Special handling on Hercules-sub
 # Michael Weng     05/31/2018      Export KRB5CCNAME to isolate kinit session
+# Michael Weng     08/28/2018      fix KRB5CCNAME when batch account is using sg_adm keytab
 #------------------------------------------------------------------------------------------------
 
 
@@ -53,10 +54,10 @@ then
     HD_LOGIN=${HD_USERNAME}_sub
   fi
 
-  export KRB5CCNAME=/tmp/krb5cc_${DW_LOGIN}
   myName=$(whoami)
   myPrincipal=$HD_LOGIN@$myDomain
   myKeytabFile=~/.keytabs/$HD_LOGIN.keytab
+  export KRB5CCNAME=/tmp/krb5cc_${myName}_${DW_LOGIN}
 
   if [[ $myName == @(sg_adm|dw_adm|sg_adm_sub) ]]
   then
@@ -87,6 +88,9 @@ then
 
   HADOOP_AUTHENTICATED=1
   export HADOOP_AUTHENTICATED
+
+  export DEFAULT_KRB5CCNAME=/tmp/krb5cc_${UID}
+  cp -p $KRB5CCNAME $DEFAULT_KRB5CCNAME
 
 fi
 set -e
