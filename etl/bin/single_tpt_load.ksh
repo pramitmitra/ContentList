@@ -23,6 +23,7 @@
 # 2016-09-20   1.8    Ryan Wong                     Fixing queryband statement
 # 2017-10-13   1.9    Ryan Wong                     Fixing port utilized check
 # 2017-10-19   2.0    Ryan Wong                     Fixing naming to use variable JOB_TYPE_ID
+# 2018-08-29   2.1    Michael Weng                  Enable alternative file pattern lookup for compressed files
 #############################################################################################################
 
 ETL_ID=$1
@@ -160,15 +161,25 @@ else
   FILE_EXTN=""
 fi
 
+assignTagValue USE_ALTERNATIVE_FILE_PATTERN USE_ALTERNATIVE_FILE_PATTERN $ETL_CFG_FILE W 0
+
 if [[ $JOB_TYPE = "merge" ]]
 then
   assignTagValue STAGE_DB TD_MERGE_STAGE_DB $ETL_CFG_FILE
   assignTagValue STAGE_TABLE TD_MERGE_STAGE_TABLE $ETL_CFG_FILE
   DATA_FILE_PATTERN="$STM_MERGE_TABLE_ID.*.dat*"
+  if [[ $USE_ALTERNATIVE_FILE_PATTERN != 0 ]] && [[ "X$FILE_EXTN" != "X" ]]
+  then
+    DATA_FILE_PATTERN="$STM_MERGE_TABLE_ID.*dat*"
+  fi
 else
   assignTagValue STAGE_DB STAGE_DB $ETL_CFG_FILE
   assignTagValue STAGE_TABLE STAGE_TABLE $ETL_CFG_FILE
   DATA_FILE_PATTERN="$TABLE_ID.*.dat*"
+  if [[ $USE_ALTERNATIVE_FILE_PATTERN != 0 ]] && [[ "X$FILE_EXTN" != "X" ]]
+  then
+    DATA_FILE_PATTERN="$TABLE_ID.*dat*"
+  fi
 fi
 TPT_ARG="$TPT_ARG -STAGE_DB $STAGE_DB -STAGE_TABLE $STAGE_TABLE"
 
