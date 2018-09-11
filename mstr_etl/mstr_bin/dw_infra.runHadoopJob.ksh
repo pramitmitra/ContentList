@@ -23,6 +23,7 @@
 # Michael Weng     10/18/2017      Add support for sp*
 # Michael Weng     03/21/2018      Update queue variable for running hadoop jar
 # Pramit Mitra     04/03/2018      DINT-1282: Capturing Hive Submit Statement
+# Michael Weng     07/11/2018      UC4 variable binding
 #------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -56,6 +57,7 @@ export UC4_TOP_LVL_CNTR_NAME=${UC4_TOP_LVL_CNTR_NAME:-"NA"};
 export UC4_JOB_RUN_ID=${UC4_JOB_RUN_ID:-"NA"}
 export UC4_JOB_BATCH_MODE=${UC4_JOB_BATCH_MODE:-"NA"}
 export UC4_JOB_PRIORITY=${UC4_JOB_PRIORITY:-"NA"}
+export UC4_INFO_STR="{\"UC4_JOB_NAME\": \"${UC4_JOB_NAME}\",\"UC4_PRNT_CNTR_NAME\": \"${UC4_PRNT_CNTR_NAME}\",\"UC4_TOP_LVL_CNTR_NAME\": \"${UC4_TOP_LVL_CNTR_NAME}\",\"UC4_JOB_RUN_ID\": \"${UC4_JOB_RUN_ID}\",\"UC4_JOB_BATCH_MODE\": \"${UC4_JOB_BATCH_MODE}\",\"UC4_JOB_PRIORITY\": \"${UC4_JOB_PRIORITY}\"}"
 
 JAVA=$JAVA_HOME/bin/java
 JAVA_CMD_OPT=`bash /dw/etl/mstr_lib/hadoop_ext/hadoop.setup`
@@ -136,9 +138,9 @@ function run_hive_job
 hql_var=`cat $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp`
 print "Hive Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
 #print "$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp" >> ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
-print "$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" -f $hql_var" >> ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
+print "$HIVE_HOME/bin/hive --hiveconf hadoop.uc4.info=\"${UC4_INFO_STR}\" --hiveconf mapred.job.queue.name=$HD_QUEUE --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" -f $hql_var" >> ${PARENT_LOG_FILE%.log}.hive_submit_statement.log
 
-$HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
+$HIVE_HOME/bin/hive --hiveconf hadoop.uc4.info="${UC4_INFO_STR}" --hiveconf mapred.job.queue.name=$HD_QUEUE \
                           --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                           -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp 
 #    else
@@ -185,6 +187,7 @@ $HIVE_HOME/bin/hive --hiveconf mapred.job.queue.name=$HD_QUEUE \
     fi
 
     $HIVE_HOME/bin/beeline -u "$CONN_STR;" \
+                   --hiveconf hadoop.uc4.info="${UC4_INFO_STR}" \
                    --hiveconf dataplatform.etl.info="$DATAPLATFORM_ETL_INFO" \
                    -f $DW_SA_TMP/$TABLE_ID.ht.$HADOOP_JAR.tmp
     retcode=$?
@@ -226,6 +229,7 @@ function run_hadoop_jar
   fi
 
   CMD_STR="$HADOOP_HOME/bin/hadoop jar $DW_JAR/$HADOOP_JAR $MAIN_CLASS \
+                              -Dhadoop.uc4.info=\"${UC4_INFO_STR}\" \
                               -Dmapreduce.job.queuename=$HD_QUEUE -Dmapred.output.compress=$MAPRED_OUTPUT_COMPRESS_IND \
                               -Ddataplatform.etl.info=\"$DATAPLATFORM_ETL_INFO\" \
                               $PARAM_LIST"
