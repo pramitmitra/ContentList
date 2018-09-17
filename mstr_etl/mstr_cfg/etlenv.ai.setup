@@ -4,13 +4,13 @@ then
   dwi_assignTagValue -p DWI_AB_HOME_OVERRIDE -t DWI_AB_HOME_OVERRIDE -f $ETL_CFG_FILE -s N
 fi
 
+if [[ -d ${DWI_AB_HOME_OVERRIDE:-NOT_APPLICABLE} ]]
+then
+        AB_HOME=$DWI_AB_HOME_OVERRIDE
 # read the AB_HOME value from the $HOME/.ab_home file if it exists.
-if [ -f $HOME/.ab_home ]
+elif [ -f $HOME/.ab_home ]
 then
 	read AB_HOME < $HOME/.ab_home
-elif [[ -d ${DWI_AB_HOME_OVERRIDE:-NOT_APPLICABLE} ]]
-then
-	AB_HOME=$DWI_AB_HOME_OVERRIDE
 else
 	AB_HOME=/usr/local/abinitio
 fi
