@@ -17,6 +17,7 @@
 # Michael Weng     01/18/2018      Special handling on Hercules-sub
 # Michael Weng     05/31/2018      Export KRB5CCNAME to isolate kinit session
 # Michael Weng     08/28/2018      fix KRB5CCNAME when batch account is using sg_adm keytab
+# Michael Weng     09/12/2018      Fix UID not defined issue
 #------------------------------------------------------------------------------------------------
 
 
@@ -89,7 +90,7 @@ then
   HADOOP_AUTHENTICATED=1
   export HADOOP_AUTHENTICATED
 
-  export DEFAULT_KRB5CCNAME=/tmp/krb5cc_${UID}
+  export DEFAULT_KRB5CCNAME=/tmp/krb5cc_$(id -u $myName)
   cp -p $KRB5CCNAME $DEFAULT_KRB5CCNAME
 
 fi

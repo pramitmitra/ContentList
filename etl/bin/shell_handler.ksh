@@ -37,6 +37,7 @@
 #                                     -st (suppress touchfile) - skip creation of touchfile at end of job
 # Kevin Oaks       09/22/2016      Added optional input argument to avoid .complete file collisions on Tempo hosts:
 #                                     -uc (unique complete file) - include host name as part of touch file name
+# Michael Weng     09/12/2018      Enable hadoop login when JOB_ENV is hd* or sp*
 #------------------------------------------------------------------------------------------------
 
 typeset -fu usage
@@ -87,6 +88,11 @@ else
 fi
 
 . /dw/etl/mstr_cfg/etlenv.setup
+
+if [[ -n ${JOB_ENV:-""} ]] && [[ $JOB_ENV == hd* || $JOB_ENV == sp* ]]
+then
+  . /dw/etl/mstr_cfg/hadoop.login
+fi
 
 # Check for optional UOW
 export UOW_FROM=""
