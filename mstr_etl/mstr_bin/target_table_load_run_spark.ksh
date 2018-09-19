@@ -33,6 +33,7 @@
 # 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
 # 2018-07-02     3.6   Michael Weng                 Enable STT template without transformation
 # 2018-07-12     3.7   Michael Weng                 Enable multi-host local retention cleanup
+# 2018-09-12     3.8   Michael Weng                 Enable working table partitioned copy back
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -638,6 +639,8 @@ then
           assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
           assignTagValue STT_LOCAL_OVERWRITE STT_LOCAL_OVERWRITE $ETL_CFG_FILE W 1
           assignTagValue STT_LOCAL_RETENTION STT_LOCAL_RETENTION $ETL_CFG_FILE W 0
+          assignTagValue STT_ENABLE_PARTITION_COL STT_ENABLE_PARTITION_COL $ETL_CFG_FILE W 0
+          assignTagValue STT_OUTPUT_PARTITION_COL STT_OUTPUT_PARTITION_COL $ETL_CFG_FILE W ""
 
           STT_SA=${SUBJECT_AREA#*_}
 
@@ -648,6 +651,11 @@ then
             export SOURCE_PATH=${STT_WORKING_PATH}/${STT_SA}/${TABLE}
             export ETL_PURGE_PARENT_DIR="NA"
             export ETL_PURGE_DEL_DATE="00000000"
+
+            if [[ $STT_ENABLE_PARTITION_COL != 0 ]] && [[ -n ${STT_OUTPUT_PARTITION_COL:-""} ]]
+            then
+              SOURCE_PATH=${SOURCE_PATH}/$(eval print ${STT_OUTPUT_PARTITION_COL})
+            fi
 
             if [[ X"$UOW_TO" != X ]]
             then
