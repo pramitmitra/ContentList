@@ -5,7 +5,7 @@
 # Revision History:
 #
 # Name             Date            Description
-# ---------------  --------------  ------------------------------------------------------------------------------------------
+# ---------------  --------------  ------------------------------------------------------------------------------------------------------------------------
 # ???              ??/??/????      Initial Creation
 # Pramit Mitra     03/01/2017      Extending the framework for Spark-Submit.
 # Pramit Mitra     04/03/2017      Change Input parameter numbers and derive SQLFile and CONFFile from ETL_ID 
@@ -26,7 +26,8 @@
 # Michale Weng     07/11/2018      UC4 variable binding
 # Michael Weng     07/17/2018      Support different version of Zeta Driver
 # Michael Weng     08/09/2018      Enable custom zeta_default.conf to be used
-#--------------------------------------------------------------------------------------------------------------------------------
+# Pramit Mitra     10/01/2018      DINT-1676, Temp SQL file cleanup process enhancement to support multiple ETL_ID concurrent execution with subset names
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
 JOB_ENV=$2
@@ -125,8 +126,13 @@ fi
 
 function groomSparkSQL
 {
+#DINT-1676, Temp SQL file cleanup process enhancement to support multiple ETL_ID concurrent execution with subset names
+#rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}*tmp*;rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp*${ETL_ID}*;
 
-rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}*tmp*;rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp*${ETL_ID}*;
+rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${ETL_ID}_stt.sql.seq*;
+rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList*;
+rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${ETL_ID}.spark_sql;
+rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp1_${ETL_ID}.spark_sql;
 
 set -e
 # Cleanse SEQ File
