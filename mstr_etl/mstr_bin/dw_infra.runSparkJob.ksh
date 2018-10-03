@@ -133,7 +133,6 @@ rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${ETL_ID}_stt.sql.seq*;
 rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList*;
 rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp_${ETL_ID}.spark_sql;
 rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/tmp1_${ETL_ID}.spark_sql;
-rm -r ${DW_TMP}/${JOB_ENV}/${SA_DIR}/${ETL_ID}_SQLFileList*;
 
 set -e
 # Cleanse SEQ File
