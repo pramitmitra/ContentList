@@ -2,7 +2,6 @@ DW_TD1_DB=martinibe
 DW_TD2_DB=mozartbe
 DW_TD3_DB=davincibe
 DW_TD4_DB=fermat
-DW_TD5_DB=vivaldibe
 DW_TD6_DB=mozartbe
 DW_TD7_DB=hopbe
 
@@ -10,7 +9,6 @@ export DW_TD1_DB
 export DW_TD2_DB
 export DW_TD3_DB
 export DW_TD4_DB
-export DW_TD5_DB
 export DW_TD6_DB
 export DW_TD7_DB
 

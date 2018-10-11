@@ -2,7 +2,6 @@ export DW_TD1_DB=sandcat2
 export DW_TD2_DB=sandcat2
 export DW_TD3_DB=oscar
 export DW_TD4_DB=crazy
-export DW_TD5_DB=oscar
 export DW_TD6_DB=oscar
 export DW_TD7_DB=sandcat2
 export DW_TD100_DB=ming
