@@ -27,6 +27,8 @@
 # Michael Weng     07/17/2018      Support different version of Zeta Driver
 # Michael Weng     08/09/2018      Enable custom zeta_default.conf to be used
 # Pramit Mitra     10/01/2018      DINT-1676, Temp SQL file cleanup process enhancement to support multiple ETL_ID concurrent execution with subset names
+# Pramit Mitra     10/07/2018      Multiple Version Spark Execution Support
+# Michael Weng     10/16/2018      Fix issue on multi-version Spark support
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ETL_ID=$1
@@ -94,11 +96,21 @@ print "Inside run_spark_jar function"
 
 set +e
 
+if [[ -n ${spark_version:-""} ]] && [[ ${spark_version} == @(next|prev) ]] && [[ -f $DW_MASTER_CFG/.${HD_CLUSTER}_${spark_version}_env.sh ]]
+then
+  print "INFO: Using Spark version: $spark_version ..."
+  set +eu
+  . $DW_MASTER_CFG/.${HD_CLUSTER}_${spark_version}_env.sh
+  export ZETA_DRIVER_JAR=${ZETA_DRIVER_JAR:-zeta-driver-${spark_version}.jar}
+else
+  print "INFO: Using default Spark version ..."
+  export ZETA_DRIVER_JAR=${ZETA_DRIVER_JAR:-zeta-driver.jar}
+fi
+
 export DATANUCLEUS_API_JDO_JAR=$(ls $SPARK_HOME/jars/datanucleus-api-jdo-*.jar)
 export DATANUCLEUS_CORE_JAR=$(ls $SPARK_HOME/jars/datanucleus-core-*.jar)
 export DATANUCLEUS_RDBMS_JAR=$(ls $SPARK_HOME/jars/datanucleus-rdbms-*.jar)
 export AVRO_JAR=${AVRO_JAR:-avro-1.8.2.jar}
-export ZETA_DRIVER_JAR=${ZETA_DRIVER_JAR:-zeta-driver.jar}
 
 print "Spark Submit Issued for :::::: ${ETL_ID}" > ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
 print "${SPARK_HOME}/bin/spark-submit --conf spark.uc4.info=\"${UC4_INFO_STR}\" --class com.ebay.dss.zeta.ZetaDriver --jars ${DW_LIB}/${AVRO_JAR} --files "$DW_EXE/hmc/adpo_load_cfg/aes.properties,${SPARK_HOME}/conf/log4j.properties,${HIVE_HOME}/conf/hive-site.xml,${SPARK_SQL_LST_PATH}" --conf spark.executor.extraClassPath=${AVRO_JAR} --driver-class-path ${AVRO_JAR}:${DW_LIB}/${ZETA_DRIVER_JAR}:${DATANUCLEUS_RDBMS_JAR}:${DATANUCLEUS_API_JDO_JAR}:${DATANUCLEUS_CORE_JAR} --properties-file ${SPARK_CONF_DYNAMIC} --conf spark.yarn.access.namenodes=${SPARK_FS} ${DW_LIB}/${ZETA_DRIVER_JAR}  sql -s "${SPARK_SQL_LST1}"" >> ${PARENT_LOG_FILE%.log}.spark_submit_statement.log
