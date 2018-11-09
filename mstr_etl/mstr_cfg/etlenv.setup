@@ -280,6 +280,13 @@ export HD_USERNAME=
 export HD_QUEUE=
 export HD_DOMAIN=
 export HD_CLUSTER=
+export HD_MAINTENANCE_LIS=
+export HD_MAINTENANCE_LIS_FILE=$DW_LOGINS/dw_infra.hd.maintenance.dat
+
+if [ -f $HD_MAINTENANCE_LIS_FILE ]
+then
+  export HD_MAINTENANCE_LIS=$(cat $HD_MAINTENANCE_LIS_FILE)
+fi
 
 if [[ -n $ETL_ID ]]
 then
@@ -395,7 +402,6 @@ then
   export HD_CLUSTER=$(eval print \$DW_${JOB_ENV_UPPER}_DB)
   . $DW_MASTER_CFG/.${HD_CLUSTER}_env.sh
 fi
-export HADOOP_AUTHENTICATED=0
 #set -eu
 
 # Certificate, private key, keystore, truststore and ca-bundle used for web proxy
