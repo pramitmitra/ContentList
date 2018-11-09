@@ -24,6 +24,7 @@
 # Michael Weng     09/09/2016      Enable use of batch account keytab
 # Michael Weng     10/12/2016      Add hadoop authentication
 # Michael Weng     01/18/2018      Export HD_CLUSTER for handling hadoop login
+# Michael Weng     10/12/2018      Remove HADOOP_AUTHENTICATED
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -190,7 +191,6 @@ do
   if [[ $i != 3 ]]; then
     set +e
     sleep 10
-    export HADOOP_AUTHENTICATED=0
     . $DW_MASTER_CFG/hadoop.login
     set -e
     continue
