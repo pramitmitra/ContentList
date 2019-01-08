@@ -16,6 +16,7 @@
 # Michael Weng     06/06/2018      Add TABLE_ID check for non-UOW when STE_CURRDATE_TO_UOW specified
 # Michael Weng     06/12/2018      Enable Abinitio HDFS load
 # Michael Weng     07/23/2018      Fix STE HDFS copy file pattern for non-UOW case
+# Michael Weng     11/07/2018      Add retry on loading data from ETL to HDFS
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -148,10 +149,24 @@ then
   done < $DATA_LIS_FILE
 
   wait
+
+  ### Retry
   if [ -s $FAILED_FILE ]
   then
-    print "${0##*/}: WARNING - Failed to load files on $servername (HOST Index: $HOST_ID)"
-    exit 4
+    while read SOURCE_FILE_TMP
+    do
+      print "${0##*/}: WARNING - Failed to load data using file copy for $SOURCE_FILE_TMP on $servername (HOST Index: $HOST_ID), retrying ..."
+      set +e
+      $DW_MASTER_BIN/dw_infra.hadoop_copy_from_local.ksh $ETL_ID $JOB_ENV $HD_CLUSTER $SOURCE_FILE_TMP $HD_PATH /dev/null
+      rcode=$?
+      set -e
+
+      if [ $rcode != 0 ]
+      then
+        print "${0##*/}: INFRA_ERROR - Failed to load file $SOURCE_FILE_TMP on $servername (HOST Index: $HOST_ID)"
+        exit 4
+      fi
+    done < $FAILED_FILE
   fi
 
 elif [ $HDFS_LOAD_PROCESS_TYPE = H ]

@@ -24,6 +24,7 @@
 # 2017-10-13   1.9    Ryan Wong                     Fixing port utilized check
 # 2017-10-19   2.0    Ryan Wong                     Fixing naming to use variable JOB_TYPE_ID
 # 2018-08-29   2.1    Michael Weng                  Enable alternative file pattern lookup for compressed files
+# 2018-09-18   2.2    Michael Weng                  Enable default value for TPT_LOAD_NWAYS
 #############################################################################################################
 
 ETL_ID=$1
@@ -77,8 +78,8 @@ do
   ((TPT_IDX+=1))
 done
 
-# If TPT_LOAD_NWAYS is not assigned, then error.
-if [[ "X${TPT_LOAD_NWAYS:-}" = "X" ]]
+# If TPT_LOAD_NWAYS is not assigned, error if MULTI_HOST != 0.
+if [[ "X${TPT_LOAD_NWAYS:-}" = "X" ]] && [[ $MULTI_HOST != 0 ]]
 then
   print "FATAL ERROR: Could not assign TPT_LOAD_NWAYS from $ETL_CFG_FILE" >&2
   exit 4
@@ -245,6 +246,12 @@ else
 fi
 
 TPT_HOST_CNT=${#TPT_HOSTS[*]}
+
+# If not assigned, default TPT_LOAD_NWAYS to the number of hosts when MULTI_HOST = 0
+if [[ "X${TPT_LOAD_NWAYS:-}" = "X" ]] && [[ $MULTI_HOST = 0 ]]
+then
+  TPT_LOAD_NWAYS=$TPT_HOST_CNT
+fi
 
 if [ $TPT_LOAD_NWAYS -lt $TPT_HOST_CNT ]
 then

@@ -10,7 +10,7 @@
 # ---------------  --------------  ---------------------------------------------------
 # Michael Weng     10/26/2017      Initial
 # Michael Weng     01/18/2018      Export HD_CLUSTER for handling hadoop login
-#
+# Michael Weng     11/02/2018      Add return code
 #------------------------------------------------------------------------------------------------
 
 export ETL_ID=$1
@@ -52,4 +52,7 @@ then
 else
   print "${0##*/}: INFRA_ERROR - Failed to load file: $SOURCE_FILE"
   print "$SOURCE_FILE" >> $FAILED_FILE
+  exit 4
 fi
+
+exit 0

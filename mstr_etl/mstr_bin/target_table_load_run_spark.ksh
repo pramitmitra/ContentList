@@ -33,6 +33,7 @@
 # 2018-05-14     3.4   Michael Weng                 Enable STT to pull staging data from ETL
 # 2018-07-02     3.6   Michael Weng                 Enable STT template without transformation
 # 2018-07-12     3.7   Michael Weng                 Enable multi-host local retention cleanup
+# 2018-12-05     4.2   Michael Weng                 Enable STT working path custom subject area
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -638,8 +639,7 @@ then
           assignTagValue STT_WORKING_TABLES STT_WORKING_TABLES $ETL_CFG_FILE
           assignTagValue STT_LOCAL_OVERWRITE STT_LOCAL_OVERWRITE $ETL_CFG_FILE W 1
           assignTagValue STT_LOCAL_RETENTION STT_LOCAL_RETENTION $ETL_CFG_FILE W 0
-
-          STT_SA=${SUBJECT_AREA#*_}
+          assignTagValue STT_SA STT_WORKING_SA $ETL_CFG_FILE W "${SUBJECT_AREA#*_}"
 
           for TABLE in $(echo $STT_WORKING_TABLES | sed "s/,/ /g")
           do

@@ -20,6 +20,7 @@
 # 2018-01-18   1.4    Michael Weng                  Export HD_CLUSTER for handling hadoop login
 # 2018-05-30   1.5    Michael Weng                  Add alternative file pattern for compressed files
 # 2018-07-12   1.6    Michael Weng                  Enable multi-host local retention cleanup
+# 2018-09-18   1.7    Michael Weng                  Exclude _SUCCESS file during copy back
 #############################################################################################################
 
 . /dw/etl/mstr_cfg/etlenv.setup
@@ -98,7 +99,7 @@ print "INSTANCE_TOTAL is $INSTANCE_TOTAL"
 # Generate master list file
 DATA_LIS_FILE_PREFIX=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdfs_to_etl_copy_list.$STT_TABLE.dat
 HADOOP_SOURCE_FILE_LIST_TMP=$DW_SA_TMP/$TABLE_ID.$JOB_TYPE_ID.hdfs_to_etl_copy_list.$STT_TABLE.lis.tmp
-${HADOOP_HOME2}/bin/hadoop fs -ls $SOURCE_PATH/ | tail -n +2 | grep -v '^d' | awk '{ print $8 }' | sort -d 1>$HADOOP_SOURCE_FILE_LIST_TMP
+${HADOOP_HOME2}/bin/hadoop fs -ls $SOURCE_PATH/ | tail -n +2 | grep -v '^d' | grep -v _SUCCESS | awk '{ print $8 }' | sort -d 1>$HADOOP_SOURCE_FILE_LIST_TMP
 
 
 HADOOP_SOURCE_FILE_LIST=""

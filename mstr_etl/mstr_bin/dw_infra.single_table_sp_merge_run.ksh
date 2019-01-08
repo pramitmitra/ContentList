@@ -24,6 +24,7 @@
 # 2018-05-29     0.8   Michael Weng                 Enable optional empty folder check on HDFS
 # 2018-06-12     0.9   Michael Weng                 Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 # 2018-06-22     1.0   Michael Weng                 Support SA variable overwrite
+# 2018-11-06     1.2   Michael Weng                 Add restart login for loading data from ETL to HDFS
 ###################################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -83,16 +84,13 @@ fi
 
 
 ############################################################
-# START OF SPARK MERGE
+# Load data from ETL to HDFS
 ############################################################
-### Check load environment is Spark
-PROCESS=single_table_merge_spark
+PROCESS=single_table_merge_load_data
 RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
 if [ $RCODE = 1 ]
 then
-  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_table_merge.$ETL_ID.merge.sp${UOW_APPEND}.$CURR_DATETIME.log
-
   ### Check and load data onto HDFS if missing
   assignTagValue HD_MERGE_WORKING_PATH HD_MERGE_WORKING_PATH $ETL_CFG_FILE W ""
 
@@ -203,6 +201,25 @@ then
     print "HD_MERGE_WORKING_PATH is not defined. HDFS file checking is skipped."
   fi
 
+  print "$PROCESS" >> $COMP_FILE
+
+elif [ $RCODE = 0 ]
+then
+  print "$PROCESS already complete"
+else
+  exit $RCODE
+fi
+
+############################################################
+# START OF SPARK MERGE
+############################################################
+### Check load environment is Spark
+PROCESS=single_table_merge_spark
+RCODE=`grepCompFile $PROCESS $COMP_FILE`
+
+if [ $RCODE = 1 ]
+then
+  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.single_table_merge.$ETL_ID.merge.sp${UOW_APPEND}.$CURR_DATETIME.log
   set +e
   $DW_MASTER_BIN/dw_infra.runSparkSubmit.ksh $ETL_ID $JOB_ENV 0 > $LOG_FILE 2>&1
   rcode=$?
