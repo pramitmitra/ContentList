@@ -2,7 +2,6 @@ DW_TD1_DB=martinibe
 DW_TD2_DB=mozartbe
 DW_TD3_DB=davincibe
 DW_TD4_DB=fermat
-DW_TD5_DB=vivaldibe
 DW_TD6_DB=mozartbe
 DW_TD7_DB=hopbe
 
@@ -10,22 +9,23 @@ export DW_TD1_DB
 export DW_TD2_DB
 export DW_TD3_DB
 export DW_TD4_DB
-export DW_TD5_DB
 export DW_TD6_DB
 export DW_TD7_DB
 
-export DW_SP1_DB=olympus
+export DW_SP1_DB=herculesrno
 export DW_SP2_DB=hercules
 
 export DW_HD1_DB=ares
 export DW_HD2_DB=apollo
 export DW_HD3_DB=artemis
 export DW_HD5_DB=juno
+export DW_HD10_DB=apollorno
 export HD1_NN_URL="hdfs://ares-lvs-nn-ha:8020"
 export HD2_NN_URL="hdfs://apollo-phx-nn-ha"
 export HD3_NN_URL="hdfs://artemis-lvs-nn-ha:8020"
 export HD5_NN_URL="hdfs://sd-lvs-nn-ha"
-export SP1_NN_URL="hdfs://olympus"
+export HD10_NN_URL="hdfs://apollo-rno"
+export SP1_NN_URL="hdfs://hercules-rno"
 export SP2_NN_URL="hdfs://hercules"
 export HD1_COMPUTE=hd1
 export HD1_STORAGE=hd1
@@ -39,9 +39,12 @@ export HD3_STORAGE_NN_URL=$HD3_NN_URL
 export HD5_COMPUTE=hd5
 export HD5_STORAGE=hd5
 export HD5_STORAGE_NN_URL=$HD5_NN_URL
+export HD10_COMPUTE=hd10
+export HD10_STORAGE=hd10
+export HD10_STORAGE_NN_URL=$HD10_NN_URL
 export SP1_COMPUTE=sp1
-export SP1_STORAGE=hd1
-export SP1_STORAGE_NN_URL="hdfs://ares-lvs-nn-ha"
+export SP1_STORAGE=sp1
+export SP1_STORAGE_NN_URL=$SP1_NN_URL
 export SP2_COMPUTE=sp2
 export SP2_STORAGE=sp2
 export SP2_STORAGE_NN_URL=$SP2_NN_URL

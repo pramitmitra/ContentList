@@ -47,6 +47,7 @@
 # 2018-06-14   1.28   Michael Weng                  Construct UOW folder on ETL and link data together
 # 2018-06-12   1.29   Michael Weng                  Update dw_infra.multi_etl_to_hdfs_copy.ksh command line
 # 2018-08-28   1.30   Michael Weng                  Generate UOW base done file for STE_CURRDATE_TO_UOW
+# 2018-10-22   1.31   Michael Weng                  Fix restart issue when STE_CURRDATE_TO_UOW is enabled
 #############################################################################################################
 
 . $DW_MASTER_LIB/dw_etl_common_functions.lib
@@ -1109,59 +1110,73 @@ then
     exit 4
   fi
 
-  ETL_UOW_PATH=$IN_DIR/$TABLE_ID/$UOW_TO_DATE_TMP/00/00/00
-  mkdirifnotexist $ETL_UOW_PATH
+  PROCESS=Link_Data_With_UOW_Path
+  RCODE=`grepCompFile $PROCESS $COMP_FILE`
 
-  ### Link data files
-  assignTagValue USE_DISTR_TABLE USE_DISTR_TABLE $ETL_CFG_FILE W 0
-  assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W 0
-  assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ""
-
-  if [ $CNDTL_COMPRESSION != 1 ]
+  if [ $RCODE = 1 ]
   then
-    CNDTL_COMPRESSION_SFX=""
-  fi
+    ETL_UOW_PATH=$IN_DIR/$TABLE_ID/$UOW_TO_DATE_TMP/00/00/00
+    mkdirifnotexist $ETL_UOW_PATH
 
-  if [ $USE_DISTR_TABLE = 1 ]
+    ### Link data files
+    assignTagValue USE_DISTR_TABLE USE_DISTR_TABLE $ETL_CFG_FILE W 0
+    assignTagValue CNDTL_COMPRESSION CNDTL_COMPRESSION $ETL_CFG_FILE W 0
+    assignTagValue CNDTL_COMPRESSION_SFX CNDTL_COMPRESSION_SFX $ETL_CFG_FILE W ""
+
+    if [ $CNDTL_COMPRESSION != 1 ]
+    then
+      CNDTL_COMPRESSION_SFX=""
+    fi
+
+    if [ $USE_DISTR_TABLE = 1 ]
+    then
+      read TABLE_NAME DATA_FILENAME PARAM < $DW_CFG/$ETL_ID.sources.lis
+      while read FILE_ID DBC_FILE
+      do
+        SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+        TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+        /bin/ln -f $SRC_FILE $TGT_FILE
+      done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
+    else
+      while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM
+      do
+        SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+        TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
+        /bin/ln -f $SRC_FILE $TGT_FILE
+      done < $DW_CFG/$ETL_ID.sources.lis
+    fi
+
+    ### Link record count file
+    RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
+    TGT_RECORD_COUNT_FILE=$ETL_UOW_PATH/$(basename $RECORD_COUNT_FILE)
+    /bin/ln -f $RECORD_COUNT_FILE $TGT_RECORD_COUNT_FILE
+
+    ### Generate done file
+    UOW_FROM_DATE_TMP=$($DW_EXE/add_days $UOW_TO_DATE_TMP -1)
+    UOW_PARAM_LIST_TMP="-f ${UOW_FROM_DATE_TMP}000000 -t ${UOW_TO_DATE_TMP}000000"
+
+    WATCH_FILE=$ETL_ID.$JOB_TYPE.ste_currdate_to_uow.done
+    LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_currdate_to_uow.$CURR_DATETIME.log
+    print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP"
+
+    set _e
+    $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP > $LOG_FILE 2>&1
+    rcode=$?
+    set -e
+
+    if [ $rcode -ne 0 ]
+    then
+      print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
+      exit 4
+    fi
+
+    print "$PROCESS" >> $COMP_FILE
+
+  elif [ $RCODE = 0 ]
   then
-    read TABLE_NAME DATA_FILENAME PARAM < $DW_CFG/$ETL_ID.sources.lis
-    while read FILE_ID DBC_FILE
-    do
-      SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
-      TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
-      /bin/ln $SRC_FILE $TGT_FILE
-    done < $DW_CFG/$DISTR_TABLE_LIS_FILE.sources.lis
+    print "$PROCESS already complete"
   else
-    while read FILE_ID DBC_FILE PARALLEL_NUM TABLE_NAME DATA_FILENAME PARAM
-    do
-      SRC_FILE=$(eval print $IN_DIR/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
-      TGT_FILE=$(eval print $ETL_UOW_PATH/$DATA_FILENAME.$BATCH_SEQ_NUM$CNDTL_COMPRESSION_SFX)
-      /bin/ln $SRC_FILE $TGT_FILE
-    done < $DW_CFG/$ETL_ID.sources.lis
-  fi
-
-  ### Link record count file
-  RECORD_COUNT_FILE=$REC_CNT_IN_DIR/$TABLE_ID.record_count.dat.$BATCH_SEQ_NUM
-  TGT_RECORD_COUNT_FILE=$ETL_UOW_PATH/$(basename $RECORD_COUNT_FILE)
-  /bin/ln $RECORD_COUNT_FILE $TGT_RECORD_COUNT_FILE
-
-  ### Generate done file
-  UOW_FROM_DATE_TMP=$($DW_EXE/add_days $UOW_TO_DATE_TMP -1)
-  UOW_PARAM_LIST_TMP="-f ${UOW_FROM_DATE_TMP}000000 -t ${UOW_TO_DATE_TMP}000000"
-
-  WATCH_FILE=$ETL_ID.$JOB_TYPE.ste_currdate_to_uow.done
-  LOG_FILE=$DW_SA_LOG/$TABLE_ID.$JOB_TYPE_ID.touchWatchFile${UOW_APPEND}.ste_currdate_to_uow.$CURR_DATETIME.log
-  print "Running $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP"
-
-  set _e
-  $DW_MASTER_EXE/touchWatchFile.ksh $ETL_ID $JOB_TYPE $JOB_ENV $WATCH_FILE $UOW_PARAM_LIST_TMP > $LOG_FILE 2>&1
-  rcode=$?
-  set -e
-
-  if [ $rcode -ne 0 ]
-  then
-    print "${0##*/}:  ERROR, see log file $LOG_FILE" >&2
-    exit 4
+    exit $RCODE
   fi
 fi
 
