@@ -1,3 +1,8 @@
+Executing C code from VS Code
+
+Compile: Shift + Command + B
+Run: Command + R
+
 Source:https://en.wikipedia.org/wiki/Pascal%27s_triangle
 
 Pascal's triangle
