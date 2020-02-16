@@ -1,3 +1,5 @@
+![](images/ukMetDataAnalysis-dev-ingestUKMetDataUKVP_Monitor.png)
+
 Executing C code from VS Code
 
 Compile: Shift + Command + B
