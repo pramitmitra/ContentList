@@ -10,10 +10,10 @@
 - Containerization of DB - https://github.com/pramitmitra/ContainerizationofDatabase
 
 ### Reading List! 👓
-  ## Interview Preperation:
+  * ## Interview Preperation:
     DS & Algo: https://github.com/pramitmitra/DataStructure-Algorithms
     
-  ## Machine Learning & Data Science:
+  * ## Machine Learning & Data Science:
     ML Bookshttps: https://github.com/pramitmitra/machine-learning-books
     ML CheatSheet: https://github.com/pramitmitra/ml-cheatsheet
     DS CheatSheet: https://github.com/pramitmitra/ds-cheatsheets
