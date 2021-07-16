@@ -11,7 +11,7 @@
 
 ## Reading List! 👓
   * ### Interview Preperation:
-    **DS & Algo:** https://github.com/pramitmitra/DataStructure-Algorithms
+    - DS & Algo: https://github.com/pramitmitra/DataStructure-Algorithms
     
   * ### Machine Learning & Data Science:
     - ML Bookshttps: https://github.com/pramitmitra/machine-learning-books
