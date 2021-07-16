@@ -11,12 +11,12 @@
 
 ### Reading List! 👓
   ## Interview Preperation:
-    - DS & Algo: https://github.com/pramitmitra/DataStructure-Algorithms
+    DS & Algo: https://github.com/pramitmitra/DataStructure-Algorithms
     
   ## Machine Learning & Data Science:
-    - ML Bookshttps: https://github.com/pramitmitra/machine-learning-books
-    - ML CheatSheet: https://github.com/pramitmitra/ml-cheatsheet
-    - DS CheatSheet: https://github.com/pramitmitra/ds-cheatsheets
+    ML Bookshttps: https://github.com/pramitmitra/machine-learning-books
+    ML CheatSheet: https://github.com/pramitmitra/ml-cheatsheet
+    DS CheatSheet: https://github.com/pramitmitra/ds-cheatsheets
 
 
 ### External Project to learn from! 🙏
