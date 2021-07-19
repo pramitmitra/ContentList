@@ -12,6 +12,10 @@
 ## Reading List! 👓
   * ### Interview Preperation:
     - DS & Algo: https://github.com/pramitmitra/DataStructure-Algorithms
+
+  * ### Random Reads:
+    - 24 Commonly used SQL Functions for Data Analysis tasks: https://www.analyticsvidhya.com/blog/2020/07/sql-functions-for-data-analysis-tasks/?utm_source=linkedin&utm_medium=social
+
     
   * ### Machine Learning & Data Science:
     - ML Bookshttps: https://github.com/pramitmitra/machine-learning-books
